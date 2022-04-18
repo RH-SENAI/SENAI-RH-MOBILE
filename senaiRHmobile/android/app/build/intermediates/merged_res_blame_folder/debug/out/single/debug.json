@@ -1,0 +1,42 @@
+[
+    {
+        "merged": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi_icon.png.flat",
+        "source": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\src\\main\\res\\drawable-mdpi\\icon.png"
+    },
+    {
+        "merged": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable_icon.png.flat",
+        "source": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\src\\main\\res\\drawable\\icon.png"
+    },
+    {
+        "merged": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_icon.png.flat",
+        "source": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\src\\main\\res\\drawable-hdpi\\icon.png"
+    },
+    {
+        "merged": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi_icon.png.flat",
+        "source": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\src\\main\\res\\drawable-xxhdpi\\icon.png"
+    },
+    {
+        "merged": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable_roundicon.png.flat",
+        "source": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\src\\main\\res\\drawable\\roundicon.png"
+    },
+    {
+        "merged": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable_splash.xml.flat",
+        "source": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\src\\main\\res\\drawable\\splash.xml"
+    },
+    {
+        "merged": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable-ldpi_icon.png.flat",
+        "source": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\src\\main\\res\\drawable-ldpi\\icon.png"
+    },
+    {
+        "merged": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi_icon.png.flat",
+        "source": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\src\\main\\res\\drawable-xhdpi\\icon.png"
+    },
+    {
+        "merged": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxxhdpi_icon.png.flat",
+        "source": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\src\\main\\res\\drawable-xxxhdpi\\icon.png"
+    },
+    {
+        "merged": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\build\\intermediates\\res\\merged\\debug\\drawable_rn_edit_text_material.xml.flat",
+        "source": "C:\\Users\\45444611899.INFOSCS\\Documents\\SENAI-RH\\FrontEnd\\senaiRHmobile\\android\\app\\src\\main\\res\\drawable\\rn_edit_text_material.xml"
+    }
+]
