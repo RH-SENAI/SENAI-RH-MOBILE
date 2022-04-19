@@ -10,8 +10,13 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@expo-google-fonts/quicksand": "^0.2.2",
+    "@react-native-async-storage/async-storage": "~1.15.0",
+    "@react-navigation/native": "^6.0.10",
+    "@react-navigation/native-stack": "^6.6.1",
     "expo": "~44.0.0",
     "expo-status-bar": "~1.2.0",
+    "jwt-decode": "^3.1.2",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",

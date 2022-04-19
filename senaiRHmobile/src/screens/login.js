@@ -11,11 +11,11 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 import jwt_decode from "jwt-decode";
 import api from '../services/api';
 
 export default class Login extends Component {
+
   constructor(props){
       super(props);
       this.state = {
@@ -72,7 +72,7 @@ export default class Login extends Component {
 
   render() {
     return (
-      <ImageBackground source={require('../../assets/img/Login-senai.png')} style={styles.image} style={StyleSheet.absoluteFillObject}>
+      <ImageBackground source={require('../../assets/img')} style={styles.image} style={StyleSheet.absoluteFillObject}>
         <View style={styles.container}>
 
 

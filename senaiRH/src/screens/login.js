@@ -10,10 +10,31 @@ import {
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useFonts} from 'expo-font';
 
+import { 
+  Montserrat_100Thin,
+  Montserrat_100Thin_Italic,
+  Montserrat_200ExtraLight,
+  Montserrat_200ExtraLight_Italic,
+  Montserrat_300Light,
+  Montserrat_300Light_Italic,
+  Montserrat_400Regular,
+  Montserrat_400Regular_Italic,
+  Montserrat_500Medium,
+  Montserrat_500Medium_Italic,
+  Montserrat_600SemiBold,
+  Montserrat_600SemiBold_Italic,
+  Montserrat_700Bold,
+  Montserrat_700Bold_Italic,
+  Montserrat_800ExtraBold,
+  Montserrat_800ExtraBold_Italic,
+  Montserrat_900Black,
+  Montserrat_900Black_Italic 
+} from '@expo-google-fonts/montserrat'
 
 import jwt_decode from "jwt-decode";
-import api from '../services/api';
+//import api from '../services/api';
 
 export default class Login extends Component {
   constructor(props){
@@ -80,7 +101,7 @@ export default class Login extends Component {
             Email
           </Text>
           <TextInput style={styles.inputLogin}
-            placeholder="Digite aqui seu email" placeholderTextColor="#A0A0A0"
+            placeholder="Digite aqui seu email" placeholderTextColor="#000"
             keyboardType="email-address"
             onChangeText={email => this.setState({ email })}
           />
