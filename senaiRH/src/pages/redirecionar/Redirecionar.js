@@ -54,30 +54,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     // backgroundColor: 'cyan',
-    paddingTop: 80,
-    paddingBottom: 80,
+    paddingTop: 75,
+    paddingBottom: 75,
     width: '100%',
     paddingLeft: '5%',
     paddingRight: '5%'
 
   },
   button: {
-    flex: 3,
     justifyContent: 'center',
     backgroundColor: '#C20004',
-    marginTop: '17%',
-    marginBottom: '17%',
+    marginTop: '15%',
+    marginBottom: '15%',
     width: '100%',
     borderRadius: 4,
-    height: 30,
-    // marginLeft: '5%',
-    // marginEnd: '5%'
+    paddingVertical: 8,
   },
   links: {
     // backgroundColor: 'blue',
-    fontSize: 20,
     color: 'white',
-    textAlign: 'center'
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold'
   }
 
 })
