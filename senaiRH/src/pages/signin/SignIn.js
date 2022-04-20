@@ -11,9 +11,11 @@ import {
   Image
 } from 'react-native';
 
-
+import { useNavigation } from '@react-navigation/native'
 
 export default function SignIn() {
+
+  const navigation = useNavigation();
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -32,7 +34,7 @@ export default function SignIn() {
           placeholder='Digite sua senha'
           style={styles.input}
         />
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Redirecionar')}>
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonRegister}>
