@@ -1,217 +1,217 @@
-import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  ImageBackground,
-  TextInput,
-} from 'react-native';
+// import React, { Component } from 'react';
+// import {
+//   StyleSheet,
+//   Text,
+//   TouchableOpacity,
+//   View,
+//   Image,
+//   ImageBackground,
+//   TextInput,
+// } from 'react-native';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useFonts} from 'expo-font';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { 
-  Montserrat_100Thin,
-  Montserrat_100Thin_Italic,
-  Montserrat_200ExtraLight,
-  Montserrat_200ExtraLight_Italic,
-  Montserrat_300Light,
-  Montserrat_300Light_Italic,
-  Montserrat_400Regular,
-  Montserrat_400Regular_Italic,
-  Montserrat_500Medium,
-  Montserrat_500Medium_Italic,
-  Montserrat_600SemiBold,
-  Montserrat_600SemiBold_Italic,
-  Montserrat_700Bold,
-  Montserrat_700Bold_Italic,
-  Montserrat_800ExtraBold,
-  Montserrat_800ExtraBold_Italic,
-  Montserrat_900Black,
-  Montserrat_900Black_Italic 
-} from '@expo-google-fonts/montserrat'
 
-import jwt_decode from "jwt-decode";
-//import api from '../services/api';
+// // import { 
+// //   Montserrat_100Thin,
+// //   Montserrat_100Thin_Italic,
+// //   Montserrat_200ExtraLight,
+// //   Montserrat_200ExtraLight_Italic,
+// //   Montserrat_300Light,
+// //   Montserrat_300Light_Italic,
+// //   Montserrat_400Regular,
+// //   Montserrat_400Regular_Italic,
+// //   Montserrat_500Medium,
+// //   Montserrat_500Medium_Italic,
+// //   Montserrat_600SemiBold,
+// //   Montserrat_600SemiBold_Italic,
+// //   Montserrat_700Bold,
+// //   Montserrat_700Bold_Italic,
+// //   Montserrat_800ExtraBold,
+// //   Montserrat_800ExtraBold_Italic,
+// //   Montserrat_900Black,
+// //   Montserrat_900Black_Italic 
+// // } from '@expo-google-fonts/montserrat'
 
-export default class Login extends Component {
-  constructor(props){
-      super(props);
-      this.state = {
-          email: 'gp1_comum@email.com',
-          senha: '12345678',
-      }
-  }
+// // import jwt_decode from "jwt-decode";
+// //import api from '../services/api';
 
-  realizarLogin = async () => {
-      console.warn(this.state.email + ' ' + this.state.senha);
+// export default class Login extends Component {
+//   constructor(props){
+//       super(props);
+//       this.state = {
+//           email: 'gp1_comum@email.com',
+//           senha: '12345678',
+//       }
+//   }
 
-      try {
+//   realizarLogin = async () => {
+//       console.warn(this.state.email + ' ' + this.state.senha);
 
-          const resposta = await api.post('/Login', {
-              email : this.state.email,
-              senha : this.state.senha,
-          });
+//       try {
 
-          console.warn(resposta);
-          const token = resposta.data.token;
+//           const resposta = await api.post('/Login', {
+//               email : this.state.email,
+//               senha : this.state.senha,
+//           });
 
-          console.warn(token);
+//           console.warn(resposta);
+//           const token = resposta.data.token;
 
-          await AsyncStorage.setItem('userToken', token);
-          console.warn(resposta.data);
+//           console.warn(token);
 
-          if (resposta.status == 200) {
+//           await AsyncStorage.setItem('userToken', token);
+//           console.warn(resposta.data);
 
-              console.warn('Login Realizado')
-              //console.warn(jwt_decode(token).role)
+//           if (resposta.status == 200) {
 
-              var certo = jwt_decode(token).role
-              //console.warn('certo ' + certo)
+//               console.warn('Login Realizado')
+//               //console.warn(jwt_decode(token).role)
+
+//               var certo = jwt_decode(token).role
+//               //console.warn('certo ' + certo)
              
-              this.props.navigation.navigate('Atividades');
+//               this.props.navigation.navigate('Atividades');
 
-              // switch (certo) {
+//               // switch (certo) {
 
-              //     case '1':
+//               //     case '1':
                       
-              //         break;
+//               //         break;
 
-              //     default:
-              //         break;
-              // } 
+//               //     default:
+//               //         break;
+//               // } 
 
-          }
+//           }
 
-      } catch (error) {
-          console.warn(error)
-      }
-  };
-
-
-  render() {
-    return (
-      <ImageBackground source={require('../../assets/img/Login-senai.png')} style={styles.image} style={StyleSheet.absoluteFillObject}>
-        <View style={styles.container}>
+//       } catch (error) {
+//           console.warn(error)
+//       }
+//   };
 
 
-          <Text style={styles.TextEmail}>
-            Email
-          </Text>
-          <TextInput style={styles.inputLogin}
-            placeholder="Digite aqui seu email" placeholderTextColor="#000"
-            keyboardType="email-address"
-            onChangeText={email => this.setState({ email })}
-          />
-
-          <Text style={styles.TextSenha}>
-            Senha
-          </Text>
-          <TextInput style={styles.inputLogin}
-            placeholder="Digite aqui sua senha" placeholderTextColor="#A0A0A0"
-            keyboardType="default"
-            onChangeText={senha => this.setState({ senha })}
-            secureTextEntry={true}
-          />
-
-          <TouchableOpacity
-            style={styles.btnLogin}
-            onPress={this.realizarLogin}
-          >
-            <Text style={styles.btnText}>
-              Login
-            </Text>
-
-          </TouchableOpacity>
+//   render() {
+//     return (
+//       <ImageBackground source={require('../../assets/img/Login-senai.png')} style={styles.image} style={StyleSheet.absoluteFillObject}>
+//         <View style={styles.container}>
 
 
+//           <Text style={styles.TextEmail}>
+//             Email
+//           </Text>
+//           <TextInput style={styles.inputLogin}
+//             placeholder="Digite aqui seu email" placeholderTextColor="#000"
+//             keyboardType="email-address"
+//             onChangeText={email => this.setState({ email })}
+//           />
 
-        </View>
+//           <Text style={styles.TextSenha}>
+//             Senha
+//           </Text>
+//           <TextInput style={styles.inputLogin}
+//             placeholder="Digite aqui sua senha" placeholderTextColor="#A0A0A0"
+//             keyboardType="default"
+//             onChangeText={senha => this.setState({ senha })}
+//             secureTextEntry={true}
+//           />
 
-      </ImageBackground>
+//           <TouchableOpacity
+//             style={styles.btnLogin}
+//             onPress={this.realizarLogin}
+//           >
+//             <Text style={styles.btnText}>
+//               Login
+//             </Text>
 
-    )
-  }
-};
+//           </TouchableOpacity>
 
 
 
-const styles = StyleSheet.create({
+//         </View>
 
-  overlay: {
-    ...StyleSheet.absoluteFillObject
+//       </ImageBackground>
 
-  },
-
-  container:
-  {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-
-  },
+//     )
+//   }
+// };
 
 
-  inputLogin: {
-    width: 240,
-    height: 50,
-    marginBottom: 20,
-    color: '#D9D9D9',
-    borderBottomColor: '#D9D9D9',
-    borderBottomWidth: 5,
-   //s boxShadow: "8px 2px 5px rgba(0, 0, 0, 0.8)",
-    alignItems: 'center',
-    justifyContent: 'center',
+
+// const styles = StyleSheet.create({
+
+//   overlay: {
+//     ...StyleSheet.absoluteFillObject
+
+//   },
+
+//   container:
+//   {
+//     flex: 1,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+
+//   },
 
 
-  },
+//   inputLogin: {
+//     width: 240,
+//     height: 50,
+//     marginBottom: 20,
+//     color: '#D9D9D9',
+//     borderBottomColor: '#D9D9D9',
+//     borderBottomWidth: 5,
+//    //s boxShadow: "8px 2px 5px rgba(0, 0, 0, 0.8)",
+//     alignItems: 'center',
+//     justifyContent: 'center',
 
-  TextEmail: {
-    width: 230,
-    height: 24,
-    fontSize: 20,
-    color: '#000000',
-    fontWeight: 'bold',
-    alignItems: 'center',
-    marginTop: 10,
-    fontFamily: 'Montserrat-SemiBold',
-    marginBottom: 10
 
-  },
+//   },
 
-  TextSenha: {
-    width: 230,
-    height: 24,
-    fontSize: 20,
-    color: '#000000',
-    fontWeight: 'bold',
-    alignItems: 'center',
-    marginTop: 30,
-    fontFamily: 'Montserrat-SemiBold',
-    marginBottom: 10
+//   TextEmail: {
+//     width: 230,
+//     height: 24,
+//     fontSize: 20,
+//     color: '#000000',
+//     fontWeight: 'bold',
+//     alignItems: 'center',
+//     marginTop: 10,
+//     fontFamily: 'Montserrat-SemiBold',
+//     marginBottom: 10
 
-  },
+//   },
 
-  btnLogin: {
-    width: 130,
-    height: 35,
-    fontSize: 20,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 30,
-    elevation: 16,
-    backgroundColor: '#F2F2F2',
-    //boxShadow: '-6px 0px 19px rgba(0, 0, 0, 0.24)',
-    borderRadius: 5,
-  },
+//   TextSenha: {
+//     width: 230,
+//     height: 24,
+//     fontSize: 20,
+//     color: '#000000',
+//     fontWeight: 'bold',
+//     alignItems: 'center',
+//     marginTop: 30,
+//     fontFamily: 'Montserrat-SemiBold',
+//     marginBottom: 10
 
-  btnText: {
-    fontFamily: 'Montserrat-SemiBold',
-    fontSize: 20,
-    color: "#CB334B"
-  }
+//   },
 
-});
+//   btnLogin: {
+//     width: 130,
+//     height: 35,
+//     fontSize: 20,
+//     borderRadius: 5,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     marginTop: 30,
+//     elevation: 16,
+//     backgroundColor: '#F2F2F2',
+//     //boxShadow: '-6px 0px 19px rgba(0, 0, 0, 0.24)',
+//     borderRadius: 5,
+//   },
+
+//   btnText: {
+//     fontFamily: 'Montserrat-SemiBold',
+//     fontSize: 20,
+//     color: "#CB334B"
+//   }
+
+// });
