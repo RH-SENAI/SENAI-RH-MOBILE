@@ -65,10 +65,11 @@ const styles = StyleSheet.create({
     flex: 3,
     justifyContent: 'center',
     backgroundColor: '#C20004',
-    marginTop: 35,
-    marginBottom: 35,
+    marginTop: '17%',
+    marginBottom: '17%',
     width: '100%',
     borderRadius: 4,
+    height: 30,
     // marginLeft: '5%',
     // marginEnd: '5%'
   },
