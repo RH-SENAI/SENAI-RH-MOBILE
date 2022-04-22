@@ -3,30 +3,38 @@ import { StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-const AuthStack = createNativeStackNavigator();
 
-// import Login from './src/screens/login';
-import Atividades from './src/screens/atividades/atividades'
+import Welcome from './src/pages/welcome/Welcome.js'
+import SignIn from './src/pages/signin/SignIn.js'
+import Redirecionar from './src/pages/redirecionar/Redirecionar.js'
+import MainAcompanhar from './src/pages/main/MainAcompanhar.js'
+import Perfil from './src/pages/perfil/Perfil.js'
+import Atividades from './src/pages/atividades/Atividades.js'
+import AtividadesExtras from './src/pages/atividades/AtividadesExtras.js'
+import Login from './src/pages/login/Login.js'
+import MinhasAtividades from './src/pages/minhasAtividades/MinhasAtividades.js'
+import MinhasExtras from './src/pages/minhasAtividades/MinhasExtras.js';
+import RankingGp1 from './src/pages/rankingGp1/RankingGp1.js';
+
+const Stack = createNativeStackNavigator();
 
 function App() {
   return (
     <NavigationContainer>
-      <StatusBar hidden={true} />
-
-      <AuthStack.Navigator
-        initialRouteName="Atividades"
-        screenOptions={{
-          headerShown: false,
-        }}>
-          
-        <AuthStack.Screen name="Atividades" component={Atividades} />
-       
-        {/* <AuthStack.Screen name="MinhasAtividades" component={MinhasAtividades} />
-        <AuthStack.Screen name="Perfil" component={Perfil} />
-        <AuthStack.Screen name="Redirecionamento" component={Redirecionamento} />
-         <AuthStack.Screen name="Login" component={Login} /> 
-        <AuthStack.Screen name="AtividadeComum" component={AtividadeComum} /> */}
-      </AuthStack.Navigator>
+      <StatusBar backgroundColor={'#C20004'} barStyle="light-content" />
+      <Stack.Navigator>
+        <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
+        <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
+        <Stack.Screen name="Redirecionar" component={Redirecionar} />
+        <Stack.Screen name="MainAcompanhar" component={MainAcompanhar} />
+        <Stack.Screen name="Perfil" component={Perfil} />
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        <Stack.Screen name="Atividades" component={Atividades} options={{ headerShown: false }} />
+        <Stack.Screen name="AtividadesExtras" component={AtividadesExtras} options={{ headerShown: false }} />
+        <Stack.Screen name="MinhasAtividades" component={MinhasAtividades}  options={{ headerShown: false }} />
+        <Stack.Screen name="MinhasExtras" component={MinhasExtras}  options={{ headerShown: false }} />
+        <Stack.Screen name="RankingGp1" component={RankingGp1}  options={{ headerShown: false }} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
