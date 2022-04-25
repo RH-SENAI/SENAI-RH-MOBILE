@@ -6,6 +6,7 @@ import {
     Modal,
     Pressable,
     Image,
+    Alert
 } from 'react-native';
 
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -15,8 +16,20 @@ import { Component } from 'react/cjs/react.production.min';
 import { AppRegistry } from 'react-native-web';
 import ExplodingHeart from 'react-native-exploding-heart';
 import { Rating, AirbnbRating } from 'react-native-ratings';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
-const star = require('../../../assets/imgGP2/estrelaCheia.png')
+//const value = 2.4
+// const alertCurso = () => 
+//     Alert.alert(
+//         "Sucesso",
+//         "Você está inscrito no curso!",
+//         [
+//             {
+//                 text: "Ok",
+//                 style: 'cancel'
+//             }
+//         ]
+//     )
 
 export default class ListagemCurso extends Component {
     constructor(props) {
@@ -25,7 +38,9 @@ export default class ListagemCurso extends Component {
             cursoBuscado: 0,
             modalVisivel: false,
             isFavorite: false,
+            inscrito: '',
             listaCurso: [],
+            showAlert: false,
         };
     }
 
@@ -58,7 +73,25 @@ export default class ListagemCurso extends Component {
         this.ListarCurso();
     }
 
+    showAlert = () => {
+        this.setState({
+            showAlert: true
+        });
+    };
+
+    hideAlert = () => {
+        this.setState({
+            showAlert: false
+        });
+    };
+
     render() {
+        const { showAlert } = this.state;
+
+        const alertView = {
+            width: 150,
+            alignItems: 'center'
+        }
         return (
             <View style={styles.containerListagem}>
                 <View style={styles.boxLogoHeader}>
@@ -117,7 +150,6 @@ export default class ListagemCurso extends Component {
 
 
                 <Modal
-                    //style={styles.containerModal}
                     animationType="fade"
                     transparent={true}
                     visible={this.state.modalVisivel}
@@ -126,61 +158,89 @@ export default class ListagemCurso extends Component {
                         this.setModalVisivel(!this.state.modalVisivel)
                     }}
                 >
+
                     <View style={styles.totalModal}>
-
-                        <View style={styles.containerModal}>
-                            <View style={styles.boxTituloModal}>
-                                <Image style={styles.imgModalCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
-                                <Text style={styles.textTituloModal}>Lógica de Programação</Text>
-                            </View>
-                            <View style={styles.boxAvaliacaoModal}>
-                                <AirbnbRating
-                                    count={5}
-                                    //starImage={star}
-                                    showRating={false}
-                                    selectedColor={'#C20004'}
-                                    defaultRating={4}
-                                    isDisabled={true}
-                                    size={20}
-                                />
-                            </View>
-                            <View style={styles.boxDadosModal}>
-                                {/* <Image style={styles.imgTempoHorario} source={require('../../assets/img/relogio.png')} /> */}
-                                <Text style={styles.textDadosModal}>20 horas</Text>
-
-                                {/* <Image style={styles.imgTempoHorario} source={require('../../assets/img/imgAvisoTempo.png')} /> */}
-                                <Text style={styles.textDadosModal}>
-                                    15/02/2022
-                                    {/* {Intl.DateTimeFormat("pt-BR", {
-                                        year: 'numeric', month: 'numeric', day: 'numeric'
-                                    }).format(new Date(item.dataFinalizacao))} */}
-                                </Text>
-                            </View>
-                            <View style={styles.boxLocalizacaoModal}>
-                                <Text style={styles.textLocalizacaoModal}>São Paulo, São Paulo</Text>
-                            </View>
-                            <View style={styles.boxDescricaoModal}>
-                                <Text style={styles.descricaoModal}>Descrição:</Text>
-                                <Text style={styles.textDescricaoModal}>
-                                    O curso habilita profissionais técnicos de nível médio em
-                                    Desenvolvimento de Sistemas, visando suprir a demanda do
-                                    mercado por profissionais qualificados para atuarem em
-                                    programação e desenvolvimento de software com condições
-                                    técnico-tecnológicas para atender às exigências e evolução
-                                    do segmento.
-                                </Text>
-                                <View style={styles.boxEmpresa}>
-                                    <Text style={styles.tituloEmpresa}>Empresa: </Text>
-                                    <Text style={styles.textEmpresa}>Senai - Santa Cecília </Text>
+                        <Pressable onPress={() => this.setModalVisivel(!this.state.modalVisivel)} >
+                            <View style={styles.containerModal}>
+                                <View style={styles.boxTituloModal}>
+                                    <Image style={styles.imgModalCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
+                                    <Text style={styles.textTituloModal}>Lógica de Programação</Text>
+                                </View>
+                                <View style={styles.boxAvaliacaoModal}>
+                                    <AirbnbRating
+                                        count={5}
+                                        //starImage={star}
+                                        showRating={false}
+                                        selectedColor={'#C20004'}
+                                        defaultRating={4}
+                                        isDisabled={true}
+                                        size={20}
+                                    />
                                 </View>
 
-                                <Pressable style={styles.inscreverModal} onPress={() => this.setModalVisivel(!this.state.modalVisivel)} >
-                                    <Text style={styles.textDetalhes}>Inscreva-se</Text>
-                                </Pressable>
-                            </View>
-                        </View>
+                                <View style={styles.boxDadosModal}>
+                                    <Image style={styles.imgRelogio} source={require('../../../assets/imgGP2/relogio.png')} />
+                                    <Text style={styles.textDadosModal}>20 horas</Text>
 
+                                    <Image style={styles.imgMapa} source={require('../../../assets/imgGP2/mapa.png')} />
+                                    <Text style={styles.textDadosModal}>São Paulo</Text>
+                                </View>
+
+                                <View style={styles.boxDadosModal}>
+                                    <Image style={styles.imgLocal} source={require('../../../assets/imgGP2/local.png')} />
+                                    <Text style={styles.textDadosModal}>EAD</Text>
+
+                                    <Image style={styles.imgDataFinal} source={require('../../../assets/imgGP2/dataFinal.png')} />
+                                    <Text style={styles.textDadosModal}>
+                                        15/02/2022
+                                        {/* {Intl.DateTimeFormat("pt-BR", {
+                                         year: 'numeric', month: 'numeric', day: 'numeric'
+                                        }).format(new Date(item.dataFinalizacao))} */}
+                                    </Text>
+                                </View>
+
+                                <View style={styles.boxDescricaoModal}>
+                                    <Text style={styles.descricaoModal}>Descrição:</Text>
+                                    <Text style={styles.textDescricaoModal}>
+                                        O curso habilita profissionais técnicos de nível médio em
+                                        Desenvolvimento de Sistemas, visando suprir a demanda do
+                                        mercado por profissionais qualificados para atuarem em
+                                        programação e desenvolvimento de software com condições
+                                        técnico-tecnológicas para atender às exigências e evolução
+                                        do segmento.
+                                    </Text>
+                                    <View style={styles.boxEmpresa}>
+                                        <Text style={styles.tituloEmpresa}>Empresa: </Text>
+                                        <Text style={styles.textEmpresa}>Senai - Santa Cecília </Text>
+                                    </View>
+
+                                    <View style={styles.boxInscreverModal}>
+                                        <Pressable style={styles.inscreverModal} onPress={() => { this.showAlert() }}  >
+                                            <Text style={styles.textDetalhes}>Inscreva-se</Text>
+                                        </Pressable>
+                                    </View>
+
+                                    <AwesomeAlert
+                                        show={showAlert}
+                                        showProgress={false}
+                                        title="Sucesso"
+                                        message="Você foi inscrito no curso!"
+                                        closeOnTouchOutside={true}
+                                        closeOnHardwareBackPress={false}
+                                        showCancelButton={true}
+                                        cancelText="Okay"
+                                        cancelButtonColor="#C20004"
+                                        cancelButtonStyle={alertView}
+                                        onCancelPressed={() => {
+                                            this.hideAlert();
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                        </Pressable>
                     </View>
+
+
                 </Modal>
             </View>
         )
@@ -290,10 +350,10 @@ const styles = StyleSheet.create({
     },
     containerModal: {
         width: '80%',
-        height: '93%',
+        height: '78%',
         backgroundColor: '#F2F2F2',
         marginLeft: 40,
-        marginTop: 20,
+        marginTop: 145,
         borderRadius: 25,
     },
     boxTituloModal: {
@@ -309,55 +369,34 @@ const styles = StyleSheet.create({
         //fontFamily: 'Montserrat-Bold',
         fontSize: 20,
         color: '#000',
-        marginTop: 20,
-        marginLeft: 15
+        marginTop: 24,
+        marginLeft: 16
     },
     boxAvaliacaoModal: {
         flexDirection: 'row',
-        alignItems: 'center'
-    },
-    textAvaliacaoModal: {
-        //fontFamily: 'Montserrat-Normal',
-        fontSize: 15,
-        color: '#000',
-        marginTop: 10,
-        marginLeft: 15
-    },
-    avaliacaoModal: {
-        fontFamily: 'Montserrat-Normal',
-        fontSize: 15,
-        color: '#000',
-        marginTop: 10,
-        marginLeft: 15
+        alignItems: 'center',
+        marginTop: 8,
+        marginLeft: 16,
     },
     boxDadosModal: {
         flexDirection: 'row',
-        marginTop: 20,
         alignItems: 'center',
-        justifyContent: 'space-between'
-    },
-    imgTempoHorario: {
-        marginLeft: 15
+        marginTop: 16,
+        marginLeft: 16,
     },
     textDadosModal: {
-        marginRight: 40
+        marginLeft: 16
     },
-    boxLocalizacaoModal: {
-        flexDirection: 'row',
-        marginTop: 20,
-        alignItems: 'center',
-        justifyContent: 'space-between'
+    imgMapa: {
+        marginLeft: 24,
     },
-    imgLocalizacaoModal: {
-        marginLeft: 15
-    },
-    textLocalizacaoModal: {
-        marginRight: 153
+    imgDataFinal: {
+        marginLeft: 53,
     },
     boxDescricaoModal: {
         width: 300,
-        marginLeft: 10,
-        marginTop: 20
+        marginLeft: 16,
+        marginTop: 24
     },
     descricaoModal: {
         //fontFamily: 'Montserrat-Bold',
@@ -374,7 +413,7 @@ const styles = StyleSheet.create({
     boxEmpresa: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 15
+        marginTop: 16
     },
     tituloEmpresa: {
         //fontFamily: 'Montserrat-Bold',
@@ -387,14 +426,16 @@ const styles = StyleSheet.create({
         color: '#000',
         marginLeft: 10
     },
+    boxInscreverModal: {
+        alignItems: 'center'
+    },
     inscreverModal: {
         width: 150,
         height: 40,
-        backgroundColor: '#CB334B',
-        borderRadius: 12,
+        backgroundColor: '#C20004',
+        borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft: 80,
-        marginTop: 20
+        marginTop: 24
     },
 })
