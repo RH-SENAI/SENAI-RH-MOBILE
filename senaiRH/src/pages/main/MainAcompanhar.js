@@ -4,11 +4,11 @@ import {
 } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import NovoFeedback from '../novoFeedback/NovoFeedback.js'
-import Democratizacao from '../democratizacao/Democratizacao.js'
-import Dashboard from '../dashboard/Dashboard.js'
-import Perfil from '../perfil/Perfil.js'
-import Ranking from '../ranking/Ranking.js'
+import NovoFeedback from '../novoFeedback/NovoFeedback.js';
+import Democratizacao from '../democratizacao/Democratizacao.js';
+import Dashboard from '../dashboard/Dashboard.js';
+import Perfil from '../perfil/Perfil.js';
+import Ranking from '../ranking/Ranking.js';
 
 const Tab = createBottomTabNavigator();
 

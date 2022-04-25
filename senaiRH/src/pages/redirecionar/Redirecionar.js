@@ -25,15 +25,20 @@ export default function Redirecionar() {
             style={styles.imagemRedirecionar}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+        >
           <Text style={styles.links}>Motivações</Text>
-    
+
           <Image
             source={require("../../../assets/imgMobile/porco.png")}
             style={styles.imagemRedirecionar}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity 
+          style={styles.button}
+          onPress={() => navigation.navigate("MainVantagem")}
+        >
           <Text style={styles.links}>Minhas Vantagens</Text>
           <Image
             source={require("../../../assets/imgMobile/etiqueta.png")}
