@@ -42,8 +42,9 @@ export default function MainAcompanhar() {
                 tabBarShowLabel: true,
                 tabBarStyle: {
                     //   height: 60,
-                    backgroundColor: '#121212',
-                    borderTopColor: 'transparent',
+                    // backgroundColor: '#121212',
+                    backgroundColor: '#f1f1f1',
+                    borderTopColor: 'gray',
                     paddingBottom: 5,
                     paddingTop: 5
                 }
@@ -56,7 +57,7 @@ export default function MainAcompanhar() {
                 options={{ tabBarIcon: ({ size, color }) => (<Feather name="pie-chart" size={size} color={color} />) }}
             />
             <Tab.Screen
-                name="Democratizacao"
+                name="Democratização"
                 component={Democratizacao}
                 options={{ tabBarIcon: ({ size, color }) => (<Entypo name="chat" size={size} color={color} />) }}
             />
@@ -82,14 +83,14 @@ export default function MainAcompanhar() {
 
 const styles = StyleSheet.create({
     container: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        backgroundColor: '#121212',
+        width: 55,
+        height: 55,
+        borderRadius: 27.5,
+        backgroundColor: '#f1f1f1',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 10,
-        borderWidth: 4,
-        borderColor: '#f1f1f1'
+        marginBottom: 5,
+        borderWidth: 3,
+        borderColor: '#C20004'
     },
 });
