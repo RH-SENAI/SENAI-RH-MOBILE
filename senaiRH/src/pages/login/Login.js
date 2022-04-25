@@ -19,16 +19,18 @@ let customFonts = {
   'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf')
 }
 
-// import jwt_decode from "jwt-decode";
-//import api from '../services/api';
+//import jwt_decode from "jwt-decode";
+//import api from '../../../api';
 
 export default class Login extends Component {
   constructor(props){
       super(props);
       this.state = {
-          email: 'gp1_comum@email.com',
-          senha: '12345678',
-          fontsLoaded: false
+          email: '',
+          senha: '',
+          fontsLoaded: false,
+          erroMensagem: '',
+          isLoading:'',
       }
   }
 
@@ -42,12 +44,13 @@ export default class Login extends Component {
   }
 
   realizarLogin = async () => {
+      this.state({erroMensagem:'', isLoading:true});
       console.warn(this.state.email + ' ' + this.state.senha);
 
       try {
 
           const resposta = await api.post('/Login', {
-              email : this.state.email,
+              //email : this.state.email,
               senha : this.state.senha,
           });
 
@@ -63,6 +66,8 @@ export default class Login extends Component {
 
               console.warn('Login Realizado')
               //console.warn(jwt_decode(token).role)
+
+              this.state({isLoading:false})
 
               var certo = jwt_decode(token).role
               //console.warn('certo ' + certo)
@@ -81,16 +86,32 @@ export default class Login extends Component {
 
           }
 
-      } catch (error) {
+      } catch (error){
           console.warn(error)
+          this.state({
+            erroMensagem: 'E-mail ou Senha invalidos',
+            isLoading: false,
+          })
       }
   };
-
+  handleFocus = () => this.setState({ isFocused: true });
+  handleBlur = () => this.setState({ isFocused: false });
 
   render() {
     if (!this.state.fontsLoaded) {
       return <AppLoading />;
     }
+
+    const { label, ...props } = this.props;
+    const { isFocused } = this.state;
+    const labelStyle = {
+      position: "absolute",
+      left: 0,
+      top: !isFocused ? 18 : 0,
+      fontSize: !isFocused ? 20 : 14,
+      color: !isFocused ? "#aaa" : "#000",
+    };
+
     return (
       <View style={styles.body}>
         
@@ -110,25 +131,38 @@ export default class Login extends Component {
               {/* <Text style={styles.TextEmail}>
                 Email
               </Text> */}
-              <View style={styles.viewLoginEmail}>
+              <View style={styles.viewLoginCPF}>
                    <TextInput style={styles.inputLogin}
-                placeholder=" Email"
-                keyboardType="email-address"
+                placeholder="CPF"
+                keyboardType="numeric"
                 onChangeText={email => this.setState({ email })}
+                //{label}
+                //{...props}
+                //onFocus={this.handleFocus}
+                //onBlur={this.handleBlur}
               /> 
               </View>
             
-<View style={styles.viewLogin}>   
-    <TextInput style={styles.inputLogin}
-                placeholder="Senha"
-                keyboardType="default"
-                onChangeText={senha => this.setState({ senha })}
-                secureTextEntry={true}
-              />
+              <View style={labelStyle}>   
+                  {label}
+                  <TextInput style={styles.inputLogin}
+                  placeholder="Senha"
+                  keyboardType="default"
+                  onChangeText={senha => this.setState({ senha })}
+                  secureTextEntry={true}
+                  {...props}
+                  onFocus={this.handleFocus}
+                  onBlur={this.handleBlur}
+                  blurOnSubmit
+                />
               </View>
            
               
-
+              <View>
+                <Text style={styles.erroMsg}> 
+                  ({this.state= erroMensagem})
+                </Text>
+              </View>
             {/* <View style={styles.inputLogin}>
               <Text style={styles.TextSenha}>
                 Senha
@@ -159,7 +193,9 @@ export default class Login extends Component {
             
 
           </View>
-             <View style={styles.imgLoginView} ><Image style={styles.imgLogin} source={require('../../../assets/img-gp1/imagemLogin.png')}/></View>
+              <View style={styles.imgLoginView} >
+                <Image style={styles.imgLogin} source={require('../../../assets/img-gp1/imagemLogin.png')}/>
+              </View>
 
       </View>
 
@@ -196,8 +232,8 @@ const styles = StyleSheet.create({
     color:'#2A2E32',
     width: 175,
     paddingTop:64,
-    paddingBottom:32,
-    alignItems:'center'
+    paddingBottom:50,
+    alignItems:'center',
   },
 
   // inputEmail:{
@@ -211,7 +247,7 @@ const styles = StyleSheet.create({
   // },
 
   inputLogin: {
-    width: 300,
+    width: 350,
     height: 43,
     borderWidth: 1,
     borderColor: '#B3B3B3',
@@ -220,14 +256,15 @@ const styles = StyleSheet.create({
     borderRadius:10,
     fontFamily: 'Quicksand-Regular',
     fontSize: 12,
-    flexDirection:'column',
-    //  paddingTop:32,
+    //flexDirection:'column',
+    //paddingTop:40,
     //  paddingBottom:24
-
+    paddingLeft:40,
   },
-
-  viewLoginEmail:{
-     paddingBottom:24
+  
+  viewLoginCPF:{
+    //padding: 30,
+     paddingBottom:24,
   },
 
   TextEmail: {
@@ -238,8 +275,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
     fontFamily: 'Quicksand-Regular',
-    marginBottom: 10
-
+    marginBottom: 10,
+    padding: 50,
   },
 
   TextSenha: {
@@ -255,26 +292,31 @@ const styles = StyleSheet.create({
 
   },
 
+  erroMsg:{
+
+  },
+
   Esqueci:{
     // paddingLeft:230,
-    paddingTop:20
+    paddingTop:20,
+    padding:40,
   },
 
   textEsque:{
     fontFamily: 'Quicksand-Regular',
     fontSize: 12,
     color: '#C20004',
-    flexDirection:'row',
+    paddingStart: 240,
   },
 
   btnLogin: {
-    width: 300,
+    width: 350,
     height:43,
     fontSize: 20,
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 30,
+    //marginTop: 20,
     elevation: 16,
     backgroundColor: '#C20004',
     borderRadius: 10,
@@ -288,21 +330,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  imgLogin: {
-    width: 172,
-    height: 157,
-    // justifyContent: 'flex-start',
-    // flexDirection:'row-reverse',
-    alignItems:'flex-start',
-    paddingRight:30
-
-  },
-
+  
   imgLoginView:{
-    justifyContent:'flex-start',
-    paddingTop:60 
+    //justifyContent:'flex-start',
+    marginTop: 93,
+   //width: 180,
+    //height: 165,
+    paddingLeft:40,
+    alignItems:'flex-start',
+    flexDirection:'column',
   },
+  
+  imgLogin: {
+    // justifyContent: 'flex-start',
+    //alignItems:'flex-start',
+    //justifyContent: 'space-around',
 
+  },
   
 
 });
