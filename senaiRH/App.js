@@ -21,7 +21,7 @@ function App() {
         <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
         <Stack.Screen name="Redirecionar" component={Redirecionar} />
         <Stack.Screen name="MainAcompanhar" component={MainAcompanhar} />
-        <Stack.Screen name="MainVantagem" component={MainVantagem} />
+        <Stack.Screen name="MainVantagem" component={MainVantagem} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

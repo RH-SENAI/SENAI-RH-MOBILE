@@ -101,6 +101,10 @@ export default class ListagemCurso extends Component {
                 <View style={styles.boxTituloPrincipal}>
                     <Text style={styles.textTituloPrincipal}>cursos</Text>
                 </View>
+                <View style={styles.boxSaldoUsuario}>
+                    <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
+                    <Text style={styles.textDados}>3024</Text>
+                </View>
                 <Pressable onPress={() => this.setModalVisivel(true)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
@@ -163,7 +167,9 @@ export default class ListagemCurso extends Component {
                         <Pressable onPress={() => this.setModalVisivel(!this.state.modalVisivel)} >
                             <View style={styles.containerModal}>
                                 <View style={styles.boxTituloModal}>
-                                    <Image style={styles.imgModalCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
+                                    <View style={styles.boxImgCurso}>
+                                        <Image style={styles.imgModalCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
+                                    </View>
                                     <Text style={styles.textTituloModal}>Lógica de Programação</Text>
                                 </View>
                                 <View style={styles.boxAvaliacaoModal}>
@@ -214,10 +220,17 @@ export default class ListagemCurso extends Component {
                                         <Text style={styles.textEmpresa}>Senai - Santa Cecília </Text>
                                     </View>
 
-                                    <View style={styles.boxInscreverModal}>
-                                        <Pressable style={styles.inscreverModal} onPress={() => { this.showAlert() }}  >
-                                            <Text style={styles.textDetalhes}>Inscreva-se</Text>
-                                        </Pressable>
+                                    <View style={styles.boxValorInscrever}>
+                                        <View style={styles.boxPrecoModal}>
+                                            <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
+                                            <Text style={styles.textDados}>1024</Text>
+                                        </View>
+
+                                        <View style={styles.boxInscreverModal}>
+                                            <Pressable style={styles.inscreverModal} onPress={() => { this.showAlert() }}  >
+                                                <Text style={styles.textDetalhes}>Inscreva-se</Text>
+                                            </Pressable>
+                                        </View>
                                     </View>
 
                                     <AwesomeAlert
@@ -255,21 +268,38 @@ const styles = StyleSheet.create({
         marginTop: 50
     },
     boxTituloPrincipal: {
-        marginTop: 30,
-        marginBottom: 30
+        marginTop: 24,
+        marginBottom: 24
     },
     textTituloPrincipal: {
         textTransform: 'uppercase',
         fontSize: 30
     },
+    boxSaldoUsuario: {
+        width: 90,
+        height: 42,
+        borderWidth: 2,
+        borderColor: '#B3B3B3',
+        borderRadius: 15,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 24
+    },
     boxCurso: {
+        width: 275,
         height: 285,
         borderWidth: 2,
         borderColor: '#B3B3B3',
+        borderTopWidth: 0,
         borderRadius: 10,
     },
+    boxImgCurso: {
+        alignItems: 'center',
+    },
     imgCurso: {
-        width: 300,
+        width: 275,
         height: 83,
         borderTopLeftRadius: 8,
         borderTopRightRadius: 8,
@@ -313,6 +343,7 @@ const styles = StyleSheet.create({
     },
     boxPreco: {
         width: 90,
+        height: 42,
         borderWidth: 2,
         borderColor: '#B3B3B3',
         borderRadius: 15,
@@ -331,7 +362,7 @@ const styles = StyleSheet.create({
         //backgroundColor: 'black',
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft: 135,
+        marginLeft: 105,
     },
     modalAbrir: {
         width: 100,
@@ -350,20 +381,24 @@ const styles = StyleSheet.create({
     },
     containerModal: {
         width: '80%',
-        height: '78%',
+        height: '81.5%',
         backgroundColor: '#F2F2F2',
+        borderWidth: 2,
+        borderTopWidth: 0,
+        borderColor: '#B3B3B3',
+        //borderStyle: 'dashed',
         marginLeft: 40,
-        marginTop: 145,
-        borderRadius: 25,
+        marginTop: 88,
+        borderRadius: 10,
     },
     boxTituloModal: {
         //alignItems: 'center',
     },
     imgModalCurso: {
-        width: '100%',
-        height: 150,
-        borderTopLeftRadius: 25,
-        borderTopRightRadius: 25,
+        width: 315,
+        height: 100,
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
     },
     textTituloModal: {
         //fontFamily: 'Montserrat-Bold',
@@ -405,15 +440,18 @@ const styles = StyleSheet.create({
     },
     textDescricaoModal: {
         //fontFamily: 'Montserrat-Normal',
+        width: 280,
         fontSize: 14,
         color: '#000',
         alignItems: 'center',
-        marginTop: 5
+        display: 'flex',
+        //textAlign: 'justify',
+        marginTop: 5,
     },
     boxEmpresa: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 16
+        marginTop: 32
     },
     tituloEmpresa: {
         //fontFamily: 'Montserrat-Bold',
@@ -426,16 +464,33 @@ const styles = StyleSheet.create({
         color: '#000',
         marginLeft: 10
     },
+    boxValorInscrever: {
+        display: 'flex',
+        flexDirection: 'row',
+    },
+    boxPrecoModal: {
+        width: 90,
+        height: 48,
+        borderWidth: 2,
+        borderColor: '#B3B3B3',
+        borderRadius: 15,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 32,
+        marginRight: 40
+    },
     boxInscreverModal: {
         alignItems: 'center'
     },
     inscreverModal: {
         width: 150,
-        height: 40,
+        height: 48,
         backgroundColor: '#C20004',
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 24
+        marginTop: 32
     },
 })
