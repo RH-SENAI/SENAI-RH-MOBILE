@@ -5,8 +5,8 @@ import {
   TouchableOpacity,
   View,
   Image,
-  ImageBackground,
   TextInput,
+  Animated,
 } from 'react-native';
 
 // import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -22,6 +22,64 @@ let customFonts = {
 //import jwt_decode from "jwt-decode";
 //import api from '../../../api';
 
+
+class FloatingLabelInput extends Component {
+  state = {
+    isFocused: false,
+  };
+  
+  componentWillMount() {
+    this._animatedIsFocused = new Animated.Value(this.props.value === '' ? 0 : 1);
+  }
+
+  handleFocus = () => this.setState({ isFocused: true });
+  handleBlur = () => this.setState({ isFocused: false });
+
+  componentDidUpdate() {
+    Animated.timing(this._animatedIsFocused, {
+      toValue: (this.state.isFocused || this.props.value !== '') ? 1 : 0,
+      duration: 200,
+    }).start();
+  }
+
+  render() {
+    const { label, ...props } = this.props;
+    const labelStyle = {
+      position: 'absolute',
+      left: 0,
+      top: this._animatedIsFocused.interpolate({
+        inputRange: [0, 1],
+        outputRange: [11, 0],
+      }),
+      fontSize: this._animatedIsFocused.interpolate({
+        inputRange: [0, 1],
+        outputRange: [14, 12],
+      }),
+      color: this._animatedIsFocused.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['#aaa', '#000'],
+      }),
+      fontFamily: 'Quicksand-Regular',
+      paddingLeft:40,
+      paddingTop:3,
+    };
+    return (
+      <View >
+        <Animated.Text style={labelStyle}>
+          {label}
+        </Animated.Text>
+        <TextInput 
+          {...props}
+          style={styles.inputLogin}
+          onFocus={this.handleFocus}
+          onBlur={this.handleBlur}
+          blurOnSubmit
+        />
+      </View>
+    );
+  }
+}
+
 export default class Login extends Component {
   constructor(props){
       super(props);
@@ -29,10 +87,13 @@ export default class Login extends Component {
           email: '',
           senha: '',
           fontsLoaded: false,
-          erroMensagem: '',
-          isLoading:'',
+          value: '',
+          //erroMensagem: '',
+          //isLoading:'',
       }
   }
+
+  
 
   async _loadFontsAsync(){
     await Font.loadAsync(customFonts);
@@ -44,7 +105,7 @@ export default class Login extends Component {
   }
 
   realizarLogin = async () => {
-      this.state({erroMensagem:'', isLoading:true});
+      //this.state({erroMensagem:'', isLoading:true});
       console.warn(this.state.email + ' ' + this.state.senha);
 
       try {
@@ -88,29 +149,19 @@ export default class Login extends Component {
 
       } catch (error){
           console.warn(error)
-          this.state({
-            erroMensagem: 'E-mail ou Senha invalidos',
-            isLoading: false,
-          })
+          // this.state({
+          //   erroMensagem: 'E-mail ou Senha invalidos',
+          //   isLoading: false,
+          // })
       }
   };
-  handleFocus = () => this.setState({ isFocused: true });
-  handleBlur = () => this.setState({ isFocused: false });
+  
+  handleTextChange = (newText) => this.setState({ value: newText });
 
   render() {
     if (!this.state.fontsLoaded) {
       return <AppLoading />;
     }
-
-    const { label, ...props } = this.props;
-    const { isFocused } = this.state;
-    const labelStyle = {
-      position: "absolute",
-      left: 0,
-      top: !isFocused ? 18 : 0,
-      fontSize: !isFocused ? 20 : 14,
-      color: !isFocused ? "#aaa" : "#000",
-    };
 
     return (
       <View style={styles.body}>
@@ -125,13 +176,20 @@ export default class Login extends Component {
 
             <Text style={styles.tituloPagina}>{'recursos humanos'.toUpperCase()}</Text>
 
-            {/* <View style={styles.inputLogin}>
-            </View> */}
+            <FloatingLabelInput
+              label="CPF"
+              value={this.state.value}
+              style={styles.viewLoginCPF}
+              onChangeText={this.handleTextChange}
+            />
 
-              {/* <Text style={styles.TextEmail}>
-                Email
-              </Text> */}
-              <View style={styles.viewLoginCPF}>
+            <FloatingLabelInput 
+              label="Senha"
+              value={this.state.value}
+              onChangeText={this.handleTextChange}
+            />
+
+              {/* <View style={styles.viewLoginCPF}>
                    <TextInput style={styles.inputLogin}
                 placeholder="CPF"
                 keyboardType="numeric"
@@ -141,43 +199,32 @@ export default class Login extends Component {
                 //onFocus={this.handleFocus}
                 //onBlur={this.handleBlur}
               /> 
-              </View>
+              </View> */}
             
-              <View style={labelStyle}>   
-                  {label}
+              {/* <View style={styles.TextEmail}>   
                   <TextInput style={styles.inputLogin}
                   placeholder="Senha"
                   keyboardType="default"
-                  onChangeText={senha => this.setState({ senha })}
+                  //onChangeText={senha => this.setState({ senha })}
                   secureTextEntry={true}
-                  {...props}
-                  onFocus={this.handleFocus}
-                  onBlur={this.handleBlur}
-                  blurOnSubmit
+                  value={this.state.value}
+                  onChangeText={this.handleTextChange}
                 />
-              </View>
+              </View> */}
            
               
-              <View>
-                <Text style={styles.erroMsg}> 
-                  ({this.state= erroMensagem})
-                </Text>
-              </View>
-            {/* <View style={styles.inputLogin}>
-              <Text style={styles.TextSenha}>
-                Senha
-              </Text>
-              <TextInput style={styles.inputSenha}
-                
-                keyboardType="default"
-                onChangeText={senha => this.setState({ senha })}
-                secureTextEntry={true}
-              />
-            </View> */}
+              <View style={styles.erroMsg}>
 
-             <TouchableOpacity  style={styles.Esqueci}>
-              <Text style={styles.textEsque}> Esqueci a Senha</Text>
-             </TouchableOpacity>
+                <Text style={styles.erroText}> 
+                  {/*({this.state= erroMensagem}) */}
+                  Email ou Senha Invalidos !
+                </Text>
+
+                <TouchableOpacity>
+                  <Text style={styles.textEsque}> Esqueci a Senha</Text>
+                </TouchableOpacity>
+              </View>
+
             
 
             <TouchableOpacity
@@ -248,65 +295,41 @@ const styles = StyleSheet.create({
 
   inputLogin: {
     width: 350,
-    height: 43,
+    height: 46,
     borderWidth: 1,
     borderColor: '#B3B3B3',
-    alignItems: 'center',
-    justifyContent: 'center',
+    //alignItems: 'center',
+    //justifyContent: 'center',
     borderRadius:10,
-    fontFamily: 'Quicksand-Regular',
-    fontSize: 12,
     //flexDirection:'column',
     //paddingTop:40,
     //  paddingBottom:24
-    paddingLeft:40,
+    paddingLeft:15,
   },
   
   viewLoginCPF:{
     //padding: 30,
-     paddingBottom:24,
-  },
-
-  TextEmail: {
-    width: 230,
-    height: 24,
-    fontSize: 12,
-    color: '#636466',
-    alignItems: 'center',
-    marginTop: 10,
-    fontFamily: 'Quicksand-Regular',
-    marginBottom: 10,
-    padding: 50,
-  },
-
-  TextSenha: {
-    width: 230,
-    height: 24,
-    fontSize: 12,
-    color: '#636466',
-    //fontWeight: 'bold',
-    alignItems: 'center',
-    marginTop: 30,
-    fontFamily: 'Quicksand-Regular',
-    marginBottom: 10
-
+     marginBottom:24,
   },
 
   erroMsg:{
-
-  },
-
-  Esqueci:{
-    // paddingLeft:230,
     paddingTop:20,
-    padding:40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection:'row',
+  },
+  
+  erroText:{
+    fontFamily: 'Quicksand-Regular',
+    fontSize: 12,
+    color: '#C20004',
+    paddingRight:100,
   },
 
   textEsque:{
     fontFamily: 'Quicksand-Regular',
     fontSize: 12,
     color: '#C20004',
-    paddingStart: 240,
   },
 
   btnLogin: {
@@ -316,7 +339,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    //marginTop: 20,
+    marginTop: 20,
     elevation: 16,
     backgroundColor: '#C20004',
     borderRadius: 10,

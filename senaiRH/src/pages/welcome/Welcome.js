@@ -34,7 +34,7 @@ export default function Welcome() {
       </View>
 
       <Animatable.View delay={600} animation="fadeInUp" style={styles.containerForm}>
-        <Text style={styles.title}>Acompanhe sua motivação e benefícios, tudo num só App!</Text>
+        <Text style={styles.title}>Acompanhe sua motivação e benefícios, tudo em um só App!</Text>
         <Text style={styles.text}>Faça seu login para começar</Text>
         <TouchableOpacity
           style={styles.button}
