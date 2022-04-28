@@ -1,30 +1,3 @@
-import React from 'react';
-import {
-    View,
-} from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-
-import NovoFeedback from '../novoFeedback/NovoFeedback.js'
-import Democratizacao from '../democratizacao/Democratizacao.js'
-import Dashboard from '../dashboard/Dashboard.js'
-import Perfil from '../perfil/Perfil.js'
-import Ranking from '../rankingGp1/RankingGp1.js'
-
-const Tab = createBottomTabNavigator();
-
-export default function MainAcompanhar() {
-    return (
-
-        <Tab.Navigator initialRouteName='NovoFeedback'>
-            <Tab.Screen name="Dashboard" component={Dashboard} />
-            <Tab.Screen name="Democratizacao" component={Democratizacao} />
-            <Tab.Screen name="NovoFeedback" component={NovoFeedback} />
-            <Tab.Screen name="Ranking" component={Ranking} />
-            <Tab.Screen name="Perfil" component={Perfil} />
-        </Tab.Navigator>
-    );
-};
-
 import React, { useState } from "react";
 import {
   View,
@@ -37,13 +10,13 @@ import {
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Entypo, Feather, AntDesign } from "@expo/vector-icons";
 
-import NovoFeedback from "../novoFeedback/NovoFeedback.js";
-import Democratizacao from "../democratizacao/Democratizacao.js";
-import Dashboard from "../dashboard/Dashboard.js";
+ import Atividades from "../atividades/Atividades.js";
+import MinhasAtividades from "../minhasAtividades/MinhasAtividades.js";
+import RankingGp1 from "../rankingGp1/RankingGp1.js";
 import Perfil from "../perfil/Perfil.js";
-import Ranking from "../ranking/Ranking.js";
+// import MinhasAtividades from "../minhasAtividades/MinhasAtividades.js";
 
-//const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
 function ButtonNew({ size, color }) {
   const [modalAberto, setModalAberto] = useState(false);
@@ -91,46 +64,37 @@ export default function MainAcompanhar() {
           paddingTop: 5,
         },
       }}
-      initialRouteName="NovoFeedback"
+      initialRouteName="Atividades"
     >
-      <Tab.Screen
-        name="Dashboard"
-        component={Dashboard}
+       <Tab.Screen
+        name="Atividades"
+        component={Atividades}
         options={{
           tabBarIcon: ({ size, color }) => (
             <Feather name="pie-chart" size={size} color={color} />
           ),
         }}
       />
+       <Tab.Screen
+        name="RankingGp1"
+        component={RankingGp1}
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <Feather name="pie-chart" size={size} color={color} />
+          ),
+        }}
+      />
+
       <Tab.Screen
-        name="Democratização"
-        component={Democratizacao}
+        name="MinhasAtividades"
+        component={MinhasAtividades}
         options={{
           tabBarIcon: ({ size, color }) => (
             <Entypo name="chat" size={size} color={color} />
           ),
         }}
       />
-      <Tab.Screen
-        name="NovoFeedback"
-        component={NovoFeedback}
-        options={{
-          tabBarIcon: ({ size, color }) => (
-            <ButtonNew size={40} color={color} />
-          ),
-          tabBarLabel: "",
-        }}
-      />
-      <Tab.Screen
-        name="Ranking"
-        component={Ranking}
-        options={{
-          tabBarIcon: ({ size, color }) => (
-            <Entypo name="medal" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
+       <Tab.Screen
         name="Perfil"
         component={Perfil}
         options={{
@@ -138,7 +102,7 @@ export default function MainAcompanhar() {
             <Feather name="user" size={size} color={color} />
           ),
         }}
-      />
+      /> 
     </Tab.Navigator>
   );
 }
@@ -169,3 +133,4 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
 });
+

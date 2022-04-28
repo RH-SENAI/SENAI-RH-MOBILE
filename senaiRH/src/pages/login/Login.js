@@ -9,9 +9,11 @@ import {
   Animated,
 } from 'react-native';
 
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
+import jwt_decode from "jwt-decode";
+import api from '../../services/apiGp1'
 
 let customFonts = {
   'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
@@ -19,8 +21,6 @@ let customFonts = {
   'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf')
 }
 
-//import jwt_decode from "jwt-decode";
-//import api from '../../../api';
 
 
 class FloatingLabelInput extends Component {
@@ -84,8 +84,8 @@ export default class Login extends Component {
   constructor(props){
       super(props);
       this.state = {
-          email: '',
-          senha: '',
+          cpf: '9999992939',
+          senha: '12345678',
           fontsLoaded: false,
           value: '',
           //erroMensagem: '',
@@ -106,12 +106,12 @@ export default class Login extends Component {
 
   realizarLogin = async () => {
       //this.state({erroMensagem:'', isLoading:true});
-      console.warn(this.state.email + ' ' + this.state.senha);
+      console.warn(this.state.cpf + ' ' + this.state.senha);
 
       try {
 
           const resposta = await api.post('/Login', {
-              //email : this.state.email,
+              cpf : this.state.cpf,
               senha : this.state.senha,
           });
 
@@ -128,22 +128,12 @@ export default class Login extends Component {
               console.warn('Login Realizado')
               //console.warn(jwt_decode(token).role)
 
-              this.state({isLoading:false})
+              // this.state({isLoading:false})
 
               var certo = jwt_decode(token).role
               //console.warn('certo ' + certo)
              
-              this.props.navigation.navigate('Atividades');
-
-              // switch (certo) {
-
-              //     case '1':
-                      
-              //         break;
-
-              //     default:
-              //         break;
-              // } 
+              this.props.navigation.navigate('Redirecionar');
 
           }
 
@@ -156,7 +146,7 @@ export default class Login extends Component {
       }
   };
   
-  handleTextChange = (newText) => this.setState({ value: newText });
+
 
   render() {
     if (!this.state.fontsLoaded) {
@@ -175,19 +165,24 @@ export default class Login extends Component {
           <View style={styles.container}>
 
             <Text style={styles.tituloPagina}>{'recursos humanos'.toUpperCase()}</Text>
+              <View style={styles.inputs}>
 
             <FloatingLabelInput
               label="CPF"
-              value={this.state.value}
+              // value={this.state.value}
               style={styles.viewLoginCPF}
+              keyboardType="numeric"
               onChangeText={this.handleTextChange}
+              //onChangeText={cpf => this.setState({ cpf })}
             />
 
             <FloatingLabelInput 
               label="Senha"
-              value={this.state.value}
+              // value={this.state.value}
               onChangeText={this.handleTextChange}
+              //onChangeText={senha => this.setState({ senha })}
             />
+              </View>
 
               {/* <View style={styles.viewLoginCPF}>
                    <TextInput style={styles.inputLogin}
@@ -308,7 +303,7 @@ const styles = StyleSheet.create({
   },
   
   viewLoginCPF:{
-    //padding: 30,
+    // padding: 3345678,
      marginBottom:24,
   },
 
@@ -370,6 +365,13 @@ const styles = StyleSheet.create({
     //justifyContent: 'space-around',
 
   },
+
+  // inputs:{
+  //   flexDirection:'column',
+  //   justifyContent:'space-between'
+  // }
   
 
 });
+
+
