@@ -14,19 +14,13 @@ import Democratizacao from '../democratizacao/Democratizacao.js'
 import Dashboard from '../dashboard/Dashboard.js'
 import Perfil from '../perfil/Perfil.js'
 import Ranking from '../ranking/Ranking.js'
+import Redirecionar from '../redirecionar/Redirecionar.js'
 
 const Tab = createBottomTabNavigator();
 
 function ButtonNew({ size, color }) {
     return (
         <View style={styles.container}>
-            {/* <Image
-                color={color}
-                size={size}
-                source={require("../../../assets/imgMobile/btnMais.png")}
-                style={styles.imgEntrando}
-                resizeMode="contain"
-            /> */}
             <Entypo name="plus" color={color} size={size} />
         </View>
     )
@@ -49,32 +43,32 @@ export default function MainAcompanhar() {
                     paddingTop: 5
                 }
             }}
-            initialRouteName='NovoFeedback'
+            initialRouteName='Dashboard'
         >
             <Tab.Screen
                 name="Dashboard"
                 component={Dashboard}
-                options={{ tabBarIcon: ({ size, color }) => (<Feather name="pie-chart" size={size} color={color} />) }}
+                options={{ tabBarIcon: ({ size, color }) => (<Feather name="pie-chart" size={size} color={color} />), headerShown: false }}
             />
             <Tab.Screen
                 name="Democratização"
                 component={Democratizacao}
-                options={{ tabBarIcon: ({ size, color }) => (<Entypo name="chat" size={size} color={color} />) }}
+                options={{ tabBarIcon: ({ size, color }) => (<Entypo name="chat" size={size} color={color} />), headerShown: false }}
             />
             <Tab.Screen
                 name="NovoFeedback"
                 component={NovoFeedback}
-                options={{ tabBarIcon: ({ size, color }) => (<ButtonNew size={40} color={color} />), tabBarLabel: '' }}
+                options={{ tabBarIcon: ({ size, color }) => (<ButtonNew size={40} color={color} />), tabBarLabel: '', headerShown: false }}
             />
             <Tab.Screen
                 name="Ranking"
                 component={Ranking}
-                options={{ tabBarIcon: ({ size, color }) => (<Entypo name="medal" size={size} color={color} />) }}
+                options={{ tabBarIcon: ({ size, color }) => (<Entypo name="medal" size={size} color={color} />), headerShown: false }}
             />
             <Tab.Screen
                 name="Perfil"
                 component={Perfil}
-                options={{ tabBarIcon: ({ size, color }) => (<Feather name="user" size={size} color={color} />) }}
+                options={{ tabBarIcon: ({ size, color }) => (<Feather name="user" size={size} color={color} />), headerShown: false }}
             />
         </Tab.Navigator>
     );
@@ -89,8 +83,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#f1f1f1',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 5,
-        borderWidth: 3,
+        marginBottom: 15,
+        borderWidth: 4,
         borderColor: '#C20004'
     },
 });

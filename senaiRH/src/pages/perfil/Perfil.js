@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TouchableOpacity, Image, StyleSheet, Text, View } from 'react-native';
+import { TouchableOpacity, Image, StyleSheet, Text, View, ScrollView } from 'react-native';
 
 
 const Perfil = () => {
@@ -21,7 +21,7 @@ const Perfil = () => {
           />
         </View>
 
-        <View style={styles.boxPerfil} >
+        <ScrollView style={styles.boxPerfil} >
           <View style={styles.line}>
             <Text style={styles.titulos}>Email</Text>
             <Text>Email@email.com</Text>
@@ -43,7 +43,7 @@ const Perfil = () => {
             <Text>Rua abcd, nº1234</Text>
           </View>
 
-        </View>
+        </ScrollView>
 
         <View style={styles.sobreTrofeu}>
           <Image source={require('../../../assets/imgMobile/trofeu.png')} />
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 40,
     alignSelf: "center",
-    marginTop: 40,
+    marginTop: 20,
     marginBottom: 20,
   },
   titulo: {
@@ -138,7 +138,8 @@ const styles = StyleSheet.create({
     //boxShadow: '19px',
     borderRadius: 5,
     flexDirection: 'row',
-
+    marginBottom: 30,
+    marginTop: 20
 
   },
   textTrofeu: {
