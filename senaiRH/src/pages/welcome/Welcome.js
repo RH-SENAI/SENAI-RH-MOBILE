@@ -108,7 +108,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   }
 })
-<<<<<<< HEAD
-=======
-
->>>>>>> b1be1af6beddaaa5f8ce1c09a8d4ec8a6a7c1586

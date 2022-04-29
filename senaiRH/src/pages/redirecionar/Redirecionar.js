@@ -41,7 +41,7 @@ export default function Redirecionar() {
           <Text style={styles.texto}>Motivações</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MainVantagem")}>
           <Image style={styles.icone} source={require("../../../assets/imgMobile/etiqueta.png")} />
           <Text style={styles.texto}>Minhas Vantagens</Text>
         </TouchableOpacity>

@@ -79,6 +79,16 @@ export default class ListagemCurso extends Component {
         });
     };
 
+    modalidade = (item) => {
+        if (item.modalidadeCurso == true)
+        {
+            return 'Presencial'
+        }
+        else {
+            return 'EAD'
+        }
+    }
+
     render() {
         const { showAlert } = this.state;
 
@@ -111,7 +121,7 @@ export default class ListagemCurso extends Component {
         );
     }
     renderItem = ({ item }) => (
-        <View>
+        <View style={styles.containerCurso}>
             <Pressable onPress={() => this.setModalVisivel(true)}>
                 <View style={styles.boxCurso}>
                     <View style={styles.boxImgCurso}>
@@ -128,7 +138,7 @@ export default class ListagemCurso extends Component {
                             //starImage={star}
                             showRating={false}
                             selectedColor={'#C20004'}
-                            defaultRating={item.mediaAvaliacao}
+                            defaultRating={item.mediaAvaliacaoCurso}
                             isDisabled={true}
                             size={20}
                         />
@@ -142,14 +152,14 @@ export default class ListagemCurso extends Component {
 
                         <View style={styles.boxDados}>
                             <Image style={styles.imgDados} source={require('../../../assets/imgGP2/local.png')} />
-                            <Text style={styles.textDados}>{item.modeloCurso}</Text>
+                            <Text style={styles.textDados}>{this.modalidade(item)}</Text>
                         </View>
                     </View>
 
                     <View style={styles.boxPrecoFavorito}>
                         <View style={styles.boxPreco}>
                             <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                            <Text style={styles.textDados}>{item.valorCurso}</Text>
+                            <Text style={styles.textDados}>1024</Text>
                         </View>
 
                         <View style={styles.boxFavorito}>
@@ -201,7 +211,7 @@ export default class ListagemCurso extends Component {
 
                             <View style={styles.boxDadosModal}>
                                 <Image style={styles.imgLocal} source={require('../../../assets/imgGP2/local.png')} />
-                                <Text style={styles.textDadosModal}>{item.modeloCurso}</Text>
+                                <Text style={styles.textDadosModal}>{item.modalidadeCurso}</Text>
 
                                 <Image style={styles.imgDataFinal} source={require('../../../assets/imgGP2/dataFinal.png')} />
                                 <Text style={styles.textDadosModal}>
@@ -213,14 +223,7 @@ export default class ListagemCurso extends Component {
 
                             <View style={styles.boxDescricaoModal}>
                                 <Text style={styles.descricaoModal}>Descrição:</Text>
-                                <Text style={styles.textDescricaoModal}>
-                                    O curso habilita profissionais técnicos de nível médio em
-                                    Desenvolvimento de Sistemas, visando suprir a demanda do
-                                    mercado por profissionais qualificados para atuarem em
-                                    programação e desenvolvimento de software com condições
-                                    técnico-tecnológicas para atender às exigências e evolução
-                                    do segmento.
-                                </Text>
+                                <Text style={styles.textDescricaoModal}>{item.descricaoCurso}</Text>
                                 <View style={styles.boxEmpresa}>
                                     <Text style={styles.tituloEmpresa}>Empresa: </Text>
                                     <Text style={styles.textEmpresa}>Senai - Santa Cecília </Text>
@@ -289,6 +292,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 24
+    },
+    containerCurso: {
+        marginBottom: 50,
     },
     boxCurso: {
         width: 275,
