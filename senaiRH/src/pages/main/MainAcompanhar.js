@@ -8,10 +8,7 @@ import {
   Modal,
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Entypo, Feather, AntDesign, MaterialCommunityIcons  } from "@expo/vector-icons";
-import api from "../../services/api.js";
-import { AsyncStorage } from 'react-native';
-
+import { Entypo, Feather, AntDesign } from "@expo/vector-icons";
 
 import NovoFeedback from "../novoFeedback/NovoFeedback.js";
 import Democratizacao from "../democratizacao/Democratizacao.js";
@@ -19,118 +16,83 @@ import Dashboard from "../dashboard/Dashboard.js";
 import Perfil from "../perfil/Perfil.js";
 import Ranking from "../ranking/Ranking.js";
 
-import { useFonts } from "expo-font"; 
-import AppLoading from 'expo-app-loading';
-
-
+// import { useFonts } from "expo-font";
+// import AppLoading from "expo-app-loading";
+// import { NavigationContainer } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
-logout = async () => {
-  await AsyncStorage.removeItem("userToken");
-  this.props.navigate("Login");
-};
 
 function ButtonNew({ size, color }) {
-  const [modalAberto, setModalAberto] = useState(false);
   return (
-    <View style={StyleSheet.container}>
-      <Modal visible={modalAberto} animationType="slide">
-        <AntDesign
-          name="close"
-          size={30}
-          color="black"
-          style={styles.iconClose}
-          onPress={() => setModalAberto(false)}
-        />
-
-        <View style={styles.containerLinks}>
-          <Text style={styles.titulo}>REDIRECIONAR PARA:</Text>
-
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate("MainAcompanhar")}
-          >
-            <Image
-              style={styles.icone}
-              source={require("../../../assets/imgMobile/computador.png")}
-            />
-            <Text style={styles.texto}>Acompanhamento</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button}>
-            <Image
-              style={styles.icone}
-              source={require("../../../assets/imgMobile/porco.png")}
-            />
-            <Text style={styles.texto}>Motivações</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button}>
-            <Image
-              style={styles.icone}
-              source={require("../../../assets/imgMobile/etiqueta.png")}
-            />
-            <Text style={styles.texto}>Minhas Vantagens</Text>
-          </TouchableOpacity>
-
-          {/* <TouchableOpacity onPress={this.logout} >
-            <Image source={require('../../assets/images/iconSair.png')}
-            style={styles.logout}
-            >
-          </Image> */}
-
-          <MaterialCommunityIcons
-          name="logout"
-          size={30}
-          color="black"
-          style={styles.iconClose}
-          onPress={this.logout}
-        />
-        </View>
-      </Modal>
-
-      <View style={StyleSheet.botao}>
-        <Entypo
-          name="plus"
-          color={color}
-          size={size}
-          onPress={() => setModalAberto(true)}
-        />
-      </View>
+    <View style={StyleSheet.botao}>
+      <Entypo name="plus" color={color} size={size} />
     </View>
   );
 }
 
+
 export default function MainAcompanhar() {
-  
-  // let [ customFonts]= useFonts({
-  //   // 'Montserrat-Regular': require('../../../assets/fonts/'),
-  //   'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
-  //   'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf')
-  // })
-  // if(!customFonts){
-  
-  //   return<AppLoading />;
+
+
+    const [modalAberto, setModalAberto] = useState(false);
+  //   return (
+  //     <View style={styles.container}>
+  //       <Modal 
+  //        animationType="slide"
+  //        transparent={true}
+  //        visible={modalAberto}
+  //        onRequestClose={() => {
+  //            Alert.alert("Modal has been closed.");
+  //            setModalVisible(!modalAberto);
+  //        }}
+        
+  //       >
+  //         <View style={styles.conteudoModal}>
+  //         <AntDesign
+  //             name="close"
+  //             size={24}
+  //             color="black"
+  //             onPress={() => setModalAberto(false)}
+  //           />
+  //           <Text style={styles.tituloModal}>O que você deseja fazer:</Text>
+  //         </View>
+  //       </Modal>
+  //     </View>
+  //   );
   // }
+
+
   return (
     <Tab.Navigator
-    screenOptions={{
-      tabBarActiveTintColor: "#C20004",
-      tabBarInactiveTintColor: "gray",
-      tabBarShowLabel: true,
-      tabBarStyle: {
-        //   height: 60,
-        // backgroundColor: '#121212',
-        backgroundColor: "#f1f1f1",
-        borderTopColor: "gray",
+      screenOptions={{
+        tabBarActiveTintColor: "#C20004",
+        tabBarInactiveTintColor: "gray",
+        tabBarShowLabel: true,
+        tabBarStyle: {
+          //   height: 60,
+          // backgroundColor: '#121212',
+          backgroundColor: "#f1f1f1",
+          borderTopColor: "gray",
           paddingBottom: 5,
           paddingTop: 5,
         },
       }}
       initialRouteName="NovoFeedback"
     >
+      <Modal
+        animationType="slide"
+             transparent={true}
+             visible={modalAberto}
+             onRequestClose={() => {
+                 Alert.alert("Modal has been closed.");
+                 setModalVisible(!modalAberto);
+             }}
+      >
+
       <Tab.Screen
+
+        onPress={() => setModalVisible(true)}
         name="Dashboard"
         component={Dashboard}
         options={{
@@ -138,10 +100,36 @@ export default function MainAcompanhar() {
             <Feather name="pie-chart" size={size} color={color} />
           ),
         }}
+      //  < Modal
+      //       //  animationType="slide"
+      //       //  transparent={true}
+      //       //  visible={modalAberto}
+      //       //  onRequestClose={() => {
+      //       //      Alert.alert("Modal has been closed.");
+      //       //      setModalVisible(!modalAberto);
+      //       //  }}
+            
+      //       >
+      //         <View style={styles.conteudoModal}>
+      //         <AntDesign
+      //             name="close"
+      //             size={24}
+      //             color="black"
+      //             onPress={() => setModalAberto(false)}
+      //           />
+      //           <Text style={styles.tituloModal}>O que você deseja fazer:</Text>
+      //         </View>
+      //       </Modal>
       />
+      </Modal>
       <Tab.Screen
+      
+           
+
+
         name="Democratização"
-        component={Democratizacao}
+        onPress={() => setModalVisible(true)}
+        // component={ModalDemocratizacao}
         options={{
           tabBarIcon: ({ size, color }) => (
             <Entypo name="chat" size={size} color={color} />
@@ -149,6 +137,7 @@ export default function MainAcompanhar() {
         }}
       />
       <Tab.Screen
+        // onPress={() => navigation.navigate("Redirecionar")}
         name="NovoFeedback"
         component={NovoFeedback}
         options={{
@@ -179,7 +168,6 @@ export default function MainAcompanhar() {
     </Tab.Navigator>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     width: "100%",
@@ -215,7 +203,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   titulo: {
-    fontFamily: 'Montserrat-Bold',
+    fontFamily: "Montserrat-Bold",
     fontSize: 32,
     width: "80%",
     textAlign: "center",
@@ -241,6 +229,16 @@ const styles = StyleSheet.create({
     fontSize: 25,
     // fontWeight: "bold",
     marginLeft: 40,
-    fontFamily:'Montserrat-Bold'
+    fontFamily: "Montserrat-Bold",
   },
 });
+
+// let [ customFonts]= useFonts({
+//   // 'Montserrat-Regular': require('../../../assets/fonts/'),
+//   'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
+//   // 'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf')
+// })
+// if(!customFonts){
+
+//   return<AppLoading />;
+// }
