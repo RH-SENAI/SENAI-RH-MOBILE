@@ -34,11 +34,11 @@ export default function Welcome() {
       </View>
 
       <Animatable.View delay={600} animation="fadeInUp" style={styles.containerForm}>
-        <Text style={styles.title}>Acompanhe sua motivação e benefícios, tudo num só App!</Text>
+        <Text style={styles.title}>Acompanhe sua motivação e benefícios, tudo em um só App!</Text>
         <Text style={styles.text}>Faça seu login para começar</Text>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('SignIn')}
+          onPress={() => navigation.navigate('Login')}
         >
           <Text style={styles.buttonText}>Acessar</Text>
         </TouchableOpacity>
@@ -108,3 +108,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   }
 })
+<<<<<<< HEAD
+=======
+
+>>>>>>> b1be1af6beddaaa5f8ce1c09a8d4ec8a6a7c1586

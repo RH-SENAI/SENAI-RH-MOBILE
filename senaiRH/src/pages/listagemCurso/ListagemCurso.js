@@ -6,17 +6,17 @@ import {
     Modal,
     Pressable,
     Image,
-    Alert
+    Alert,
+    FlatList
 } from 'react-native';
 
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { FlatList } from 'react-native-gesture-handler';
 import { AsyncStorage } from '@react-native-async-storage/async-storage';
 import { Component } from 'react/cjs/react.production.min';
 import { AppRegistry } from 'react-native-web';
 import ExplodingHeart from 'react-native-exploding-heart';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import api from '../../services/apiGrupo2.js';
 
 //const value = 2.4
 // const alertCurso = () => 
@@ -46,15 +46,9 @@ export default class ListagemCurso extends Component {
 
     ListarCurso = async () => {
         try {
-            const token = await AsyncStorage.getItem('userToken')
+            //const token = await AsyncStorage.getItem('userToken')
 
-            const resposta = await AppRegistry('/Cursos',
-                {
-                    headers: {
-                        Authorization: 'Bearer ' + token,
-                    }
-                },
-            );
+            const resposta = await api('/Cursos');
             if (resposta.status == 200) {
                 const dadosCurso = resposta.data;
                 this.setState({ listaCurso: dadosCurso })
@@ -105,159 +99,168 @@ export default class ListagemCurso extends Component {
                     <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
                     <Text style={styles.textDados}>3024</Text>
                 </View>
-                <Pressable onPress={() => this.setModalVisivel(true)}>
-                    <View style={styles.boxCurso}>
-                        <View style={styles.boxImgCurso}>
-                            <Image style={styles.imgCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
-                        </View>
 
-                        <View style={styles.boxTituloCurso}>
-                            <Text style={styles.textTituloCurso}>Lógica de Programação</Text>
-                        </View>
-
-                        <View style={styles.boxAvaliacao}>
-                            <AirbnbRating
-                                count={5}
-                                //starImage={star}
-                                showRating={false}
-                                selectedColor={'#C20004'}
-                                defaultRating={4}
-                                isDisabled={true}
-                                size={20}
-                            />
-                        </View>
-
-                        <View style={styles.boxDadosCurso}>
-                            <View style={styles.boxDados}>
-                                <Image style={styles.imgDados} source={require('../../../assets/imgGP2/relogio.png')} />
-                                <Text style={styles.textDados}>20 horas</Text>
-                            </View>
-
-                            <View style={styles.boxDados}>
-                                <Image style={styles.imgDados} source={require('../../../assets/imgGP2/local.png')} />
-                                <Text style={styles.textDados}>EAD</Text>
-                            </View>
-                        </View>
-
-                        <View style={styles.boxPrecoFavorito}>
-                            <View style={styles.boxPreco}>
-                                <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                <Text style={styles.textDados}>1024</Text>
-                            </View>
-
-                            <View style={styles.boxFavorito}>
-                                <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
-                            </View>
-                        </View>
-                    </View>
-                </Pressable>
-
-
-                <Modal
-                    animationType="fade"
-                    transparent={true}
-                    visible={this.state.modalVisivel}
-                    //key={item.idCurso == this.state.cursoBuscado.idCurso}
-                    onRequestClose={() => {
-                        this.setModalVisivel(!this.state.modalVisivel)
-                    }}
-                >
-
-                    <View style={styles.totalModal}>
-                        <Pressable onPress={() => this.setModalVisivel(!this.state.modalVisivel)} >
-                            <View style={styles.containerModal}>
-                                <View style={styles.boxTituloModal}>
-                                    <View style={styles.boxImgCurso}>
-                                        <Image style={styles.imgModalCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
-                                    </View>
-                                    <Text style={styles.textTituloModal}>Lógica de Programação</Text>
-                                </View>
-                                <View style={styles.boxAvaliacaoModal}>
-                                    <AirbnbRating
-                                        count={5}
-                                        //starImage={star}
-                                        showRating={false}
-                                        selectedColor={'#C20004'}
-                                        defaultRating={4}
-                                        isDisabled={true}
-                                        size={20}
-                                    />
-                                </View>
-
-                                <View style={styles.boxDadosModal}>
-                                    <Image style={styles.imgRelogio} source={require('../../../assets/imgGP2/relogio.png')} />
-                                    <Text style={styles.textDadosModal}>20 horas</Text>
-
-                                    <Image style={styles.imgMapa} source={require('../../../assets/imgGP2/mapa.png')} />
-                                    <Text style={styles.textDadosModal}>São Paulo</Text>
-                                </View>
-
-                                <View style={styles.boxDadosModal}>
-                                    <Image style={styles.imgLocal} source={require('../../../assets/imgGP2/local.png')} />
-                                    <Text style={styles.textDadosModal}>EAD</Text>
-
-                                    <Image style={styles.imgDataFinal} source={require('../../../assets/imgGP2/dataFinal.png')} />
-                                    <Text style={styles.textDadosModal}>
-                                        15/02/2022
-                                        {/* {Intl.DateTimeFormat("pt-BR", {
-                                         year: 'numeric', month: 'numeric', day: 'numeric'
-                                        }).format(new Date(item.dataFinalizacao))} */}
-                                    </Text>
-                                </View>
-
-                                <View style={styles.boxDescricaoModal}>
-                                    <Text style={styles.descricaoModal}>Descrição:</Text>
-                                    <Text style={styles.textDescricaoModal}>
-                                        O curso habilita profissionais técnicos de nível médio em
-                                        Desenvolvimento de Sistemas, visando suprir a demanda do
-                                        mercado por profissionais qualificados para atuarem em
-                                        programação e desenvolvimento de software com condições
-                                        técnico-tecnológicas para atender às exigências e evolução
-                                        do segmento.
-                                    </Text>
-                                    <View style={styles.boxEmpresa}>
-                                        <Text style={styles.tituloEmpresa}>Empresa: </Text>
-                                        <Text style={styles.textEmpresa}>Senai - Santa Cecília </Text>
-                                    </View>
-
-                                    <View style={styles.boxValorInscrever}>
-                                        <View style={styles.boxPrecoModal}>
-                                            <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                            <Text style={styles.textDados}>1024</Text>
-                                        </View>
-
-                                        <View style={styles.boxInscreverModal}>
-                                            <Pressable style={styles.inscreverModal} onPress={() => { this.showAlert() }}  >
-                                                <Text style={styles.textDetalhes}>Inscreva-se</Text>
-                                            </Pressable>
-                                        </View>
-                                    </View>
-
-                                    <AwesomeAlert
-                                        show={showAlert}
-                                        showProgress={false}
-                                        title="Sucesso"
-                                        message="Você foi inscrito no curso!"
-                                        closeOnTouchOutside={true}
-                                        closeOnHardwareBackPress={false}
-                                        showCancelButton={true}
-                                        cancelText="Okay"
-                                        cancelButtonColor="#C20004"
-                                        cancelButtonStyle={alertView}
-                                        onCancelPressed={() => {
-                                            this.hideAlert();
-                                        }}
-                                    />
-                                </View>
-                            </View>
-                        </Pressable>
-                    </View>
-
-
-                </Modal>
+                <FlatList
+                    style={styles.flatlist}
+                    data={this.state.listaCurso}
+                    keyExtractor={item => item.idCurso}
+                    renderItem={this.renderItem}
+                />
             </View>
-        )
+
+        );
     }
+    renderItem = ({ item }) => (
+        <View>
+            <Pressable onPress={() => this.setModalVisivel(true)}>
+                <View style={styles.boxCurso}>
+                    <View style={styles.boxImgCurso}>
+                        <Image style={styles.imgCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
+                    </View>
+
+                    <View style={styles.boxTituloCurso}>
+                        <Text style={styles.textTituloCurso}>{item.nomeCurso}</Text>
+                    </View>
+
+                    <View style={styles.boxAvaliacao}>
+                        <AirbnbRating
+                            count={5}
+                            //starImage={star}
+                            showRating={false}
+                            selectedColor={'#C20004'}
+                            defaultRating={item.mediaAvaliacao}
+                            isDisabled={true}
+                            size={20}
+                        />
+                    </View>
+
+                    <View style={styles.boxDadosCurso}>
+                        <View style={styles.boxDados}>
+                            <Image style={styles.imgDados} source={require('../../../assets/imgGP2/relogio.png')} />
+                            <Text style={styles.textDados}>{item.cargaHoraria}</Text>
+                        </View>
+
+                        <View style={styles.boxDados}>
+                            <Image style={styles.imgDados} source={require('../../../assets/imgGP2/local.png')} />
+                            <Text style={styles.textDados}>{item.modeloCurso}</Text>
+                        </View>
+                    </View>
+
+                    <View style={styles.boxPrecoFavorito}>
+                        <View style={styles.boxPreco}>
+                            <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
+                            <Text style={styles.textDados}>{item.valorCurso}</Text>
+                        </View>
+
+                        <View style={styles.boxFavorito}>
+                            <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
+                        </View>
+                    </View>
+                </View>
+            </Pressable>
+
+
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={this.state.modalVisivel}
+                //key={item.idCurso == this.state.cursoBuscado.idCurso}
+                onRequestClose={() => {
+                    this.setModalVisivel(!this.state.modalVisivel)
+                }}
+            >
+
+                <View style={styles.totalModal}>
+                    <Pressable onPress={() => this.setModalVisivel(!this.state.modalVisivel)} >
+                        <View style={styles.containerModal}>
+                            <View style={styles.boxTituloModal}>
+                                <View style={styles.boxImgCurso}>
+                                    <Image style={styles.imgModalCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
+                                </View>
+                                <Text style={styles.textTituloModal}>{item.nomeCurso}</Text>
+                            </View>
+                            <View style={styles.boxAvaliacaoModal}>
+                                <AirbnbRating
+                                    count={5}
+                                    //starImage={star}
+                                    showRating={false}
+                                    selectedColor={'#C20004'}
+                                    defaultRating={item.mediaAvaliacao}
+                                    isDisabled={true}
+                                    size={20}
+                                />
+                            </View>
+
+                            <View style={styles.boxDadosModal}>
+                                <Image style={styles.imgRelogio} source={require('../../../assets/imgGP2/relogio.png')} />
+                                <Text style={styles.textDadosModal}>{item.cargaHoraria}</Text>
+
+                                <Image style={styles.imgMapa} source={require('../../../assets/imgGP2/mapa.png')} />
+                                <Text style={styles.textDadosModal}>{item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado}</Text>
+                            </View>
+
+                            <View style={styles.boxDadosModal}>
+                                <Image style={styles.imgLocal} source={require('../../../assets/imgGP2/local.png')} />
+                                <Text style={styles.textDadosModal}>{item.modeloCurso}</Text>
+
+                                <Image style={styles.imgDataFinal} source={require('../../../assets/imgGP2/dataFinal.png')} />
+                                <Text style={styles.textDadosModal}>
+                                    {/* {Intl.DateTimeFormat("pt-BR", {
+                                        year: 'numeric', month: 'numeric', day: 'numeric'
+                                    }).format(new Date(item.dataFinalizacao))} */}
+                                </Text>
+                            </View>
+
+                            <View style={styles.boxDescricaoModal}>
+                                <Text style={styles.descricaoModal}>Descrição:</Text>
+                                <Text style={styles.textDescricaoModal}>
+                                    O curso habilita profissionais técnicos de nível médio em
+                                    Desenvolvimento de Sistemas, visando suprir a demanda do
+                                    mercado por profissionais qualificados para atuarem em
+                                    programação e desenvolvimento de software com condições
+                                    técnico-tecnológicas para atender às exigências e evolução
+                                    do segmento.
+                                </Text>
+                                <View style={styles.boxEmpresa}>
+                                    <Text style={styles.tituloEmpresa}>Empresa: </Text>
+                                    <Text style={styles.textEmpresa}>Senai - Santa Cecília </Text>
+                                </View>
+
+                                <View style={styles.boxValorInscrever}>
+                                    <View style={styles.boxPrecoModal}>
+                                        <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
+                                        <Text style={styles.textDados}>1024</Text>
+                                    </View>
+
+                                    <View style={styles.boxInscreverModal}>
+                                        <Pressable style={styles.inscreverModal} onPress={() => { this.showAlert() }}  >
+                                            <Text style={styles.textDetalhes}>Inscreva-se</Text>
+                                        </Pressable>
+                                    </View>
+                                </View>
+
+                                <AwesomeAlert
+                                    //show={showAlert}
+                                    showProgress={false}
+                                    title="Sucesso"
+                                    message="Você foi inscrito no curso!"
+                                    closeOnTouchOutside={true}
+                                    closeOnHardwareBackPress={false}
+                                    showCancelButton={true}
+                                    cancelText="Okay"
+                                    cancelButtonColor="#C20004"
+                                    //cancelButtonStyle={alertView}
+                                    onCancelPressed={() => {
+                                        this.hideAlert();
+                                    }}
+                                />
+                            </View>
+                        </View>
+                    </Pressable>
+                </View>
+            </Modal>
+        </View>
+    );
 }
 const styles = StyleSheet.create({
     containerListagem: {
