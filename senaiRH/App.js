@@ -23,17 +23,17 @@ function App() {
   return (
     <NavigationContainer>
       <StatusBar backgroundColor={'#C20004'} barStyle="light-content" />
-      <Stack.Navigator>      
+      <Stack.Navigator>
+        {/* <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} /> */}
         <Stack.Screen name="Redirecionar" component={Redirecionar} options={{ headerShown: false }} />
         <Stack.Screen name="MainAcompanhar" component={MainAcompanhar} />
         <Stack.Screen name="MainVantagem" component={MainVantagem} options={{ headerShown: false }} />
         <Stack.Screen name="Perfil" component={Perfil} />
-        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Atividades" component={Atividades} options={{ headerShown: false }} />
         <Stack.Screen name="AtividadesExtras" component={AtividadesExtras} options={{ headerShown: false }} />
-        <Stack.Screen name="MinhasAtividades" component={MinhasAtividades}  options={{ headerShown: false }} />
-        <Stack.Screen name="MinhasExtras" component={MinhasExtras}  options={{ headerShown: false }} />
-        <Stack.Screen name="RankingGp1" component={RankingGp1}  options={{ headerShown: false }} />
+        <Stack.Screen name="MinhasAtividades" component={MinhasAtividades} options={{ headerShown: false }} />
+        <Stack.Screen name="MinhasExtras" component={MinhasExtras} options={{ headerShown: false }} />
+        <Stack.Screen name="RankingGp1" component={RankingGp1} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

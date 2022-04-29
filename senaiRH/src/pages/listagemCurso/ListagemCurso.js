@@ -74,7 +74,7 @@ export default class ListagemCurso extends Component {
     };
 
     hideAlert = () => {
-        this.setState({
+        this.setState({           
             showAlert: false
         });
     };
@@ -90,12 +90,6 @@ export default class ListagemCurso extends Component {
     }
 
     render() {
-        const { showAlert } = this.state;
-
-        const alertView = {
-            width: 150,
-            alignItems: 'center'
-        }
         return (
             <View style={styles.containerListagem}>
                 <View style={styles.boxLogoHeader}>
@@ -226,7 +220,7 @@ export default class ListagemCurso extends Component {
                                 <Text style={styles.textDescricaoModal}>{item.descricaoCurso}</Text>
                                 <View style={styles.boxEmpresa}>
                                     <Text style={styles.tituloEmpresa}>Empresa: </Text>
-                                    <Text style={styles.textEmpresa}>Senai - Santa Cecília </Text>
+                                    <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text>
                                 </View>
 
                                 <View style={styles.boxValorInscrever}>
@@ -242,8 +236,9 @@ export default class ListagemCurso extends Component {
                                     </View>
                                 </View>
 
-                                <AwesomeAlert
-                                    //show={showAlert}
+                                <AwesomeAlert 
+                                    style={styles.bao}
+                                    show={this.state.showAlert}
                                     showProgress={false}
                                     title="Sucesso"
                                     message="Você foi inscrito no curso!"
@@ -252,7 +247,9 @@ export default class ListagemCurso extends Component {
                                     showCancelButton={true}
                                     cancelText="Okay"
                                     cancelButtonColor="#C20004"
-                                    //cancelButtonStyle={alertView}
+                                    cancelButtonStyle={this.alertView = StyleSheet.create({
+                                        width: 150, 
+                                        justifyContent: 'center'})}
                                     onCancelPressed={() => {
                                         this.hideAlert();
                                     }}
@@ -404,10 +401,10 @@ const styles = StyleSheet.create({
         //alignItems: 'center',
     },
     imgModalCurso: {
-        width: 315,
+        width: '101.2%',
         height: 100,
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
     },
     textTituloModal: {
         //fontFamily: 'Montserrat-Bold',
@@ -450,6 +447,7 @@ const styles = StyleSheet.create({
     textDescricaoModal: {
         //fontFamily: 'Montserrat-Normal',
         width: 280,
+        height: 150,
         fontSize: 14,
         color: '#000',
         alignItems: 'center',

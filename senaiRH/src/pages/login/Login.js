@@ -84,8 +84,8 @@ export default class Login extends Component {
   constructor(props){
       super(props);
       this.state = {
-          cpf: '9999992939',
-          senha: '12345678',
+          cpf: '0009886654',
+          senha: 'v123',
           fontsLoaded: false,
           value: '',
           //erroMensagem: '',
@@ -373,5 +373,3 @@ const styles = StyleSheet.create({
   
 
 });
-
-
