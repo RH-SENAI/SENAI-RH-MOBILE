@@ -124,10 +124,10 @@ export default class Atividades extends Component {
                                             <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
                                             <Text style={styles.criadorModal}> Criador da atividade </Text>
                                         </View>
-                                        <View style={styles.botoesModal}  >
+                                        <View style={styles.botoesModal}>
                                             <TouchableOpacity >
                                                 <View style={styles.associarModal}>
-                                                    <Text style={styles.texto}> Me Associar </Text>
+                                                    <Text style={styles.texto}> Realizar </Text>
                                                 </View>
                                             </TouchableOpacity>
                                             <TouchableOpacity

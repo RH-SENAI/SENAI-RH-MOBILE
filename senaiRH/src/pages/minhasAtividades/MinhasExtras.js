@@ -13,25 +13,25 @@ import {
 } from 'react-native';
 
 import { useNavigation } from "@react-navigation/native";
-// import AppLoading from 'expo-app-loading';
-// import { useFonts } from 'expo-font';
+import AppLoading from 'expo-app-loading';
+import { useFonts } from 'expo-font';
 
 
 const MinhasExtras = () => {
 
-    // let [customFonts] = useFonts({
-    //     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
-    //     'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
-    //     'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
-    //     'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
-    //     'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
-    //     'Quicksand-Light': require('../../../assets/fonts/Quicksand-Light.ttf'),
-    //     'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
-    // });
+    let [customFonts] = useFonts({
+        'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
+        'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
+        'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
+        'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
+        'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
+        'Quicksand-Light': require('../../../assets/fonts/Quicksand-Light.ttf'),
+        'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
+    });
 
-    // if (!customFonts) {
-    //     return <AppLoading />;
-    // }
+    if (!customFonts) {
+        return <AppLoading />;
+    }
 
 
     const navigation = useNavigation();
