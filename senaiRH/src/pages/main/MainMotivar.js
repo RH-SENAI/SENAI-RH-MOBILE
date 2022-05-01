@@ -10,18 +10,32 @@ import {
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Entypo, Feather, AntDesign } from "@expo/vector-icons";
 
- import Atividades from "../atividades/Atividades.js";
-import MinhasAtividades from "../minhasAtividades/MinhasAtividades.js";
-import RankingGp1 from "../rankingGp1/RankingGp1.js";
-import Perfil from "../perfil/Perfil.js";
-// import MinhasAtividades from "../minhasAtividades/MinhasAtividades.js";
 
 const Tab = createBottomTabNavigator();
 
+import Atividades from "../atividades/Atividades.js";
+import MinhasAtividades from "../minhasAtividades/MinhasAtividades.js";
+import RankingGp1 from "../rankingGp1/RankingGp1.js";
+import Perfil from "../perfil/Perfil.js";
+// let [customFonts] = useFonts({
+//         'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
+//         'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
+//         'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
+//         'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
+//         'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
+//         'Quicksand-Light': require('../../../assets/fonts/Quicksand-Light.ttf'),
+//         'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
+//       });
+    
+//       if (!customFonts) {
+//         return <AppLoading />;
+//       }
+
+
 function ButtonNew({ size, color }) {
   const [modalAberto, setModalAberto] = useState(false);
-  return (
 
+  return (
     <View style={StyleSheet.container}>
         
       <Modal visible={modalAberto} animationType="slide">
@@ -48,7 +62,7 @@ function ButtonNew({ size, color }) {
   );
 }
 
-export default function MainAcompanhar() {
+export default function MainMotivar() {
   return (
     <Tab.Navigator
       screenOptions={{
