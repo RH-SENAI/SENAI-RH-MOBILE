@@ -174,12 +174,12 @@ export default class Login extends Component {
 
 
           <View style={styles.erroMsg}>
-            <Animated.Text 
+            {/* <Animated.Text 
               onPress={this.realizarLogin} 
               style={styles.erroText}
               animation="flipInY">
                 Email ou Senha inválidos!
-            </Animated.Text>
+            </Animated.Text> */}
 
             
               <TouchableOpacity  onPress={() => this.props.navigation.navigate('alterarSenha')}>

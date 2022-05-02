@@ -9,7 +9,8 @@ import {
     TextInput,
     Modal,
     AnimatableBlurView,
-    FlatList
+    FlatList,
+    SectionList
 } from 'react-native';
 
 import * as Font from 'expo-font';
@@ -29,47 +30,47 @@ let customFonts = {
 }
 
 export default class AtividadesExtras extends Component {
-    
+
     constructor(props) {
         super(props);
         this.state = {
             listaAtividades: [],
         };
     }
-    
+
     buscarAtividade = async () => {
         const resposta = await api.get('/Atividades');
         const dadosDaApi = resposta.data;
         this.setState({ listaAtividades: dadosDaApi });
     };
-    
+
     state = {
         modalVisible: false
     };
-    
+
     setModalVisible = (visible) => {
         this.setState({ modalVisible: visible });
     }
-    
-    
+
+
     async _loadFontsAsync() {
         await Font.loadAsync(customFonts);
         this.setState({ fontsLoaded: true });
     }
-    
+
     componentDidMount() {
         this._loadFontsAsync();
         this.buscarAtividade();
     }
-    
+
     associar = async item => {
         try {
             const token = await AsyncStorage.getItem('userToken');
-            
+
             const xambers = base64.decode(token.split('.')[1])
             const user = JSON.parse(xambers)
             console.warn(item)
-            
+
             const resposta = await api.post(
                 '/Atividades/Associar/' + user.jti,
                 {
@@ -80,31 +81,31 @@ export default class AtividadesExtras extends Component {
                         Authorization: 'Bearer ' + token,
                     },
                 },
-                
+
                 console.warn(resposta)
-                
-                
-                );
-                if (resposta.status == 201) {
-                    console.warn('Voce se associou a uma atividade');
-                } else {
-                    console.warn('Falha ao se associar.');
-                }
-            } catch (error) {
-                console.warn(error);
+
+
+            );
+            if (resposta.status == 201) {
+                console.warn('Voce se associou a uma atividade');
+            } else {
+                console.warn('Falha ao se associar.');
             }
+        } catch (error) {
+            console.warn(error);
         }
-        
-        render() {
-            const { modalVisible } = this.state;
-            return (
-                <View style={styles.main}>
+    }
+
+    render() {
+        const { modalVisible } = this.state;
+        return (
+            <View style={styles.main}>
 
                 <View>
                     <View style={styles.mainHeader}>
                         <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
                             style={styles.imgLogo}
-                            />
+                        />
 
                     </View>
 
@@ -135,29 +136,110 @@ export default class AtividadesExtras extends Component {
 
                 <View>
 
-                    <FlatList
-                        contentContainerStyle={styles.boxAtividade}
-                        // style={styles.boxAtividade}
-                        data={this.state.listaAtividades}
-                        keyExtractor={item => item.idAtividade}
-                        renderItem={this.renderItem}
-                        />
+                    <View>
 
-                    {/* <View style={styles.box}>
-                        <View style={styles.quadrado}></View>
-                        <View style={styles.espacoPontos}>
-                        <Text style={styles.pontos}> 20 CashS </Text>
-                        <Image source={require('../../../assets/img-gp1/coins.png')}
-                        style={styles.imgCoins}
-                        /> 
-                    </View>*/}
-                    {/* <View style={styles.conteudoBox}>
-                            <Text style={styles.nomeBox}> Titulo Atividade </Text>
-                            <Text style={styles.criador}> Criador da atividade </Text>
-                            <Text style={styles.data}> Data de Entrega: 18/03/2022 </Text>
-                        </View> */}
+                        <FlatList
+                            contentContainerStyle={styles.boxAtividade}
+                            // style={styles.boxAtividade}
+                            data={this.state.listaAtividades}
+                            keyExtractor={item => item.idAtividade}
+                            renderItem={({ item }) => (
 
-                    <View style={styles.ModaleBotao}>
+
+                                <View style={styles.boxAtividade}>
+                                    <View style={styles.box}>
+                                        <View style={styles.quadrado}></View>
+                                        <View style={styles.espacoPontos}>
+                                            <Text style={styles.pontos}> {item.recompensaMoeda} Cashs </Text>
+                                            <Image source={require('../../../assets/img-gp1/coins.png')}
+
+                                                style={styles.imgCoins}
+                                            />
+
+                                        </View>
+                                        <View style={styles.conteudoBox}>
+                                            <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
+                                            {/* <Text style={styles.criador}> Criador da atividade </Text> */}
+                                            <Text style={styles.dataCriacao}>
+                                                {item.dataCriacao}
+                                            </Text>
+                                        </View>
+
+                                        <View style={styles.ModaleBotao}>
+                                            <TouchableOpacity style={styles.botao}
+                                                onPress={() => this.associar(item.idAtividade)}
+                                            >
+                                                <View style={styles.corBotão}>
+
+                                                    <Text style={styles.texto}> Me associar </Text>
+                                                </View>
+                                            </TouchableOpacity>
+
+
+                                            <TouchableOpacity style={styles.Modalbotao} onPress={() => this.setModalVisible(true)}  >
+                                                <Image source={require('../../../assets/img-gp1/setaModal.png')} />
+                                            </TouchableOpacity>
+                                        </View>
+
+                                    </View>
+
+                                    <Modal
+                                        animationType="slide"
+                                        transparent={true}
+                                        visible={modalVisible}
+                                        keyExtractor={item.idAtividade}
+                                        onRequestClose={() => {
+                                            this.setModalVisible(!modalVisible);
+                                        }}
+                                    >
+
+                                        <View style={styles.centeredView}>
+                                            <View style={styles.modalView}>
+                                                <View style={styles.quadradoModal}></View>
+                                                <View style={styles.conteudoBoxModal}>
+                                                    <Text style={styles.nomeBoxModal}>{item.nomeAtividade} </Text>
+                                                    <Text style={styles.descricaoModal}> Descrição Atividade </Text>
+                                                    <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
+                                                    <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
+                                                    <Text style={styles.criadorModal}> Criador da atividade </Text>
+                                                </View>
+                                                <View style={styles.botoesModal}  >
+                                                    <TouchableOpacity >
+                                                        <View style={styles.associarModal}>
+                                                            <Text style={styles.texto}> Me Associar </Text>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity
+
+                                                        onPress={() => this.setModalVisible(!modalVisible)}
+                                                    >
+                                                        <View style={styles.fecharModal}>
+                                                            <Text style={styles.textoFechar}>Fechar X</Text>
+                                                        </View>
+
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+
+                                        </View>
+
+                                    </Modal>
+                                </View>
+
+
+                            )} />
+
+
+
+                    </View>
+
+
+
+
+
+
+
+                    {/* <View style={styles.ModaleBotao}>
                         <TouchableOpacity style={styles.botao}>
                             <View style={styles.corBotão}>
                                 <Text style={styles.texto}> Me asssociar </Text>
@@ -165,58 +247,47 @@ export default class AtividadesExtras extends Component {
                         </TouchableOpacity>
 
                         <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={modalVisible}
-                        onRequestClose={() => {
-                            this.setModalVisible(!modalVisible);
-                        }}
-                    >
+                            animationType="slide"
+                            transparent={true}
+                            visible={modalVisible}
+                            onRequestClose={() => {
+                                this.setModalVisible(!modalVisible);
+                            }}
+                        > */}
 
-                            {/* <FlatList
-                                contentContainerStyle={styles.boxAtividade}
-                                // style={styles.boxAtividade}
-                                data={this.state.listaAtividades}
-                                keyExtractor={itemModal => itemModal.idAtividade}
-                                renderItem={this.renderItemModal}
-                                /> */}
+                    {/* <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <View style={styles.quadradoModal}></View>
+                                    <View style={styles.conteudoBoxModal}> */}
+                    {/* <Text style={styles.nomeBoxModal}> asdfghuio </Text> */}
+                    {/* <Text style={styles.descricaoModal}> Descrição Atividade </Text>
+                                        <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
+                                        <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
+                                        <Text style={styles.criadorModal}> Criador da atividade </Text>
+                                    </View>
+                                    <View style={styles.botoesModal}  >
+                                        <TouchableOpacity >
+                                            <View style={styles.associarModal}>
+                                                <Text style={styles.texto}> Me Associar </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
 
+                                            onPress={() => this.setModalVisible(!modalVisible)}
+                                        >
+                                            <View style={styles.fecharModal}>
+                                                <Text style={styles.textoFechar}>Fechar X</Text>
+                                            </View>
 
-                            
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
 
-<View style={styles.centeredView}>
-<View style={styles.modalView}>
-<View style={styles.quadradoModal}></View>
-<View style={styles.conteudoBoxModal}>
-<Text style={styles.nomeBoxModal}> Titulo Atividade </Text>
-<Text style={styles.descricaoModal}> Descrição Atividade </Text>
-<Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
-<Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
-<Text style={styles.criadorModal}> Criador da atividade </Text>
-</View>
-<View style={styles.botoesModal}  >
-<TouchableOpacity >
-<View style={styles.associarModal}>
-<Text style={styles.texto}> Me Associar </Text>
-</View>
-</TouchableOpacity>
-<TouchableOpacity
-
-onPress={() => this.setModalVisible(!modalVisible)}
->
-<View style={styles.fecharModal}>
-<Text style={styles.textoFechar}>Fechar X</Text>
-</View>
-
-</TouchableOpacity>
-</View>
-</View>
-</View>
-
-</Modal> 
+                        </Modal>
 
 
-                    </View>
+                    </View> */}
                     {/* <View style={styles.botaoIndisp}>
                             <View style={styles.corIndisp}>
                             <Text style={styles.textoIndisp}> Indisponivel </Text>
@@ -226,129 +297,133 @@ onPress={() => this.setModalVisible(!modalVisible)}
                 </View>
             </View>
 
-
-)
-}
-
-
-renderItem = ({ item }) => (
-    <View>
-            <View style={styles.boxAtividade}>
-
-                <View style={styles.box}>
-                    <View style={styles.quadrado}></View>
-                    <View style={styles.espacoPontos}>
-                        <Text style={styles.pontos}> {item.recompensaMoeda} Cashs </Text>
-                        <Image source={require('../../../assets/img-gp1/coins.png')}
-                            style={styles.imgCoins}
-                            />
-                    </View>
-                    <View style={styles.conteudoBox}>
-                        <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
-                        {/* <Text style={styles.criador}> Criador da atividade </Text> */}
-                        <Text style={styles.dataCriacao}>
-                            {item.dataCriacao}
-                        </Text>
-                    </View>
-
-                    <View style={styles.ModaleBotao}>
-                        <TouchableOpacity style={styles.botao}
-                            onPress={() => this.associar(item.idAtividade)}
-                            >
-                            <View style={styles.corBotão}>
-
-                                <Text style={styles.texto}> Me associar </Text>
-                            </View>
-                        </TouchableOpacity>
+        )
+    }
 
 
 
-                        {/* <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-            <View style={styles.quadradoModal}></View>
-            <View style={styles.conteudoBoxModal}>
-            <Text style={styles.nomeBoxModal}> Titulo Atividade </Text>
-            <Text style={styles.descricaoModal}> Descrição Atividade </Text>
-            <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
-            <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
-            <Text style={styles.criadorModal}> Criador da atividade </Text>
-            </View>
-            <View style={styles.botoesModal}  >
-            <TouchableOpacity >
-            <View style={styles.associarModal}>
-            <Text style={styles.texto}> Me Associar </Text>
-            </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-            
-            onPress={() => this.setModalVisible(!modalVisible)}
-            >
-            <View style={styles.fecharModal}>
-            <Text style={styles.textoFechar}>Fechar X</Text>
-            </View>
-            
-            </TouchableOpacity>
-            </View>
-            </View>
-        </View> */}
+    // renderItem = ({ item }) => (
 
 
-                        <TouchableOpacity style={styles.Modalbotao} onPress={() => this.setModalVisible(true)}  >
-                            <Image source={require('../../../assets/img-gp1/setaModal.png')} />
-                        </TouchableOpacity>
-                    </View>
+    //     <View>
+    //             <View style={styles.boxAtividade}>
 
-                </View>
+    //                 <View style={styles.box}>
+    //                     <View style={styles.quadrado}></View>
+    //                     <View style={styles.espacoPontos}>
+    //                         <Text style={styles.pontos}> {item.recompensaMoeda} Cashs </Text>
+    //                         <Image source={require('../../../assets/img-gp1/coins.png')}
+    //                             style={styles.imgCoins}
+    //                             />
+    //                     </View>
+    //                     <View style={styles.conteudoBox}>
+    //                         <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
+    //                         {/* <Text style={styles.criador}> Criador da atividade </Text> */}
+    //                         <Text style={styles.dataCriacao}>
+    //                             {item.dataCriacao}
+    //                         </Text>
+    //                     </View>
 
-            </View>
-        </View>
-    );
-    
-    
-//     renderItemModal = ({ itemModal }) => (
-        
-//         <View>
+    //                     <View style={styles.ModaleBotao}>
+    //                         <TouchableOpacity style={styles.botao}
+    //                             onPress={() => this.associar(item.idAtividade)}
+    //                             >
+    //                             <View style={styles.corBotão}>
 
-// <Modal
-//                             animationType="slide"
-//                             transparent={true}
-//                             visible={modalVisible}
-//                             onRequestClose={() => {
-//                                 this.setModalVisible(!modalVisible);
-//                             }}
-//                             > 
-//                               <View style={styles.centeredView}>
-//                                     <View style={styles.modalView}>
-//                                         <View style={styles.quadradoModal}></View>
-//                                         <View style={styles.conteudoBoxModal}>
-//                                             <Text style={styles.nomeBoxModal}> Titulo Atividade </Text>
-//                                             <Text style={styles.descricaoModal}> Descrição Atividade </Text>
-//                                             <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
-//                                             <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
-//                                             <Text style={styles.criadorModal}> Criador da atividade </Text>
-//                                         </View>
-//                                         <View style={styles.botoesModal}  >
-//                                             <TouchableOpacity >
-//                                                 <View style={styles.associarModal}>
-//                                                     <Text style={styles.texto}> Me Associar </Text>
-//                                                 </View>
-//                                             </TouchableOpacity>
-//                                             <TouchableOpacity
+    //                                 <Text style={styles.texto}> Me associar </Text>
+    //                             </View>
+    //                         </TouchableOpacity>
 
-//                                 onPress={() => this.setModalVisible(!modalVisible)}
-//                                 >
-//                                                 <View style={styles.fecharModal}>
-//                                                     <Text style={styles.textoFechar}>Fechar X</Text>
-//                                                 </View>
 
-//                                             </TouchableOpacity>
-//                                         </View>
-//                                     </View>
-//                                 </View>
+    //                         <TouchableOpacity style={styles.Modalbotao} onPress={() => this.setModalVisible(true)}  >
+    //                             <Image source={require('../../../assets/img-gp1/setaModal.png')} />
+    //                         </TouchableOpacity>
+    //                     </View>
 
-//                     </Modal>
+    //                 </View>
 
-//         </View>
+    //             </View>
+
+    //                             <Modal
+    //                             animationType="slide"
+    //                             transparent={true}
+    //                             visible={modalVisible}
+    //                             onRequestClose={() => {
+    //                                 this.setModalVisible(!modalVisible);
+    //                             }}
+    //                             >
+
+    //                             <View style={styles.centeredView}>
+    //                                 <View style={styles.modalView}>
+    //                                     <View style={styles.quadradoModal}></View>
+    //                                     <View style={styles.conteudoBoxModal}>
+    //                                         {/* <Text style={styles.nomeBoxModal}> asdfghuio </Text> */}
+    //                                         <Text style={styles.descricaoModal}> Descrição Atividade </Text>
+    //                                         <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
+    //                                         <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
+    //                                         <Text style={styles.criadorModal}> Criador da atividade </Text>
+    //                                     </View>
+    //                                     <View style={styles.botoesModal}  >
+    //                                         <TouchableOpacity >
+    //                                             <View style={styles.associarModal}>
+    //                                                 <Text style={styles.texto}> Me Associar </Text>
+    //                                             </View>
+    //                                         </TouchableOpacity>
+    //                                         <TouchableOpacity
+
+    // onPress={() => this.setModalVisible(!modalVisible)}
+    // >
+    //                                             <View style={styles.fecharModal}>
+    //                                                 <Text style={styles.textoFechar}>Fechar X</Text>
+    //                                             </View>
+
+    //                                         </TouchableOpacity>
+    //                                     </View>
+    //                                 </View>
+    //                             </View>
+
+    //                         </Modal>
+
+    //             </View>
+    //             );
+
+
+    // renderItemModal = ({item}) => (
+
+    //     <View>
+
+
+    //                           <View style={styles.centeredView}>
+    //                                 <View style={styles.modalView}>
+    //                                     <View style={styles.quadradoModal}></View>
+    //                                     <View style={styles.conteudoBoxModal}>
+    //                                         <Text style={styles.nomeBoxModal}> Titulo Atividade </Text>
+    //                                         <Text style={styles.descricaoModal}> Descrição Atividade </Text>
+    //                                         <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
+    //                                         <Text style={styles.entregaModal}> {item.dataCriacao} </Text>
+    //                                         <Text style={styles.criadorModal}> Criador da atividade </Text>
+    //                                     </View>
+    //                                     <View style={styles.botoesModal}  >
+    //                                         <TouchableOpacity >
+    //                                             <View style={styles.associarModal}>
+    //                                                 <Text style={styles.texto}> Me Associar </Text>
+    //                                             </View>
+    //                                         </TouchableOpacity>
+    //                                         {/* <TouchableOpacity
+
+    //                             onPress={() => this.setModalVisible(!modalVisible)}
+    //                             >
+    //                                             <View style={styles.fecharModal}>
+    //                                                 <Text style={styles.textoFechar}>Fechar X</Text>
+    //                                             </View>
+
+    //                                         </TouchableOpacity> */}
+    //                                     </View>
+    //                                 </View>
+    //                             </View>
+
+
+    //     </View>
     // );
 
 

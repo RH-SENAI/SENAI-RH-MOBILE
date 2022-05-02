@@ -21,16 +21,6 @@ export default class AlterarSenha extends Component {
 
 
 
-
-
-
-
-
-
-
-
-
-
     render() {
         return(
             <View style={styles.body}>
