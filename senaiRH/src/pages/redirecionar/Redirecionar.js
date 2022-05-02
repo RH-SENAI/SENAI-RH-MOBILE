@@ -20,7 +20,7 @@ export default function Redirecionar() {
           <Text style={styles.texto}>Acompanhamento</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} >
           <Image style={styles.icone} source={require("../../../assets/imgMobile/porco.png")} />
           <Text style={styles.texto}>Motivações</Text>
         </TouchableOpacity>

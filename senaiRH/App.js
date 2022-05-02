@@ -18,8 +18,8 @@ function App() {
       <Stack.Navigator>
         <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
         <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
-        <Stack.Screen name="Redirecionar" component={Redirecionar} />
-        <Stack.Screen name="MainAcompanhar" component={MainAcompanhar} />
+        <Stack.Screen name="Redirecionar" component={Redirecionar} options={{ headerShown: false }} />
+        <Stack.Screen name="MainAcompanhar" component={MainAcompanhar} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

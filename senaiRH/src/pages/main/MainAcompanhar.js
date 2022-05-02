@@ -7,26 +7,32 @@ import {
 } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
+import { useNavigation } from "@react-navigation/native";
+
 import { Entypo, Feather } from '@expo/vector-icons'
 
-import NovoFeedback from '../novoFeedback/NovoFeedback.js'
+//import NovoFeedback from '../novoFeedback/NovoFeedback.js'
 import Democratizacao from '../democratizacao/Democratizacao.js'
 import Dashboard from '../dashboard/Dashboard.js'
 import Perfil from '../perfil/Perfil.js'
 import Ranking from '../ranking/Ranking.js'
-import Redirecionar from '../redirecionar/Redirecionar.js'
+import Redirecionar from '../redirecionar/Redirecionar.js';
+
 
 const Tab = createBottomTabNavigator();
 
 function ButtonNew({ size, color }) {
     return (
         <View style={styles.container}>
-            <Entypo name="plus" color={color} size={size} />
+            <Entypo name="plus" color={color} size={size}  />
         </View>
     )
 }
 
 export default function MainAcompanhar() {
+
+    const navigation = useNavigation();
+
     return (
 
         <Tab.Navigator
@@ -44,6 +50,7 @@ export default function MainAcompanhar() {
                 }
             }}
             initialRouteName='Dashboard'
+            backBehavior='initialRoute'
         >
             <Tab.Screen
                 name="Dashboard"
@@ -56,9 +63,9 @@ export default function MainAcompanhar() {
                 options={{ tabBarIcon: ({ size, color }) => (<Entypo name="chat" size={size} color={color} />), headerShown: false }}
             />
             <Tab.Screen
-                name="NovoFeedback"
-                component={NovoFeedback}
-                options={{ tabBarIcon: ({ size, color }) => (<ButtonNew size={40} color={color} />), tabBarLabel: '', headerShown: false }}
+                name="Redirecionar"
+                component={Redirecionar}
+                options={{ tabBarIcon: ({ size, color, navigation }) => (<ButtonNew size={40} color={color} navigation={navigation} />), tabBarLabel: '', headerShown: false}}
             />
             <Tab.Screen
                 name="Ranking"

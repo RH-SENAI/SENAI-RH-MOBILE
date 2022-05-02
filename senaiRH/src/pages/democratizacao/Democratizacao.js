@@ -12,9 +12,7 @@ export default function Democratizacao() {
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
 
-    useEffect(() => {
-        loadApi();
-    }, []);
+    useEffect( () => { loadApi() }, []);
 
     async function loadApi() {
         if (loading) return;
@@ -51,10 +49,10 @@ function ListItem({ data }) {
 }
 
 function FooterList({ load }) {
-    if ( ! load) return null; 
+    if (!load) return null;
     return (
         <View style={styles.loading}>
-            <ActivityIndicator size={25} color='#121212'/>
+            <ActivityIndicator size={25} color='#121212' />
         </View>
     )
 }

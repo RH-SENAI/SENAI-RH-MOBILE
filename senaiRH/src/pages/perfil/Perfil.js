@@ -45,10 +45,7 @@ const Perfil = () => {
 
         </ScrollView>
 
-        <View style={styles.sobreTrofeu}>
-          <Image source={require('../../../assets/imgMobile/trofeu.png')} />
-          <Text style={styles.textTrofeu}> 20 troféus</Text>
-        </View>
+        
 
       </View>
 
@@ -124,33 +121,6 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     marginBottom: 10
   },
-
-  sobreTrofeu: {
-    width: 270,
-    height: 50,
-    fontSize: 30,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10,
-    elevation: 16,
-    backgroundColor: '#F2F2F2',
-    //boxShadow: '19px',
-    borderRadius: 5,
-    flexDirection: 'row',
-    marginBottom: 30,
-    marginTop: 20
-
-  },
-  textTrofeu: {
-    color: 'black',
-    marginLeft: 10,
-    //fontFamily:'Montserrat-Regular',
-
-
-  }
-
-
 
 });
 
