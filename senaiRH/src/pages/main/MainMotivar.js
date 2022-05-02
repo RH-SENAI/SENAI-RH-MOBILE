@@ -17,7 +17,7 @@ import Atividades from "../atividades/Atividades.js";
 import MinhasAtividades from "../minhasAtividades/MinhasAtividades.js";
 import RankingGp1 from "../rankingGp1/RankingGp1.js";
 import Perfil from "../perfil/Perfil.js";
-// let [customFonts] = useFonts({
+// let [fontsLoaded] = useFonts({
 //         'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
 //         'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
 //         'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
@@ -27,7 +27,7 @@ import Perfil from "../perfil/Perfil.js";
 //         'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
 //       });
     
-//       if (!customFonts) {
+//       if (!fontsLoaded) {
 //         return <AppLoading />;
 //       }
 
@@ -78,7 +78,7 @@ export default function MainMotivar() {
           paddingTop: 5,
         },
       }}
-      initialRouteName="Atividades"
+      initialRouteName="Redirecionar"
     >
        <Tab.Screen
         name="Atividades"

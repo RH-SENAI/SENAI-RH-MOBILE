@@ -9,7 +9,7 @@ import { useFonts } from 'expo-font';
 export default function Redirecionar() {
   const navigation = useNavigation();
 
-    let [customFonts] = useFonts({
+    let [fontsLoaded] = useFonts({
         'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
         'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
         'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
@@ -19,7 +19,7 @@ export default function Redirecionar() {
         'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
       });
     
-      if (!customFonts) {
+      if (!fontsLoaded) {
         return <AppLoading />;
       }
 
@@ -36,7 +36,7 @@ export default function Redirecionar() {
           <Text style={styles.texto}>Acompanhamento</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Atividades")} >
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MainMotivar")} >
           <Image style={styles.icone} source={require("../../../assets/imgMobile/porco.png")} />
           <Text style={styles.texto}>Motivações</Text>
         </TouchableOpacity>
