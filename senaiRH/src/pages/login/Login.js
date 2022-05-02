@@ -16,6 +16,7 @@ import AppLoading from 'expo-app-loading';
 import jwt_decode from "jwt-decode";
 import api from '../../services/apiGp1';
 import AnimatedInput from 'react-native-animated-input';
+import axios from 'axios';
 
 let customFonts = {
   'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
@@ -53,6 +54,7 @@ export default class Login extends Component {
 
     try {
 
+      
       const resposta = await api.post('/Login', {
         cpf: this.state.cpf,
         senha: this.state.senha,
@@ -307,7 +309,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Quicksand-Regular',
     fontSize: 12,
     color: '#C20004',
-    paddingRight: 200,
+    paddingRight: 115,
     //paddingTop: 24,
   },
 
@@ -315,9 +317,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Quicksand-Regular',
     fontSize: 12,
     color: '#C20004',
-    position:'absolute',
+    //position:'absolute',
     //paddingTop: 1,
-    paddingRight: 90,
+    //paddingRight: 50,
   },
 
   btnLogin: {

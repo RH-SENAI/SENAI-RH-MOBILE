@@ -38,6 +38,39 @@ const MinhasAtividades = () => {
     const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState(false)
 
+    const [idUsuario, setIdUsuario] = useState(0);
+    const [listaAtividades, setListaAtividades] = useState([])
+  
+   async function Atividades (){
+    try {
+      console.warn('tamo aqui')
+      const token = await AsyncStorage.getItem('userToken');
+      console.warn(token)
+      
+      const xambers = base64.decode(token.split('.')[1])
+      console.warn(xambers)
+      const userJson = JSON.parse(xambers)
+      
+      console.warn(userJson)
+      const resposta = await api.get('/Atividades/MinhasAtividade/' + xambers.jti,
+      {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        },
+      );
+      if (resposta.status == 200) {
+        setListaAtividades(resposta.data)
+
+      }
+    } catch (error) {
+      console.warn(error);
+    }
+  };
+
+  useEffect(() => Atividades, [])
+  
+
     return (
         <View style={styles.main}>
             <View>
