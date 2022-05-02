@@ -19,19 +19,6 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 import ReadMore from 'react-native-read-more-text';
 import api from '../../services/apiGrupo2.js';
 
-//const value = 2.4
-// const alertCurso = () => 
-//     Alert.alert(
-//         "Sucesso",
-//         "Você está inscrito no curso!",
-//         [
-//             {
-//                 text: "Ok",
-//                 style: 'cancel'
-//             }
-//         ]
-//     )
-
 export default class ListagemCurso extends Component {
     constructor(props) {
         super(props);
@@ -40,8 +27,9 @@ export default class ListagemCurso extends Component {
             modalVisivel: false,
             isFavorite: false,
             inscrito: '',
-            listaCurso: [],
             showAlert: false,
+            listaCurso: [],
+            cursoBuscado: [],
         };
     }
 
@@ -89,6 +77,38 @@ export default class ListagemCurso extends Component {
         }
     }
 
+    _renderTruncatedFooter = (handlePress) => {
+        return (
+            <Text style={{ color: '#CB334B', marginTop: 5 }} onPress={handlePress}>
+                Ver mais
+            </Text>
+        );
+    }
+
+    _renderRevealedFooter = (handlePress) => {
+        return (
+            <Text style={{ color: '#CB334B', marginTop: 5 }} onPress={handlePress}>
+                Ver menos
+            </Text>
+        );
+    }
+
+    _handleTextReady = () => {
+        // ...
+    }
+
+    ProcurarCurso = async (id) => {
+        try {
+            const resposta = await api('/Cursos/' + id);
+            if (resposta.status == 200) {
+                await AsyncStorage.setItem('cursoBuscado', JSON.stringify(id));
+            }
+        }
+        catch (erro) {
+            console.warn(erro);
+        }
+    }
+
     render() {
         return (
             <View style={styles.containerListagem}>
@@ -115,186 +135,172 @@ export default class ListagemCurso extends Component {
         );
     }
     renderItem = ({ item }) => (
-        <View style={styles.containerCurso}>
-            <Pressable onPress={() => this.setModalVisivel(true)}>
-                <View style={styles.boxCurso}>
-                    <View style={styles.boxImgCurso}>
-                        <Image style={styles.imgCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
-                    </View>
-
-                    <View style={styles.boxTituloCurso}>
-                        <Text style={styles.textTituloCurso}>{item.nomeCurso}</Text>
-                    </View>
-
-                    <View style={styles.boxAvaliacao}>
-                        <AirbnbRating
-                            count={5}
-                            //starImage={star}
-                            showRating={false}
-                            selectedColor={'#C20004'}
-                            defaultRating={item.mediaAvaliacaoCurso}
-                            isDisabled={true}
-                            size={20}
-                        />
-                    </View>
-
-                    <View style={styles.boxDadosCurso}>
-                        <View style={styles.boxDados}>
-                            <Image style={styles.imgDados} source={require('../../../assets/imgGP2/relogio.png')} />
-                            <Text style={styles.textDados}>{item.cargaHoraria}</Text>
-                        </View>
-
-                        <View style={styles.boxDados}>
-                            <Image style={styles.imgDados} source={require('../../../assets/imgGP2/local.png')} />
-                            <Text style={styles.textDados}>{this.modalidade(item)}</Text>
-                        </View>
-                    </View>
-
-                    <View style={styles.boxPrecoFavorito}>
-                        <View style={styles.boxPreco}>
-                            <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                            <Text style={styles.textDados}>1024</Text>
-                        </View>
-
-                        <View style={styles.boxFavorito}>
-                            <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
-                        </View>
-                    </View>
-                </View>
-            </Pressable>
-
-
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={this.state.modalVisivel}
-                //key={item.idCurso == this.state.cursoBuscado.idCurso}
-                onRequestClose={() => {
-                    this.setModalVisivel(!this.state.modalVisivel)
-                }}
-            >
-
-                <View style={styles.totalModal}>
-                    <Pressable onPress={() => this.setModalVisivel(!this.state.modalVisivel)} >
-                        <View style={styles.containerModal}>
-                            <View style={styles.boxTituloModal}>
-                                <View style={styles.boxImgCurso}>
-                                    <Image style={styles.imgModalCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
-                                </View>
-                                <Text style={styles.textTituloModal}>{item.nomeCurso}</Text>
+        <View>
+            <View style={styles.containerCurso}>
+                <Pressable onPress={() => this.setModalVisivel(true)}>
+                    <View style={styles.boxCurso}>
+                        {/* <Pressable onPress={() => this.ProcurarCurso(11)}> */}
+                            <View style={styles.boxImgCurso}>
+                                <Image style={styles.imgCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
                             </View>
-                            <View style={styles.boxAvaliacaoModal}>
+
+                            <View style={styles.boxTituloCurso}>
+                                <Text style={styles.textTituloCurso}>{item.nomeCurso}</Text>
+                            </View>
+
+                            <View style={styles.boxAvaliacao}>
                                 <AirbnbRating
                                     count={5}
                                     //starImage={star}
                                     showRating={false}
                                     selectedColor={'#C20004'}
-                                    defaultRating={item.mediaAvaliacao}
+                                    defaultRating={item.mediaAvaliacaoCurso}
                                     isDisabled={true}
                                     size={20}
                                 />
                             </View>
 
-                            <View style={styles.boxDadosModal}>
-                                <Image source={require('../../../assets/imgGP2/relogio.png')} />
-                                <Text style={styles.textDadosModal}>{item.cargaHoraria}</Text>
-
-                                <Image source={require('../../../assets/imgGP2/mapa.png')} />
-                                <Text style={styles.textDadosModal}>{item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado}</Text>
-                            </View>
-
-                            <View style={styles.boxDadosModal}>
-                                <Image source={require('../../../assets/imgGP2/local.png')} />
-                                <Text style={styles.textDadosModal}>Presencial</Text>
-
-                                <Image source={require('../../../assets/imgGP2/dataFinal.png')} />
-                                <Text style={styles.textDadosModal}>
-                                    {Intl.DateTimeFormat("pt-BR", {
-                                        year: 'numeric', month: 'numeric', day: 'numeric'
-                                    }).format(new Date(item.dataFinalizacao))}
-                                </Text>
-                            </View>
-
-                            <View style={styles.boxDescricaoModal}>
-                                <Text style={styles.descricaoModal}>Descrição:</Text>
-                                <ReadMore
-                                    style={styles.boxVerMais}
-                                    numberOfLines={1}
-                                    renderTruncatedFooter={this._renderTruncatedFooter}
-                                    renderRevealedFooter={this._renderRevealedFooter}
-                                    onReady={this._handleTextReady}
-                                >
-                                    <Text style={styles.textDescricaoModal}>O curso habilita profissionais técnicos de nível médio em
-                                        Desenvolvimento de Sistemas, visando suprir a demanda do
-                                        mercado por profissionais qualificados para atuarem em
-                                        programação e desenvolvimento de software com condições
-                                        técnico-tecnológicas para atender às exigências e evolução
-                                        do segmento.</Text>
-                                </ReadMore>
-                                
-                                <View style={styles.boxEmpresa}>
-                                    <Text style={styles.tituloEmpresa}>Empresa: </Text>
-                                    <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text>
+                            <View style={styles.boxDadosCurso}>
+                                <View style={styles.boxDados}>
+                                    <Image style={styles.imgDados} source={require('../../../assets/imgGP2/relogio.png')} />
+                                    <Text style={styles.textDados}>{item.cargaHoraria}</Text>
                                 </View>
 
-                                <View style={styles.boxValorInscrever}>
-                                    <View style={styles.boxPrecoModal}>
-                                        <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                        <Text style={styles.textDados}>1024</Text>
-                                    </View>
+                                <View style={styles.boxDados}>
+                                    <Image style={styles.imgDados} source={require('../../../assets/imgGP2/local.png')} />
+                                    <Text style={styles.textDados}>{this.modalidade(item)}</Text>
+                                </View>
+                            </View>
 
-                                    <View style={styles.boxInscreverModal}>
-                                        <Pressable style={styles.inscreverModal} onPress={() => { this.showAlert() }}  >
-                                            <Text style={styles.textDetalhes}>Inscreva-se</Text>
-                                        </Pressable>
-                                    </View>
+                            <View style={styles.boxPrecoFavorito}>
+                                <View style={styles.boxPreco}>
+                                    <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
+                                    <Text style={styles.textDados}>1024</Text>
                                 </View>
 
-                                <AwesomeAlert
-                                    style={styles.bao}
-                                    show={this.state.showAlert}
-                                    showProgress={false}
-                                    title="Sucesso"
-                                    message="Você foi inscrito no curso!"
-                                    closeOnTouchOutside={true}
-                                    closeOnHardwareBackPress={false}
-                                    showCancelButton={true}
-                                    cancelText="Okay"
-                                    cancelButtonColor="#C20004"
-                                    cancelButtonStyle={this.alertView = StyleSheet.create({
-                                        width: 150,
-                                        paddingLeft: 62
-                                    })}
-                                    onCancelPressed={() => {
-                                        this.hideAlert();
-                                    }}
-                                />
+                                <View style={styles.boxFavorito}>
+                                    <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
+                                </View>
                             </View>
-                        </View>
-                    </Pressable>
-                </View>
-            </Modal>
+                        {/* </Pressable> */}
+                    </View>
+                </Pressable>
+
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={this.state.modalVisivel}
+                    //key={item.idCurso == AsyncStorage.getItem('cursoBuscado')}
+                    onRequestClose={() => {
+                        this.setModalVisivel(!this.state.modalVisivel)
+                    }}
+                >
+
+                    <View style={styles.totalModal}>
+                        <Pressable onPress={() => this.setModalVisivel(!this.state.modalVisivel)} >
+                            <View style={styles.containerModal}>
+                                <ScrollView>
+                                    <View style={styles.boxTituloModal}>
+                                        <View style={styles.boxImgCurso}>
+                                            <Image style={styles.imgModalCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
+                                        </View>
+                                        <Text style={styles.textTituloModal}>{item.nomeCurso}</Text>
+                                    </View>
+                                    <View style={styles.boxAvaliacaoModal}>
+                                        <AirbnbRating
+                                            count={5}
+                                            //starImage={star}
+                                            showRating={false}
+                                            selectedColor={'#C20004'}
+                                            defaultRating={item.mediaAvaliacao}
+                                            isDisabled={true}
+                                            size={20}
+                                        />
+                                    </View>
+
+                                    <View style={styles.boxDadosModal}>
+                                        <Image source={require('../../../assets/imgGP2/relogio.png')} />
+                                        <Text style={styles.textDadosModal}>{item.cargaHoraria}</Text>
+
+                                        <Image source={require('../../../assets/imgGP2/mapa.png')} />
+                                        <Text style={styles.textDadosModal}>{item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado}</Text>
+                                    </View>
+
+                                    <View style={styles.boxDadosModal}>
+                                        <Image source={require('../../../assets/imgGP2/local.png')} />
+                                        <Text style={styles.textDadosModal}>Presencial</Text>
+
+                                        <Image source={require('../../../assets/imgGP2/dataFinal.png')} />
+                                        <Text style={styles.textDadosModal}>
+                                            {Intl.DateTimeFormat("pt-BR", {
+                                                year: 'numeric', month: 'numeric', day: 'numeric'
+                                            }).format(new Date(item.dataFinalizacao))}
+                                        </Text>
+                                    </View>
+
+                                    <View style={styles.boxDescricaoModal}>
+                                        <Text style={styles.descricaoModal}>Descrição:</Text>
+                                        <ReadMore
+                                            style={styles.boxVerMais}
+                                            numberOfLines={3}
+                                            renderTruncatedFooter={this._renderTruncatedFooter}
+                                            renderRevealedFooter={this._renderRevealedFooter}
+                                            onReady={this._handleTextReady}
+                                        >
+                                            <Text style={styles.textDescricaoModal}>O curso habilita profissionais técnicos de nível médio em
+                                                Desenvolvimento de Sistemas, visando suprir a demanda do
+                                                mercado por profissionais qualificados para atuarem em
+                                                programação e desenvolvimento de software com condições
+                                                técnico-tecnológicas para atender às exigências e evolução
+                                                do segmento.</Text>
+                                        </ReadMore>
+
+                                        <View style={styles.boxEmpresa}>
+                                            <Text style={styles.tituloEmpresa}>Empresa: </Text>
+                                            <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text>
+                                        </View>
+
+                                        <View style={styles.boxValorInscrever}>
+                                            <View style={styles.boxPrecoModal}>
+                                                <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
+                                                <Text style={styles.textDados}>1024</Text>
+                                            </View>
+
+                                            <View style={styles.boxInscreverModal}>
+                                                <Pressable style={styles.inscreverModal} onPress={() => { this.showAlert() }}  >
+                                                    <Text style={styles.textDetalhes}>Inscreva-se</Text>
+                                                </Pressable>
+                                            </View>
+                                        </View>
+
+                                        <AwesomeAlert
+                                            style={styles.bao}
+                                            show={this.state.showAlert}
+                                            showProgress={false}
+                                            title="Sucesso"
+                                            message="Você foi inscrito no curso!"
+                                            closeOnTouchOutside={true}
+                                            closeOnHardwareBackPress={false}
+                                            showCancelButton={true}
+                                            cancelText="Okay"
+                                            cancelButtonColor="#C20004"
+                                            cancelButtonStyle={this.alertView = StyleSheet.create({
+                                                width: 150,
+                                                paddingLeft: 62
+                                            })}
+                                            onCancelPressed={() => {
+                                                this.hideAlert();
+                                            }}
+                                        />
+                                    </View>
+                                </ScrollView>
+                            </View>
+                        </Pressable>
+                    </View>
+                </Modal>
+            </View>
         </View>
     );
-    _renderTruncatedFooter = (handlePress) => {
-        return (
-          <Text style={{color: '#CB334B', marginTop: 5}} onPress={handlePress}>
-            Ver mais
-          </Text>
-        );
-      }
-     
-      _renderRevealedFooter = (handlePress) => {
-        return (
-          <Text style={{color: '#CB334B', marginTop: 5}} onPress={handlePress}>
-            Ver menos
-          </Text>
-        );
-      }
-     
-      _handleTextReady = () => {
-        // ...
-      }
 }
 const styles = StyleSheet.create({
     containerListagem: {
@@ -368,7 +374,7 @@ const styles = StyleSheet.create({
     },
     imgDados: {
         width: 19.6,
-        height: 19.3,
+        height: 19.8,
         marginTop: 1
     },
     textDados: {
@@ -420,14 +426,14 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255,255,255,0.5)',
     },
     containerModal: {
-        width: '80%',
-        height: '81.5%',
+        width: '83%',
+        height: '81%',
         backgroundColor: '#F2F2F2',
         borderWidth: 2,
         borderTopWidth: 0,
         borderColor: '#B3B3B3',
         //borderStyle: 'dashed',
-        marginLeft: 40,
+        marginLeft: 33,
         marginTop: 88,
         borderRadius: 10,
     },
@@ -435,7 +441,7 @@ const styles = StyleSheet.create({
         //alignItems: 'center',
     },
     imgModalCurso: {
-        width: '101.2%',
+        width: '101.5%',
         height: 100,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
@@ -460,7 +466,7 @@ const styles = StyleSheet.create({
         marginLeft: 16,
     },
     textDadosModal: {
-        width: 80,
+        width: 120,
         marginLeft: 16
     },
     boxDescricaoModal: {
@@ -506,6 +512,7 @@ const styles = StyleSheet.create({
     boxValorInscrever: {
         display: 'flex',
         flexDirection: 'row',
+        marginBottom: 10
     },
     boxPrecoModal: {
         width: 90,
@@ -530,6 +537,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 32
+        marginTop: 32,
+        marginLeft: 24
     },
 })
