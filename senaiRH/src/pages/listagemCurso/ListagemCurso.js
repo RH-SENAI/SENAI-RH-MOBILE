@@ -6,8 +6,8 @@ import {
     Modal,
     Pressable,
     Image,
-    Alert,
-    FlatList
+    FlatList,
+    ScrollView
 } from 'react-native';
 
 import { AsyncStorage } from '@react-native-async-storage/async-storage';
@@ -16,6 +16,7 @@ import { AppRegistry } from 'react-native-web';
 import ExplodingHeart from 'react-native-exploding-heart';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import ReadMore from 'react-native-read-more-text';
 import api from '../../services/apiGrupo2.js';
 
 //const value = 2.4
@@ -74,14 +75,13 @@ export default class ListagemCurso extends Component {
     };
 
     hideAlert = () => {
-        this.setState({           
+        this.setState({
             showAlert: false
         });
     };
 
     modalidade = (item) => {
-        if (item.modalidadeCurso == true)
-        {
+        if (item.modalidadeCurso == true) {
             return 'Presencial'
         }
         else {
@@ -196,28 +196,42 @@ export default class ListagemCurso extends Component {
                             </View>
 
                             <View style={styles.boxDadosModal}>
-                                <Image style={styles.imgRelogio} source={require('../../../assets/imgGP2/relogio.png')} />
+                                <Image source={require('../../../assets/imgGP2/relogio.png')} />
                                 <Text style={styles.textDadosModal}>{item.cargaHoraria}</Text>
 
-                                <Image style={styles.imgMapa} source={require('../../../assets/imgGP2/mapa.png')} />
+                                <Image source={require('../../../assets/imgGP2/mapa.png')} />
                                 <Text style={styles.textDadosModal}>{item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado}</Text>
                             </View>
 
                             <View style={styles.boxDadosModal}>
-                                <Image style={styles.imgLocal} source={require('../../../assets/imgGP2/local.png')} />
-                                <Text style={styles.textDadosModal}>{item.modalidadeCurso}</Text>
+                                <Image source={require('../../../assets/imgGP2/local.png')} />
+                                <Text style={styles.textDadosModal}>Presencial</Text>
 
-                                <Image style={styles.imgDataFinal} source={require('../../../assets/imgGP2/dataFinal.png')} />
+                                <Image source={require('../../../assets/imgGP2/dataFinal.png')} />
                                 <Text style={styles.textDadosModal}>
-                                    {/* {Intl.DateTimeFormat("pt-BR", {
+                                    {Intl.DateTimeFormat("pt-BR", {
                                         year: 'numeric', month: 'numeric', day: 'numeric'
-                                    }).format(new Date(item.dataFinalizacao))} */}
+                                    }).format(new Date(item.dataFinalizacao))}
                                 </Text>
                             </View>
 
                             <View style={styles.boxDescricaoModal}>
                                 <Text style={styles.descricaoModal}>Descrição:</Text>
-                                <Text style={styles.textDescricaoModal}>{item.descricaoCurso}</Text>
+                                <ReadMore
+                                    style={styles.boxVerMais}
+                                    numberOfLines={1}
+                                    renderTruncatedFooter={this._renderTruncatedFooter}
+                                    renderRevealedFooter={this._renderRevealedFooter}
+                                    onReady={this._handleTextReady}
+                                >
+                                    <Text style={styles.textDescricaoModal}>O curso habilita profissionais técnicos de nível médio em
+                                        Desenvolvimento de Sistemas, visando suprir a demanda do
+                                        mercado por profissionais qualificados para atuarem em
+                                        programação e desenvolvimento de software com condições
+                                        técnico-tecnológicas para atender às exigências e evolução
+                                        do segmento.</Text>
+                                </ReadMore>
+                                
                                 <View style={styles.boxEmpresa}>
                                     <Text style={styles.tituloEmpresa}>Empresa: </Text>
                                     <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text>
@@ -236,7 +250,7 @@ export default class ListagemCurso extends Component {
                                     </View>
                                 </View>
 
-                                <AwesomeAlert 
+                                <AwesomeAlert
                                     style={styles.bao}
                                     show={this.state.showAlert}
                                     showProgress={false}
@@ -248,8 +262,9 @@ export default class ListagemCurso extends Component {
                                     cancelText="Okay"
                                     cancelButtonColor="#C20004"
                                     cancelButtonStyle={this.alertView = StyleSheet.create({
-                                        width: 150, 
-                                        justifyContent: 'center'})}
+                                        width: 150,
+                                        paddingLeft: 62
+                                    })}
                                     onCancelPressed={() => {
                                         this.hideAlert();
                                     }}
@@ -261,6 +276,25 @@ export default class ListagemCurso extends Component {
             </Modal>
         </View>
     );
+    _renderTruncatedFooter = (handlePress) => {
+        return (
+          <Text style={{color: '#CB334B', marginTop: 5}} onPress={handlePress}>
+            Ver mais
+          </Text>
+        );
+      }
+     
+      _renderRevealedFooter = (handlePress) => {
+        return (
+          <Text style={{color: '#CB334B', marginTop: 5}} onPress={handlePress}>
+            Ver menos
+          </Text>
+        );
+      }
+     
+      _handleTextReady = () => {
+        // ...
+      }
 }
 const styles = StyleSheet.create({
     containerListagem: {
@@ -426,13 +460,8 @@ const styles = StyleSheet.create({
         marginLeft: 16,
     },
     textDadosModal: {
+        width: 80,
         marginLeft: 16
-    },
-    imgMapa: {
-        marginLeft: 24,
-    },
-    imgDataFinal: {
-        marginLeft: 53,
     },
     boxDescricaoModal: {
         width: 300,
@@ -444,10 +473,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#000',
     },
+    boxVerMais: {
+        height: 50
+    },
     textDescricaoModal: {
         //fontFamily: 'Montserrat-Normal',
         width: 280,
-        height: 150,
+        height: '18%',
         fontSize: 14,
         color: '#000',
         alignItems: 'center',

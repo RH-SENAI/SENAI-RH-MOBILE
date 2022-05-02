@@ -16,10 +16,15 @@ import Login from './src/pages/login/Login.js';
 import MinhasAtividades from './src/pages/minhasAtividades/MinhasAtividades.js';
 import MinhasExtras from './src/pages/minhasAtividades/MinhasExtras.js';
 import RankingGp1 from './src/pages/rankingGp1/RankingGp1.js';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 
 const Stack = createNativeStackNavigator();
 
 function App() {
+  if (!global.Intl) {
+    global.Intl = require('intl');
+  }
   return (
     <NavigationContainer>
       <StatusBar backgroundColor={'#C20004'} barStyle="light-content" />
