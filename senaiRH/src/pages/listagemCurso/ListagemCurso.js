@@ -23,7 +23,6 @@ export default class ListagemCurso extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            cursoBuscado: 0,
             modalVisivel: false,
             isFavorite: false,
             inscrito: '',
@@ -50,7 +49,15 @@ export default class ListagemCurso extends Component {
         }
     }
     setModalVisivel = (visible, id) => {
-        this.ProcurarCurso(id)
+        if(visible == true)
+        {
+            this.ProcurarCurso(id)
+        }
+        else if(visible == false)
+        {
+            this.setState({ cursoBuscado: [] })
+        }
+
         this.setState({ modalVisivel: visible })
     }
     componentDidMount() {
@@ -102,7 +109,7 @@ export default class ListagemCurso extends Component {
         try {
             const resposta = await api('/Cursos/' + id);
             if (resposta.status == 200) {
-                const dadosCurso = resposta.data;
+                const dadosCurso = await resposta.data;
                 this.setState({ cursoBuscado: dadosCurso })
             }
         }
@@ -157,8 +164,7 @@ export default class ListagemCurso extends Component {
                                     selectedColor={'#C20004'}
                                     defaultRating={item.mediaAvaliacaoCurso}
                                     isDisabled={true}
-                                    size={20}
-                                />
+                                    size={20}                                />
                             </View>
 
                             <View style={styles.boxDadosCurso}>
@@ -187,7 +193,7 @@ export default class ListagemCurso extends Component {
                 </Pressable>
 
                 <Modal
-                    animationType="fade"
+                    animationType="slide"
                     transparent={true}
                     visible={this.state.modalVisivel}
                     key={item.idCurso == this.state.cursoBuscado.idCurso}
