@@ -14,62 +14,107 @@ import {
 import { BlurView } from 'expo-blur';
 
 import { useNavigation } from "@react-navigation/native";
-// import AppLoading from 'expo-app-loading';
-// import { useFonts } from 'expo-font';
+import AppLoading from 'expo-app-loading';
+import { useFonts } from 'expo-font';
 
+import {
+    Quicksand_300Light,
+    Quicksand_400Regular,
+    Quicksand_500Medium,
+    Quicksand_600SemiBold,
+    Quicksand_700Bold,
+} from '@expo-google-fonts/quicksand'
+
+import {
+    Montserrat_100Thin,
+    Montserrat_200ExtraLight,
+    Montserrat_300Light,
+    Montserrat_400Regular,
+    Montserrat_500Medium,
+    Montserrat_600SemiBold,
+    Montserrat_700Bold,
+    Montserrat_800ExtraBold,
+    Montserrat_900Black,
+    Montserrat_100Thin_Italic,
+    Montserrat_200ExtraLight_Italic,
+    Montserrat_300Light_Italic,
+    Montserrat_400Regular_Italic,
+    Montserrat_500Medium_Italic,
+    Montserrat_600SemiBold_Italic,
+    Montserrat_700Bold_Italic,
+    Montserrat_800ExtraBold_Italic,
+    Montserrat_900Black_Italic,
+} from '@expo-google-fonts/montserrat';
 
 const MinhasAtividades = () => {
 
-    // let [customFonts] = useFonts({
-    //     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
-    //     'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
-    //     'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
-    //     'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
-    //     'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
-    //     'Quicksand-Light': require('../../../assets/fonts/Quicksand-Light.ttf'),
-    //     'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
-    //   });
-    
-    //   if (!customFonts) {
-    //     return <AppLoading />;
-    //   }
 
-    
+
+
     const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState(false)
 
     const [idUsuario, setIdUsuario] = useState(0);
     const [listaAtividades, setListaAtividades] = useState([])
-  
-   async function Atividades (){
-    try {
-      console.warn('tamo aqui')
-      const token = await AsyncStorage.getItem('userToken');
-      console.warn(token)
-      
-      const xambers = base64.decode(token.split('.')[1])
-      console.warn(xambers)
-      const userJson = JSON.parse(xambers)
-      
-      console.warn(userJson)
-      const resposta = await api.get('/Atividades/MinhasAtividade/' + xambers.jti,
-      {
-          headers: {
-            Authorization: 'Bearer ' + token,
-          },
-        },
-      );
-      if (resposta.status == 200) {
-        setListaAtividades(resposta.data)
 
-      }
-    } catch (error) {
-      console.warn(error);
+    async function Atividades() {
+        try {
+            console.warn('tamo aqui')
+            const token = await AsyncStorage.getItem('userToken');
+            console.warn(token)
+
+            const xambers = base64.decode(token.split('.')[1])
+            console.warn(xambers)
+            const userJson = JSON.parse(xambers)
+
+            console.warn(userJson)
+            const resposta = await api.get('/Atividades/MinhasAtividade/' + xambers.jti,
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + token,
+                    },
+                },
+            );
+            if (resposta.status == 200) {
+                setListaAtividades(resposta.data)
+
+            }
+        } catch (error) {
+            console.warn(error);
+        }
+    };
+
+    useEffect(() => Atividades, [])
+
+    let [fontsLoaded] = useFonts({
+        Regular: Quicksand_400Regular,
+        Light: Quicksand_300Light,
+        SemiBold: Quicksand_600SemiBold,
+        Bold: Quicksand_700Bold,
+        Medium: Quicksand_500Medium,
+        Montserrat_100Thin,
+        Montserrat_200ExtraLight,
+        Montserrat_300Light,
+        Montserrat_400Regular,
+        Montserrat_500Medium,
+        Montserrat_600SemiBold,
+        Montserrat_700Bold,
+        Montserrat_800ExtraBold,
+        Montserrat_900Black,
+        Montserrat_100Thin_Italic,
+        Montserrat_200ExtraLight_Italic,
+        Montserrat_300Light_Italic,
+        Montserrat_400Regular_Italic,
+        Montserrat_500Medium_Italic,
+        Montserrat_600SemiBold_Italic,
+        Montserrat_700Bold_Italic,
+        Montserrat_800ExtraBold_Italic,
+        Montserrat_900Black_Italic,
+    });
+
+    if (!fontsLoaded) {
+        return <AppLoading />;
     }
-  };
-
-  useEffect(() => Atividades, [])
-  
 
     return (
         <View style={styles.main}>
@@ -161,7 +206,7 @@ const MinhasAtividades = () => {
                                         <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
                                         <Text style={styles.criadorModal}> Nome pessoa reponsavel </Text>
                                         <TouchableOpacity style={styles.anexo}>
-                                        <Text style={styles.mais}>   + </Text>
+                                            <Text style={styles.mais}>   + </Text>
                                             <Text style={styles.txtanexo}>    Adicionar Anexo</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -186,13 +231,13 @@ const MinhasAtividades = () => {
 
 
                         </Modal>
- {/* <BlurView
+                        {/* <BlurView
   style={styles.absolute}
   blurType="light"
   blurAmount={10}
   reducedTransparencyFallbackColor="white"
  /> */}
-                        <TouchableOpacity style={styles.Modalbotao}  onPress={() => setModalVisible(true)}  >
+                        <TouchableOpacity style={styles.Modalbotao} onPress={() => setModalVisible(true)}  >
                             <Image source={require('../../../assets/img-gp1/setaModal.png')} />
                         </TouchableOpacity>
 
@@ -256,7 +301,7 @@ const styles = StyleSheet.create({
 
     font: {
         fontFamily: 'Quicksand-Regular',
-        color:"#636466",
+        color: "#636466",
         fontSize: 20,
         paddingBottom: 5,
     },
@@ -322,7 +367,7 @@ const styles = StyleSheet.create({
     },
 
     TituloAtividade: {
-       //  fontFamily: "Quicksand-SemiBold",
+        //  fontFamily: "Quicksand-SemiBold",
         fontSize: 18,
         color: "#0E0E0E",
         marginTop: 16,
@@ -363,7 +408,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         // justifyContent: 'flex-end',
         justifyContent: 'space-between',
-    
+
     },
 
 
@@ -410,11 +455,11 @@ const styles = StyleSheet.create({
 
     Modalbotao: {
         justifyContent: 'flex-start',
-        alignItems:'center',
+        alignItems: 'center',
         // paddingRight: 18,
         paddingTop: 6,
         // marginLeft:130,
-        paddingLeft:130
+        paddingLeft: 130
     },
 
     botao: {
@@ -434,7 +479,7 @@ const styles = StyleSheet.create({
     },
 
     texto: {
-       fontFamily: 'Montserrat-Medium',
+        fontFamily: 'Montserrat-Medium',
         color: '#E2E2E2',
         fontSize: 11,
         alignItems: 'center',
@@ -497,7 +542,7 @@ const styles = StyleSheet.create({
 
     },
     nomeBoxModal: {
-        fontFamily:'Quicksand-SemiBold',
+        fontFamily: 'Quicksand-SemiBold',
         textAlign: "center",
         paddingTop: 24,
         fontSize: 20
@@ -505,7 +550,7 @@ const styles = StyleSheet.create({
     },
 
     descricaoModal: {
-        fontFamily:'Quicksand-Regular',
+        fontFamily: 'Quicksand-Regular',
         paddingTop: 24,
         fontSize: 15,
         paddingBottom: 16,
@@ -513,32 +558,32 @@ const styles = StyleSheet.create({
     },
 
     itemPostadoModal: {
-        fontFamily:'Quicksand-Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     entregaModal: {
-        fontFamily:'Quicksand-Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     criadorModal: {
-       fontFamily:'Quicksand-Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     botoesModal: {
-        fontFamily:'Montserrat-Medium',
+        fontFamily: 'Montserrat-Medium',
         flexDirection: 'row',
         justifyContent: 'center',
         justifyContent: 'space-evenly',
-         paddingTop:30
+        paddingTop: 30
     },
 
     associarModal: {
@@ -548,7 +593,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#C20004',
         alignItems: 'center',
         justifyContent: 'center',
-       
+
     },
 
     fecharModal: {
@@ -562,31 +607,31 @@ const styles = StyleSheet.create({
         color: '#C20004'
     },
 
-    anexo:{
+    anexo: {
         borderWidth: 1,
-        borderRadius:5,
+        borderRadius: 5,
         borderColor: '#B3B3B3',
-        width:175,
+        width: 175,
         marginLeft: 19,
         justifyContent: 'space-between',
         alignItems: 'center',
         flexDirection: 'row',
-        height:30
-    },
-    
-    
-    txtanexo:{
-        fontFamily:'Quicksand-Regular',
-       marginRight:40
+        height: 30
     },
 
-    mais:{
-        fontSize:21,
-        textAlign:'center'
-     },
 
-    textoFechar:{
-        fontFamily:'Montserrat-Medium',
+    txtanexo: {
+        fontFamily: 'Quicksand-Regular',
+        marginRight: 40
+    },
+
+    mais: {
+        fontSize: 21,
+        textAlign: 'center'
+    },
+
+    textoFechar: {
+        fontFamily: 'Montserrat-Medium',
         color: '#C20004'
     },
 

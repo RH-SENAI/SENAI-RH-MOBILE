@@ -16,9 +16,9 @@ function App() {
     <NavigationContainer>
       <StatusBar backgroundColor={'#C20004'} barStyle="light-content" />
       <Stack.Navigator>
-        <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
+        {/* <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-        <Stack.Screen name="Redirecionar" component={Redirecionar} />
+        <Stack.Screen name="Redirecionar" component={Redirecionar} /> */}
         <Stack.Screen name="MainMotivar" component={MainMotivar} />
         
       </Stack.Navigator>

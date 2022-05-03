@@ -1,14 +1,20 @@
-import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  Image,
-  TouchableOpacity,
-  Modal,
-} from "react-native";
+import React, { useEffect, useState, useLayoutEffect } from "react";
+import { View, StyleSheet, Text, Image, Modal } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Entypo, Feather, AntDesign } from "@expo/vector-icons";
+import { useFonts } from 'expo-font';
+import AppLoading from 'expo-app-loading';
+
+import { EvilIcons, Entypo, Feather, AntDesign } from "@expo/vector-icons";
+
+import { useNavigation } from "@react-navigation/native";
+
+import {
+  Quicksand_300Light,
+  Quicksand_400Regular,
+  Quicksand_500Medium,
+  Quicksand_600SemiBold,
+  Quicksand_700Bold,
+} from '@expo-google-fonts/quicksand'
 
 
 const Tab = createBottomTabNavigator();
@@ -17,52 +23,31 @@ import Atividades from "../atividades/Atividades.js";
 import MinhasAtividades from "../minhasAtividades/MinhasAtividades.js";
 import RankingGp1 from "../rankingGp1/RankingGp1.js";
 import Perfil from "../perfil/Perfil.js";
-// let [fontsLoaded] = useFonts({
-//         'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
-//         'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
-//         'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
-//         'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
-//         'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
-//         'Quicksand-Light': require('../../../assets/fonts/Quicksand-Light.ttf'),
-//         'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
-//       });
-    
-//       if (!fontsLoaded) {
-//         return <AppLoading />;
-//       }
+import Redirecionar from "../redirecionar/Redirecionar.js";
 
 
 function ButtonNew({ size, color }) {
-  const [modalAberto, setModalAberto] = useState(false);
-
   return (
-    <View style={StyleSheet.container}>
-        
-      <Modal visible={modalAberto} animationType="slide">
-        <AntDesign
-          name="close"
-          size={30}
-          color="black"
-          style={styles.iconClose}
-          onPress={() => setModalAberto(false)}
-        />
-        <Text>deu CERTO</Text>
-      </Modal>
-
-      <View style={StyleSheet.botao}>
-        <Entypo
-          name="plus"
-          color={color}
-          size={size}
-          onPress={() => setModalAberto(true)}
-        />
-        
-      </View>
+    <View style={styles.container}>
+      <Entypo name="plus" color={color} size={size} />
     </View>
   );
 }
 
+
 export default function MainMotivar() {
+  let [fontsLoaded] = useFonts({
+    Regular: Quicksand_400Regular,
+    Light: Quicksand_300Light,
+    SemiBold: Quicksand_600SemiBold,
+    Bold: Quicksand_700Bold,
+    Medium: Quicksand_500Medium,
+  });
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -78,24 +63,16 @@ export default function MainMotivar() {
           paddingTop: 5,
         },
       }}
-      initialRouteName="Redirecionar"
+      initialRouteName="Atividades"
     >
-       <Tab.Screen
+      <Tab.Screen
         name="Atividades"
         component={Atividades}
         options={{
           tabBarIcon: ({ size, color }) => (
-            <Feather name="pie-chart" size={size} color={color} />
+            <Entypo name="news" size={size} color={color} />
           ),
-        }}
-      />
-       <Tab.Screen
-        name="RankingGp1"
-        component={RankingGp1}
-        options={{
-          tabBarIcon: ({ size, color }) => (
-            <Feather name="pie-chart" size={size} color={color} />
-          ),
+
         }}
       />
 
@@ -104,11 +81,37 @@ export default function MainMotivar() {
         component={MinhasAtividades}
         options={{
           tabBarIcon: ({ size, color }) => (
-            <Entypo name="chat" size={size} color={color} />
+            <AntDesign name="solution1" size={size} color={color} />
           ),
         }}
       />
-       <Tab.Screen
+
+      <Tab.Screen
+        name="Redirecionar"
+        component={Redirecionar}
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <ButtonNew size={size} color={color} />
+          ),
+          tabBarLabel: "",
+          //headerShown: false,
+        }}
+      />
+
+      <Tab.Screen
+        name="Ranking"
+        component={RankingGp1}
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <EvilIcons name="trophy" size={35} color={color} />
+          ),
+          headerShown: false,
+        }}
+      />
+
+      {/* <ButtonNew /> */}
+
+      <Tab.Screen
         name="Perfil"
         component={Perfil}
         options={{
@@ -116,35 +119,34 @@ export default function MainMotivar() {
             <Feather name="user" size={size} color={color} />
           ),
         }}
-      /> 
+      />
     </Tab.Navigator>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    height: 40,
-    alignSelf: "center",
-    marginTop: 40,
-    marginBottom: 20,
-  },
+  // container: {
+  //   width: "100%",
+  //   height: 40,
+  //   alignSelf: "center",
+  //   marginTop: 40,
+  //   marginBottom: 20,
+  // },
 
-  botao: {
+  container: {
     width: 55,
     height: 55,
     borderRadius: 27.5,
     backgroundColor: "#f1f1f1",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 5,
-    borderWidth: 3,
+    marginBottom: 15,
+    borderWidth: 4,
     borderColor: "#C20004",
+    marginLeft: 9,
+    flexDirection: 'row',
+    fontFamily: 'Regular',
   },
 
-  iconClose: {
-    marginTop: 16,
-    marginLeft: 16,
-  },
+
 });
-
