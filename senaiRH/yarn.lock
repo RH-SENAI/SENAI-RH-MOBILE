@@ -1054,6 +1054,11 @@
     "exec-sh" "^0.3.2"
     "minimist" "^1.2.0"
 
+"@expo-google-fonts/quicksand@^0.2.2":
+  "integrity" "sha512-lK4KzY5dxKm+Vfvfcgiu41u7A39s7PJak0/bcmrCUTNUrz+ke80R3L98c6nbRCrSXD6ZOUmht12aJv2+zgglZg=="
+  "resolved" "https://registry.npmjs.org/@expo-google-fonts/quicksand/-/quicksand-0.2.2.tgz"
+  "version" "0.2.2"
+
 "@expo/config-plugins@^4.0.2", "@expo/config-plugins@4.0.6":
   "integrity" "sha512-K/KQaw/CU8uLQgk7sFnZC54YGHoGucKFfdjYeZx5ds2eyzbuMAiKzGFcxZ/S+1dVBZ8QHzwowsVBW3kuYhnQ3Q=="
   "resolved" "https://registry.npmjs.org/@expo/config-plugins/-/config-plugins-4.0.6.tgz"
