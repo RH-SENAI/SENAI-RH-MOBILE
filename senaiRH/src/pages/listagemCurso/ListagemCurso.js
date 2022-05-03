@@ -49,7 +49,8 @@ export default class ListagemCurso extends Component {
             console.warn(erro);
         }
     }
-    setModalVisivel = (visible) => {
+    setModalVisivel = (visible, id) => {
+        this.ProcurarCurso(id)
         this.setState({ modalVisivel: visible })
     }
     componentDidMount() {
@@ -101,7 +102,8 @@ export default class ListagemCurso extends Component {
         try {
             const resposta = await api('/Cursos/' + id);
             if (resposta.status == 200) {
-                await AsyncStorage.setItem('cursoBuscado', JSON.stringify(id));
+                const dadosCurso = resposta.data;
+                this.setState({ cursoBuscado: dadosCurso })
             }
         }
         catch (erro) {
@@ -137,9 +139,8 @@ export default class ListagemCurso extends Component {
     renderItem = ({ item }) => (
         <View>
             <View style={styles.containerCurso}>
-                <Pressable onPress={() => this.setModalVisivel(true)}>
+                <Pressable onPress={() => this.setModalVisivel(true, item.idCurso)}>
                     <View style={styles.boxCurso}>
-                        {/* <Pressable onPress={() => this.ProcurarCurso(11)}> */}
                             <View style={styles.boxImgCurso}>
                                 <Image style={styles.imgCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
                             </View>
@@ -182,7 +183,6 @@ export default class ListagemCurso extends Component {
                                     <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
                                 </View>
                             </View>
-                        {/* </Pressable> */}
                     </View>
                 </Pressable>
 
@@ -190,7 +190,7 @@ export default class ListagemCurso extends Component {
                     animationType="fade"
                     transparent={true}
                     visible={this.state.modalVisivel}
-                    //key={item.idCurso == AsyncStorage.getItem('cursoBuscado')}
+                    key={item.idCurso == this.state.cursoBuscado.idCurso}
                     onRequestClose={() => {
                         this.setModalVisivel(!this.state.modalVisivel)
                     }}
