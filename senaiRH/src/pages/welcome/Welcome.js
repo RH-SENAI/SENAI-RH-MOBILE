@@ -60,6 +60,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  containerForm: {
+    flex: 1,
+    backgroundColor: '#C20004',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    paddingStart: '5%',
+    paddingEnd: '5%'
+  },
   tituLogo: {
     width: '100%',
     marginBottom: '10%'
@@ -69,15 +77,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: '3%',
     color: '#C20004',
-    fontStyle:'italic'
-  },
-  containerForm: {
-    flex: 1,
-    backgroundColor: '#C20004',
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    paddingStart: '5%',
-    paddingEnd: '5%'
+    fontStyle: 'italic'
   },
   title: {
     fontSize: 24,

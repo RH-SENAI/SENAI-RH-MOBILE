@@ -12,7 +12,8 @@ import { useNavigation } from "@react-navigation/native";
 import { Entypo, Feather } from '@expo/vector-icons'
 
 //import NovoFeedback from '../novoFeedback/NovoFeedback.js'
-import Democratizacao from '../democratizacao/Democratizacao.js'
+import Democratizacao from '../democratizacao/Democratizacao'
+import Teste from '../democratizacao/Teste.js'
 import Dashboard from '../dashboard/Dashboard.js'
 import Perfil from '../perfil/Perfil.js'
 import Ranking from '../ranking/Ranking.js'
@@ -58,8 +59,8 @@ export default function MainAcompanhar() {
                 options={{ tabBarIcon: ({ size, color }) => (<Feather name="pie-chart" size={size} color={color} />), headerShown: false }}
             />
             <Tab.Screen
-                name="Democratização"
-                component={Democratizacao}
+                name="Teste"
+                component={Teste}
                 options={{ tabBarIcon: ({ size, color }) => (<Entypo name="chat" size={size} color={color} />), headerShown: false }}
             />
             <Tab.Screen
