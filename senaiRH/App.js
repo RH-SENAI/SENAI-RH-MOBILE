@@ -10,6 +10,10 @@ import SignIn from './src/pages/signin/SignIn.js'
 import Redirecionar from './src/pages/redirecionar/Redirecionar.js'
 import MainAcompanhar from './src/pages/main/MainAcompanhar.js'
 
+import CadastrarFeedback from "./src/pages/democratizacao/CadastrarFeedback";
+import ListarFeedback from "./src/pages/democratizacao/ListarFeedbacks"
+import ListarDecisao from "./src/pages/democratizacao/ListarDecisao"
+
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -21,6 +25,9 @@ function App() {
         <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
         <Stack.Screen name="Redirecionar" component={Redirecionar} />
         <Stack.Screen name="MainAcompanhar" component={MainAcompanhar} />
+        <Stack.Screen name="CadastrarFeedback" component={CadastrarFeedback} />
+        <Stack.Screen name="ListarFeedbacks" component={ListarFeedback} />
+        <Stack.Screen name="ListarDecisao" component={ListarDecisao} />
       </Stack.Navigator>
     </NavigationContainer>
   );

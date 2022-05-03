@@ -1,5 +1,4 @@
 import React from "react";
-import * as Animatable from "react-native-animatable";
 import { Image, View, StyleSheet, TouchableOpacity, Text } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
