@@ -14,6 +14,7 @@ import { Entypo, Feather, AntDesign } from "@expo/vector-icons";
 const Tab = createBottomTabNavigator();
 
 import Atividades from "../atividades/Atividades.js";
+import AtividadesExtras from "../atividades/AtividadesExtras";
 import MinhasAtividades from "../minhasAtividades/MinhasAtividades.js";
 import RankingGp1 from "../rankingGp1/RankingGp1.js";
 import Perfil from "../perfil/Perfil.js";
