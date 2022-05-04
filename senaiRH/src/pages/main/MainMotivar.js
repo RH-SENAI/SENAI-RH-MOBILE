@@ -20,7 +20,6 @@ import {
 const Tab = createBottomTabNavigator();
 
 import Atividades from "../atividades/Atividades.js";
-import AtividadesExtras from "../atividades/AtividadesExtras";
 import MinhasAtividades from "../minhasAtividades/MinhasAtividades.js";
 import RankingGp1 from "../rankingGp1/RankingGp1.js";
 import Perfil from "../perfil/Perfil.js";
@@ -110,8 +109,6 @@ export default function MainMotivar() {
         }}
       />
 
-      {/* <ButtonNew /> */}
-
       <Tab.Screen
         name="Perfil"
         component={Perfil}
@@ -126,13 +123,6 @@ export default function MainMotivar() {
 }
 
 const styles = StyleSheet.create({
-  // container: {
-  //   width: "100%",
-  //   height: 40,
-  //   alignSelf: "center",
-  //   marginTop: 40,
-  //   marginBottom: 20,
-  // },
 
   container: {
     width: 55,

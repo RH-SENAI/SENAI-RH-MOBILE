@@ -96,8 +96,8 @@ const MinhasAtividades = () => {
         Montserrat_200ExtraLight,
         Montserrat_300Light,
         Montserrat_400Regular,
-        Montserrat_500Medium,
-        Montserrat_600SemiBold,
+        MediumM: Montserrat_500Medium,
+        SemiBoldM: Montserrat_600SemiBold,
         Montserrat_700Bold,
         Montserrat_800ExtraBold,
         Montserrat_900Black,
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     },
 
     font: {
-        fontFamily: 'Quicksand-Regular',
+        fontFamily: 'Regular',
         color: "#636466",
         fontSize: 20,
         paddingBottom: 5,
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     titulo: {
         color: '#B83F52',
         fontSize: 18,
-        fontFamily: 'Quicksand-SemiBold'
+        fontFamily: 'SemiBold',
     },
 
 
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
     },
 
     descricao: {
-        fontFamily: "Quicksand-Regular",
+        fontFamily: "Regular",
         textAlign: 'center',
         fontSize: 14,
         color: "#636466",
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
     },
 
     status: {
-        fontFamily: "Quicksand-Regular",
+        fontFamily: "Regular",
         fontSize: 14,
         color: "#636466",
     },
@@ -479,7 +479,7 @@ const styles = StyleSheet.create({
     },
 
     texto: {
-        fontFamily: 'Montserrat-Medium',
+        fontFamily: 'MediumM',
         color: '#E2E2E2',
         fontSize: 11,
         alignItems: 'center',
@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
     },
 
     textoIndisp: {
-        fontFamily: 'Montserrat-SemiBold',
+        fontFamily: 'SemiBoldM',
         color: '#000000',
         fontSize: 11,
         alignItems: 'center',
@@ -542,7 +542,7 @@ const styles = StyleSheet.create({
 
     },
     nomeBoxModal: {
-        fontFamily: 'Quicksand-SemiBold',
+        fontFamily: 'SemiBold',
         textAlign: "center",
         paddingTop: 24,
         fontSize: 20
@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
     },
 
     descricaoModal: {
-        fontFamily: 'Quicksand-Regular',
+        fontFamily: 'Regular',
         paddingTop: 24,
         fontSize: 15,
         paddingBottom: 16,
@@ -558,28 +558,28 @@ const styles = StyleSheet.create({
     },
 
     itemPostadoModal: {
-        fontFamily: 'Quicksand-Regular',
+        fontFamily: 'Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     entregaModal: {
-        fontFamily: 'Quicksand-Regular',
+        fontFamily: 'Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     criadorModal: {
-        fontFamily: 'Quicksand-Regular',
+        fontFamily: 'Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     botoesModal: {
-        fontFamily: 'Montserrat-Medium',
+        fontFamily: 'MediumM',
         flexDirection: 'row',
         justifyContent: 'center',
         justifyContent: 'space-evenly',
@@ -621,7 +621,7 @@ const styles = StyleSheet.create({
 
 
     txtanexo: {
-        fontFamily: 'Quicksand-Regular',
+        fontFamily: 'Regular',
         marginRight: 40
     },
 
@@ -631,7 +631,7 @@ const styles = StyleSheet.create({
     },
 
     textoFechar: {
-        fontFamily: 'Montserrat-Medium',
+        fontFamily: 'MediumM',
         color: '#C20004'
     },
 
