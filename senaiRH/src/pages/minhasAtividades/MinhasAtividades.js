@@ -49,15 +49,12 @@ import {
 const MinhasAtividades = () => {
 
 
-
-
     const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState(false)
+    const [listaAtividades, setListaAtividades] = useState([]);
 
-    const [idUsuario, setIdUsuario] = useState(0);
-    const [listaAtividades, setListaAtividades] = useState([])
 
-    async function Atividades() {
+    function MinhasAtividades() {
         try {
             console.warn('tamo aqui')
             const token = await AsyncStorage.getItem('userToken');
@@ -152,15 +149,14 @@ const MinhasAtividades = () => {
                 </View>
             </View>
 
-            {/*     
+
             <FlatList
-            data={listaAtividades}
-            keyExtractor={item => item.idAtividade}
-            renderItem={() => {renderItem()}}
-        /> */}
+                data={listaAtividades}
+                keyExtractor={item => item.idAtividade}
+                renderItem={renderItem}
+            />
 
-
-            <View style={styles.MinhaAtividade}>
+            {/* <View style={styles.MinhaAtividade}>
                 <View style={styles.quadradoeTexto}>
                     <View style={styles.quadrado}></View>
                     <Text style={styles.TituloAtividade}>Titulo da Atividade </Text>
@@ -172,7 +168,7 @@ const MinhasAtividades = () => {
                         <View style={styles.statusImagem}></View>
                         <View style={styles.statusImagem}>
                             <Image source={require('../../../assets/img-gp1/avaliando.png')} style={styles.avaliando} />
-                            <Text style={styles.status}>Em avaliação </Text>
+                            <Text style={styles.status}>Em avaliação </Text> */}
 
                             {/* 
                          <Image source={require('../../../assets/img-gp1/pendente.png')} style={styles.avaliando}/>
@@ -182,10 +178,10 @@ const MinhasAtividades = () => {
             <Text style={styles.status}>Validado </Text>  */}
 
 
-                        </View>
+                        {/* </View> */}
 
 
-                        <Modal
+                        {/* <Modal
                             animationType="slide"
                             transparent={true}
                             visible={modalVisible}
@@ -231,12 +227,6 @@ const MinhasAtividades = () => {
 
 
                         </Modal>
-                        {/* <BlurView
-  style={styles.absolute}
-  blurType="light"
-  blurAmount={10}
-  reducedTransparencyFallbackColor="white"
- /> */}
                         <TouchableOpacity style={styles.Modalbotao} onPress={() => setModalVisible(true)}  >
                             <Image source={require('../../../assets/img-gp1/setaModal.png')} />
                         </TouchableOpacity>
@@ -245,15 +235,101 @@ const MinhasAtividades = () => {
 
 
 
-                    </View>
-                </View>
-            </View>
+                    </View> */}
+                {/* </View> */}
+            {/* </View> */}
 
         </View >
 
     );
 
+
 }
+
+renderItem = ({ item }) => (
+
+<View>
+<View style={styles.MinhaAtividade}>
+                <View style={styles.quadradoeTexto}>
+                    <View style={styles.quadrado}></View>
+                    <Text style={styles.TituloAtividade}> {item.nomeAtividade}Titulo da Atividade </Text>
+
+                    <View style={styles.descricaoOlho}>
+                        <Text style={styles.descricao}>{item.dataConclusao}Data de Entrega: 18/03/2022 </Text>
+                    </View>
+                    <View style={styles.ModaleBotao}>
+                        <View style={styles.statusImagem}></View>
+                        <View style={styles.statusImagem}>
+                            <Image source={require('../../../assets/img-gp1/avaliando.png')} style={styles.avaliando} />
+                            <Text style={styles.status}>Em avaliação </Text>
+
+                            {/* 
+                         <Image source={require('../../../assets/img-gp1/pendente.png')} style={styles.avaliando}/>
+              <Text style={styles.status}>Pendente </Text> 
+              
+              <Image source={require('../../../assets/img-gp1/validado.png')} style={styles.avaliando}/>
+            <Text style={styles.status}>Validado </Text>  */}
+
+
+                        </View>
+
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={modalVisible}
+                            onRequestClose={() => {
+                                Alert.alert("Modal has been closed.");
+                                setModalVisible(!modalVisible);
+                            }}
+                        >
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <View style={styles.quadradoModal}></View>
+                                    <View style={styles.conteudoBoxModal}>
+                                        <Text style={styles.nomeBoxModal}> Titulo Atividade </Text>
+                                        <Text style={styles.descricaoModal}> Descrição Atividade </Text>
+                                        <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
+                                        <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
+                                        <Text style={styles.criadorModal}> Nome pessoa reponsavel </Text>
+                                        <TouchableOpacity style={styles.anexo}>
+                                            <Text style={styles.mais}>   + </Text>
+                                            <Text style={styles.txtanexo}>    Adicionar Anexo</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.botoesModal}  >
+                                        <TouchableOpacity >
+                                            <View style={styles.associarModal}>
+                                                <Text style={styles.texto}> Concluida </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+
+                                            onPress={() => setModalVisible(!modalVisible)}
+                                        >
+                                            <View style={styles.fecharModal}>
+                                                <Text style={styles.textoFechar}>Fechar X</Text>
+                                            </View>
+
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+
+
+                        </Modal>
+                        <TouchableOpacity style={styles.Modalbotao} onPress={() => setModalVisible(true)}  >
+                            <Image source={require('../../../assets/img-gp1/setaModal.png')} />
+                        </TouchableOpacity>
+
+                    </View>
+                </View>
+            </View>
+
+    </View>
+)
+
+
+
 const styles = StyleSheet.create({
 
     main: {
