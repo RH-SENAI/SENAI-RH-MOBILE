@@ -125,7 +125,6 @@ export default function Cadastro({route}) {
                 </Text>
               );
             }
-
           })}
 
         </Text>

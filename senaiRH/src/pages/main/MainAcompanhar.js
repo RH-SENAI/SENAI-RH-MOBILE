@@ -34,8 +34,10 @@ function ModalDemocratizacao(props) {
 
   const navigation = useNavigation();
 
+  
   const [modalAberto, setModalAberto] = useState(props.a);
-  useEffect(() => setModalAberto(true), [props]);
+
+  useEffect(() => setModalAberto(true),[props]);
 
   return (
     <Modal animationType="slide" visible={modalAberto}>
@@ -47,7 +49,7 @@ function ModalDemocratizacao(props) {
           size={30}
           color="black"
           onPress={() => {
-            setModalAberto(false);
+            setModalAberto(!modalAberto);
           }}
         />
         <View style={styles.containerLinks}>
@@ -108,13 +110,13 @@ export default function MainAcompanhar() {
       <Tab.Screen
         name="Democratização"
         component={ModalDemocratizacao}
-        initialParams={{ a: true }}
         options={{
           tabBarIcon: ({ size, color }) => (
             <Entypo name="chat" size={size} color={color} />
           ),
           headerShown: false,
         }}
+        initialParams={{a : true}}
       />
 
       <Tab.Screen

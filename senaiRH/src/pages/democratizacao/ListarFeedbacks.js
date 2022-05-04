@@ -16,84 +16,84 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ListaFeedback() {
 
-  const [listaFeedback, setListaFeedback] = useState([])
+  // const [listaFeedback, setListaFeedback] = useState([])
  
 
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
 
-  async function buscarFeedbacks() {
-    const token = await AsyncStorage.getItem('userToken');
+  // async function buscarFeedbacks() {
+  //   const token = await AsyncStorage.getItem('userToken');
     
     
-    if (token != null) {
-      const resposta = await api.get('Feedbacks/Listar', {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      });
+  //   if (token != null) {
+  //     const resposta = await api.get('Feedbacks/Listar', {
+  //       headers: {
+  //         Authorization: 'Bearer ' + token,
+  //       },
+  //     });
       
-      const dadosDaApi = await resposta.data;
+  //     const dadosDaApi = await resposta.data;
       
-      setListaFeedback(dadosDaApi);
-    }
-  };
+  //     setListaFeedback(dadosDaApi);
+  //   }
+  // };
   
-  useEffect(() => {
-    buscarFeedbacks()
-  },[])
+  // useEffect(() => {
+  //   buscarFeedbacks()
+  // },[])
 
 
-  const renderItem = ({ item }) => (
-    <View key = {item.idFeedback} style={styles.card}>
-      <TouchableOpacity
-         key = {item.idFeedback} onPress={() => navigation.navigate('cadastroFeedback', {idDecisao: item.idDecisao})}
-      >
-        <View key = {item.idFeedback} style={styles.tituloCardWrapper}>
-          <Text key = {item.idFeedback} style={styles.tituloCard}>
-            {item.idUsuarioNavigation.nome} disse sobre a proposta "
-            {item.idDecisaoNavigation.descricaoDecisao}"
-          </Text>
+  // const renderItem = ({ item }) => (
+  //   <View key = {item.idFeedback} style={styles.card}>
+  //     <TouchableOpacity
+  //        key = {item.idFeedback} onPress={() => navigation.navigate('cadastroFeedback', {idDecisao: item.idDecisao})}
+  //     >
+  //       <View key = {item.idFeedback} style={styles.tituloCardWrapper}>
+  //         <Text key = {item.idFeedback} style={styles.tituloCard}>
+  //           {item.idUsuarioNavigation.nome} disse sobre a proposta "
+  //           {item.idDecisaoNavigation.descricaoDecisao}"
+  //         </Text>
 
-        </View>
+  //       </View>
 
-        <View key = {item.idFeedback} style={styles.textoCard}>
-          <Text key = {item.idFeedback} style={styles.feedback}>{item.comentarioFeedBack}</Text>
-        </View>
-        <View key = {item.idFeedback} style={styles.fotoPerfil}>
-          <Image key = {item.idFeedback}
-            source={{ uri:
-              'http://192.168.3.156:5000/api/api/StaticFiles/Images/' +
-              item.caminhoFotoPerfil}
-            }
-            style={styles.img_perfil}
-          />
-        </View>
+  //       <View key = {item.idFeedback} style={styles.textoCard}>
+  //         <Text key = {item.idFeedback} style={styles.feedback}>{item.comentarioFeedBack}</Text>
+  //       </View>
+  //       <View key = {item.idFeedback} style={styles.fotoPerfil}>
+  //         <Image key = {item.idFeedback}
+  //           source={{ uri:
+  //             'http://192.168.3.156:5000/api/api/StaticFiles/Images/' +
+  //             item.caminhoFotoPerfil}
+  //           }
+  //           style={styles.img_perfil}
+  //         />
+  //       </View>
 
-      </TouchableOpacity>
-    </View>
-  );
+  //     </TouchableOpacity>
+  //   </View>
+  // );
 
 
   return (
     <View style={styles.container}>
-      <View style={styles.mainHeader}>
+      {/* <View style={styles.mainHeader}>
         <Image
           source={require('../../../assets/imgMobile/logo_2S.png')}
           style={styles.imgLogo}
-        />
-      </View>
+        /> */}
+      {/* </View> */}
 
       <Text style={styles.h1nonBold}> Feedbacks da</Text>
       <Text style={styles.h1Bold}> DEMOCRATIZAÇÃO</Text>
 
-      <View style={styles.containerFlatlist}>
-        <FlatList
-          contentContainerStyle={styles.mainBodyContent}
-          data={listaFeedback}
-          keyExtractor={item => item.idFeedback}
-          renderItem={renderItem}
-        />
-      </View>
+      {/* <View style={styles.containerFlatlist}>
+         <FlatList
+      //     contentContainerStyle={styles.mainBodyContent}
+      //     data={listaFeedback}
+      //     keyExtractor={item => item.idFeedback}
+      //     renderItem={renderItem}
+      //   />
+      // </View> */}
     </View>
   );
 }

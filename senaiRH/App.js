@@ -25,7 +25,7 @@ function App() {
         <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
         <Stack.Screen name="Redirecionar" component={Redirecionar} />
         <Stack.Screen name="MainAcompanhar" component={MainAcompanhar} />
-        <Stack.Screen name="CadastrarFeedback" component={CadastrarFeedback} />
+        <Stack.Screen name="CadastrarFeedback" component={CadastrarFeedback} initialParams={{a : true}} />
         <Stack.Screen name="ListarFeedbacks" component={ListarFeedback} />
         <Stack.Screen name="ListarDecisao" component={ListarDecisao} />
       </Stack.Navigator>
