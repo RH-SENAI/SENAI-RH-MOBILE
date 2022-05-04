@@ -21,8 +21,7 @@ import * as Font from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../services/apiGp1'
 import base64 from 'react-native-base64';
-import { parseJwt } from '../services/auth';
- import { JSON } from 'body-parser';
+
 
 let customFonts = {
     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
@@ -89,7 +88,7 @@ export default class AtividadesExtras extends Component {
         this.buscarAtividade();
     }
 
-    associar = async item => {
+    associar = async (item) => {
         try {
             const token = await AsyncStorage.getItem('userToken');
 
@@ -98,9 +97,9 @@ export default class AtividadesExtras extends Component {
             console.warn(item)
 
             const resposta = await api.post(
-                '/Atividades/Associar/' + user.jti,
+                '/Atividades/Associar/' + user.jti + '/' + item,
                 {
-                    idAtividade: item
+
                 },
                 {
                     headers: {
@@ -112,7 +111,7 @@ export default class AtividadesExtras extends Component {
 
 
             );
-            if (resposta.status == 201) {
+            if (resposta.status == 200) {
                 console.warn('Voce se associou a uma atividade');
             } else {
                 console.warn('Falha ao se associar.');

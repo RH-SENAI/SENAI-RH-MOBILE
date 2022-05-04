@@ -9,6 +9,7 @@ import Redirecionar from './src/pages/redirecionar/Redirecionar.js';
 import MainMotivar from './src/pages/main/MainMotivar.js';
 import Login from './src/pages/login/Login.js';
 import MinhasExtras from './src/pages/minhasAtividades/MinhasExtras'
+import AtividadesExtras from './src/pages/atividades/AtividadesExtras.js';
 
 const Stack = createNativeStackNavigator();
 
