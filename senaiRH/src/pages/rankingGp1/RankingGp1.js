@@ -45,6 +45,8 @@ import {
     Montserrat_800ExtraBold_Italic,
     Montserrat_900Black_Italic,
 } from '@expo-google-fonts/montserrat';
+import axios from "axios";
+import api from "../../services/apiGp1";
 
 export default function Ranking() {
 
@@ -73,6 +75,11 @@ export default function Ranking() {
         Montserrat_800ExtraBold_Italic,
         Montserrat_900Black_Italic,
       });
+
+
+      function retornaRanking() {
+        api.get('/Ranking')
+      }
     
       if (!customFonts) {
         return <AppLoading />;
