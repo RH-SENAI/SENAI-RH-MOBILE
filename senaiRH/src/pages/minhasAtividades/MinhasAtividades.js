@@ -84,7 +84,6 @@ const MinhasAtividades = () => {
         }
     };
 
-    useEffect(() => Atividades, [])
 
     let [fontsLoaded] = useFonts({
         Regular: Quicksand_400Regular,

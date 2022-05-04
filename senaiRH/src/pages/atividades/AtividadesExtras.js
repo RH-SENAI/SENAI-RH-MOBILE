@@ -171,6 +171,44 @@ export default class AtividadesExtras extends Component {
                                     keyExtractor={item => item.idAtividade}
                                     renderItem={this.renderItem} />
 
+
+
+            
+
+{/* 
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <View style={styles.quadradoModal}></View>
+                            <View style={styles.conteudoBoxModal}>
+                                <Text style={styles.nomeBoxModal}>dfghjklç</Text>
+                                <Text style={styles.descricaoModal}> Descrição Atividade </Text>
+                                <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
+                                <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
+                                <Text style={styles.criadorModal}> Criador da atividade </Text>
+                            </View>
+                            <View style={styles.botoesModal}  >
+                                <Pressable >
+                                    <View style={styles.associarModal}>
+                                        <Text style={styles.texto}> Me Associar </Text>
+                                    </View>
+                                </Pressable>
+                                <Pressable
+
+                                    onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                                >
+                                    <View style={styles.fecharModal}>
+                                        <Text style={styles.textoFechar}>Fechar X</Text>
+                                    </View>
+
+                                </Pressable>
+                            </View>
+                        </View>
+
+                    </View> */}
+
+         
+
+
                             </View>
 
                         </View>
@@ -211,7 +249,6 @@ export default class AtividadesExtras extends Component {
                             </View>
                         </Pressable>
 
-
                         <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true,3 )}  >
                             <Image source={require('../../../assets/img-gp1/setaModal.png')} />
                         </Pressable>
@@ -220,15 +257,16 @@ export default class AtividadesExtras extends Component {
                 </View>
 
                 <Modal
-                    animationType="fade"
+                    animationType="slide"
                     transparent={true}
                     visible={this.state.modalVisible}
-                    key={item.idAtividade == this.state.AtividadeBuscada.idAtividade}
+                    key={item.idAtividade == this.state.AtividadeBuscada.idAtividade}           
                     onRequestClose={() => {
-                        console.warn(item)
+                       console.warn(item)
                         this.setModalVisible(!this.state.modalVisible)
                     }}
                 >
+
 
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
@@ -264,6 +302,51 @@ export default class AtividadesExtras extends Component {
             </View>
 
     )
+
+   
+
+    
+//     renderItemModal = ({ item }) => (
+
+        
+//         <View style={styles.boxAtividade}>
+
+
+
+//                 <View style={styles.centeredView}>
+//                     <View style={styles.modalView}>
+//                         <View style={styles.quadradoModal}></View>
+//                         <View style={styles.conteudoBoxModal}>
+//                             <Text style={styles.nomeBoxModal}>{item.nomeAtividade} </Text>
+//                             <Text style={styles.descricaoModal}> Descrição Atividade </Text>
+//                             <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
+//                             <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
+//                             <Text style={styles.criadorModal}> Criador da atividade </Text>
+//                         </View>
+//                         <View style={styles.botoesModal}  >
+//                             <Pressable >
+//                                 <View style={styles.associarModal}>
+//                                     <Text style={styles.texto}> Me Associar </Text>
+//                                 </View>
+//                             </Pressable>
+//                             <Pressable
+
+//                                 onPress={() => this.setModalVisible(!this.state.modalVisible)}
+//                             >
+//                                 <View style={styles.fecharModal}>
+//                                     <Text style={styles.textoFechar}>Fechar X</Text>
+//                                 </View>
+
+//                             </Pressable>
+//                         </View>
+//                     </View>
+
+//                 </View>
+                
+
+//         </View>
+
+// )
 
 
 
