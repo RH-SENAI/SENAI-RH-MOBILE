@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 
 import * as Font from 'expo-font';
+import AppLoading from 'expo-app-loading';
+
 
 let customFonts = {
   'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
@@ -43,6 +45,9 @@ export default class Atividades extends Component {
       }
 
     render() {
+        if (!customFonts) {
+            return <AppLoading />;
+        }
         const { modalVisible } = this.state;
         return (
             <View style={styles.main}>

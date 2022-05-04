@@ -6,17 +6,65 @@ import { useNavigation } from "@react-navigation/native";
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
 
+
+import {
+  Quicksand_300Light,
+  Quicksand_400Regular,
+  Quicksand_500Medium,
+  Quicksand_600SemiBold,
+  Quicksand_700Bold,
+} from '@expo-google-fonts/quicksand'
+
+import {
+  Montserrat_100Thin,
+  Montserrat_200ExtraLight,
+  Montserrat_300Light,
+  Montserrat_400Regular,
+  Montserrat_500Medium,
+  Montserrat_600SemiBold,
+  Montserrat_700Bold,
+  Montserrat_800ExtraBold,
+  Montserrat_900Black,
+  Montserrat_100Thin_Italic,
+  Montserrat_200ExtraLight_Italic,
+  Montserrat_300Light_Italic,
+  Montserrat_400Regular_Italic,
+  Montserrat_500Medium_Italic,
+  Montserrat_600SemiBold_Italic,
+  Montserrat_700Bold_Italic,
+  Montserrat_800ExtraBold_Italic,
+  Montserrat_900Black_Italic,
+} from '@expo-google-fonts/montserrat';
+
+
+
 export default function Redirecionar() {
   const navigation = useNavigation();
 
     let [fontsLoaded] = useFonts({
-        'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
-        'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
-        'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
-        'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
-        'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
-        'Quicksand-Light': require('../../../assets/fonts/Quicksand-Light.ttf'),
-        'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
+      Regular: Quicksand_400Regular,
+      Light: Quicksand_300Light,
+      SemiBold: Quicksand_600SemiBold,
+      Bold: Quicksand_700Bold,
+      Medium: Quicksand_500Medium,
+      Montserrat_100Thin,
+      Montserrat_200ExtraLight,
+      Montserrat_300Light,
+      Montserrat_400Regular,
+      MediumM: Montserrat_500Medium,
+      SemiBoldM: Montserrat_600SemiBold,
+      Montserrat_700Bold,
+      Montserrat_800ExtraBold,
+      Montserrat_900Black,
+      Montserrat_100Thin_Italic,
+      Montserrat_200ExtraLight_Italic,
+      Montserrat_300Light_Italic,
+      Montserrat_400Regular_Italic,
+      Montserrat_500Medium_Italic,
+      Montserrat_600SemiBold_Italic,
+      Montserrat_700Bold_Italic,
+      Montserrat_800ExtraBold_Italic,
+      Montserrat_900Black_Italic,
       });
     
       if (!fontsLoaded) {
@@ -78,7 +126,7 @@ const styles = StyleSheet.create({
     width: '80%',
     textAlign: 'center',
     marginBottom: 15,
-    fontFamily:'Montserrat-SemiBold'
+    fontFamily:'SemiBoldM'
   },
   button: {
     flexDirection: 'row',
@@ -100,6 +148,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     // fontWeight: "bold",
     marginLeft: 40,
-    fontFamily:'Quicksand-Regular'
+    fontFamily:'Regular'
   },
 });

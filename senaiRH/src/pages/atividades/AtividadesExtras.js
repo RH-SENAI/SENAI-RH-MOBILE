@@ -16,12 +16,13 @@ import {
     Pressable
 } from 'react-native';
 
+import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../services/apiGp1'
 import base64 from 'react-native-base64';
-// import { parseJwt } from '../services/auth';
-//  import { JSON } from 'body-parser';
+import { parseJwt } from '../services/auth';
+ import { JSON } from 'body-parser';
 
 let customFonts = {
     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
@@ -122,6 +123,9 @@ export default class AtividadesExtras extends Component {
     }
 
     render() {
+        if (!customFonts) {
+            return <AppLoading />;
+        }
         return (
 
             <View style={styles.main}>
