@@ -1,51 +1,81 @@
-import * as React from 'react';
-import { View, Text, Button } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
-import * as Animatable from 'react-native-animatable'
+import React, { useState } from "react";
+import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
 
-function HomeScreen({ navigation }) {
+const Teste = () => {
+  const [modalVisible, setModalVisible] = useState(false);
   return (
-    <Animatable.View animation="fadeInUp" style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 30 }}>This is the home screen!</Text>
-      <Button
-        onPress={() => navigation.navigate('MyModal')}
-        title="Open Modal"
-      />
-    </Animatable.View>
-  );
-}
-
-function ModalScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 30 }}>This is a modal!</Text>
-      <Button onPress={() => navigation.goBack()} title="Dismiss" />
+    <View on style={styles.centeredView}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Hello World!</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.textStyle}>Hide Modal</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+      <Pressable style={[styles.button, styles.buttonOpen]} onPress={() => setModalVisible(true)}>
+        <Text style={styles.textStyle}>Show Modal</Text>
+      </Pressable>
     </View>
   );
-}
+};
 
-function DetailsScreen() {
-  return (
-    <View>
-      <Text>Details</Text>
-    </View>
-  );
-}
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "flex-end",
+    //alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+    marginHorizontal: '5%'
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
+  }
+});
 
-const RootStack = createStackNavigator();
-
-export default function Teste() {
-  return (
-    
-      <RootStack.Navigator>
-        <RootStack.Group>
-          <RootStack.Screen name="Home" component={HomeScreen} />
-          <RootStack.Screen name="Details" component={DetailsScreen} />
-        </RootStack.Group>
-        <RootStack.Group screenOptions={{ presentation: 'modal' }}>
-          <RootStack.Screen name="MyModal" component={ModalScreen} />
-        </RootStack.Group>
-      </RootStack.Navigator>
-    
-  );
-}
+export default Teste;

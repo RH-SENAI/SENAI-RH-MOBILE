@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from "react";
 import {
     View,
     StyleSheet,
     Text,
-    Image
+    Image, Pressable, Modal, Alert
 } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
@@ -13,7 +13,7 @@ import { Entypo, Feather } from '@expo/vector-icons'
 
 //import NovoFeedback from '../novoFeedback/NovoFeedback.js'
 import Democratizacao from '../democratizacao/Democratizacao'
-import Teste from '../democratizacao/Teste.js'
+//import Teste from '../democratizacao/Teste.js'
 import Dashboard from '../dashboard/Dashboard.js'
 import Perfil from '../perfil/Perfil.js'
 import Ranking from '../ranking/Ranking.js'
@@ -25,7 +25,7 @@ const Tab = createBottomTabNavigator();
 function ButtonNew({ size, color }) {
     return (
         <View style={styles.container}>
-            <Entypo name="plus" color={color} size={size}  />
+            <Entypo name="plus" color={color} size={size} />
         </View>
     )
 }
@@ -33,6 +33,35 @@ function ButtonNew({ size, color }) {
 export default function MainAcompanhar() {
 
     const navigation = useNavigation();
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const Teste = () => {
+        return (
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>Hello World!</Text>
+                        <Pressable style={[styles.button, styles.buttonClose]} onPress={() => navigation.navigate('Ranking')}>
+                            <Text style={styles.textStyle}>Chamar tela de Ranking</Text>
+                        </Pressable>
+                        <Pressable style={[styles.button, styles.buttonClose]} onPress={() => setModalVisible(!modalVisible)}>
+                            <Text style={styles.textStyle}>Hide Modal</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
+
+        );
+    };
 
     return (
 
@@ -48,7 +77,7 @@ export default function MainAcompanhar() {
                     borderTopColor: 'gray',
                     paddingBottom: 5,
                     paddingTop: 5
-                }
+                },
             }}
             initialRouteName='Dashboard'
             backBehavior='initialRoute'
@@ -62,11 +91,12 @@ export default function MainAcompanhar() {
                 name="Teste"
                 component={Teste}
                 options={{ tabBarIcon: ({ size, color }) => (<Entypo name="chat" size={size} color={color} />), headerShown: false }}
+                listeners={{ tabPress: e => setModalVisible(true) }}
             />
             <Tab.Screen
                 name="Redirecionar"
                 component={Redirecionar}
-                options={{ tabBarIcon: ({ size, color, navigation }) => (<ButtonNew size={40} color={color} navigation={navigation} />), tabBarLabel: '', headerShown: false}}
+                options={{ tabBarIcon: ({ size, color, navigation }) => (<ButtonNew size={40} color={color} navigation={navigation} />), tabBarLabel: '', headerShown: false }}
             />
             <Tab.Screen
                 name="Ranking"
@@ -95,4 +125,46 @@ const styles = StyleSheet.create({
         borderWidth: 4,
         borderColor: '#C20004'
     },
+    centeredView: {
+        flex: 1,
+        justifyContent: "flex-end",
+        //alignItems: "center",
+        marginTop: 22
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+      },
+      button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+      },
+      buttonOpen: {
+        backgroundColor: "#F194FF",
+        marginHorizontal: '5%'
+      },
+      buttonClose: {
+        backgroundColor: "#2196F3",
+      },
+      textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+      },
+      modalText: {
+        marginBottom: 15,
+        textAlign: "center"
+      }
 });
