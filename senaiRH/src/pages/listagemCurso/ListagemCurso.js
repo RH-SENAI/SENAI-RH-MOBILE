@@ -18,6 +18,11 @@ import { Rating, AirbnbRating } from 'react-native-ratings';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import ReadMore from 'react-native-read-more-text';
 import api from '../../services/apiGrupo2.js';
+import apiMaps from '../../services/apiMaps.js';
+
+estadoUsuario = {
+    "nomeEstado": "São Paulo"
+}
 
 export default class ListagemCurso extends Component {
     constructor(props) {
@@ -29,7 +34,24 @@ export default class ListagemCurso extends Component {
             showAlert: false,
             listaCurso: [],
             cursoBuscado: [],
+            localizacaoCurso: [],
         };
+    }
+
+    Localizacao = async (origin, destin) => {
+        try {
+            const resposta = await apiMaps('/json?origins='+{origin}+'&'+'destinations='+{destin}+'&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0');
+            console.warn(origin)
+            if (resposta.status == 200) {
+                const dadosLocalizacao = resposta.data;
+                this.setState({ localizacaoCurso: dadosLocalizacao })
+                console.warn('Localização encontrada');
+                console.warn(this.state.localizacaoCurso);
+            }
+        }
+        catch (erro) {
+            console.warn(erro);
+        }
     }
 
     ListarCurso = async () => {
@@ -49,12 +71,10 @@ export default class ListagemCurso extends Component {
         }
     }
     setModalVisivel = (visible, id) => {
-        if(visible == true)
-        {
+        if (visible == true) {
             this.ProcurarCurso(id)
         }
-        else if(visible == false)
-        {
+        else if (visible == false) {
             this.setState({ cursoBuscado: [] })
         }
 
@@ -146,54 +166,54 @@ export default class ListagemCurso extends Component {
     renderItem = ({ item }) => (
         <View>
             <View style={styles.containerCurso}>
-                <Pressable onPress={() => this.setModalVisivel(true, item.idCurso)}>
+                <Pressable onPress={() => this.Localizacao(estadoUsuario ,item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado)}>
                     <View style={styles.boxCurso}>
-                            <View style={styles.boxImgCurso}>
-                                <Image style={styles.imgCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
+                        <View style={styles.boxImgCurso}>
+                            <Image style={styles.imgCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
+                        </View>
+
+                        <View style={styles.boxTituloCurso}>
+                            <Text style={styles.textTituloCurso}>{item.nomeCurso}</Text>
+                        </View>
+
+                        <View style={styles.boxAvaliacao}>
+                            <AirbnbRating
+                                count={5}
+                                //starImage={star}
+                                showRating={false}
+                                selectedColor={'#C20004'}
+                                defaultRating={item.mediaAvaliacaoCurso}
+                                isDisabled={true}
+                                size={20} />
+                        </View>
+
+                        <View style={styles.boxDadosCurso}>
+                            <View style={styles.boxDados}>
+                                <Image style={styles.imgDados} source={require('../../../assets/imgGP2/relogio.png')} />
+                                <Text style={styles.textDados}>{item.cargaHoraria}</Text>
                             </View>
 
-                            <View style={styles.boxTituloCurso}>
-                                <Text style={styles.textTituloCurso}>{item.nomeCurso}</Text>
+                            <View style={styles.boxDados}>
+                                <Image style={styles.imgDados} source={require('../../../assets/imgGP2/local.png')} />
+                                <Text style={styles.textDados}>{this.modalidade(item)}</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.boxPrecoFavorito}>
+                            <View style={styles.boxPreco}>
+                                <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
+                                <Text style={styles.textDados}>1024</Text>
                             </View>
 
-                            <View style={styles.boxAvaliacao}>
-                                <AirbnbRating
-                                    count={5}
-                                    //starImage={star}
-                                    showRating={false}
-                                    selectedColor={'#C20004'}
-                                    defaultRating={item.mediaAvaliacaoCurso}
-                                    isDisabled={true}
-                                    size={20}                                />
+                            <View style={styles.boxFavorito}>
+                                <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
                             </View>
-
-                            <View style={styles.boxDadosCurso}>
-                                <View style={styles.boxDados}>
-                                    <Image style={styles.imgDados} source={require('../../../assets/imgGP2/relogio.png')} />
-                                    <Text style={styles.textDados}>{item.cargaHoraria}</Text>
-                                </View>
-
-                                <View style={styles.boxDados}>
-                                    <Image style={styles.imgDados} source={require('../../../assets/imgGP2/local.png')} />
-                                    <Text style={styles.textDados}>{this.modalidade(item)}</Text>
-                                </View>
-                            </View>
-
-                            <View style={styles.boxPrecoFavorito}>
-                                <View style={styles.boxPreco}>
-                                    <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                    <Text style={styles.textDados}>1024</Text>
-                                </View>
-
-                                <View style={styles.boxFavorito}>
-                                    <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
-                                </View>
-                            </View>
+                        </View>
                     </View>
                 </Pressable>
 
                 <Modal
-                    animationType="slide"
+                    animationType="fade"
                     transparent={true}
                     visible={this.state.modalVisivel}
                     key={item.idCurso == this.state.cursoBuscado.idCurso}
@@ -201,7 +221,6 @@ export default class ListagemCurso extends Component {
                         this.setModalVisivel(!this.state.modalVisivel)
                     }}
                 >
-
                     <View style={styles.totalModal}>
                         <Pressable onPress={() => this.setModalVisivel(!this.state.modalVisivel)} >
                             <View style={styles.containerModal}>

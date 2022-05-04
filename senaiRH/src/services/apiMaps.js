@@ -1,15 +1,7 @@
-var axios = require('axios');
+import axios from 'axios';
 
-var config = {
-  method: 'get',
-  url: 'https://maps.googleapis.com/maps/api/distancematrix/',
-  headers: { }
-};
-
-axios(config)
-.then(function (response) {
-  console.log(JSON.stringify(response.data));
-})
-.catch(function (error) {
-  console.log(error);
+const apiMaps = axios.create({
+    baseURL: 'https://maps.googleapis.com/maps/api/distancematrix'
 });
+
+export default apiMaps;
