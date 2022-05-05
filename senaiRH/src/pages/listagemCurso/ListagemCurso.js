@@ -19,10 +19,7 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 import ReadMore from 'react-native-read-more-text';
 import api from '../../services/apiGrupo2.js';
 import apiMaps from '../../services/apiMaps.js';
-
-estadoUsuario = {
-    "nomeEstado": "São Paulo"
-}
+import * as Location from 'expo-location';
 
 export default class ListagemCurso extends Component {
     constructor(props) {
@@ -40,13 +37,23 @@ export default class ListagemCurso extends Component {
 
     Localizacao = async (origin, destin) => {
         try {
-            const resposta = await apiMaps('/json?origins='+{origin}+'&'+'destinations='+{destin}+'&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0');
-            console.warn(origin)
+            const resposta = await apiMaps(`/json?origins=${origin}&destinations=${destin}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`);
+            let string = JSON.stringify(resposta.data);
+            let obj = JSON.parse(string);
+            let distance = obj['rows'][0]['elements'][0]['distance'].value
             if (resposta.status == 200) {
-                const dadosLocalizacao = resposta.data;
-                this.setState({ localizacaoCurso: dadosLocalizacao })
                 console.warn('Localização encontrada');
-                console.warn(this.state.localizacaoCurso);
+                const dadosLocalizacao = resposta.data;
+                if (distance <= 750000) {
+                    this.setState({ localizacaoCurso: dadosLocalizacao })
+                    console.warn(distance);
+                    console.warn('Localização está no alcance');                                 
+                }
+                else if(distance > 750000){     
+                    console.warn(distance);           
+                    console.warn('Localização fora do alcance');
+                }
+                // console.warn(this.state.localizacaoCurso);
             }
         }
         catch (erro) {
@@ -166,7 +173,7 @@ export default class ListagemCurso extends Component {
     renderItem = ({ item }) => (
         <View>
             <View style={styles.containerCurso}>
-                <Pressable onPress={() => this.Localizacao(estadoUsuario ,item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado)}>
+                <Pressable onPress={() => this.Localizacao('08310580', item.idEmpresaNavigation.idLocalizacaoNavigation.idLogradouroNavigation.nomeLogradouro)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
                             <Image style={styles.imgCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
