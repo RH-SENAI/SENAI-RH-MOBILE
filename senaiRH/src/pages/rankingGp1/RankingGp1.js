@@ -45,6 +45,7 @@ import {
     Montserrat_800ExtraBold_Italic,
     Montserrat_900Black_Italic,
 } from '@expo-google-fonts/montserrat';
+
 import axios from "axios";
 import api from "../../services/apiGp1";
 
