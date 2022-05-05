@@ -7,101 +7,83 @@ import {
   View,
   FlatList,
 } from "react-native";
-// import axios from "axios";
 import api from "../../services/api";
-// import { useNavigation } from '@react-navigation/native'
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ListaFeedback() {
   // const baseUrl = 'http://192.168.3.156:5000/api/Feedbacks/listar';
   // const perPage = 10;
   const [listaFeedback, setListaFeedback] = useState([]);
-  
 
-  const buscarFeedbacks = async ()=> {
-    const token = await AsyncStorage.getItem('userToken');
+  const buscarFeedbacks = async () => {
+    const token = await AsyncStorage.getItem("userToken");
 
     if (token != null) {
-      const resposta = await api.get('Feedbacks/Listar', {
+      const resposta = await api.get("Feedbacks/Listar", {
         headers: {
-          Authorization: 'Bearer ' + token,
+          Authorization: "Bearer " + token,
         },
       });
 
       const dadosDaApi = await resposta.data;
       setListaFeedback(dadosDaApi);
     }
-  }
+  };
 
   useEffect(() => {
     buscarFeedbacks();
   }, []);
 
-
-  const renderItem =({ item })=>(
+  const renderItem = ({ item }) => (
     <View style={styles.container}>
-    <View key = {item.idFeedback} style={styles.card}>
-      <TouchableOpacity
-         key = {item.idFeedback} onPress={() => navigation.navigate('cadastroFeedback', {idDecisao: item.idDecisao})}
-      >
-       <View style={styles.containerCard}>
-        <View key = {item.idFeedback} style={styles.tituloCardWrapper}>
-          <Text key = {item.idFeedback} style={styles.tituloCard}>
-            {item.idUsuarioNavigation.nome} disse sobre a proposta: "
-            {item.idDecisaoNavigation.descricaoDecisao}"
-          </Text>
+      <View key={item.idFeedback} style={styles.card}>
+        <TouchableOpacity
+          key={item.idFeedback}
+          onPress={() =>
+            navigation.navigate("cadastroFeedback", {
+              idDecisao: item.idDecisao,
+            })
+          }
+        >
+          <View style={styles.containerCard}>
+            <View key={item.idFeedback} style={styles.tituloCardWrapper}>
+              <Text key={item.idFeedback} style={styles.tituloCard}>
+                {item.idUsuarioNavigation.nome} disse sobre a proposta: "
+                {item.idDecisaoNavigation.descricaoDecisao}"
+              </Text>
+            </View>
 
-        </View>
-
-        <View key = {item.idFeedback} style={styles.textoCard}>
-          <Text key = {item.idFeedback} style={styles.feedback}>{item.comentarioFeedBack}</Text>
-        </View>
-        </View>
-
+            <View key={item.idFeedback} style={styles.textoCard}>
+              <Text key={item.idFeedback} style={styles.feedback}>
+                {item.comentarioFeedBack}
+              </Text>
+            </View>
+          </View>
         </TouchableOpacity>
+      </View>
     </View>
-    </View>
-  )
-  // const [loading, setLoading] = useState(false);
-  // const [page, setPage] = useState(1);
-
-  // useEffect(() => {
-  //     loadApi();
-  // }, []);
-
-  // async function loadApi() {
-  //     if (loading) return;
-
-  //     setLoading(true);
-
-  //     const response = await axios.get(`${baseUrl}/search/repositories?q=react&per_page=${perPage}&page=${page}`);
-
-  //     setData([...data, ...response.data.items]);
-  //     setPage(page + 1);
-  //     setLoading(false);
-  // }
+  );
 
   return (
     <View style={styles.container}>
-    <View style={styles.mainHeader}>
-      <Image
-        source={require('../../../assets/imgMobile/logo_2S.png')}
-        style={styles.imgLogo}
-      />
-    </View>
+      <View style={styles.mainHeader}>
+        <Image
+          source={require("../../../assets/imgMobile/logo_2S.png")}
+          style={styles.imgLogo}
+        />
+      </View>
 
-    <Text style={styles.h1nonBold}> Feedbacks da</Text>
-    <Text style={styles.h1Bold}> DEMOCRATIZAÇÃO</Text>
+      <Text style={styles.h1nonBold}> Feedbacks da</Text>
+      <Text style={styles.h1Bold}> DEMOCRATIZAÇÃO</Text>
 
-    <View style={styles.containerFlatlist}>
-      <FlatList
-        contentContainerStyle={styles.mainBodyContent}
-        data={listaFeedback}
-        keyExtractor={item => item.idFeedback}
-        renderItem={renderItem}
-      />
+      <View style={styles.containerFlatlist}>
+        <FlatList
+          contentContainerStyle={styles.mainBodyContent}
+          data={listaFeedback}
+          keyExtractor={(item) => item.idFeedback}
+          renderItem={renderItem}
+        />
+      </View>
     </View>
-  </View>
     // <View style={styles.container}>
     //   <FlatList
     //     style={{ marginTop: 35 }}
@@ -143,7 +125,7 @@ const styles = StyleSheet.create({
 
   img_perfil: {
     width: 900,
-    backgroundColor: 'blue',
+    backgroundColor: "blue",
   },
 
   mainHeader: {
@@ -163,61 +145,66 @@ const styles = StyleSheet.create({
   },
   h1nonBold: {
     fontSize: 32,
-    fontWeight: '500',
-    textTransform: 'uppercase',
-    color: '#000000',
+    fontWeight: "500",
+    textTransform: "uppercase",
+    color: "#000000",
     marginTop: 32,
   },
 
   h1Bold: {
     fontSize: 32,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    color: '#000000',
+    fontWeight: "700",
+    textTransform: "uppercase",
+    color: "#000000",
     marginBottom: 30,
   },
 
   mainBodyContent: {
-    justifyContent: 'space-around',
+    justifyContent: "space-around",
   },
 
   card: {
     marginBottom: 30,
-   
     marginTop: 15,
+
+  },
+  tituloCardWrapper: {
+    // backgroundColor: "#9081A6",
+    // height: 33,
+    justifyContent: "center",
+    alignItems: "center",
+    alignItems: "flex-start",
+    textAlign:"center"
   },
 
   tituloCard: {
-    color: 'blue',
-    fontSize: 15,
-    height: 50,
-    fontWeight: '600',
-    textAlign:"center"
+    backgroundColor: "#fff",
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    padding: 20,
+    width:250,
+    color: "black",
   },
 
-  tituloCardWrapper: {
-    backgroundColor: '#f2f2f2',
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-  },
+
 
   feedback: {
-    color: 'red',
-    textAlign:"center"
+    color: "red",
+    textAlign: "center",
   },
 
   containerFlatlist: {
     flex: 1,
-    width: '100%',
-    borderColor:"#000"
+    width: "100%",
   },
-  containerCard:{
-    marginLeft:30,
-    marginRight:30,
-    borderWidth: 2,
-    padding:25,
-    borderColor: "gray",
+  containerCard: {
+    marginLeft: 30,
+    marginRight: 30,
+    // borderWidth: 2,
+    padding: 25,
+    // borderColor: "gray",
     borderRadius: 5,
-  }
+  },
+
+  
 });

@@ -20,21 +20,21 @@ export default function Welcome() {
         <Animatable.Image
           style={styles.tituLogo}
           animation="fadeInDown"
-          source={require("../../../assets/imgWeb/logo.png")}
+          source={require("../../../assets/imgMobile/logo_2S.png")}
 
           resizeMode="contain"
         />
-        <Animatable.Text animation="flipInY" style={styles.tituloRH}>nomePojeto || logo</Animatable.Text>
+        <Animatable.Text animation="flipInY" style={styles.tituloRH}>RECURSOS HUMANOS</Animatable.Text>
         <Animatable.Image
           animation="flipInY"
-          source={require("../../../assets/imgMobile/welcome.png")}
-          style={{ width: '100%' }}
+          source={require("../../../assets/imgMobile/welcome2.png")}
+          style={styles.imagem}
           resizeMode="contain"
         />
       </View>
 
       <Animatable.View delay={600} animation="fadeInUp" style={styles.containerForm}>
-        <Text style={styles.title}>Acompanhe sua motivação e benefícios, tudo num só App!</Text>
+        <Text style={styles.title}>Pensando sempre no conforto de nossos funcionários!</Text>
         <Text style={styles.text}>Faça seu login para começar</Text>
         <TouchableOpacity
           style={styles.button}
@@ -59,25 +59,28 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
+
   },
   tituLogo: {
     width: '100%',
-    marginBottom: '10%'
+    marginBottom: '10%',
+    height:35
   },
   tituloRH: {
-    fontSize: 35,
+    fontSize: 45,
     fontWeight: 'bold',
-    marginBottom: '3%',
-    color: '#C20004',
-    fontStyle:'italic'
+    marginBottom: 16,
+    color: '#2A2E32',
+
   },
   containerForm: {
     flex: 1,
-    backgroundColor: '#C20004',
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
+    backgroundColor: '#636466',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
     paddingStart: '5%',
-    paddingEnd: '5%'
+    paddingEnd: '5%',
+ 
   },
   title: {
     fontSize: 24,
@@ -85,26 +88,34 @@ const styles = StyleSheet.create({
     marginTop: 28,
     marginBottom: 12,
     color: 'white',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    textAlign:"center"
   },
   text: {
     color: 'white',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    fontSize: 20
   },
   button: {
     position: 'absolute',
-    backgroundColor: 'white',
-    borderRadius: 50,
+    backgroundColor: '#C20004',
+    borderRadius: 10,
     paddingVertical: 8,
-    width: '60%',
+    width: '70%',
     alignSelf: 'center',
     bottom: '15%',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom:20,
+    height:40
   },
   buttonText: {
     fontSize: 18,
-    color: 'red',
+    color: 'white',
     fontWeight: 'bold'
+  },
+
+  imagem:{
+  height:200
   }
 })
