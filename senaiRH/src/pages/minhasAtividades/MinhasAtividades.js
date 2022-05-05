@@ -60,6 +60,7 @@ const MinhasAtividades = () => {
         try {
             console.warn('tamo aqui')
             const token = AsyncStorage.getItem('userToken');
+            const token =  AsyncStorage.getItem('userToken');
             console.warn(token)
 
             const xambers = base64.decode(token.split('.')[1])

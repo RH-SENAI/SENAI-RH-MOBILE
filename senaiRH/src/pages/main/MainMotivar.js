@@ -62,6 +62,7 @@ export default function MainMotivar() {
           paddingBottom: 5,
           paddingTop: 5,
         },
+        headerShown: false,
       }}
       initialRouteName="Atividades"
     >
@@ -72,7 +73,7 @@ export default function MainMotivar() {
           tabBarIcon: ({ size, color }) => (
             <Entypo name="news" size={size} color={color} />
           ),
-
+          headerShown: false,
         }}
       />
 
@@ -83,6 +84,7 @@ export default function MainMotivar() {
           tabBarIcon: ({ size, color }) => (
             <AntDesign name="solution1" size={size} color={color} />
           ),
+          headerShown: false,
         }}
       />
 
@@ -116,6 +118,7 @@ export default function MainMotivar() {
           tabBarIcon: ({ size, color }) => (
             <Feather name="user" size={size} color={color} />
           ),
+          headerShown: false,
         }}
       />
     </Tab.Navigator>

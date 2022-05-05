@@ -4,8 +4,6 @@
     "slug": "senaiRH",
     "version": "1.0.0",
     "orientation": "portrait",
-    
-    
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -14,6 +12,9 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "host.exp.exponent"
     }
   }
 }
