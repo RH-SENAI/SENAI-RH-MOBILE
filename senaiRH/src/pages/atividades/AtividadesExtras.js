@@ -21,7 +21,7 @@ import * as Font from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../services/apiGp1'
 import base64 from 'react-native-base64';
-
+// import 'intl';
 
 let customFonts = {
     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
@@ -238,7 +238,10 @@ export default class AtividadesExtras extends Component {
                         <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
                         <Text style={styles.criador}> Criador da atividade </Text>
                         <Text style={styles.dataCriacao}>
-                            {item.dataCriacao}
+                        {/* {Intl.DateTimeFormat("pt-BR", {
+                    year: 'numeric', month: 'short', day: 'numeric',
+                    hour: 'numeric', minute: 'numeric', hour12: true
+                }).format(new Date(item.dataCriacao))}   */} {item.dataCriacao}
                         </Text>
                     </View>
 

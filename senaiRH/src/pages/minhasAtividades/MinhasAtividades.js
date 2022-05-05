@@ -57,7 +57,7 @@ const MinhasAtividades = () => {
     function MinhasAtividades() {
         try {
             console.warn('tamo aqui')
-            const token = await AsyncStorage.getItem('userToken');
+            const token =  AsyncStorage.getItem('userToken');
             console.warn(token)
 
             const xambers = base64.decode(token.split('.')[1])
@@ -65,7 +65,7 @@ const MinhasAtividades = () => {
             const userJson = JSON.parse(xambers)
 
             console.warn(userJson)
-            const resposta = await api.get('/Atividades/MinhasAtividade/' + xambers.jti,
+            const resposta =  api.get('/Atividades/MinhasAtividade/' + xambers.jti,
                 {
                     headers: {
                         Authorization: 'Bearer ' + token,

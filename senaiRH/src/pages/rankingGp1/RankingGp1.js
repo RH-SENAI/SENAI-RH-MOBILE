@@ -1,5 +1,5 @@
 import react from "react";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     StyleSheet,
     Text,
@@ -39,7 +39,6 @@ import {
     Montserrat_200ExtraLight_Italic,
     Montserrat_300Light_Italic,
     Montserrat_400Regular_Italic,
-    Montserrat_500Medium_Italic,
     Montserrat_600SemiBold_Italic,
     Montserrat_700Bold_Italic,
     Montserrat_800ExtraBold_Italic,
@@ -49,6 +48,9 @@ import axios from "axios";
 import api from "../../services/apiGp1";
 
 export default function Ranking() {
+
+    const [ListarRanking, setListarRanking] = useState([]);
+    // const { partners, onPartnerDetails } = props;
 
     let [customFonts] = useFonts({
         Regular: Quicksand_400Regular,
@@ -69,22 +71,28 @@ export default function Ranking() {
         Montserrat_200ExtraLight_Italic,
         Montserrat_300Light_Italic,
         Montserrat_400Regular_Italic,
-        Montserrat_500Medium_Italic,
+        // Montserrat_500Medium_Italic,
         Montserrat_600SemiBold_Italic,
         Montserrat_700Bold_Italic,
         Montserrat_800ExtraBold_Italic,
         Montserrat_900Black_Italic,
-      });
+    });
 
 
-      function retornaRanking() {
-        api.get('/Ranking')
-      }
-    
-      if (!customFonts) {
+    const retornaRanking = async () => {
+            const resposta = await api.get('/Usuarios/Ranking/');
+            const dadosDaApi = await resposta.data;
+            setListarRanking(dadosDaApi);
+       
+    }
+
+    useEffect(() => {
+        retornaRanking();
+    }, []);
+
+    if (!customFonts) {
         return <AppLoading />;
-      }
-
+    }
 
     return (
         <View style={styles.main}>
@@ -103,65 +111,16 @@ export default function Ranking() {
 
                 </View>
 
-                <View style={styles.RankingGp1}>
-                    <Text style={styles.numero}>1.</Text>
-                    <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
-                    style={styles.fotoRankingGp1}
-                    />
-                    <Text style={styles.nomeRankingGp1}>Manuel</Text>
-                    <View style={styles.trofeuEnumero}>
-                       <Image source={require('../../../assets/img-gp1/trofeu.png')}
-                    style={styles.trofeuGp1}
-                    />
-                    <Text  style={styles.Ntrofeu} >20</Text> 
-                    </View>
-                    
-                </View>
+                <FlatList
+                //    contentContainerStyle={styles.RankingGp1}
+                    // style={styles.RankingGp1}
+                    data={ListarRanking}
+                    // data={partners.sort((a, b) => a.name.localeCompare(b.name))}
+                    keyExtractor={item => item.idAtividade}
+                    renderItem={renderItem}
+                />
 
-                <View style={styles.RankingGp1_2}>
-                    <Text style={styles.numero}>2.</Text>
-                    <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
-                    style={styles.fotoRankingGp1}
-                    />
-                    <Text style={styles.nomeRankingGp1}>Manuel</Text>
-                    <View style={styles.trofeuEnumero}>
-                       <Image source={require('../../../assets/img-gp1/trofeu.png')}
-                    style={styles.trofeuGp1}
-                    />
-                    <Text  style={styles.Ntrofeu} >20</Text> 
-                    </View>
-                    
-                </View>
 
-                <View style={styles.RankingGp1_3}>
-                    <Text style={styles.numero}>3.</Text>
-                    <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
-                    style={styles.fotoRankingGp1}
-                    />
-                    <Text style={styles.nomeRankingGp1} >Manuel</Text>
-                    <View style={styles.trofeuEnumero}>
-                       <Image source={require('../../../assets/img-gp1/trofeu.png')}
-                    style={styles.trofeuGp1}
-                    />
-                    <Text  style={styles.Ntrofeu} >20</Text> 
-                    </View>
-                    
-                </View>
-
-                <View style={styles.RankingGp1_suaposicao}>
-                    <Text style={styles.numero}>15.</Text>
-                    <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
-                    style={styles.fotoRankingGp1}
-                    />
-                    <Text style={styles.nomeRankingGp1}>Manuel</Text>
-                    <View style={styles.trofeuEnumero}>
-                       <Image source={require('../../../assets/img-gp1/trofeu.png')}
-                    style={styles.trofeuGp1}
-                    />
-                    <Text  style={styles.Ntrofeu} >20</Text> 
-                    </View>
-                    
-                </View>
 
 
 
@@ -171,6 +130,71 @@ export default function Ranking() {
 
     )
 }
+
+renderItem = ({ item }) => (
+
+    <View>
+        <View style={styles.RankingGp1}>
+            <Text style={styles.numero}>1.</Text>
+            <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
+                style={styles.fotoRankingGp1}
+            />
+            <Text style={styles.nomeRankingGp1}>{item.nome}</Text>
+            <View style={styles.trofeuEnumero}>
+                <Image source={require('../../../assets/img-gp1/trofeu.png')}
+                    style={styles.trofeuGp1}
+                />
+                <Text style={styles.Ntrofeu} >{item.trofeus}</Text>
+            </View>
+
+        </View>
+
+        {/* <View style={styles.RankingGp1_2}>
+            <Text style={styles.numero}>2.</Text>
+            <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
+                style={styles.fotoRankingGp1}
+            />
+            <Text style={styles.nomeRankingGp1}>Manuel</Text>
+            <View style={styles.trofeuEnumero}>
+                <Image source={require('../../../assets/img-gp1/trofeu.png')}
+                    style={styles.trofeuGp1}
+                />
+                <Text style={styles.Ntrofeu} >20</Text>
+            </View>
+
+        </View>
+
+        <View style={styles.RankingGp1_3}>
+            <Text style={styles.numero}>3.</Text>
+            <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
+                style={styles.fotoRankingGp1}
+            />
+            <Text style={styles.nomeRankingGp1} >Manuel</Text>
+            <View style={styles.trofeuEnumero}>
+                <Image source={require('../../../assets/img-gp1/trofeu.png')}
+                    style={styles.trofeuGp1}
+                />
+                <Text style={styles.Ntrofeu} >20</Text>
+            </View>
+
+        </View>
+
+        <View style={styles.RankingGp1_suaposicao}>
+            <Text style={styles.numero}>15.</Text>
+            <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
+                style={styles.fotoRankingGp1}
+            />
+            <Text style={styles.nomeRankingGp1}>Manuel</Text>
+            <View style={styles.trofeuEnumero}>
+                <Image source={require('../../../assets/img-gp1/trofeu.png')}
+                    style={styles.trofeuGp1}
+                />
+                <Text style={styles.Ntrofeu} >20</Text>
+            </View>
+
+        </View> */}
+    </View>
+)
 
 const styles = StyleSheet.create({
     main: {
@@ -194,7 +218,7 @@ const styles = StyleSheet.create({
     },
 
     tituloEfects: {
-         fontFamily: 'SemiBoldM',
+        fontFamily: 'SemiBoldM',
         justifyContent: 'center',
         alignItems: 'center',
         color: '#2A2E32',
@@ -212,32 +236,32 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 24,
         width: '78%',
-        
+
     },
-    
-    numero:{
+
+    numero: {
         fontFamily: 'SemiBold',
-        marginLeft:29,
-        
+        marginLeft: 29,
+
     },
-    trofeuEnumero:{
+    trofeuEnumero: {
         flexDirection: 'row',
     },
-    
-    Ntrofeu:{
+
+    Ntrofeu: {
         fontFamily: 'Light',
-        marginLeft:10,
-        marginTop:2
-    },
-    
-    trofeuGp1:{
-        marginRight:10
-    },
-    nomeRankingGp1:{
-       fontFamily: 'Light',
+        marginLeft: 10,
+        marginTop: 2
     },
 
-    RankingGp1_2:{
+    trofeuGp1: {
+        marginRight: 10
+    },
+    nomeRankingGp1: {
+        fontFamily: 'Light',
+    },
+
+    RankingGp1_2: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -250,7 +274,7 @@ const styles = StyleSheet.create({
         width: '78%',
 
     },
-    RankingGp1_3:{
+    RankingGp1_3: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -264,7 +288,7 @@ const styles = StyleSheet.create({
 
     },
 
-    RankingGp1_suaposicao:{
+    RankingGp1_suaposicao: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
