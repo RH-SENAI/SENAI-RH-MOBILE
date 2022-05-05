@@ -1,10 +1,10 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": null,
+  "expoServerPort": 19000,
   "packagerPort": 19000,
   "expoServerNgrokUrl": "https://g9-3z4.anonymous.senairh.exp.direct",
   "packagerNgrokUrl": "https://g9-3z4.anonymous.senairh.exp.direct",
-  "ngrokPid": 2900,
+  "ngrokPid": 1748,
   "packagerPid": null,
   "webpackServerPort": null
 }

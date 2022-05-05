@@ -20,11 +20,15 @@ import ReadMore from 'react-native-read-more-text';
 import api from '../../services/apiGrupo2.js';
 import apiMaps from '../../services/apiMaps.js';
 import * as Location from 'expo-location';
+// import { Location, Permissions } from 'expo';
 
 export default class ListagemCurso extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            Userlatitude: null,
+            Userlongitude: null,
+            errorMessage: '',
             modalVisivel: false,
             isFavorite: false,
             inscrito: '',
@@ -34,13 +38,44 @@ export default class ListagemCurso extends Component {
             localizacaoCurso: [],
         };
     }
+    GetLocation = async () => {
+        const { status } = await Location.requestForegroundPermissionsAsync();
 
-    Localizacao = async (origin, destin) => {
+        if (status !== 'granted') {
+            console.log('A permissão de localização não foi aceita!');
+
+            this.setState({
+                errorMessage: 'A permissão de localização não foi aceita.'
+            })
+
+            return;
+        }
+        // console.warn(status)
+        let location = await Location.getCurrentPositionAsync({});
+
+        let stringLocal = JSON.stringify(location);
+        let obj = JSON.parse(stringLocal);
+        let longitude = obj['coords']['longitude'];
+        let latitude = obj['coords']['latitude'];
+
+        console.warn(longitude)
+        console.warn(latitude)
+        this.setState({ Userlatitude: longitude })
+        this.setState({ Userlongitude: latitude })
+        // var text = JSON.stringify(this.state.location)
+        // console.warn(text) 
+    }
+
+    Localizacao = async (latitude, longitude, destin) => {
         try {
-            const resposta = await apiMaps(`/json?origins=${origin}&destinations=${destin}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`);
+            var stringProblematica = `json?origins=-23.536399, -46.6462825&destinations=04849529&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
+            // console.warn(stringProblematica)
+            const resposta = await apiMaps(stringProblematica);
+            // console.warn(resposta.data)
             let string = JSON.stringify(resposta.data);
             let obj = JSON.parse(string);
-            let distance = obj['rows'][0]['elements'][0]['distance'].value
+            // console.warn(obj)
+            let distance = obj['rows'][0]['elements'][0]['distance'].value     
             if (resposta.status == 200) {
                 console.warn('Localização encontrada');
                 const dadosLocalizacao = resposta.data;
@@ -89,6 +124,7 @@ export default class ListagemCurso extends Component {
     }
     componentDidMount() {
         this.ListarCurso();
+        this.GetLocation();
     }
 
     showAlert = () => {
@@ -173,7 +209,8 @@ export default class ListagemCurso extends Component {
     renderItem = ({ item }) => (
         <View>
             <View style={styles.containerCurso}>
-                <Pressable onPress={() => this.Localizacao('08310580', item.idEmpresaNavigation.idLocalizacaoNavigation.idLogradouroNavigation.nomeLogradouro)}>
+            {/* item.idEmpresaNavigation.idLocalizacaoNavigation.idLogradouroNavigation.nomeLogradouro */}
+                <Pressable onPress={() => this.Localizacao(this.state.Userlatitude, this.state.Userlongitude, '08310580')}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
                             <Image style={styles.imgCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
