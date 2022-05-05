@@ -35,7 +35,7 @@ export default function MainAcompanhar() {
     const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState(false);
 
-    const Teste = () => {
+    function Teste () {
         return (
 
             <Modal
@@ -91,7 +91,12 @@ export default function MainAcompanhar() {
                 name="Teste"
                 component={Teste}
                 options={{ tabBarIcon: ({ size, color }) => (<Entypo name="chat" size={size} color={color} />), headerShown: false }}
-                listeners={{ tabPress: e => setModalVisible(true) }}
+                listeners={() => ({
+                    tabPress: event => {
+                        event.preventDefault();
+                        setModalVisible(true);
+                    }
+                })}
             />
             <Tab.Screen
                 name="Redirecionar"
