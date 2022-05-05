@@ -22,7 +22,7 @@ function App() {
         <Stack.Screen name="AtividadesExtras" component={AtividadesExtras} />
         {/* <Stack.Screen name="MinhasExtras" component={MinhasExtras} /> */}
         {/* <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} /> */}
-        {/* <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} /> */}
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Redirecionar" component={Redirecionar} />
         <Stack.Screen name="MainMotivar" component={MainMotivar} />
         
