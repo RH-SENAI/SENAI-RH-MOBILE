@@ -51,6 +51,7 @@ export default class AtividadesExtras extends Component {
 
 
     ProcurarAtividades = async (id) => {
+        console.warn(id)
         try {
 
             const resposta = await api('/Atividades/' + id);
@@ -67,6 +68,7 @@ export default class AtividadesExtras extends Component {
 
 
     setModalVisible = (visible, id) => {
+        console.warn(id)
         if (visible == true) {
             this.ProcurarAtividades(id)
         }
@@ -251,11 +253,11 @@ export default class AtividadesExtras extends Component {
                         >
                             <View style={styles.corBotão}>
 
-                                <Text style={styles.texto}> Me associar </Text>
+                                <Text style={styles.texto}> item </Text>
                             </View>
                         </Pressable>
 
-                        <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true,3 )}  >
+                        <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade )}  >
                             <Image source={require('../../../assets/img-gp1/setaModal.png')} />
                         </Pressable>
                     </View>
@@ -279,7 +281,7 @@ export default class AtividadesExtras extends Component {
                             <View style={styles.quadradoModal}></View>
                             <View style={styles.conteudoBoxModal}>
                                 <Text style={styles.nomeBoxModal}>{item.nomeAtividade} </Text>
-                                <Text style={styles.descricaoModal}> Descrição Atividade </Text>
+                                <Text style={styles.descricaoModal}> {item.idAtividade}</Text>
                                 <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
                                 <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
                                 <Text style={styles.criadorModal}> Criador da atividade </Text>
