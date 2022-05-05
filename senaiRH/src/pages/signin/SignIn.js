@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // import * as Font from 'expo-font';
 // import AppLoading from 'expo-app-loading';
 import jwt_decode from "jwt-decode";
-import api from '../../services/api'
+import apiGp1 from "../../services/apiGp1"
 
 
 
@@ -53,7 +53,7 @@ class FloatingLabelInput extends Component {
         inputRange: [0, 1],
         outputRange: ['#aaa', '#000'],
       }),
-      fontFamily: 'Quicksand-Regular',
+      // fontFamily: 'Quicksand-Regular',
       paddingLeft:40,
       paddingTop:3,
     };
@@ -104,7 +104,7 @@ export default class Login extends Component {
 
       try {
 
-          const resposta = await api.post('/Login', {
+          const resposta = await apiGp1.post('/Login', {
               cpf : this.state.cpf,
               senha : this.state.senha,
           });
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   },
 
   tituloPagina:{
-    fontFamily: 'Montserrat-Bold',
+    // fontFamily: 'Montserrat-Bold',
     fontSize: 30,
     color:'#2A2E32',
     width: 175,
@@ -293,6 +293,7 @@ const styles = StyleSheet.create({
     //paddingTop:40,
     //  paddingBottom:24
     paddingLeft:15,
+    marginBottom:8
   },
   
   viewLoginCPF:{
@@ -308,14 +309,14 @@ const styles = StyleSheet.create({
   },
   
   erroText:{
-    fontFamily: 'Quicksand-Regular',
+    // fontFamily: 'Quicksand-Regular',
     fontSize: 12,
     color: '#C20004',
     paddingRight:100,
   },
 
   textEsque:{
-    fontFamily: 'Quicksand-Regular',
+    // fontFamily: 'Quicksand-Regular',
     fontSize: 12,
     color: '#C20004',
   },
@@ -334,7 +335,7 @@ const styles = StyleSheet.create({
   },
 
   btnText: {
-    fontFamily: 'Montserrat-Regular',
+    // fontFamily: 'Montserrat-Regular',
     fontSize: 12,
     color: "#F2F2F2",
     alignItems: 'center',
