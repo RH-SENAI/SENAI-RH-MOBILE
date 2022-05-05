@@ -35,9 +35,11 @@ function ModalDemocratizacao(props) {
   const navigation = useNavigation();
 
   
-  const [modalAberto, setModalAberto] = useState(props.a);
+  const [modalAberto, setModalAberto] = useState(false);
 
-  useEffect(() => setModalAberto(true),[props]);
+  const HandleModal = () => setModalAberto(() => !modalAberto)
+
+  useEffect(() => HandleModal(),[props]);
 
   return (
     <Modal animationType="slide" visible={modalAberto}>
