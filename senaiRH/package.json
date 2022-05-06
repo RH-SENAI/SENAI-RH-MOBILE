@@ -24,6 +24,7 @@
     "expo-blur": "^11.0.0",
     "expo-cli": "^5.4.3",
     "expo-font": "^10.0.5",
+    "expo-splash-screen": "~0.14.1",
     "expo-status-bar": "~1.2.0",
     "install": "^0.13.0",
     "jwt-decode": "^3.1.2",
@@ -36,9 +37,9 @@
     "react-native-modal-with-blur-support-background": "^1.0.0",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.10.1",
+    "react-native-svg": "12.1.1",
     "react-native-web": "0.17.1",
-    "url": "^0.11.0",
-    "expo-splash-screen": "~0.14.1"
+    "url": "^0.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

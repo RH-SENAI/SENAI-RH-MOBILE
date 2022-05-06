@@ -44,6 +44,7 @@ import {
     Montserrat_800ExtraBold_Italic,
     Montserrat_900Black_Italic,
 } from '@expo-google-fonts/montserrat';
+import { render } from 'react-dom';
 
 
 const MinhasExtras = () => {
@@ -118,29 +119,38 @@ const MinhasExtras = () => {
                 </View>
             </View>
 
-            {/*     
+
             <FlatList
-            data={listaAtividades}
-            keyExtractor={item => item.idAtividade}
-            renderItem={() => {renderItem()}}
-        /> */}
+                data={listaAtividades}
+                keyExtractor={item => item.idAtividade}
+                renderItem={() => { renderItem() }}
+            />
 
 
-            <View style={styles.MinhaAtividade}>
-                <View style={styles.quadradoeTexto}>
-                    <View style={styles.quadrado}></View>
-                    <Text style={styles.TituloAtividade}>Titulo da Atividade </Text>
 
-                    <View style={styles.descricaoOlho}>
-                        <Text style={styles.descricao}>Data de Entrega: 18/03/2022 </Text>
-                    </View>
-                    <View style={styles.ModaleBotao}>
-                        <View style={styles.statusImagem}></View>
-                        <View style={styles.statusImagem}>
-                            <Image source={require('../../../assets/img-gp1/avaliando.png')} style={styles.avaliando} />
-                            <Text style={styles.status}>Em avaliação </Text>
 
-                            {/* 
+        </View >
+
+    );
+
+}
+
+renderItem = ({ item }) => (
+    <View style={styles.MinhaAtividade}>
+        <View style={styles.quadradoeTexto}>
+            <View style={styles.quadrado}></View>
+            <Text style={styles.TituloAtividade}>{item.nomeAtividade} </Text>
+
+            <View style={styles.descricaoOlho}>
+                <Text style={styles.descricao}>{item.dataConclusao} </Text>
+            </View>
+            <View style={styles.ModaleBotao}>
+                <View style={styles.statusImagem}></View>
+                <View style={styles.statusImagem}>
+                    <Image source={require('../../../assets/img-gp1/avaliando.png')} style={styles.avaliando} />
+                    <Text style={styles.status}>Em avaliação </Text>
+
+                    {/* 
                          <Image source={require('../../../assets/img-gp1/pendente.png')} style={styles.avaliando}/>
               <Text style={styles.status}>Pendente </Text> 
               
@@ -148,72 +158,68 @@ const MinhasExtras = () => {
             <Text style={styles.status}>Validado </Text>  */}
 
 
-                        </View>
-
-
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={modalVisible}
-                            onRequestClose={() => {
-                                Alert.alert("Modal has been closed.");
-                                setModalVisible(!modalVisible);
-                            }}
-                        >
-
-
-                            <View style={styles.centeredView}>
-                                <View style={styles.modalView}>
-                                    <View style={styles.quadradoModal}></View>
-                                    <View style={styles.conteudoBoxModal}>
-                                        <Text style={styles.nomeBoxModal}> Titulo Atividade </Text>
-                                        <Text style={styles.descricaoModal}> Descrição Atividade </Text>
-                                        <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
-                                        <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
-                                        <Text style={styles.criadorModal}> Nome pessoa reponsavel </Text>
-                                        <TouchableOpacity style={styles.anexo}>
-                                            <Text style={styles.mais}>   + </Text>
-                                            <Text style={styles.txtanexo}>    Adicionar Anexo</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={styles.botoesModal}  >
-                                        <TouchableOpacity >
-                                            <View style={styles.associarModal}>
-                                                <Text style={styles.texto}> Concluida </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-
-                                            onPress={() => setModalVisible(!modalVisible)}
-                                        >
-                                            <View style={styles.fecharModal}>
-                                                <Text style={styles.textoFechar}>Fechar X</Text>
-                                            </View>
-
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            </View>
-
-
-                        </Modal>
-                        <TouchableOpacity style={styles.Modalbotao} onPress={() => setModalVisible(true)}  >
-                            <Image source={require('../../../assets/img-gp1/setaModal.png')} />
-                        </TouchableOpacity>
-
-
-
-
-
-                    </View>
                 </View>
+
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        Alert.alert("Modal has been closed.");
+                        setModalVisible(!modalVisible);
+                    }}
+                >
+
+
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <View style={styles.quadradoModal}></View>
+                            <View style={styles.conteudoBoxModal}>
+                                <Text style={styles.nomeBoxModal}> Titulo Atividade </Text>
+                                <Text style={styles.descricaoModal}> Descrição Atividade </Text>
+                                <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
+                                <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
+                                <Text style={styles.criadorModal}> Nome pessoa reponsavel </Text>
+                                <TouchableOpacity style={styles.anexo}>
+                                    <Text style={styles.mais}>   + </Text>
+                                    <Text style={styles.txtanexo}>    Adicionar Anexo</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.botoesModal}  >
+                                <TouchableOpacity >
+                                    <View style={styles.associarModal}>
+                                        <Text style={styles.texto}> Concluida </Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+
+                                    onPress={() => setModalVisible(!modalVisible)}
+                                >
+                                    <View style={styles.fecharModal}>
+                                        <Text style={styles.textoFechar}>Fechar X</Text>
+                                    </View>
+
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+
+
+                </Modal>
+                <TouchableOpacity style={styles.Modalbotao} onPress={() => setModalVisible(true)}  >
+                    <Image source={require('../../../assets/img-gp1/setaModal.png')} />
+                </TouchableOpacity>
+
+
+
+
+
             </View>
+        </View>
+    </View>
+);
 
-        </View >
-
-    );
-
-}
 const styles = StyleSheet.create({
 
     main: {
@@ -261,7 +267,7 @@ const styles = StyleSheet.create({
 
     font: {
         fontFamily: 'Regular',
-        color:"#636466",
+        color: "#636466",
         fontSize: 20,
         paddingBottom: 5,
     },
@@ -327,7 +333,7 @@ const styles = StyleSheet.create({
     },
 
     TituloAtividade: {
-       //  fontFamily: "Quicksand-SemiBold",
+        //  fontFamily: "Quicksand-SemiBold",
         fontSize: 18,
         color: "#0E0E0E",
         marginTop: 16,
@@ -368,7 +374,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         // justifyContent: 'flex-end',
         justifyContent: 'space-between',
-    
+
     },
 
 
@@ -415,11 +421,11 @@ const styles = StyleSheet.create({
 
     Modalbotao: {
         justifyContent: 'flex-start',
-        alignItems:'center',
+        alignItems: 'center',
         // paddingRight: 18,
         paddingTop: 6,
         // marginLeft:130,
-        paddingLeft:130
+        paddingLeft: 130
     },
 
     botao: {
@@ -439,7 +445,7 @@ const styles = StyleSheet.create({
     },
 
     texto: {
-       fontFamily: 'MediumM',
+        fontFamily: 'MediumM',
         color: '#E2E2E2',
         fontSize: 11,
         alignItems: 'center',
@@ -502,7 +508,7 @@ const styles = StyleSheet.create({
 
     },
     nomeBoxModal: {
-        fontFamily:'SemiBoldM',
+        fontFamily: 'SemiBoldM',
         textAlign: "center",
         paddingTop: 24,
         fontSize: 20
@@ -510,7 +516,7 @@ const styles = StyleSheet.create({
     },
 
     descricaoModal: {
-        fontFamily:'Regular',
+        fontFamily: 'Regular',
         paddingTop: 24,
         fontSize: 15,
         paddingBottom: 16,
@@ -518,32 +524,32 @@ const styles = StyleSheet.create({
     },
 
     itemPostadoModal: {
-        fontFamily:'Regular',
+        fontFamily: 'Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     entregaModal: {
-        fontFamily:'Regular',
+        fontFamily: 'Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     criadorModal: {
-       fontFamily:'Regular',
+        fontFamily: 'Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     botoesModal: {
-        fontFamily:'MediumM',
+        fontFamily: 'MediumM',
         flexDirection: 'row',
         justifyContent: 'center',
         justifyContent: 'space-evenly',
-         paddingTop:30
+        paddingTop: 30
     },
 
     associarModal: {
@@ -553,7 +559,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#C20004',
         alignItems: 'center',
         justifyContent: 'center',
-       
+
     },
 
     fecharModal: {
@@ -567,31 +573,31 @@ const styles = StyleSheet.create({
         color: '#C20004'
     },
 
-    anexo:{
+    anexo: {
         borderWidth: 1,
-        borderRadius:5,
+        borderRadius: 5,
         borderColor: '#B3B3B3',
-        width:175,
+        width: 175,
         marginLeft: 19,
         justifyContent: 'space-between',
         alignItems: 'center',
         flexDirection: 'row',
-        height:30
-    },
-    
-    
-    txtanexo:{
-        fontFamily:'Regular',
-       marginRight:40
+        height: 30
     },
 
-    mais:{
-        fontSize:21,
-        textAlign:'center'
-     },
 
-    textoFechar:{
-        fontFamily:'MediumM',
+    txtanexo: {
+        fontFamily: 'Regular',
+        marginRight: 40
+    },
+
+    mais: {
+        fontSize: 21,
+        textAlign: 'center'
+    },
+
+    textoFechar: {
+        fontFamily: 'MediumM',
         color: '#C20004'
     }
 

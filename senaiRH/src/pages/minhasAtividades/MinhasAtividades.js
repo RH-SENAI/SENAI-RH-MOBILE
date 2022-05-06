@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { SvgUri } from 'react-native-svg';
 import {
     StyleSheet,
     Text,
@@ -15,6 +16,7 @@ import { BlurView } from 'expo-blur';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
+import base64 from 'react-native-base64';
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
 
@@ -63,22 +65,22 @@ const MinhasAtividades = () => {
             const token = AsyncStorage.getItem('userToken');
             console.warn(token)
 
-            const xambers = base64.decode(token.split('.')[1])
-            console.warn(xambers)
-            const userJson = JSON.parse(xambers)
+            //const xambers = base64.decode(token.split('.')[1])
+            ///console.warn(xambers)
+            //const userJson = JSON.parse(xambers)
 
-            console.warn(userJson)
-            const resposta = api.get('/Atividades/MinhasAtividade/' + xambers.jti,
+            //console.warn(userJson)
+            const resposta = api.get('/Atividades/ListarObrigatorias',
                 {
                     headers: {
                         Authorization: 'Bearer ' + token,
                     },
                 },
             );
-            if (resposta.status == 200) {
-                setListaAtividades(resposta.data)
+            // if (resposta.status == 200) {
+            //     setListaAtividades(resposta.data)
 
-            }
+            // }
         } catch (error) {
             console.warn(error);
         }
@@ -171,6 +173,11 @@ const MinhasAtividades = () => {
                     <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
                         style={styles.imgLogo}
                     />
+                    
+                    {/* IMPORTACAO DE IMAGENS */}
+                    {/* <SvgUri
+                        uri= "http"
+                    /> */}
 
                 </View>
 
@@ -349,19 +356,19 @@ renderItem = ({ item }) => (
                                 <View style={styles.botoesModal} >
                                     <TouchableOpacity
                                         onPress={() => setModalVisible(!modalVisible)}
+                                        onPress={() => Concluir()}
                                     >
-                                        {/* onPress={() => this.Concluir(item.necessarioValidar)} */}
-                                        <View style={styles.associarModal}>
+                                        <Button style={styles.associarModal}>
                                             <Text style={styles.texto}> Concluida </Text>
-                                        </View>
+                                        </Button>
                                     </TouchableOpacity>
                                     <TouchableOpacity
 
                                         onPress={() => setModalVisible(!modalVisible)}
                                     >
-                                        <View style={styles.fecharModal}>
+                                        <Button style={styles.fecharModal}>
                                             <Text style={styles.textoFechar}>Fechar X</Text>
-                                        </View>
+                                        </Button>
 
                                     </TouchableOpacity>
                                 </View>
