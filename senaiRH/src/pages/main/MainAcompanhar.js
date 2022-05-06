@@ -5,6 +5,7 @@ import {
     Text,
     Image, Pressable, Modal, Alert
 } from 'react-native';
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 import { useNavigation } from "@react-navigation/native";
@@ -91,12 +92,14 @@ export default function MainAcompanhar() {
                 name="Teste"
                 component={Teste}
                 options={{ tabBarIcon: ({ size, color }) => (<Entypo name="chat" size={size} color={color} />), headerShown: false }}
-                listeners={() => ({
+                listeners={{
                     tabPress: event => {
-                        event.preventDefault();
-                        setModalVisible(true);
+                        if (modalVisible === false) {
+                            event.preventDefault();
+                            setModalVisible(true);
+                        }
                     }
-                })}
+                }}
             />
             <Tab.Screen
                 name="Redirecionar"
