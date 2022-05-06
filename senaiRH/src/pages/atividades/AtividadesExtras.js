@@ -38,7 +38,7 @@ export default class AtividadesExtras extends Component {
         super(props);
         this.state = {
             listaAtividades: [],
-            AtividadeBuscada: [],
+            AtividadeBuscada: {},
             modalVisible: false,
         };
     }
@@ -51,13 +51,14 @@ export default class AtividadesExtras extends Component {
 
 
     ProcurarAtividades = async (id) => {
-        console.warn(id)
+        //console.warn(id)
         try {
 
             const resposta = await api('/Atividades/' + id);
             if (resposta.status == 200) {
-                const dadosAtividades = await resposta.data;
-                this.setState({ AtividadeBuscada: dadosAtividades })
+                const dadosAtividades = await resposta.data.atividade;
+                await this.setState({ AtividadeBuscada: dadosAtividades })
+                console.warn(this.state.AtividadeBuscada.atividade)
 
             }
         }
@@ -67,15 +68,17 @@ export default class AtividadesExtras extends Component {
     }
 
 
-    setModalVisible = (visible, id) => {
-        console.warn(id)
+    setModalVisible = async (visible, id) => {
         if (visible == true) {
-            this.ProcurarAtividades(id)
+            //console.warn(id)
+            await this.ProcurarAtividades(id)
+            this.setState({ modalVisible: true });
+            //console.warn(this.state.AtividadeBuscada)
         }
         else if (visible == false) {
-            this.setState({ AtividadeBuscada: [] })
+            this.setState({ AtividadeBuscada: {} })
+            this.setState({modalVisible: false})
         }
-        this.setState({ modalVisible: visible });
 
     }
 
@@ -92,6 +95,7 @@ export default class AtividadesExtras extends Component {
 
     associar = async (item) => {
         try {
+            console.log(item)
             const token = await AsyncStorage.getItem('userToken');
 
             const xambers = base64.decode(token.split('.')[1])
@@ -246,15 +250,15 @@ export default class AtividadesExtras extends Component {
 
                     <View style={styles.ModaleBotao}>
                         <Pressable style={styles.botao}
-                            onPress={() => this.associar(item.idAtividade)}
+                            onPress={() => this.associar(item)}
                         >
                             <View style={styles.corBotão}>
 
-                                <Text style={styles.texto}> item </Text>
+                                <Text style={styles.texto}> Me Associar </Text>
                             </View>
                         </Pressable>
 
-                        <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade )}  >
+                        <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
                             <Image source={require('../../../assets/img-gp1/setaModal.png')} />
                         </Pressable>
                     </View>
@@ -277,10 +281,10 @@ export default class AtividadesExtras extends Component {
                         <View style={styles.modalView}>
                             <View style={styles.quadradoModal}></View>
                             <View style={styles.conteudoBoxModal}>
-                                <Text style={styles.nomeBoxModal}>{item.nomeAtividade} </Text>
-                                <Text style={styles.descricaoModal}> {item.idAtividade}</Text>
-                                <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
-                                <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
+                                <Text style={styles.nomeBoxModal}>{this.state.AtividadeBuscada.nomeAtividade} </Text>
+                                <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.idAtividade}</Text>
+                                <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
+                                <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
                                 <Text style={styles.criadorModal}> Criador da atividade </Text>
                             </View>
                             <View style={styles.botoesModal}  >
