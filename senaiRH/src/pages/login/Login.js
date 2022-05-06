@@ -8,6 +8,7 @@ import {
   TextInput,
   Animated,
   Alert,
+  ColorPropType,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,11 +16,15 @@ import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import jwt_decode from "jwt-decode";
 import api from '../../services/apiGp1';
+import AwesomeAlert from 'react-native-awesome-alerts';
 import AnimatedInput from 'react-native-animated-input';
 import axios from 'axios';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+
 
 let customFonts = {
   'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
+  'Montserrat-Medium' : require('../../../assets/fonts/Montserrat-Medium.ttf'),
   'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
   'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf')
 }
@@ -30,14 +35,24 @@ export default class Login extends Component {
     super(props);
     this.state = {
       cpf: '0009886654',
-      senha: 'v123',
+      senha: 'v12',
       fontsLoaded: false,
       error: 'Email ou Senha inválidos!',
       //erroMensagem: '',
       setLoading: false,
+      showAlert: false
     }
   }
 
+  showAlert = () => {
+    this.setState({showAlert: true})
+  }
+  
+  hideAlert = () => {
+    this.setState({
+      showAlert: false
+    });
+  };
 
 
   async _loadFontsAsync() {
@@ -50,7 +65,7 @@ export default class Login extends Component {
   }
 
   realizarLogin = async () => {
-    console.warn(this.state.cpf + ' ' + this.state.senha);
+    
 
     try {
 
@@ -68,7 +83,7 @@ export default class Login extends Component {
       await AsyncStorage.setItem('userToken', token);
       console.warn(resposta.data);
 
-      if (resposta.status == 200) {
+      if (resposta.status === 200) {
 
         console.warn('Login Realizado')
         //console.warn(jwt_decode(token).role)
@@ -84,7 +99,7 @@ export default class Login extends Component {
 
     } catch (error) {
       console.warn(error)
-      //Alert.alert("Email ou Senha inválidos!")
+      this.showAlert();
     }
 
   }
@@ -95,10 +110,33 @@ export default class Login extends Component {
     if (!this.state.fontsLoaded) {
       return <AppLoading />;
     }
+    
 
     return (
+      
+      
       <View style={styles.body}>
-
+        
+        <AwesomeAlert
+          show={this.state.showAlert}
+          showProgress={false}
+          title="Login Inválido!"
+          titleStyle={
+            styles.tituloModalLogin
+          }
+          message="O CPF ou a senha inserídos são inválidos!"
+          messageStyle={styles.textoModalLogin}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          confirmButtonStyle={styles.confirmButton}
+          showCancelButton={false}
+          showConfirmButton={true}
+          confirmText="Voltar"
+          confirmButtonColor="#C20004"
+          onConfirmPressed={() => {
+            this.hideAlert();
+          }}
+        />
         <View style={styles.mainHeader}>
           <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
             style={styles.imgLogo}
@@ -159,6 +197,7 @@ export default class Login extends Component {
             <TextInput style={styles.inputLogin}
               placeholder="CPF"
               keyboardType="numeric"
+              placeholderTextColor="#B3B3B3"
               onChangeText={cpf => this.setState({ cpf })}
               value={this.state.value}
             />
@@ -167,6 +206,7 @@ export default class Login extends Component {
           <View style={styles.TextEmail}>
             <TextInput style={styles.inputLogin}
               placeholder="Senha"
+              placeholderTextColor="#B3B3B3"
               keyboardType="default"
               onChangeText={senha => this.setState({ senha })}
               secureTextEntry={true}
@@ -249,6 +289,24 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
     alignItems: 'center',
   },
+  tituloModalLogin:
+  {
+    color: '#C20004',
+    fontFamily: 'Montserrat-Medium',
+    fontSize: 23,
+    fontWeight: 'bold'
+  },
+  textoModalLogin:
+  {
+    width: 200,
+    textAlign: 'center'
+  },
+  confirmButton:{
+    width: 100,
+   
+    paddingLeft: 32
+  },
+  
 
   // inputEmail:{
   //   width: 350,
@@ -303,6 +361,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+    marginLeft: 250
   },
 
   erroText: {
