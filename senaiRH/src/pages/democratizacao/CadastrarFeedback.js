@@ -33,20 +33,20 @@ import {
   Quicksand_300Light,
   Quicksand_600SemiBold,
 } from '@expo-google-fonts/quicksand';
+import jwtDecode from 'jwt-decode';
 
 export default function CadastroFeedback({ route }) {
 
+  // Parâmetros
+  const {idDecisao} = route.params;
+
   // States
   const [idUsuario, setIdUsuario] = useState(0);
-  const [idDecisao, setIdDecisao] = useState(1);
-  const [listaFeedbacks, setListaFeedbacks] = useState([]);
-  const [listaDecisao, setListaDecisao] = useState([]);
-  const [descricaoDecisao, setDescricaoDecisao] = useState('');
+  const [Decisao, setDecisao] = useState([]);
   const [comentarioFeedback, setComentarioFeedback] = useState('');
-  const [valorMoedas, setValorMoedas] = useState(0);
+  const [valorMoedas, setValorMoedas] = useState(20);
   const [notaDecisao, setNotaDecisao] = useState('');
   const [dataPublicacao] = useState(moment().format('YYYY-MM-DD'));
-  const [nomeFuncionario, setNomeFuncionario] = useState('');
 
 
   // Animação Size Changing
@@ -91,14 +91,14 @@ export default function CadastroFeedback({ route }) {
   const moveTextTopNota = () => {
     Animated.timing(moveTextNota, {
       toValue: 1,
-      duration: 200,
+      duration: 150,
       useNativeDriver: true,
     }).start();
   };
   const moveTextBottomNota = () => {
     Animated.timing(moveTextNota, {
       toValue: 0,
-      duration: 200,
+      duration: 150,
       useNativeDriver: true,
     }).start();
   };
@@ -137,14 +137,14 @@ export default function CadastroFeedback({ route }) {
   const moveTextTopFb = () => {
     Animated.timing(moveTextFb, {
       toValue: 1,
-      duration: 200,
+      duration: 150,
       useNativeDriver: true,
     }).start();
   };
   const moveTextBottomFb = () => {
     Animated.timing(moveTextFb, {
       toValue: 0,
-      duration: 200,
+      duration: 150,
       useNativeDriver: true,
     }).start();
   };
@@ -176,20 +176,20 @@ export default function CadastroFeedback({ route }) {
 
 
   async function CadastarFeedback() {
-
     try {
       const token = await AsyncStorage.getItem('userToken');
-      const data = {
-        idUsuario: idUsuario,
-        idDecisao: route.params.idDecisao,
+
+      const feedback = {
+        idUsuario : 0,
+        idDecisao: idDecisao,
         comentarioFeedBack: comentarioFeedback,
         notaDecisao: notaDecisao,
         dataPublicacao: dataPublicacao,
-        valorMoedas: valorMoedas,
-        notaDecisao: notaDecisao,
+        valorMoedas: valorMoedas
       };
 
-      const resposta = await api.post('Feedbacks/Cadastrar', data, {
+      console.warn(jwtDecode(token))
+      const resposta = await api.post('Feedbacks/Cadastrar', feedback, {
         headers: {
           Authorization: 'Bearer ' + token,
         },
@@ -206,48 +206,25 @@ export default function CadastroFeedback({ route }) {
     }
   };
 
-  async function BuscarFeedback() {
+  async function BuscarDecisao() {
     try {
       const token = await AsyncStorage.getItem('userToken');
-      const resposta = await api.get('Feedbacks/Listar', {
+      const resposta = await api.get('Decisoes/Listar/'+ idDecisao, {
         headers: {
           Authorization: 'Bearer ' + token,
         },
       });
 
       if (resposta.status === 200) {
-        setListaFeedbacks(resposta.data);
+        setDecisao([resposta.data]);
       }
     } catch (error) {
       console.warn(error);
     }
   };
 
-  async function BuscarDecisoes() {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      const resposta = await api.get('/Decisoes/Listar', {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      });
-
-      if (resposta.status === 200) {
-        setListaDecisao(resposta.data);
-      }
-    } catch (error) {
-      console.warn(error);
-    }
-  };
-
-  useEffect(() => {
-    BuscarFeedback();
-    ChangeSizeUp();
-  }, []);
-  useEffect(() => { BuscarDecisoes() }, []);
-  
-  // Busca o id do Usuário
-  useEffect(() => { async () => setIdUsuario(await AsyncStorage.getItem('userToken')) }, []);
+  useEffect(() => { ChangeSizeUp(); }, []);
+  useEffect(() => { BuscarDecisao(); }, []);
 
   // UseEffect Animação Feedback
   useEffect(() => {
@@ -276,7 +253,6 @@ export default function CadastroFeedback({ route }) {
     });
 
     return () => {
-      // showSubscription.remove();
       hideSubscription.remove();
     };
   }, []);
@@ -303,12 +279,10 @@ export default function CadastroFeedback({ route }) {
             Seu gerente tomou a seguinte decisão:
           </Text>
           <Text style={styles.sectionDemocratizacaoDecisao}>
-            {/* {
-              listaDecisao.map((decisao) => {
-                return decisao.
-              })
-            } */}
-            “Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...”
+          {Decisao.map((decisao) => {
+
+            return decisao.descricaoDecisao
+          })}
           </Text>
         </Animated.View>
 
@@ -342,7 +316,7 @@ export default function CadastroFeedback({ route }) {
             blurOnSubmit
           />
         </KeyboardAvoidingView>
-        <TouchableOpacity style={styles.btnCadastro} onPress={() => CadastarFeedback}>
+        <TouchableOpacity style={styles.btnCadastro} onPress={() => CadastarFeedback()}>
           <Text style={styles.btnCadastroText}>Enviar Feedback</Text>
         </TouchableOpacity>
       </View>

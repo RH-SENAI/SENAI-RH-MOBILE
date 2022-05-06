@@ -109,12 +109,10 @@ export default class Login extends Component {
               senha : this.state.senha,
           });
 
-          console.warn(resposta);
           const token = resposta.data.token;
 
-          console.warn(token);
-
           await AsyncStorage.setItem('userToken', token);
+          await AsyncStorage.setItem('idUsuario', jwt_decode(token).jti)
           console.warn(resposta.data);
 
           if (resposta.status == 200) {

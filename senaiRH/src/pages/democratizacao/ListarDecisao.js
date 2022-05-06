@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 import {
   Image,
   StyleSheet,
@@ -8,11 +9,13 @@ import {
   FlatList,
 } from "react-native";
 import api from "../../services/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ListarDecisao() {
   const [listaDecisao, setListaDecisao] = useState([]);
+  const navigation = useNavigation();
 
-  const buscarDecisao = async () => {
+  const BuscarDecisao = async () => {
     const token = await AsyncStorage.getItem("userToken");
 
     if (token != null) {
@@ -28,7 +31,7 @@ export default function ListarDecisao() {
   };
   
   useEffect(() => {
-    buscarDecisao();
+    BuscarDecisao();
   }, []);
 
   const renderItem = ({ item }) => (
@@ -37,7 +40,7 @@ export default function ListarDecisao() {
         <TouchableOpacity
           key={item.idDecisao}
           onPress={() =>
-            navigation.navigate("cadastroFeedback", {
+            navigation.navigate("CadastrarFeedback", {
               idDecisao: item.idDecisao,
             })
           }
