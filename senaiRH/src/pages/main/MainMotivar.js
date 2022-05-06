@@ -20,6 +20,7 @@ import {
 const Tab = createBottomTabNavigator();
 
 import Atividades from "../atividades/Atividades.js";
+import AtividadesExtras from "../atividades/AtividadesExtras.js";
 import MinhasAtividades from "../minhasAtividades/MinhasAtividades.js";
 import RankingGp1 from "../rankingGp1/RankingGp1.js";
 import Perfil from "../perfil/Perfil.js";
@@ -89,6 +90,18 @@ export default function MainMotivar() {
         }}
       />
 
+{/* <Tab.Screen
+        name="AtividadesExtras"
+        component={AtividadesExtras}
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <AntDesign name="solution1" size={size} color={color} />
+          ),
+          headerShown: false,
+        }}
+      /> */}
+
+
       <Tab.Screen
         name="Redirecionar"
         component={Redirecionar}
@@ -100,6 +113,8 @@ export default function MainMotivar() {
           //headerShown: false,
         }}
       />
+
+
 
       <Tab.Screen
         name="Ranking"
