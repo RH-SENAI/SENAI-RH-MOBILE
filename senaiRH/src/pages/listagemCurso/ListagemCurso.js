@@ -20,6 +20,7 @@ import ReadMore from 'react-native-read-more-text';
 import api from '../../services/apiGrupo2.js';
 import apiMaps from '../../services/apiMaps.js';
 import * as Location from 'expo-location';
+const delay = require('delay');
 // import { Location, Permissions } from 'expo';
 
 export default class ListagemCurso extends Component {
@@ -33,6 +34,9 @@ export default class ListagemCurso extends Component {
             isFavorite: false,
             inscrito: '',
             showAlert: false,
+            // startGeo: false,
+            // timeGeolocation: false,
+            contadorCurso: 0,
             listaCurso: [],
             cursoBuscado: [],
             localizacaoCurso: [],
@@ -45,7 +49,7 @@ export default class ListagemCurso extends Component {
             console.log('A permissão de localização não foi aceita!');
 
             this.setState({
-                errorMessage: 'A permissão de localização não foi aceita.'
+                errorMessage: 'A permissão de localização não foi aceita'
             })
 
             return;
@@ -66,8 +70,9 @@ export default class ListagemCurso extends Component {
         // console.warn(text) 
     }
 
-    Localizacao = async (latitude, longitude, destin) => {
+    Localizacao = async (longitude, latitude, destin) => {
         try {
+            console.log(longitude)
             var stringProblematica = `json?origins=${longitude}, ${latitude}&destinations=${destin}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
             // console.log(stringProblematica)
             const resposta = await apiMaps(stringProblematica);
@@ -75,12 +80,15 @@ export default class ListagemCurso extends Component {
             let string = JSON.stringify(resposta.data);
             let obj = JSON.parse(string);
             // console.warn(obj)
+
             let distance = obj['rows'][0]['elements'][0]['distance'].value
+            console.log(distance)
             if (resposta.status == 200) {
-                console.warn('Localização encontrada');
+                console.warn('Localização encontrada!');
                 const dadosLocalizacao = resposta.data;
                 if (distance <= 750000) {
                     this.setState({ localizacaoCurso: dadosLocalizacao })
+                    
                     console.warn(distance);
                     console.warn('Localização está no alcance');
                     console.warn(this.state.localizacaoCurso)
@@ -91,6 +99,7 @@ export default class ListagemCurso extends Component {
                 }
                 // console.warn(this.state.localizacaoCurso);
             }
+
         }
         catch (erro) {
             console.warn(erro);
@@ -105,13 +114,26 @@ export default class ListagemCurso extends Component {
             if (resposta.status == 200) {
                 const dadosCurso = resposta.data;
 
+                do {
+                    var i = 0
+                    let stringContador = JSON.stringify(dadosCurso);
+                    let objContador = JSON.parse(stringContador);
+                    var localContador = objContador[i]['idCurso']
+                    console.log(localContador)
+                    i++
+                } while (i <= i.length);
+
+                this.setState({ contadorCurso: i + 1 })
+                console.warn(this.state.contadorCurso)
+
+
                 let stringLocalCurso = JSON.stringify(dadosCurso);
                 let objLocalCurso = JSON.parse(stringLocalCurso);
-                let localCurso = objLocalCurso['idEmpresaNavigation']
-                console.log(localCurso)
-                if (dadosCurso) {
+                let localCurso = objLocalCurso[0]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
+                console.warn(localCurso)
 
-                }
+                this.Localizacao(this.state.Userlongitude, this.state.Userlatitude, localCurso)
+                
                 this.setState({ listaCurso: dadosCurso })
                 console.warn('Cursos encontrados');
                 console.warn(this.state.listaCurso);
@@ -131,9 +153,11 @@ export default class ListagemCurso extends Component {
 
         this.setState({ modalVisivel: visible })
     }
-    componentDidMount() {
-        this.ListarCurso();
+    componentDidMount = async () => {
         this.GetLocation();
+        await delay(5000);
+        // setTimeout(function(){this.setState({ timeGeolocation: true})}, 1000);
+        this.ListarCurso();
     }
 
     showAlert = () => {
@@ -180,6 +204,7 @@ export default class ListagemCurso extends Component {
     ProcurarCurso = async (id) => {
         try {
             const resposta = await api('/Cursos/' + id);
+            // console.warn(resposta)
             if (resposta.status == 200) {
                 const dadosCurso = await resposta.data;
                 this.setState({ cursoBuscado: dadosCurso })
@@ -219,7 +244,8 @@ export default class ListagemCurso extends Component {
         <View>
             <View style={styles.containerCurso}>
                 {/* item.idEmpresaNavigation.idLocalizacaoNavigation.idLogradouroNavigation.nomeLogradouro */}
-                <Pressable onPress={() => this.Localizacao(this.state.Userlatitude, this.state.Userlongitude, item.idEmpresaNavigation.idLocalizacaoNavigation.idLogradouroNavigation.nomeLogradouro)}>
+                {/* Localizacao(this.state.Userlatitude, this.state.Userlongitude, item.idEmpresaNavigation.idLocalizacaoNavigation.idCepNavigation.cep1 */}
+                <Pressable onPress={() => this.setModalVisivel(true, item.idCurso)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
                             <Image style={styles.imgCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
@@ -255,7 +281,7 @@ export default class ListagemCurso extends Component {
                         <View style={styles.boxPrecoFavorito}>
                             <View style={styles.boxPreco}>
                                 <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                <Text style={styles.textDados}>1024</Text>
+                                <Text style={styles.textDados}>{item.valorCurso}</Text>
                             </View>
 
                             <View style={styles.boxFavorito}>
@@ -290,7 +316,7 @@ export default class ListagemCurso extends Component {
                                             //starImage={star}
                                             showRating={false}
                                             selectedColor={'#C20004'}
-                                            defaultRating={item.mediaAvaliacao}
+                                            defaultRating={item.mediaAvaliacaoCurso}
                                             isDisabled={true}
                                             size={20}
                                         />
@@ -325,12 +351,7 @@ export default class ListagemCurso extends Component {
                                             renderRevealedFooter={this._renderRevealedFooter}
                                             onReady={this._handleTextReady}
                                         >
-                                            <Text style={styles.textDescricaoModal}>O curso habilita profissionais técnicos de nível médio em
-                                                Desenvolvimento de Sistemas, visando suprir a demanda do
-                                                mercado por profissionais qualificados para atuarem em
-                                                programação e desenvolvimento de software com condições
-                                                técnico-tecnológicas para atender às exigências e evolução
-                                                do segmento.</Text>
+                                            <Text style={styles.textDescricaoModal}>{item.descricaoCurso}</Text>
                                         </ReadMore>
 
                                         <View style={styles.boxEmpresa}>
@@ -341,7 +362,7 @@ export default class ListagemCurso extends Component {
                                         <View style={styles.boxValorInscrever}>
                                             <View style={styles.boxPrecoModal}>
                                                 <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                                <Text style={styles.textDados}>1024</Text>
+                                                <Text style={styles.textDados}>{item.valorCurso}</Text>
                                             </View>
 
                                             <View style={styles.boxInscreverModal}>
