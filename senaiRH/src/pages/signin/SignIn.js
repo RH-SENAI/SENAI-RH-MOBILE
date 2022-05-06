@@ -15,12 +15,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
 import apiGp1 from "../../services/apiGp1"
 
-// let customFonts = {
-//   'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
-//   'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
-//   'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf')
-// }
-
 
 
 class FloatingLabelInput extends Component {

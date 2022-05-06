@@ -75,12 +75,12 @@ export default function ListaFeedback() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.mainHeader}>
+      {/* <View style={styles.mainHeader}>
         <Image
           source={require("../../../assets/imgMobile/logo_2S.png")}
           style={styles.imgLogo}
-        />
-      </View>
+        /> */}
+      {/* </View> */}
 
       <Text style={styles.h1nonBold}> Feedbacks da</Text>
       <Text style={styles.h1Bold}> DEMOCRATIZAÇÃO</Text>
