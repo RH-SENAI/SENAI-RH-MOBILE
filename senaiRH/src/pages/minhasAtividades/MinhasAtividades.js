@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     StyleSheet,
     Text,
@@ -46,7 +46,7 @@ import {
     Montserrat_800ExtraBold_Italic,
     Montserrat_900Black_Italic,
 } from '@expo-google-fonts/montserrat';
-//import { useEffect } from 'react/cjs/react.production.min';
+
 
 const MinhasAtividades = () => {
 
@@ -55,12 +55,12 @@ const MinhasAtividades = () => {
     const [modalVisible, setModalVisible] = useState(false)
     const [listaAtividades, setListaAtividades] = useState([]);
     const [mensagem, setmensagem] = useState('');
+    //const [concluido, setConcluido] = useState([]);
 
     function ListaMinhas() {
         try {
             console.warn('tamo aqui')
             const token = AsyncStorage.getItem('userToken');
-            const token =  AsyncStorage.getItem('userToken');
             console.warn(token)
 
             const xambers = base64.decode(token.split('.')[1])
@@ -88,6 +88,49 @@ const MinhasAtividades = () => {
         ListaMinhas()
     }, []);
 
+
+    const Concluir = async () => {
+        const token = AsyncStorage.getItem('userToken');
+
+        const userJson = JSON.parse(xambers)
+        console.warn(userJson)
+
+        api
+            .post('/Atividades/ListaValidar' + xambers.jti,{
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                },
+            })
+            .then(resposta => {
+                if (resposta.status == 200) {
+                    console.warn('Atividade concluida com sucesso');
+                    navigation.navigate()
+                }
+            })
+            .catch(error => console.warn(error));
+    };
+
+    // function Concluir(){
+    //     try {
+    //         const token = AsyncStorage.getItem('userToken');
+
+    //         const resposta = api.get('/Atividades/ListaValidar' + xambers.jti,
+    //         {
+    //             headers: {
+    //                     Authorization: 'Bearer ' + token,
+    //                 },
+    //             },
+    //             );
+    //         if (resposta.status == 200) {
+    //             setConcluido(resposta.data)
+    //             //console.warn('Atividade concluida com sucesso');
+    //         } else {
+    //             console.warn('Falha ao concluir atividade');
+    //         }
+    //     } catch (error) {
+    //         console.warn(error);
+    //     }
+    // };
 
     let [fontsLoaded] = useFonts({
         Regular: Quicksand_400Regular,
@@ -259,35 +302,21 @@ renderItem = ({ item }) => (
         <View style={styles.MinhaAtividade}>
             <View style={styles.quadradoeTexto}>
                 <View style={styles.quadrado}></View>
-                <Text style={styles.TituloAtividade}> {item.nomeAtividade}Titulo da Atividade </Text>
+                <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
 
                 <View style={styles.descricaoOlho}>
-                    <Text style={styles.descricao}>{item.dataConclusao}Data de Entrega: 18/03/2022 </Text>
+                    <Text style={styles.descricao}>{item.dataConclusao} </Text>
                 </View>
                 <View style={styles.ModaleBotao}>
-                    <View style={styles.statusImagem}></View>
+                    {/* <View style={styles.statusImagem}></View> */}
+
                     <View style={styles.statusImagem}>
 
-                       
-
-
                         <Image
-
-                        source={
-                            item.idSituacaoAtividade == 1 ? require('../../../assets/img-gp1/validado.png')  : item.idSituacaoAtividade == 2 ? require('../../../assets/img-gp1/pendente.png') : item.idSituacaoAtividade == 3 ? require('../../../assets/img-gp1/avaliando.png') : null 
-                        }  />
-                        <Text style={styles.status}>{item.idSituacaoAtividade == 1? setmensagem('Validado') : item.idSituacaoAtividade == 2? setmensagem('Pendente') : item.idSituacaoAtividade == 3? setmensagem('Avaliando') : null} {mensagem} </Text>
-                        
-                        
-                        {/* <Text style={styles.status}>Em avaliação </Text>
-
-
-                        <Image source={require('../../../assets/img-gp1/pendente.png')} style={styles.avaliando} />
-                        
-
-                        <Image source={require('../../../assets/img-gp1/validado.png')} style={styles.avaliando} />
-                        <Text style={styles.status}>Validado </Text> */}
-
+                            source={
+                                item.idSituacaoAtividade == 1 ? require('../../../assets/img-gp1/validado.png') : item.idSituacaoAtividade == 2 ? require('../../../assets/img-gp1/pendente.png') : item.idSituacaoAtividade == 3 ? require('../../../assets/img-gp1/avaliando.png') : null
+                            } />
+                        <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? setmensagem('Validado') : item.idSituacaoAtividade == 2 ? setmensagem('Pendente') : item.idSituacaoAtividade == 3 ? setmensagem('Avaliando') : null} {mensagem} </Text>
 
                     </View>
 
@@ -304,18 +333,24 @@ renderItem = ({ item }) => (
                             <View style={styles.modalView}>
                                 <View style={styles.quadradoModal}></View>
                                 <View style={styles.conteudoBoxModal}>
-                                    <Text style={styles.nomeBoxModal}> Titulo Atividade </Text>
-                                    <Text style={styles.descricaoModal}> Descrição Atividade </Text>
-                                    <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
-                                    <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
-                                    <Text style={styles.criadorModal}> Nome pessoa reponsavel </Text>
+                                    <Text style={styles.nomeBoxModal}> {item.nomeAtividade} </Text>
+                                    <Text style={styles.descricaoModal}> {item.descricaoAtividade} </Text>
+                                    <Text style={styles.itemPostadoModal}> {item.dataInicio} </Text>
+                                    <Text style={styles.entregaModal}> {item.dataConclusao} </Text>
+                                    <Text style={styles.criadorModal}> {item.idGestorCadastroNavigation.nome} </Text>
+                                    
                                     <TouchableOpacity style={styles.anexo}>
                                         <Text style={styles.mais}>   + </Text>
                                         <Text style={styles.txtanexo}>    Adicionar Anexo</Text>
                                     </TouchableOpacity>
+                                    
                                 </View>
-                                <View style={styles.botoesModal}  >
-                                    <TouchableOpacity >
+
+                                <View style={styles.botoesModal} >
+                                    <TouchableOpacity
+                                        onPress={() => setModalVisible(!modalVisible)}
+                                    >
+                                        {/* onPress={() => this.Concluir(item.necessarioValidar)} */}
                                         <View style={styles.associarModal}>
                                             <Text style={styles.texto}> Concluida </Text>
                                         </View>

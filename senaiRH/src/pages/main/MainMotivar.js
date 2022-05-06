@@ -36,6 +36,7 @@ function ButtonNew({ size, color }) {
 
 
 export default function MainMotivar() {
+  
   let [fontsLoaded] = useFonts({
     Regular: Quicksand_400Regular,
     Light: Quicksand_300Light,
