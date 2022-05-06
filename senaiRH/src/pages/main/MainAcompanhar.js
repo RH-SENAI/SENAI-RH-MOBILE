@@ -90,6 +90,7 @@ export default function MainAcompanhar() {
         tabBarActiveTintColor: "#C20004",
         tabBarInactiveTintColor: "gray",
         tabBarShowLabel: true,
+        headerShown : false,
         tabBarStyle: {
           backgroundColor: "#f1f1f1",
           borderTopColor: "gray",

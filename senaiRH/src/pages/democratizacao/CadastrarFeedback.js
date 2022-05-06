@@ -1,5 +1,5 @@
 // React Imports
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,26 +7,52 @@ import {
   View,
   Image,
   TextInput,
+  Animated,
+  KeyboardAvoidingView,
+  Keyboard
 } from 'react-native';
+
+// Expo
+import AppLoading from 'expo-app-loading';
 
 // Pacotes
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Font from 'expo-font';
 import moment from 'moment';
-import AppLoading from 'expo-app-loading';
 
 // Services
 import api from '../../services/api';
 
 // Fonts
-let customFonts = {
-  'Montserrat-Regular': require('../../../assets/fonts/montserrat/Montserrat-Regular.ttf'),
-  'Montserrat-Bold': require('../../../assets/fonts/montserrat/Montserrat-Bold.ttf'),
-  'Montserrat-SemiBold': require('../../../assets/fonts/montserrat/Montserrat-SemiBold.ttf'),
-  'Montserrat-Medium': require('../../../assets/fonts/montserrat/Montserrat-Medium.ttf'),
-  'Quicksand-Regular': require('../../../assets/fonts/quicksand/Quicksand-Regular.ttf'),
-  'Quicksand-SemiBold': require('../../../assets/fonts/quicksand/Quicksand-SemiBold.ttf')
-}
+import {
+  useFonts,
+  Montserrat_100Thin,
+  Montserrat_200ExtraLight,
+  Montserrat_300Light,
+  Montserrat_400Regular,
+  Montserrat_500Medium,
+  Montserrat_600SemiBold,
+  Montserrat_700Bold,
+  Montserrat_800ExtraBold,
+  Montserrat_900Black,
+  Montserrat_100Thin_Italic,
+  Montserrat_200ExtraLight_Italic,
+  Montserrat_300Light_Italic,
+  Montserrat_400Regular_Italic,
+  Montserrat_500Medium_Italic,
+  Montserrat_600SemiBold_Italic,
+  Montserrat_700Bold_Italic,
+  Montserrat_800ExtraBold_Italic,
+  Montserrat_900Black_Italic,
+} from '@expo-google-fonts/montserrat';
+
+import {
+  Quicksand_300Light,
+  Quicksand_400Regular,
+  Quicksand_500Medium,
+  Quicksand_600SemiBold,
+  Quicksand_700Bold,
+} from '@expo-google-fonts/quicksand';
+import { transform } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 export default function CadastroFeedback({ route }) {
 
@@ -42,13 +68,99 @@ export default function CadastroFeedback({ route }) {
   const [dataPublicacao] = useState(moment().format('YYYY-MM-DD'));
   const [nomeFuncionario, setNomeFuncionario] = useState('');
 
-  async function _loadFontsAsync(){
-    await Font.loadAsync(customFonts);
-    useState({ fontsLoaded: true });
+
+  const sizeChanging = useRef(new Animated.Value(100)).current;
+
+
+  // Float Label Animação
+  const moveText = useRef(new Animated.Value(0)).current;
+
+  const ChangeSizeUp = () => {
+    Animated.timing(sizeChanging, {
+      toValue : 150,
+      useNativeDriver: false,
+    }).start()
   }
 
-  
+  const ChangeSizeDown = () => {
+    Animated.timing(sizeChanging, {
+      toValue : 100,
+      useNativeDriver: false,
+    }).start()
+  }
+
+  const onChangeText = (text) => {
+    setComentarioFeedback(text);
+  };
+  const onFocusHandler = () => {
+    if (comentarioFeedback !== "") {
+      moveTextTop();
+      moveTextLeft();
+    }
+  };
+  const onBlurHandler = () => {
+    if (comentarioFeedback === "") {
+      moveTextBottom();
+    }
+  };
+  const moveTextTop = () => {
+    Animated.timing(moveText, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  };
+  const moveTextBottom = () => {
+    Animated.timing(moveText, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  };
+  const yVal = moveText.interpolate({
+    inputRange: [0, 1],
+    outputRange: [4, -20],
+  });
+  const animStyle = {
+    transform: [
+      {
+        translateY: yVal,
+      },
+    ],
+  };
+
+  // Fontes utilizada
+  let [fontsLoaded] = useFonts({
+    Montserrat_100Thin,
+    Montserrat_200ExtraLight,
+    Montserrat_300Light,
+    Montserrat_400Regular,
+    Montserrat_500Medium,
+    Montserrat_600SemiBold,
+    Montserrat_700Bold,
+    Montserrat_800ExtraBold,
+    Montserrat_900Black,
+    Montserrat_100Thin_Italic,
+    Montserrat_200ExtraLight_Italic,
+    Montserrat_300Light_Italic,
+    Montserrat_400Regular_Italic,
+    Montserrat_500Medium_Italic,
+    Montserrat_600SemiBold_Italic,
+    Montserrat_700Bold_Italic,
+    Montserrat_800ExtraBold_Italic,
+    Montserrat_900Black_Italic,
+
+    // Quicksand
+    Quicksand_300Light,
+    Quicksand_400Regular,
+    Quicksand_500Medium,
+    Quicksand_600SemiBold,
+    Quicksand_700Bold,
+  })
+
+
   async function CadastarFeedback() {
+
     try {
       const token = await AsyncStorage.getItem('userToken');
       const data = {
@@ -61,35 +173,33 @@ export default function CadastroFeedback({ route }) {
         notaDecisao: notaDecisao,
       };
 
-      
       const resposta = await api.post('Feedbacks/Cadastrar', data, {
         headers: {
           Authorization: 'Bearer ' + token,
         },
       });
-      
+
       if (resposta.status == 201) {
         console.warn('Cadastro de Feedback realizado!');
       } else {
         console.warn('Falha ao realizar o cadastro.');
       }
 
-      
+
     } catch (error) {
       console.warn(error);
     }
   };
-  
+
   async function BuscarFeedbacks() {
     try {
       const token = await AsyncStorage.getItem('userToken');
-      
       const resposta = await api.get('Feedbacks/Listar', {
         headers: {
           Authorization: 'Bearer ' + token,
         },
       });
-      
+
       if (resposta.status === 200) {
         setListaFeedbacks(resposta.data);
       }
@@ -97,11 +207,10 @@ export default function CadastroFeedback({ route }) {
       console.warn(error);
     }
   };
-  
+
   async function BuscarDecisoes() {
     try {
       const token = await AsyncStorage.getItem('userToken');
-      
       const resposta = await api.get('/Decisoes/Listar', {
         headers: {
           Authorization: 'Bearer ' + token,
@@ -116,66 +225,103 @@ export default function CadastroFeedback({ route }) {
     }
   };
 
-  useEffect(() => { BuscarFeedbacks() }, []);
+  useEffect(() => { BuscarFeedbacks();
+                    ChangeSizeUp(); }, []);
   useEffect(() => { BuscarDecisoes() }, []);
   useEffect(() => { async () => setIdUsuario(await AsyncStorage.getItem('userToken')) }, []);
-  useEffect(() => _loadFontsAsync,[])
+  useEffect(() => {
+    if (comentarioFeedback !== "") {
+      moveTextTop();
+    } else if (comentarioFeedback === "") {
+      moveTextBottom();
+    }
+  }, [comentarioFeedback])
+  const [keyboardStatus, setKeyboardStatus] = useState(false);
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardStatus(!keyboardStatus);
+      ChangeSizeDown();
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardStatus(keyboardStatus);
+      ChangeSizeUp();
 
+    });
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.mainHeader}>
-        <Image style={styles.logoSenai} source={require("../../../assets/imgMobile/logo_2S.png")} resizeMode="contain" />
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
+  const boxStyle = {
+    height : sizeChanging 
+  };
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
+    return (
+      <View style={styles.container}>
+        <View style={styles.mainHeader}>
+          <Image style={styles.logoSenai} source={require("../../../assets/imgMobile/logo_2S.png")} resizeMode="contain" />
+        </View>
+
+        <Text style={styles.tituloDemocratizacao}>Democratização</Text>
+
+        <Animated.View style={[styles.sectionDemocratizacao, boxStyle]} >
+
+          <Text style={styles.sectionDemocratizacaoTxt}>
+            Seu gerente tomou a seguinte decisão:
+          </Text>
+          <Text style={styles.sectionDemocratizacaoDecisao}>
+            {/* {
+              listaDecisao.map((decisao) => {
+                return decisao.
+              })
+            } */}
+
+            “Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...”
+          </Text>
+        </Animated.View>
+
+        <View style={styles.sectionDemocratizacaoBox}>
+          <Animated.View style={[styles.animatedStyle, animStyle]}>
+            <Text style={styles.label}>Insira seu feedback</Text>
+          </Animated.View>
+          <TextInput
+
+            keyboardType="default"
+            onChangeText={campo => onChangeText(campo)}
+            value={comentarioFeedback}
+            style={styles.sectionDemocratizacaoInput}
+            editable={true}
+            onFocus={onFocusHandler}
+            onBlur={onBlurHandler}
+            blurOnSubmit
+          >
+          </TextInput>
+          <TextInput
+            placeholder="Insira  uma nota para a decisão"
+            keyboardType="numeric"
+            onChangeText={campo => setNotaDecisao(campo)}
+            value={notaDecisao}
+            style={styles.sectionDemocratizacaoInput}>
+          </TextInput>
+        </View>
+        <TouchableOpacity style={styles.btnCadastro} onPress={() => CadastarFeedback}>
+          <Text style={styles.btnCadastroText}>Enviar Feedback</Text>
+        </TouchableOpacity>
       </View>
-        <Text style={styles.titulo_democratizacao}>{'Democratização'.toUpperCase()}</Text>
-      <View style={styles.section}>
-        <Text style={styles.sectionTxt}>
-
-          {listaDecisao.map(decisao => {
-
-            if (decisao.idDecisao == route.params.idDecisao) {
-              return (
-                <Text key={decisao.idDecisao} style={styles.feedback}>
-                  <Text style={styles.boxFeedback}>
-                    <Text style={styles.tituloDecisao}>
-                      O gerente tomou a seguinte decisão:
-                    </Text>
-                    <Text style={styles.paragrafoDecisao}> {decisao.descricaoDecisao}</Text>
-                  </Text>
-                </Text>
-              );
-            }
-          })}
-
-        </Text>
-      </View>
-
-      <TextInput
-        placeholder="Deseja adicionar algum feedback?"
-        keyboardType="default"
-        onChangeText={campo => setComentarioFeedback(campo)}
-        value={comentarioFeedback}
-        style={styles.inputCadastro}>
-      </TextInput>
-
-      <TextInput
-        placeholder="Insira  uma nota para a decisão"
-        keyboardType="numeric"
-        onChangeText={campo => setNotaDecisao(campo)}
-        value={notaDecisao}
-        style={styles.inputCadastro}>
-      </TextInput>
-
-      <TouchableOpacity style={styles.btnCadastro} onPress={() => CadastarFeedback}>
-        <Text style={styles.btnCadastroText}>Enviar Feedback</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#F2F2F2'
   },
 
   mainHeader: {
@@ -202,10 +348,58 @@ const styles = StyleSheet.create({
     marginTop: 60,
   },
 
-  titulo_democratizacao: {
+  tituloDemocratizacao: {
     fontSize: 35,
+    color: '#2A2E32',
+    fontFamily: 'Montserrat_600SemiBold',
+    marginTop: 32,
+    marginBottom: 32,
+    textTransform: 'uppercase',
+    width: '86%'
+  },
+
+  sectionDemocratizacao:
+  {
+    borderColor: '#B3B3B3',
+    width: '86%',
+    borderStyle: 'solid',
+    borderWidth: 2,
+    borderRadius: 10,
+    alignItems: 'flex-start',
+    paddingLeft: 10,
+    marginBottom: 18
+  },
+
+  sectionDemocratizacaoTxt: {
+    fontFamily: 'Quicksand_600SemiBold',
+    fontSize: 15,
     color: '#000000',
-    fontFamily: 'Montserrat-SemiBold'
+    paddingTop: 16,
+    paddingBottom: 8,
+    paddingLeft: 3
+  },
+
+
+  sectionDemocratizacaoDecisao: {
+    fontFamily: 'Quicksand_300Light',
+    color: '#000000',
+    fontSize: 12,
+    paddingLeft: 4,
+    paddingRight: 12
+  },
+
+  sectionDemocratizacaoBox: {
+    width: '86%',
+    height: 100
+  },
+
+  sectionDemocratizacaoInput: {
+    width: '100%',
+    height: 42,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: '#B3B3B3',
+    paddingLeft: 16
   },
 
   tituloDecisao: {
@@ -229,16 +423,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  inputCadastro: {
-    width: '80%',
-    height: 42,
-    marginBottom: 15,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
-    borderRadius: 5,
-    padding: 10,
-    marginTop: 10,
-  },
-
   btnCadastro: {
     width: 229,
     height: 42,
@@ -246,7 +430,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-
     marginTop: 10,
   },
 
@@ -266,5 +449,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column'
+  },
+
+  label: {
+    color: '#636466',
+    fontSize: 10,
+    fontFamily: 'Quicksand_300Light',
+  },
+  animatedStyle: {
+    top: 9,
+    left: 20,
+    position: 'absolute',
+    zIndex: 1000,
+    backgroundColor: '#F2F2F2',
+    width: 95,
+    alignItems : 'center'
   }
 })

@@ -20,7 +20,7 @@ function App() {
   return (
     <NavigationContainer>
       <StatusBar backgroundColor={'#C20004'} barStyle="light-content" />
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{headerShown : false}}>
         <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
         <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
         <Stack.Screen name="Redirecionar" component={Redirecionar} />
