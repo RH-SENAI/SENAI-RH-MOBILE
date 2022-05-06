@@ -8,10 +8,9 @@ import {
   FlatList,
 } from "react-native";
 import api from "../../services/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ListaFeedback() {
-  // const baseUrl = 'http://192.168.3.156:5000/api/Feedbacks/listar';
-  // const perPage = 10;
   const [listaFeedback, setListaFeedback] = useState([]);
 
   const buscarFeedbacks = async () => {
@@ -56,6 +55,17 @@ export default function ListaFeedback() {
               <Text key={item.idFeedback} style={styles.feedback}>
                 {item.comentarioFeedBack}
               </Text>
+              <View key={item.idFeedback} style={styles.fotoPerfil}>
+                <Image
+                  key={item.idFeedback}
+                  source={{
+                    uri:
+                      "http://192.168.3.107:5000/api/StaticFiles/Images/" +
+                      item.caminhoFotoPerfil,
+                  }}
+                  style={styles.img_perfil}
+                />
+              </View>
             </View>
           </View>
         </TouchableOpacity>
@@ -84,43 +94,14 @@ export default function ListaFeedback() {
         />
       </View>
     </View>
-    // <View style={styles.container}>
-    //   <FlatList
-    //     style={{ marginTop: 35 }}
-    //     contentContainerStyle={{ marginHorizontal: 20 }}
-    //     data={data}
-    //     keyExtractor={(item) => String(item.id)}
-    //     renderItem={({ item }) => <ListItem data={item} />}
-    //     onEndReached={loadApi}
-    //     onEndReachedThreshold={0.15}
-    //     ListFooterComponent={<FooterList load={loading} />}
-    //   />
-    // </View>
   );
 }
-
-// function ListItem({ data }) {
-//   return (
-//     <View style={styles.listItem}>
-//       <Text style={styles.listText}>{data.full_name}</Text>
-//     </View>
-//   );
-// }
-
-// function FooterList({ load }) {
-//   if (!load) return null;
-//   return (
-//     <View style={styles.loading}>
-//       <ActivityIndicator size={25} color="#121212" />
-//     </View>
-//   );
-// }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignSelf: "center",
-    alignItems: "center",
+    alignItems:'center',
+   marginHorizontal:'5%'
   },
 
   img_perfil: {
@@ -166,7 +147,6 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: 30,
     marginTop: 15,
-
   },
   tituloCardWrapper: {
     // backgroundColor: "#9081A6",
@@ -174,7 +154,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignItems: "flex-start",
-    textAlign:"center"
+    textAlign: "center",
   },
 
   tituloCard: {
@@ -182,11 +162,9 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     padding: 20,
-    width:250,
+    width: 250,
     color: "black",
   },
-
-
 
   feedback: {
     color: "red",
@@ -205,6 +183,4 @@ const styles = StyleSheet.create({
     // borderColor: "gray",
     borderRadius: 5,
   },
-
-  
 });

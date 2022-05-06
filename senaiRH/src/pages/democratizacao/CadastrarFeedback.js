@@ -165,6 +165,8 @@ export default function Cadastro({route}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems:'center',
+   marginHorizontal:'5%'
   },
 
   mainHeader: {
