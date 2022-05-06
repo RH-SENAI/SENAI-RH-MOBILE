@@ -68,24 +68,25 @@ export default class ListagemCurso extends Component {
 
     Localizacao = async (latitude, longitude, destin) => {
         try {
-            var stringProblematica = `json?origins=-23.536399, -46.6462825&destinations=04849529&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
-            // console.warn(stringProblematica)
+            var stringProblematica = `json?origins=${longitude}, ${latitude}&destinations=${destin}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
+            // console.log(stringProblematica)
             const resposta = await apiMaps(stringProblematica);
-            // console.warn(resposta.data)
+            // console.log(resposta.data)
             let string = JSON.stringify(resposta.data);
             let obj = JSON.parse(string);
             // console.warn(obj)
-            let distance = obj['rows'][0]['elements'][0]['distance'].value     
+            let distance = obj['rows'][0]['elements'][0]['distance'].value
             if (resposta.status == 200) {
                 console.warn('Localização encontrada');
                 const dadosLocalizacao = resposta.data;
                 if (distance <= 750000) {
                     this.setState({ localizacaoCurso: dadosLocalizacao })
                     console.warn(distance);
-                    console.warn('Localização está no alcance');                                 
+                    console.warn('Localização está no alcance');
+                    console.warn(this.state.localizacaoCurso)
                 }
-                else if(distance > 750000){     
-                    console.warn(distance);           
+                else if (distance > 750000) {
+                    console.warn(distance);
                     console.warn('Localização fora do alcance');
                 }
                 // console.warn(this.state.localizacaoCurso);
@@ -103,6 +104,14 @@ export default class ListagemCurso extends Component {
             const resposta = await api('/Cursos');
             if (resposta.status == 200) {
                 const dadosCurso = resposta.data;
+
+                let stringLocalCurso = JSON.stringify(dadosCurso);
+                let objLocalCurso = JSON.parse(stringLocalCurso);
+                let localCurso = objLocalCurso['idEmpresaNavigation']
+                console.log(localCurso)
+                if (dadosCurso) {
+
+                }
                 this.setState({ listaCurso: dadosCurso })
                 console.warn('Cursos encontrados');
                 console.warn(this.state.listaCurso);
@@ -209,8 +218,8 @@ export default class ListagemCurso extends Component {
     renderItem = ({ item }) => (
         <View>
             <View style={styles.containerCurso}>
-            {/* item.idEmpresaNavigation.idLocalizacaoNavigation.idLogradouroNavigation.nomeLogradouro */}
-                <Pressable onPress={() => this.Localizacao(this.state.Userlatitude, this.state.Userlongitude, '08310580')}>
+                {/* item.idEmpresaNavigation.idLocalizacaoNavigation.idLogradouroNavigation.nomeLogradouro */}
+                <Pressable onPress={() => this.Localizacao(this.state.Userlatitude, this.state.Userlongitude, item.idEmpresaNavigation.idLocalizacaoNavigation.idLogradouroNavigation.nomeLogradouro)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
                             <Image style={styles.imgCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
