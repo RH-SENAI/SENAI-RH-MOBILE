@@ -10,7 +10,8 @@ import {
     FlatList,
     Image,
     Alert,
-    Pressable
+    Pressable,
+    ScrollView
 } from 'react-native';
 
 import AppLoading from 'expo-app-loading';
@@ -51,7 +52,7 @@ import api from "../../services/apiGp1";
 export default function Ranking() {
 
     const [ListarRanking, setListarRanking] = useState([]);
-    // const { partners, onPartnerDetails } = props;
+    // const [ partners, onPartnerDetails ] = props;
 
     let [customFonts] = useFonts({
         Regular: Quicksand_400Regular,
@@ -88,12 +89,30 @@ export default function Ranking() {
     }
 
     useEffect(() => {
-        retornaRanking();
+        retornaRanking();     
     }, []);
+  
+    // useEffect(() => {
+    //     order();     
+    // }, []);
+
+    // useEffect(() => {
+    //     order();
+    // }, []);
+
 
     if (!customFonts) {
         return <AppLoading />;
     }
+
+    const order = () => {
+
+        let lista = [...ListarRanking]
+
+        ListarRanking.sort((a, b) => (b.nome > a.nome ? 1: a.nome > b.nome ? -1 : 0 ))
+         
+        setListarRanking (lista)
+    };
 
     return (
         <View style={styles.main}>
@@ -112,20 +131,28 @@ export default function Ranking() {
 
                 </View>
 
+                {/* <TouchableOpacity onPress={order}>
+                   <Text>cvhjklç~]</Text>
+                </TouchableOpacity> */}
+
                 <FlatList
-                //    contentContainerStyle={styles.RankingGp1}
-                    // style={styles.RankingGp1}
+                    //ContentContainerStyle={styles.RankingGp1}
+                  // style={styles.RankingGp1}
                     data={ListarRanking}
                     // data={partners.sort((a, b) => a.name.localeCompare(b.name))}
                     keyExtractor={item => item.idAtividade}
                     renderItem={renderItem}
+
+                   
                 />
 
 
 
 
 
+
             </View>
+           
 
         </View>
 

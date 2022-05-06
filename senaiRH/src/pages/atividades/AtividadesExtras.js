@@ -238,6 +238,7 @@ export default class AtividadesExtras extends Component {
                     </View>
                     <View style={styles.conteudoBox}>
                         <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
+                        
                         <Text style={styles.criador}> {item.idGestorCadastroNavigation.nome} </Text>
                         <Text style={styles.dataCriacao}>
                         {/* {Intl.DateTimeFormat("pt-BR", {
