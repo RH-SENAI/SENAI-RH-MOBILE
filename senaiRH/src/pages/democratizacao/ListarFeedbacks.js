@@ -1,3 +1,4 @@
+// React Imports
 import React, { useState, useEffect } from "react";
 import {
   Image,
@@ -7,13 +8,50 @@ import {
   View,
   FlatList,
 } from "react-native";
-import api from "../../services/api";
+
+// Pacotes
+import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// Expo
+import AppLoading from 'expo-app-loading';
+
+// Fonts
+import {
+  useFonts,
+  Montserrat_500Medium,
+  Montserrat_600SemiBold,
+} from '@expo-google-fonts/montserrat';
+
+import {
+  Quicksand_300Light,
+  Quicksand_600SemiBold,
+} from '@expo-google-fonts/quicksand';
+
+// Services
+import api from "../../services/api";
+
 export default function ListaFeedback() {
+
+  const navigation = useNavigation();
+
+  // States
   const [listaFeedback, setListaFeedback] = useState([]);
 
-  const buscarFeedbacks = async () => {
+  // Fontes utilizada
+  let [fontsLoaded] = useFonts({
+
+    //Montserrat
+    Montserrat_500Medium,
+    Montserrat_600SemiBold,
+
+    // Quicksand
+    Quicksand_300Light,
+    Quicksand_600SemiBold,
+  })
+
+
+  const BuscarFeedbacks = async () => {
     const token = await AsyncStorage.getItem("userToken");
 
     if (token != null) {
@@ -29,87 +67,152 @@ export default function ListaFeedback() {
   };
 
   useEffect(() => {
-    buscarFeedbacks();
+    BuscarFeedbacks();
   }, []);
 
   const renderItem = ({ item }) => (
-    <View style={styles.container}>
-      <View key={item.idFeedback} style={styles.card}>
+    <View style={styles.containerRenderItem}>
+
+      <View key={item.idFeedback} style={styles.imgPerfilCardWrapper}>
+
+        <Image
+          key={item.idFeedback}
+          source={{
+            uri:
+              "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
+              item.idUsuarioNavigation.caminhoFotoPerfil,
+          }}
+          style={styles.img_perfil}
+          resizeMode="cover"
+        />
+
+      </View>
+
+      <View key={item.idFeedback} style={styles.cardClicavel}>
+
         <TouchableOpacity
           key={item.idFeedback}
           onPress={() =>
-            navigation.navigate("cadastroFeedback", {
+            navigation.navigate("ListarDecisao", {
               idDecisao: item.idDecisao,
             })
           }
         >
           <View style={styles.containerCard}>
+
             <View key={item.idFeedback} style={styles.tituloCardWrapper}>
+
               <Text key={item.idFeedback} style={styles.tituloCard}>
-                {item.idUsuarioNavigation.nome} disse sobre a proposta: "
+                O que {item.idUsuarioNavigation.nome} disse sobre: "
                 {item.idDecisaoNavigation.descricaoDecisao}"
               </Text>
+
+              <Text style={styles.mensagem}>{item.comentarioFeedBack}</Text>
+
             </View>
 
-            <View key={item.idFeedback} style={styles.textoCard}>
-              <Text key={item.idFeedback} style={styles.feedback}>
-                {item.comentarioFeedBack}
-              </Text>
-              <View key={item.idFeedback} style={styles.fotoPerfil}>
-                <Image
-                  key={item.idFeedback}
-                  source={{
-                    uri:
-                      "http://192.168.3.107:5000/api/StaticFiles/Images/" +
-                      item.caminhoFotoPerfil,
-                  }}
-                  style={styles.img_perfil}
-                />
-              </View>
-            </View>
           </View>
+
         </TouchableOpacity>
+
       </View>
+
     </View>
   );
 
-  return (
-    <View style={styles.container}>
-      {/* <View style={styles.mainHeader}>
-        <Image
-          source={require("../../../assets/imgMobile/logo_2S.png")}
-          style={styles.imgLogo}
-        /> */}
-      {/* </View> */}
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
+    return (
+      <View style={styles.container}>
 
-      <Text style={styles.h1nonBold}> Feedbacks da</Text>
-      <Text style={styles.h1Bold}> DEMOCRATIZAÇÃO</Text>
+        <View style={styles.header}>
 
-      <View style={styles.containerFlatlist}>
+          <Image
+            source={require("../../../assets/imgMobile/logo_2S.png")}
+            style={styles.imgLogo}
+          />
+
+        </View>
+
+        <Text style={styles.h1Bold}>Feedbacks</Text>
+
         <FlatList
           contentContainerStyle={styles.mainBodyContent}
           data={listaFeedback}
           keyExtractor={(item) => item.idFeedback}
           renderItem={renderItem}
         />
+
       </View>
-    </View>
-  );
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems:'center',
-   marginHorizontal:'5%'
+  containerRenderItem: {
+    width: 370,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+
+  imgPerfilCardWrapper: {
+    width: 70,
+    height: 70,
+    borderColor: '#B3B3B3',
+    borderWidth: 3,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   img_perfil: {
-    width: 900,
-    backgroundColor: "blue",
+    width: '100%',
+    height: '100%'
+  },
+  cardClicavel: {
+    borderWidth: 2,
+    borderColor: "gray",
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 16,
+    width: 230,
+    height: 130
   },
 
-  mainHeader: {
+  containerCard: {
+    width: 207,
+    height: 105
+  },
+
+  tituloCardWrapper: {
+    width: 200,
+    height: 38,
+  },
+
+  tituloCard: {
+    textAlign: "auto",
+    marginBottom: 8,
+    height: 60,
+    fontFamily: 'Quicksand_600SemiBold',
+    color: 'black',
+    marginLeft: 14
+  },
+
+  mensagem: {
+    textAlign: "center",
+    color: 'black',
+    fontFamily: 'Quicksand_300Light'
+  },
+
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    marginHorizontal: '5%',
+  },
+
+  header: {
     width: 290,
     height: 40,
     alignSelf: "center",
@@ -124,6 +227,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 20,
   },
+
   h1nonBold: {
     fontSize: 32,
     fontWeight: "500",
@@ -134,53 +238,15 @@ const styles = StyleSheet.create({
 
   h1Bold: {
     fontSize: 32,
-    fontWeight: "700",
+    fontFamily: 'Montserrat_600SemiBold',
     textTransform: "uppercase",
     color: "#000000",
     marginBottom: 30,
+    color: '#2A2E32',
+    marginTop: 30
   },
 
   mainBodyContent: {
-    justifyContent: "space-around",
-  },
-
-  card: {
-    marginBottom: 30,
-    marginTop: 15,
-  },
-  tituloCardWrapper: {
-    // backgroundColor: "#9081A6",
-    // height: 33,
-    justifyContent: "center",
-    alignItems: "center",
-    alignItems: "flex-start",
-    textAlign: "center",
-  },
-
-  tituloCard: {
-    backgroundColor: "#fff",
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-    padding: 20,
-    width: 250,
-    color: "black",
-  },
-
-  feedback: {
-    color: "red",
-    textAlign: "center",
-  },
-
-  containerFlatlist: {
-    flex: 1,
-    width: "100%",
-  },
-  containerCard: {
-    marginLeft: 30,
-    marginRight: 30,
-    // borderWidth: 2,
-    padding: 25,
-    // borderColor: "gray",
-    borderRadius: 5,
-  },
+    paddingBottom: 20
+  }
 });

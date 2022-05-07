@@ -270,6 +270,7 @@ export default function CadastroFeedback({ route }) {
   } else {
     return (
       <View style={styles.container}>
+        
         <View style={styles.mainHeader}>
           <Image style={styles.logoSenai} source={require("../../../assets/imgMobile/logo_2S.png")} resizeMode="contain" />
         </View>
@@ -289,9 +290,11 @@ export default function CadastroFeedback({ route }) {
         </Animated.View>
 
         <KeyboardAvoidingView style={styles.sectionDemocratizacaoBox}>
+          
           <Animated.View style={[styles.animatedStyle1, animStyleFb]}>
             <Text style={styles.labelComentarioFeedback}>Insira seu feedback</Text>
           </Animated.View>
+          
           <TextInput
             keyboardType="default"
             onChangeText={campo => onChangeFeedback(campo)}
@@ -303,9 +306,11 @@ export default function CadastroFeedback({ route }) {
             onPressIn={() => ChangeSizeDown()}
             blurOnSubmit
           />
+
           <Animated.View style={[styles.animatedStyle2, animStyleNota]}>
             <Text style={styles.labelComentarioFeedback}>Insira uma nota para o feedback</Text>
           </Animated.View>
+          
           <TextInput
             keyboardType="decimal-pad"
             onChangeText={campo => onChangeNota(campo)}
@@ -317,10 +322,13 @@ export default function CadastroFeedback({ route }) {
             onPressIn={() => ChangeSizeDown()}
             blurOnSubmit
           />
+
         </KeyboardAvoidingView>
+        
         <TouchableOpacity style={styles.btnCadastro} onPress={() => CadastarFeedback()}>
           <Text style={styles.btnCadastroText}>Enviar Feedback</Text>
         </TouchableOpacity>
+      
       </View>
     );
   }
