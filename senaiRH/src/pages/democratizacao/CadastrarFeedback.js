@@ -29,16 +29,19 @@ import {
   Montserrat_500Medium,
   Montserrat_600SemiBold,
 } from '@expo-google-fonts/montserrat';
+
 import {
   Quicksand_300Light,
   Quicksand_600SemiBold,
 } from '@expo-google-fonts/quicksand';
+
+// Services
 import jwtDecode from 'jwt-decode';
 
 export default function CadastroFeedback({ route }) {
 
   // Parâmetros
-  const {idDecisao} = route.params;
+  const { idDecisao } = route.params;
 
   // States
   const [idUsuario, setIdUsuario] = useState(0);
@@ -57,14 +60,14 @@ export default function CadastroFeedback({ route }) {
     Animated.timing(sizeChanging, {
       toValue: 150,
       useNativeDriver: false,
-      duration : 150
+      duration: 150
     }).start()
   }
   const ChangeSizeDown = () => {
     Animated.timing(sizeChanging, {
       toValue: 100,
       useNativeDriver: false,
-      duration : 250,
+      duration: 250,
     }).start()
   }
 
@@ -180,7 +183,7 @@ export default function CadastroFeedback({ route }) {
       const token = await AsyncStorage.getItem('userToken');
 
       const feedback = {
-        idUsuario : 0,
+        idUsuario: 0,
         idDecisao: idDecisao,
         comentarioFeedBack: comentarioFeedback,
         notaDecisao: notaDecisao,
@@ -209,7 +212,7 @@ export default function CadastroFeedback({ route }) {
   async function BuscarDecisao() {
     try {
       const token = await AsyncStorage.getItem('userToken');
-      const resposta = await api.get('Decisoes/Listar/'+ idDecisao, {
+      const resposta = await api.get('Decisoes/Listar/' + idDecisao, {
         headers: {
           Authorization: 'Bearer ' + token,
         },
@@ -279,10 +282,9 @@ export default function CadastroFeedback({ route }) {
             Seu gerente tomou a seguinte decisão:
           </Text>
           <Text style={styles.sectionDemocratizacaoDecisao}>
-          {Decisao.map((decisao) => {
-
-            return decisao.descricaoDecisao
-          })}
+            {Decisao.map((decisao) => {
+              return decisao.descricaoDecisao
+            })}
           </Text>
         </Animated.View>
 
@@ -291,14 +293,14 @@ export default function CadastroFeedback({ route }) {
             <Text style={styles.labelComentarioFeedback}>Insira seu feedback</Text>
           </Animated.View>
           <TextInput
-            keyboardType = "default"
-            onChangeText = {campo => onChangeFeedback(campo)}
-            value = {comentarioFeedback}
-            style = {styles.sectionDemocratizacaoInput}
-            editable = {true}
-            onFocus = {onFocusHandlerFb}
-            onBlur = {onBlurHandlerFb}
-            onPressIn = {() => ChangeSizeDown()}
+            keyboardType="default"
+            onChangeText={campo => onChangeFeedback(campo)}
+            value={comentarioFeedback}
+            style={styles.sectionDemocratizacaoInput}
+            editable={true}
+            onFocus={() => onFocusHandlerFb()}
+            onBlur={() => onBlurHandlerFb()}
+            onPressIn={() => ChangeSizeDown()}
             blurOnSubmit
           />
           <Animated.View style={[styles.animatedStyle2, animStyleNota]}>
@@ -307,12 +309,12 @@ export default function CadastroFeedback({ route }) {
           <TextInput
             keyboardType="decimal-pad"
             onChangeText={campo => onChangeNota(campo)}
-            value = {notaDecisao}
-            style = {styles.sectionDemocratizacaoInput}
-            editable = {true}
-            onFocus = {onFocusHandlerNota}
-            onBlur = {onBlurHandlerNota}
-            onPressIn = {() => ChangeSizeDown()}
+            value={notaDecisao}
+            style={styles.sectionDemocratizacaoInput}
+            editable={true}
+            onFocus={() => onFocusHandlerNota}
+            onBlur={() => onBlurHandlerNota}
+            onPressIn={() => ChangeSizeDown()}
             blurOnSubmit
           />
         </KeyboardAvoidingView>

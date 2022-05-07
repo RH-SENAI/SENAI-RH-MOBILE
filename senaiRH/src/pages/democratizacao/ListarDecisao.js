@@ -8,7 +8,6 @@ import {
   View,
   FlatList,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import api from "../../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -38,31 +37,12 @@ export default function ListarDecisao() {
 
   const renderItem = ({ item }) => (
     <View style={styles.container}>
-<<<<<<< HEAD
-      <View key={item.idDecisao} style={styles.card}>
-        <TouchableOpacity
-          key={item.idDecisao}
-          onPress={() =>
-            navigation.navigate("CadastrarFeedback", {
-              idDecisao: item.idDecisao,
-            })
-          }
-        >
-          <View style={styles.containerCard}>
-            <View key={item.idDecisao} style={styles.tituloCardWrapper}>
-              <Text key={item.idDecisao} style={styles.tituloCard}>
-                {item.idUsuarioNavigation.nome} deu essa ideia: "
-                {item.descricaoDecisao}"
-              </Text>   
-
-              <Text>Clique e de seu feedback!</Text>
-=======
       <View style={styles.imgPerfilCardWrapper}>
         <View key={item.idDecisao} style={styles.cardClicavel}>
           <TouchableOpacity
             key={item.idDecisao}
             onPress={() =>
-              navigation.navigate("cadastroFeedback", {
+              navigation.navigate("CadastrarFeedback", {
                 idDecisao: item.idDecisao,
               })
             }
@@ -75,7 +55,6 @@ export default function ListarDecisao() {
                 </Text>
                 <Text style={styles.mensagem}>Clique e de seu feedback!</Text>
               </View>
->>>>>>> 43793d47930c0b4644cb8a1eb4a96692c568ce52
             </View>
           </TouchableOpacity>
         </View>
