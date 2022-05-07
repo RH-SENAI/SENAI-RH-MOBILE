@@ -5,7 +5,6 @@ import {
     Text,
     TouchableOpacity,
     View,
-    Modal,
     AnimatableBlurView,
     FlatList,
     Image,
@@ -46,12 +45,15 @@ import {
     Montserrat_900Black_Italic,
 } from '@expo-google-fonts/montserrat';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import axios from "axios";
 import api from "../../services/apiGp1";
 
 export default function Ranking() {
 
     const [ListarRanking, setListarRanking] = useState([]);
+    const [count, setCount] = useState(0);
     // const [ partners, onPartnerDetails ] = props;
 
     let [customFonts] = useFonts({
@@ -81,38 +83,40 @@ export default function Ranking() {
     });
 
 
-    const retornaRanking = async () => {
-            const resposta = await api.get('/Usuarios/Ranking/');
-            const dadosDaApi = await resposta.data;
-            setListarRanking(dadosDaApi);
-       
-    }
+    // const retornaRanking = async () => {
+    //     const token = await AsyncStorage.getItem("userToken");
+
+    //     if (token != null) {
+    //         const resposta = await api.get("/Usuarios/Ranking/", {
+    //             headers: {
+    //                 Authorization: "Bearer " + token,
+    //             },
+    //         });
+
+    //         const dadosDaApi = await resposta.data;
+    //         setListarRanking(dadosDaApi);
+    //     }
+    // };
+
+
 
     useEffect(() => {
-        retornaRanking();     
+        retornaRanking();
     }, []);
-  
+
     // useEffect(() => {
     //     order();     
     // }, []);
-
-    // useEffect(() => {
-    //     order();
-    // }, []);
-
 
     if (!customFonts) {
         return <AppLoading />;
     }
 
-    const order = () => {
-
-        let lista = [...ListarRanking]
-
-        ListarRanking.sort((a, b) => (b.nome > a.nome ? 1: a.nome > b.nome ? -1 : 0 ))
-         
-        setListarRanking (lista)
-    };
+    // const order = () => {
+    //     let lista = [...ListarRanking]
+    //     ListarRanking.sort((a, b) => (b.nome > a.nome ? 1: a.nome > b.nome ? -1 : 0 ))
+    //     setListarRanking (lista)
+    // };
 
     return (
         <View style={styles.main}>
@@ -135,15 +139,22 @@ export default function Ranking() {
                    <Text>cvhjklç~]</Text>
                 </TouchableOpacity> */}
 
-                <FlatList
+                {/* <FlatList
                     //ContentContainerStyle={styles.RankingGp1}
-                  // style={styles.RankingGp1}
+                    // style={styles.RankingGp1}
                     data={ListarRanking}
                     // data={partners.sort((a, b) => a.name.localeCompare(b.name))}
-                    keyExtractor={item => item.idAtividade}
+                    keyExtractor={item => item.idUsuario}
                     renderItem={renderItem}
 
-                   
+                /> */}
+
+                <FlatList
+                    style={styles.FlatListGp1}
+                    data={ListarRanking.sort((a, b) => b.trofeus > a.trofeus)}
+                    keyExtractor={(item) => item.idUsuario}
+                    renderItem={renderItem}
+
                 />
 
 
@@ -151,8 +162,10 @@ export default function Ranking() {
 
 
 
+
+
             </View>
-           
+
 
         </View>
 
@@ -161,9 +174,9 @@ export default function Ranking() {
 
 renderItem = ({ item }) => (
 
-    <View>
+    <View style={styles.RankingGp1Centro}>
         <View style={styles.RankingGp1}>
-            <Text style={styles.numero}>1.</Text>
+            <Text style={styles.numero}>{item.idUsuario}</Text>
             <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
                 style={styles.fotoRankingGp1}
             />
@@ -263,7 +276,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F2F2F2',
         borderRadius: 10,
         marginBottom: 24,
-        width: '78%',
+        width: '85%',
 
     },
 
@@ -329,5 +342,13 @@ const styles = StyleSheet.create({
         width: '78%',
 
     },
+    FlatListGp1:{
+        width:'100%',
+       
+    },
+    RankingGp1Centro:{
+        alignItems:'center',
+        justifyContent: 'center',
+    }
 
 });

@@ -44,7 +44,7 @@ export default class AtividadesExtras extends Component {
     }
 
     buscarAtividade = async () => {
-        const resposta = await api.get('/Atividades');
+        const resposta = await api.get('/Atividades/ListarExtras');
         const dadosDaApi = resposta.data;
         this.setState({ listaAtividades: dadosDaApi });
     };
@@ -77,7 +77,7 @@ export default class AtividadesExtras extends Component {
         }
         else if (visible == false) {
             this.setState({ AtividadeBuscada: {} })
-            this.setState({modalVisible: false})
+            this.setState({ modalVisible: false })
         }
 
     }
@@ -134,93 +134,65 @@ export default class AtividadesExtras extends Component {
         return (
 
             <View style={styles.main}>
-                
-                  
-                        <View>
-                            <View style={styles.mainHeader}>
-                                <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
-                                    style={styles.imgLogo}
-                                />
 
-                            </View>
+                <FlatList
 
-                            <View style={styles.titulo}>
+                    ListHeaderComponent={
+                        <>
 
-                                <Text style={styles.tituloEfects}>{'atividades'.toUpperCase()} </Text>
 
-                                <View style={styles.escritaEscolha}>
-                                    <View style={styles.itemEquipe}>
-                                        <Pressable onPress={() => this.props.navigation.navigate('Atividades')}>
-                                            <Text style={styles.font}> Obrigatórios </Text>
-                                            <View style={styles.line1}></View>
-                                        </Pressable>
 
-                                    </View>
 
-                                    <View style={styles.itemIndividual}>
-                                        <Pressable>
-                                            <Text style={styles.font}> Extras </Text>
-                                        </Pressable>
-                                        <View style={styles.line2}></View>
-                                    </View>
+                            <View>
+                                <View style={styles.mainHeader}>
+                                    <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
+                                        style={styles.imgLogo}
+                                    />
 
                                 </View>
-                            </View>
-                        </View>
 
+                                <View style={styles.titulo}>
 
-                        <View>
+                                    <Text style={styles.tituloEfects}>{'atividades'.toUpperCase()} </Text>
 
-                            <View>
+                                    <View style={styles.escritaEscolha}>
+                                        <View style={styles.itemEquipe}>
+                                            <Pressable onPress={() => this.props.navigation.navigate('Atividades')}>
+                                                <Text style={styles.font}> Obrigatórios </Text>
+                                                <View style={styles.line1}></View>
+                                            </Pressable>
 
-                                <FlatList
-                                    // contentContainerStyle={styles.boxAtividade}
-                                    // style={styles.boxAtividade}
-                                    data={this.state.listaAtividades}
-                                    keyExtractor={item => item.idAtividade}
-                                    renderItem={this.renderItem} />
+                                        </View>
 
+                                        <View style={styles.itemIndividual}>
+                                            <Pressable>
+                                                <Text style={styles.font}> Extras </Text>
+                                            </Pressable>
+                                            <View style={styles.line2}></View>
+                                        </View>
 
-
-            
-
-{/* 
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <View style={styles.quadradoModal}></View>
-                            <View style={styles.conteudoBoxModal}>
-                                <Text style={styles.nomeBoxModal}>dfghjklç</Text>
-                                <Text style={styles.descricaoModal}> Descrição Atividade </Text>
-                                <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
-                                <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
-                                <Text style={styles.criadorModal}> Criador da atividade </Text>
-                            </View>
-                            <View style={styles.botoesModal}  >
-                                <Pressable >
-                                    <View style={styles.associarModal}>
-                                        <Text style={styles.texto}> Me Associar </Text>
                                     </View>
-                                </Pressable>
-                                <Pressable
-
-                                    onPress={() => this.setModalVisible(!this.state.modalVisible)}
-                                >
-                                    <View style={styles.fecharModal}>
-                                        <Text style={styles.textoFechar}>Fechar X</Text>
-                                    </View>
-
-                                </Pressable>
-                            </View>
-                        </View>
-
-                    </View> */}
-
-         
-
-
+                                </View>
                             </View>
 
-                        </View>
+                        </>}
+
+
+                    ListFooterComponent={
+                        <>
+
+                        </>
+
+                    }
+                    // contentContainerStyle={styles.boxAtividade}
+                    // style={styles.boxAtividade}
+                    data={this.state.listaAtividades}
+                    keyExtractor={item => item.idAtividade}
+                    renderItem={this.renderItem} />
+
+
+
+
             </View>
 
         )
@@ -228,142 +200,93 @@ export default class AtividadesExtras extends Component {
 
     renderItem = ({ item }) => (
 
-        
-            <View style={styles.boxAtividade}>
-                <View style={styles.box}>
-                    <View style={styles.quadrado}></View>
-                    <View style={styles.espacoPontos}>
-                        <Text style={styles.pontos}> {item.recompensaMoeda} Cashs </Text>
-                        <Image source={require('../../../assets/img-gp1/coins.png')}
 
-                            style={styles.imgCoins}
-                        />
+        <View style={styles.boxAtividade}>
+            <View style={styles.box}>
+                <View style={styles.quadrado}></View>
+                <View style={styles.espacoPontos}>
+                    <Text style={styles.pontos}> {item.recompensaMoeda} Cashs </Text>
+                    <Image source={require('../../../assets/img-gp1/coins.png')}
 
-                    </View>
-                    <View style={styles.conteudoBox}>
-                        <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
-                        
-                        <Text style={styles.criador}> {item.idGestorCadastroNavigation.nome} </Text>
-                        <Text style={styles.dataCriacao}>
+                        style={styles.imgCoins}
+                    />
+
+                </View>
+                <View style={styles.conteudoBox}>
+                    <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
+
+                    <Text style={styles.criador}> {item.idGestorCadastroNavigation.nome} </Text>
+                    <Text style={styles.dataCriacao}>
                         {/* {Intl.DateTimeFormat("pt-BR", {
                     year: 'numeric', month: 'short', day: 'numeric',
                     hour: 'numeric', minute: 'numeric', hour12: true
                 }).format(new Date(item.dataCriacao))}   */} {item.dataCriacao}
-                        </Text>
-                    </View>
+                    </Text>
+                </View>
 
-                    <View style={styles.ModaleBotao}>
-                        <Pressable style={styles.botao}
-                            onPress={() => this.associar(item)}
-                        >
-                            <View style={styles.corBotão}>
+                <View style={styles.ModaleBotao}>
+                    <Pressable style={styles.botao}
+                        onPress={() => this.associar(item)}
+                    >
+                        <View style={styles.corBotão}>
 
-                                <Text style={styles.texto}> Me Associar </Text>
-                            </View>
-                        </Pressable>
+                            <Text style={styles.texto}> Me Associar </Text>
+                        </View>
+                    </Pressable>
 
-                        <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
-                            <Image source={require('../../../assets/img-gp1/setaModal.png')} />
-                        </Pressable>
+                    <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
+                        <Image source={require('../../../assets/img-gp1/setaModal.png')} />
+                    </Pressable>
+                </View>
+
+            </View>
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={this.state.modalVisible}
+                key={item.idAtividade == this.state.AtividadeBuscada.idAtividade}
+                onRequestClose={() => {
+                    console.warn(item)
+                    this.setModalVisible(!this.state.modalVisible)
+                }}
+            >
+
+
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <View style={styles.quadradoModal}></View>
+                        <View style={styles.conteudoBoxModal}>
+                            <Text style={styles.nomeBoxModal}>{this.state.AtividadeBuscada.nomeAtividade} </Text>
+                            <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.idAtividade}</Text>
+                            <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
+                            <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
+                            <Text style={styles.criadorModal}> Criador da atividade </Text>
+                        </View>
+                        <View style={styles.botoesModal}  >
+                            <Pressable >
+                                <View style={styles.associarModal}>
+                                    <Text style={styles.texto}> Me Associar </Text>
+                                </View>
+                            </Pressable>
+                            <Pressable
+
+                                onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                            >
+                                <View style={styles.fecharModal}>
+                                    <Text style={styles.textoFechar}>Fechar X</Text>
+                                </View>
+
+                            </Pressable>
+                        </View>
                     </View>
 
                 </View>
 
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={this.state.modalVisible}
-                    key={item.idAtividade == this.state.AtividadeBuscada.idAtividade}           
-                    onRequestClose={() => {
-                       console.warn(item)
-                        this.setModalVisible(!this.state.modalVisible)
-                    }}
-                >
-
-
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <View style={styles.quadradoModal}></View>
-                            <View style={styles.conteudoBoxModal}>
-                                <Text style={styles.nomeBoxModal}>{this.state.AtividadeBuscada.nomeAtividade} </Text>
-                                <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.idAtividade}</Text>
-                                <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
-                                <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
-                                <Text style={styles.criadorModal}> Criador da atividade </Text>
-                            </View>
-                            <View style={styles.botoesModal}  >
-                                <Pressable >
-                                    <View style={styles.associarModal}>
-                                        <Text style={styles.texto}> Me Associar </Text>
-                                    </View>
-                                </Pressable>
-                                <Pressable
-
-                                    onPress={() => this.setModalVisible(!this.state.modalVisible)}
-                                >
-                                    <View style={styles.fecharModal}>
-                                        <Text style={styles.textoFechar}>Fechar X</Text>
-                                    </View>
-
-                                </Pressable>
-                            </View>
-                        </View>
-
-                    </View>
-
-                </Modal>
-            </View>
+            </Modal>
+        </View>
 
     )
-
-   
-
-    
-//     renderItemModal = ({ item }) => (
-
-        
-//         <View style={styles.boxAtividade}>
-
-
-
-//                 <View style={styles.centeredView}>
-//                     <View style={styles.modalView}>
-//                         <View style={styles.quadradoModal}></View>
-//                         <View style={styles.conteudoBoxModal}>
-//                             <Text style={styles.nomeBoxModal}>{item.nomeAtividade} </Text>
-//                             <Text style={styles.descricaoModal}> Descrição Atividade </Text>
-//                             <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
-//                             <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
-//                             <Text style={styles.criadorModal}> Criador da atividade </Text>
-//                         </View>
-//                         <View style={styles.botoesModal}  >
-//                             <Pressable >
-//                                 <View style={styles.associarModal}>
-//                                     <Text style={styles.texto}> Me Associar </Text>
-//                                 </View>
-//                             </Pressable>
-//                             <Pressable
-
-//                                 onPress={() => this.setModalVisible(!this.state.modalVisible)}
-//                             >
-//                                 <View style={styles.fecharModal}>
-//                                     <Text style={styles.textoFechar}>Fechar X</Text>
-//                                 </View>
-
-//                             </Pressable>
-//                         </View>
-//                     </View>
-
-//                 </View>
-                
-
-//         </View>
-
-// )
-
-
-
-
 
 };
 const styles = StyleSheet.create({

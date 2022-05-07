@@ -8,170 +8,292 @@ import {
     ImageBackground,
     TextInput,
     Modal,
-    AnimatableBlurView
+    AnimatableBlurView,
+    FlatList,
+    SectionList,
+    SafeAreaView,
+    ScrollView,
+    Pressable
 } from 'react-native';
 
-import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
-
+import * as Font from 'expo-font';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '../../services/apiGp1'
+import base64 from 'react-native-base64';
+// import 'intl';
 
 let customFonts = {
-  'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
-  'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
-  'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
-  'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
-  'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
-  'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
+    'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
+    'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
+    'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
+    'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
+    'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
+    'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
 }
 
 export default class Atividades extends Component {
 
-    state = {
-        modalVisible: false
+    constructor(props) {
+        super(props);
+        this.state = {
+            listaAtividades: [],
+            AtividadeBuscada: {},
+            modalVisible: false,
+        };
+    }
+
+    buscarAtividade = async () => {
+        const resposta = await api.get('/Atividades/ListarObrigatorias');
+        const dadosDaApi = resposta.data;
+        this.setState({ listaAtividades: dadosDaApi });
     };
 
-    setModalVisible = (visible) => {
-        this.setState({ modalVisible: visible });
+
+    ProcurarAtividades = async (id) => {
+        //console.warn(id)
+        try {
+
+            const resposta = await api('/Atividades/' + id);
+            if (resposta.status == 200) {
+                const dadosAtividades = await resposta.data.atividade;
+                await this.setState({ AtividadeBuscada: dadosAtividades })
+                // console.warn(this.state.AtividadeBuscada.atividade)
+
+            }
+        }
+        catch (erro) {
+            // console.warn(erro);
+        }
     }
 
 
-    async _loadFontsAsync(){
+    setModalVisible = async (visible, id) => {
+        if (visible == true) {
+            //console.warn(id)
+            await this.ProcurarAtividades(id)
+            this.setState({ modalVisible: true });
+            //console.warn(this.state.AtividadeBuscada)
+        }
+        else if (visible == false) {
+            this.setState({ AtividadeBuscada: {} })
+            this.setState({ modalVisible: false })
+        }
+
+    }
+
+
+    async _loadFontsAsync() {
         await Font.loadAsync(customFonts);
         this.setState({ fontsLoaded: true });
-      }
-    
-      componentDidMount(){
+    }
+
+    componentDidMount() {
         this._loadFontsAsync();
-      }
+        this.buscarAtividade();
+    }
+
+    associar = async (item) => {
+        try {
+            console.log(item)
+            const token = await AsyncStorage.getItem('userToken');
+
+            const xambers = base64.decode(token.split('.')[1])
+            const user = JSON.parse(xambers)
+            console.warn(item)
+
+            const resposta = await api.post(
+                '/Atividades/Associar/' + user.jti + '/' + item,
+                {
+
+                },
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + token,
+                    },
+                },
+
+                console.warn(resposta)
+
+
+            );
+            if (resposta.status == 200) {
+                console.warn('Voce se associou a uma atividade');
+            } else {
+                console.warn('Falha ao se associar.');
+            }
+        } catch (error) {
+            console.warn(error);
+        }
+    }
 
     render() {
         if (!customFonts) {
             return <AppLoading />;
         }
-        const { modalVisible } = this.state;
         return (
+
             <View style={styles.main}>
 
-                <View>
-                    <View style={styles.mainHeader}>
-                        <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
-                            style={styles.imgLogo}
-                        />
+                <FlatList
 
-                    </View>
+                    ListHeaderComponent={
+                        <>
 
-                    <View style={styles.titulo}>
+                            <View>
+                                <View style={styles.mainHeader}>
+                                    <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
+                                        style={styles.imgLogo}
+                                    />
 
-                        <Text style={styles.tituloEfects}>{'atividades'.toUpperCase()} </Text>
-
-                        <View style={styles.escritaEscolha}>
-                            <View style={styles.itemEquipe}>
-                                <TouchableOpacity>
-                                     <Text style={styles.font}> Obrigatórios </Text>
-                               
-                                </TouchableOpacity>
-                                <View style={styles.line1}></View>
-                            </View>
-
-                            <View style={styles.itemIndividual}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate('AtividadesExtras')}>
-                                  <Text style={styles.font}> Extras </Text>
-                                <View style={styles.line2}></View>    
-                                </TouchableOpacity>
-                              
-                            </View>
-
-                        </View>
-                    </View>
-                </View>
-
-
-                <View style={styles.boxAtividade}>
-
-                    <View style={styles.box}>
-                        <View style={styles.quadrado}></View>
-                        <View style={styles.espacoPontos}>
-                            <Text style={styles.pontos}> 20 CashS </Text>
-                            <Image source={require('../../../assets/img-gp1/coins.png')}
-                                style={styles.imgCoins}
-                            />
-                        </View>
-                        <View style={styles.conteudoBox}>
-                            <Text style={styles.nomeBox}> Titulo Atividade </Text>
-                            <Text style={styles.criador}> Criador da atividade </Text>
-                            <Text style={styles.data}> Data de Entrega: 18/03/2022 </Text>
-                        </View>
-
-                        <View style={styles.ModaleBotao}>
-                            <TouchableOpacity style={styles.botao}>
-                                <View style={styles.corBotão}>
-                                    <Text style={styles.texto}> Realizar </Text>
                                 </View>
-                            </TouchableOpacity>
 
-                            <Modal
-                                animationType="slide"
-                                transparent={true}
-                                visible={modalVisible}
-                                onRequestClose={() => {
-                                    this.setModalVisible(!modalVisible);
-                                }}
-                            >
+                                <View style={styles.titulo}>
 
+                                    <Text style={styles.tituloEfects}>{'atividades'.toUpperCase()} </Text>
 
-                        <View style={styles.centeredView}>
-                                    <View style={styles.modalView}>
-                                        <View style={styles.quadradoModal}></View>
-                                        <View style={styles.conteudoBoxModal}>
-                                            <Text style={styles.nomeBoxModal}> Titulo Atividade </Text>
-                                            <Text style={styles.descricaoModal}> Descrição Atividade </Text>
-                                            <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
-                                            <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
-                                            <Text style={styles.criadorModal}> Criador da atividade </Text>
+                                    <View style={styles.escritaEscolha}>
+                                        <View style={styles.itemEquipe}>
+                                            <Pressable>
+                                                <Text style={styles.font}> Obrigatórios </Text>
+
+                                            </Pressable>
+                                            <View style={styles.line1}></View>
                                         </View>
-                                        <View style={styles.botoesModal}>
-                                            <TouchableOpacity >
-                                                <View style={styles.associarModal}>
-                                                    <Text style={styles.texto}> Realizar </Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
 
-onPress={() => this.setModalVisible(!modalVisible)}
->
-                                                <View style={styles.fecharModal}>
-                                                    <Text style={styles.textoFechar}>Fechar X</Text>
-                                                </View>
+                                        <View style={styles.itemIndividual}>
+                                            <Pressable onPress={() => this.props.navigation.navigate('AtividadesExtras')}>
+                                                <Text style={styles.font} > Extras </Text>
+                                                <View style={styles.line2}></View>
+                                            </Pressable>
 
-                                            </TouchableOpacity>
                                         </View>
+
                                     </View>
                                 </View>
-                                            
-                        
-                            </Modal>
-                            <TouchableOpacity style={styles.Modalbotao} onPress={() => this.setModalVisible(true)}  >
-                                <Image source={require('../../../assets/img-gp1/setaModal.png')} />
-                            </TouchableOpacity>
-
-
-                        </View>
-                        {/* <View style={styles.botaoIndisp}>
-                            <View style={styles.corIndisp}>
-                            <Text style={styles.textoIndisp}> Indisponivel </Text>
                             </View>
-                        </View> */}
-                    </View>
-                </View>
+
+                        </>
+
+
+                    }
+
+
+                    ListFooterComponent={
+                        <>
+
+                        </>
+
+                    }
+                    // contentContainerStyle={styles.boxAtividade}
+                    // style={styles.boxAtividade}
+                    data={this.state.listaAtividades}
+                    keyExtractor={item => item.idAtividade}
+                    renderItem={this.renderItem} />
+
+
+
+
+
+
+
             </View>
 
+        )
+    }
 
-)
-}
+    renderItem = ({ item }) => (
 
 
+        <View style={styles.boxAtividade}>
+            <View style={styles.box}>
+                <View style={styles.quadrado}></View>
+                <View style={styles.espacoPontos}>
+                    <Text style={styles.pontos}> {item.recompensaMoeda} Cashs </Text>
+                    <Image source={require('../../../assets/img-gp1/coins.png')}
 
-}
+                        style={styles.imgCoins}
+                    />
+
+                </View>
+                <View style={styles.conteudoBox}>
+                    <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
+
+                    <Text style={styles.criador}> {item.idGestorCadastroNavigation.nome} </Text>
+                    <Text style={styles.dataCriacao}>
+                        {/* {Intl.DateTimeFormat("pt-BR", {
+                    year: 'numeric', month: 'short', day: 'numeric',
+                    hour: 'numeric', minute: 'numeric', hour12: true
+                }).format(new Date(item.dataCriacao))}   */} {item.dataCriacao}
+                    </Text>
+                </View>
+
+                <View style={styles.ModaleBotao}>
+                    <Pressable style={styles.botao}
+                        onPress={() => this.associar(item)}
+                    >
+                        <View style={styles.corBotão}>
+
+                            <Text style={styles.texto}> Realizar </Text>
+                        </View>
+                    </Pressable>
+
+                    <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
+                        <Image source={require('../../../assets/img-gp1/setaModal.png')} />
+                    </Pressable>
+                </View>
+
+            </View>
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={this.state.modalVisible}
+                key={item.idAtividade == this.state.AtividadeBuscada.idAtividade}
+                onRequestClose={() => {
+                    console.warn(item)
+                    this.setModalVisible(!this.state.modalVisible)
+                }}
+            >
+                <View style={{ backgroundColor: "green"}}>
+                    <View style={styles.centeredView} >
+                    <View style={styles.modalView}>
+                        <View style={styles.quadradoModal}></View>
+                        <View style={styles.conteudoBoxModal}>
+                            <Text style={styles.nomeBoxModal}>{this.state.AtividadeBuscada.nomeAtividade} </Text>
+                            <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
+                            <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
+                            <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
+                            {/* <Text style={styles.criadorModal}> Criador da atividade: {this.state.AtividadeBuscada.idGestorCadastroNavigation.nome} </Text> */}
+                        </View>
+                        <View style={styles.botoesModal}  >
+                            <Pressable >
+                                <View style={styles.associarModal}>
+                                    <Text style={styles.texto}> Me Associar </Text>
+                                </View>
+                            </Pressable>
+                            <Pressable
+
+                                onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                            >
+                                <View style={styles.fecharModal}>
+                                    <Text style={styles.textoFechar}>Fechar X</Text>
+                                </View>
+
+                            </Pressable>
+                        </View>
+                    </View>
+
+                </View> 
+                </View>
+               
+
+            </Modal>
+        </View>
+
+    )
+
+};
 const styles = StyleSheet.create({
 
     main: {
@@ -235,6 +357,7 @@ const styles = StyleSheet.create({
     },
 
     boxAtividade: {
+
         paddingTop: 40,
 
         alignItems: 'center',
@@ -245,7 +368,7 @@ const styles = StyleSheet.create({
         height: 28,
         width: '100%',
         borderTopRightRadius: 8,
-        borderTopLeftRadius: 8
+        borderTopLeftRadius: 8,
 
     },
 
@@ -292,14 +415,14 @@ const styles = StyleSheet.create({
     },
 
     criador: {
-         fontFamily: 'Quicksand-Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
 
         paddingTop: 8,
     },
 
     data: {
-     fontFamily: 'Quicksand-Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
         paddingTop: 8,
     },
@@ -320,19 +443,19 @@ const styles = StyleSheet.create({
         height: 30,
         width: 87,
         backgroundColor: '#C20004',
-        alignItems: 'center',
+        //alignItems: 'center',
         justifyContent: 'center',
     },
 
     texto: {
-      fontFamily: 'Montserrat-Medium',
+        fontFamily: 'Montserrat-Medium',
         color: '#E2E2E2',
         fontSize: 11,
-        alignItems: 'center',
+        //alignItems: 'center',
     },
 
     botaoIndisp: {
-        alignItems: 'center',
+        //alignItems: 'center',
         justifyContent: 'center',
         paddingTop: 19,
     },
@@ -342,14 +465,14 @@ const styles = StyleSheet.create({
         height: 40,
         width: 90,
         backgroundColor: '#B1B3B6',
-        alignItems: 'center',
+        //alignItems: 'center',
         justifyContent: 'center',
     },
 
     ModaleBotao: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        //alignItems: 'center',
 
 
     },
@@ -364,7 +487,7 @@ const styles = StyleSheet.create({
     centeredView: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: 'center',
         // marginTop: 22
     },
 
@@ -388,7 +511,7 @@ const styles = StyleSheet.create({
 
     },
     nomeBoxModal: {
-        fontFamily:'Quicksand-SemiBold',
+        fontFamily: 'Quicksand-SemiBold',
         textAlign: "center",
         paddingTop: 24,
         fontSize: 20
@@ -396,7 +519,7 @@ const styles = StyleSheet.create({
     },
 
     descricaoModal: {
-        fontFamily:'Quicksand-Regular',
+        fontFamily: 'Quicksand-Regular',
         paddingTop: 24,
         fontSize: 15,
         paddingBottom: 16,
@@ -404,28 +527,28 @@ const styles = StyleSheet.create({
     },
 
     itemPostadoModal: {
-        fontFamily:'Quicksand-Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     entregaModal: {
-        fontFamily:'Quicksand-Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     criadorModal: {
-        fontFamily:'Quicksand-Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
         paddingBottom: 30,
         marginLeft: 16
     },
 
     botoesModal: {
-        fontFamily:'Montserrat-Medium',
+        fontFamily: 'Montserrat-Medium',
         flexDirection: 'row',
         justifyContent: 'center',
         justifyContent: 'space-evenly'
@@ -451,8 +574,8 @@ const styles = StyleSheet.create({
         color: '#C20004'
     },
 
-    textoFechar:{
-        fontFamily:'Montserrat-Medium',
+    textoFechar: {
+        fontFamily: 'Montserrat-Medium',
         color: '#C20004'
     }
 
