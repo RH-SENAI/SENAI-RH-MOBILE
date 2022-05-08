@@ -135,10 +135,9 @@ export default class AtividadesExtras extends Component {
 
             <View style={styles.main}>
 
-                <FlatList
 
-                    ListHeaderComponent={
-                        <>
+                    {/* ListHeaderComponent={
+                        <> */}
 
 
 
@@ -175,15 +174,16 @@ export default class AtividadesExtras extends Component {
                                 </View>
                             </View>
 
-                        </>}
+                        {/* </>} */}
 
 
-                    ListFooterComponent={
+                    {/* ListFooterComponent={
                         <>
 
                         </>
 
-                    }
+                    } */}
+<FlatList
                     // contentContainerStyle={styles.boxAtividade}
                     // style={styles.boxAtividade}
                     data={this.state.listaAtividades}

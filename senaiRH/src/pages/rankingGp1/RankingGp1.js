@@ -83,21 +83,22 @@ export default function Ranking() {
     });
 
 
-    // const retornaRanking = async () => {
-    //     const token = await AsyncStorage.getItem("userToken");
+    const retornaRanking = async () => {
+        const token = await AsyncStorage.getItem("userToken");
+        // const xambers = base64.decode(token.split('.')[1])
+        // const user = JSON.parse(xambers)
 
-    //     if (token != null) {
-    //         const resposta = await api.get("/Usuarios/Ranking/", {
-    //             headers: {
-    //                 Authorization: "Bearer " + token,
-    //             },
-    //         });
+        if (token != null) {
+            const resposta = await api.get("/Usuarios/Ranking/", {
+                headers: {
+                    Authorization: "Bearer " + token,
+                },
+            });
 
-    //         const dadosDaApi = await resposta.data;
-    //         setListarRanking(dadosDaApi);
-    //     }
-    // };
-
+            const dadosDaApi = await resposta.data;
+            setListarRanking(dadosDaApi);
+        }
+    };
 
 
     useEffect(() => {
@@ -153,8 +154,70 @@ export default function Ranking() {
                     style={styles.FlatListGp1}
                     data={ListarRanking.sort((a, b) => b.trofeus > a.trofeus)}
                     keyExtractor={(item) => item.idUsuario}
-                    renderItem={renderItem}
-
+                    renderItem={({ item, indice}) => (
+                        
+                        <View style={styles.RankingGp1Centro}>                         
+                        <View style={styles.RankingGp1}>
+                                <Text style={styles.numero}>{indice + 1} </Text>                        
+                            <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
+                                style={styles.fotoRankingGp1}
+                            />
+                            <Text style={styles.nomeRankingGp1}>{item.nome}</Text>
+                            <View style={styles.trofeuEnumero}>
+                                <Image source={require('../../../assets/img-gp1/trofeu.png')}
+                                    style={styles.trofeuGp1}
+                                />
+                                <Text style={styles.Ntrofeu} >{item.trofeus}</Text>
+                            </View>
+                
+                        </View>
+                
+                        {/* <View style={styles.RankingGp1_2}>
+                            <Text style={styles.numero}>2.</Text>
+                            <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
+                                style={styles.fotoRankingGp1}
+                            />
+                            <Text style={styles.nomeRankingGp1}>Manuel</Text>
+                            <View style={styles.trofeuEnumero}>
+                                <Image source={require('../../../assets/img-gp1/trofeu.png')}
+                                    style={styles.trofeuGp1}
+                                />
+                                <Text style={styles.Ntrofeu} >20</Text>
+                            </View>
+                
+                        </View>
+                
+                        <View style={styles.RankingGp1_3}>
+                            <Text style={styles.numero}>3.</Text>
+                            <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
+                                style={styles.fotoRankingGp1}
+                            />
+                            <Text style={styles.nomeRankingGp1} >Manuel</Text>
+                            <View style={styles.trofeuEnumero}>
+                                <Image source={require('../../../assets/img-gp1/trofeu.png')}
+                                    style={styles.trofeuGp1}
+                                />
+                                <Text style={styles.Ntrofeu} >20</Text>
+                            </View>
+                
+                        </View>
+                
+                        <View style={styles.RankingGp1_suaposicao}>
+                            <Text style={styles.numero}>15.</Text>
+                            <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
+                                style={styles.fotoRankingGp1}
+                            />
+                            <Text style={styles.nomeRankingGp1}>Manuel</Text>
+                            <View style={styles.trofeuEnumero}>
+                                <Image source={require('../../../assets/img-gp1/trofeu.png')}
+                                    style={styles.trofeuGp1}
+                                />
+                                <Text style={styles.Ntrofeu} >20</Text>
+                            </View>
+                
+                        </View> */}
+                    </View>)}
+                    
                 />
 
 
@@ -172,70 +235,70 @@ export default function Ranking() {
     )
 }
 
-renderItem = ({ item }) => (
+// renderItem = ({ item }) => (
 
-    <View style={styles.RankingGp1Centro}>
-        <View style={styles.RankingGp1}>
-            <Text style={styles.numero}>{item.idUsuario}</Text>
-            <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
-                style={styles.fotoRankingGp1}
-            />
-            <Text style={styles.nomeRankingGp1}>{item.nome}</Text>
-            <View style={styles.trofeuEnumero}>
-                <Image source={require('../../../assets/img-gp1/trofeu.png')}
-                    style={styles.trofeuGp1}
-                />
-                <Text style={styles.Ntrofeu} >{item.trofeus}</Text>
-            </View>
+//     <View style={styles.RankingGp1Centro}>
+//         <View style={styles.RankingGp1}>
+//             <Text style={styles.numero}>{item.idUsuario}</Text>
+//             <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
+//                 style={styles.fotoRankingGp1}
+//             />
+//             <Text style={styles.nomeRankingGp1}>{item.nome}</Text>
+//             <View style={styles.trofeuEnumero}>
+//                 <Image source={require('../../../assets/img-gp1/trofeu.png')}
+//                     style={styles.trofeuGp1}
+//                 />
+//                 <Text style={styles.Ntrofeu} >{item.trofeus}</Text>
+//             </View>
 
-        </View>
+//         </View>
 
-        {/* <View style={styles.RankingGp1_2}>
-            <Text style={styles.numero}>2.</Text>
-            <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
-                style={styles.fotoRankingGp1}
-            />
-            <Text style={styles.nomeRankingGp1}>Manuel</Text>
-            <View style={styles.trofeuEnumero}>
-                <Image source={require('../../../assets/img-gp1/trofeu.png')}
-                    style={styles.trofeuGp1}
-                />
-                <Text style={styles.Ntrofeu} >20</Text>
-            </View>
+//         {/* <View style={styles.RankingGp1_2}>
+//             <Text style={styles.numero}>2.</Text>
+//             <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
+//                 style={styles.fotoRankingGp1}
+//             />
+//             <Text style={styles.nomeRankingGp1}>Manuel</Text>
+//             <View style={styles.trofeuEnumero}>
+//                 <Image source={require('../../../assets/img-gp1/trofeu.png')}
+//                     style={styles.trofeuGp1}
+//                 />
+//                 <Text style={styles.Ntrofeu} >20</Text>
+//             </View>
 
-        </View>
+//         </View>
 
-        <View style={styles.RankingGp1_3}>
-            <Text style={styles.numero}>3.</Text>
-            <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
-                style={styles.fotoRankingGp1}
-            />
-            <Text style={styles.nomeRankingGp1} >Manuel</Text>
-            <View style={styles.trofeuEnumero}>
-                <Image source={require('../../../assets/img-gp1/trofeu.png')}
-                    style={styles.trofeuGp1}
-                />
-                <Text style={styles.Ntrofeu} >20</Text>
-            </View>
+//         <View style={styles.RankingGp1_3}>
+//             <Text style={styles.numero}>3.</Text>
+//             <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
+//                 style={styles.fotoRankingGp1}
+//             />
+//             <Text style={styles.nomeRankingGp1} >Manuel</Text>
+//             <View style={styles.trofeuEnumero}>
+//                 <Image source={require('../../../assets/img-gp1/trofeu.png')}
+//                     style={styles.trofeuGp1}
+//                 />
+//                 <Text style={styles.Ntrofeu} >20</Text>
+//             </View>
 
-        </View>
+//         </View>
 
-        <View style={styles.RankingGp1_suaposicao}>
-            <Text style={styles.numero}>15.</Text>
-            <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
-                style={styles.fotoRankingGp1}
-            />
-            <Text style={styles.nomeRankingGp1}>Manuel</Text>
-            <View style={styles.trofeuEnumero}>
-                <Image source={require('../../../assets/img-gp1/trofeu.png')}
-                    style={styles.trofeuGp1}
-                />
-                <Text style={styles.Ntrofeu} >20</Text>
-            </View>
+//         <View style={styles.RankingGp1_suaposicao}>
+//             <Text style={styles.numero}>15.</Text>
+//             <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
+//                 style={styles.fotoRankingGp1}
+//             />
+//             <Text style={styles.nomeRankingGp1}>Manuel</Text>
+//             <View style={styles.trofeuEnumero}>
+//                 <Image source={require('../../../assets/img-gp1/trofeu.png')}
+//                     style={styles.trofeuGp1}
+//                 />
+//                 <Text style={styles.Ntrofeu} >20</Text>
+//             </View>
 
-        </View> */}
-    </View>
-)
+//         </View> */}
+//     </View>
+// )
 
 const styles = StyleSheet.create({
     main: {

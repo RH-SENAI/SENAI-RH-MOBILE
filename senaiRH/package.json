@@ -37,7 +37,7 @@
     "react-native-base64": "^0.2.1",
     "react-native-modal-with-blur-support-background": "^1.0.0",
     "react-native-safe-area-context": "3.3.2",
-    "react-native-screens": "~3.10.1",
+    "react-native-screens": "^3.13.1",
     "react-native-svg": "12.1.1",
     "react-native-viewport-units": "^0.0.5",
     "react-native-web": "0.17.1",

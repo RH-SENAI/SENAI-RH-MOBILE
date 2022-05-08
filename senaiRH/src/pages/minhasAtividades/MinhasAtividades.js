@@ -57,19 +57,27 @@ const MinhasAtividades = () => {
 
 
     const navigation = useNavigation();
-    const [modalVisible, setModalVisible] = useState(false)
+    const [modalVisible,setModalVisible] = useState(false)
     const [mensagem, setmensagem] = useState('');
     const [listaAtividades, setListaAtividades] = useState([]);
+    const [MinhaAtividade, setMinhaAtividade] = useState({});
 
     //const [concluido, setConcluido] = useState([]);
 
-    const ListarMinhas = async (id) => {
+    const ListarMinhas = async () => {
+
         const token = await AsyncStorage.getItem("userToken");
-        // console.warn(id + 'aquiii')
-        // console.warn(token)
+
+        const xambers = base64.decode(token.split('.')[1])
+            const user = JSON.parse(xambers)
+
+            console.warn('wertyui')
+            
+            console.warn(user.jti)
+
 
         if (token != null) {
-            const resposta = await api.get("/Atividades/MinhasAtividade/" + 1 , {
+            const resposta = await api.get("/Atividades/MinhasAtividade/" + user.jti, {
                 headers: {
                     Authorization: "Bearer " + token,
                 },
@@ -83,6 +91,43 @@ const MinhasAtividades = () => {
     useEffect(() => {
         ListarMinhas();
     }, []);
+
+    const form = new FormData();
+
+
+
+    // const ProcurarMinhasAtividades = async (id) => {
+    //     //console.warn(id)
+    //     try {
+
+    //         const resposta = await api('/Atividades/MinhasAtividades/' + id);
+    //         if (resposta.status == 200) {
+    //             const dadosAtividades = await resposta.data.MinhasAtividades;
+    //             await setMinhaAtividade({ MinhaAtividade: dadosAtividades })
+    //             // console.warn(this.state.AtividadeBuscada.atividade)
+
+    //         }
+    //     }
+    //     catch (erro) {
+    //          console.warn(erro);
+    //     }
+    // };
+
+    // setModalVisible = async (visible, id) => {
+    //     if (visible == true) {
+    //         //console.warn(id)
+    //         await this.ProcurarMinhasAtividades(id)
+    //         setModalVisible({ modalVisible: true });
+    //         //console.warn(this.state.AtividadeBuscada)
+    //     }
+    //     else if (visible == false) {
+    //         setModalVisible({ MinhaAtividade: {} })
+    //         setModalVisible({ modalVisible: false })
+    //     }
+
+    // }
+
+
 
 
     // const Concluir = async () => {
@@ -234,6 +279,8 @@ const MinhasAtividades = () => {
                                     animationType="slide"
                                     transparent={true}
                                     visible={modalVisible}
+                                    
+                                    key={item.idAtividade == MinhaAtividade.idAtividade}
                                     onRequestClose={() => {
                                         Alert.alert("Modal has been closed.");
                                         setModalVisible(!modalVisible);
@@ -243,10 +290,10 @@ const MinhasAtividades = () => {
                                         <View style={styles.modalView}>
                                             <View style={styles.quadradoModal}></View>
                                             <View style={styles.conteudoBoxModal}>
-                                                <Text style={styles.nomeBoxModal}> {item.nomeAtividade} </Text>
-                                                <Text style={styles.descricaoModal}> {item.descricaoAtividade} </Text>
-                                                <Text style={styles.itemPostadoModal}> {item.dataInicio} </Text>
-                                                <Text style={styles.entregaModal}> {item.dataConclusao} </Text>
+                                                <Text style={styles.nomeBoxModal}> {MinhaAtividade.nomeAtividade} </Text>
+                                                <Text style={styles.descricaoModal}> {MinhaAtividade.descricaoAtividade} </Text>
+                                                <Text style={styles.itemPostadoModal}> {MinhaAtividade.dataInicio} </Text>
+                                                <Text style={styles.entregaModal}> {MinhaAtividade.dataConclusao} </Text>
                                                 {/* <Text style={styles.criadorModal}> {item.idGestorCadastroNavigation.nome} </Text> */}
 
                                                 <TouchableOpacity style={styles.anexo}>
