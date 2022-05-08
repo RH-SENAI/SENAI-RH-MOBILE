@@ -10,7 +10,8 @@ import {
   TextInput,
   Animated,
   KeyboardAvoidingView,
-  Keyboard
+  Keyboard,
+  BackHandler
 } from 'react-native';
 
 // Expo
@@ -19,6 +20,8 @@ import AppLoading from 'expo-app-loading';
 // Pacotes
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
+import { useNavigation } from "@react-navigation/native";
+
 
 // Services
 import api from '../../services/api';
@@ -40,6 +43,8 @@ import jwtDecode from 'jwt-decode';
 
 export default function CadastroFeedback({ route }) {
 
+  const navigation = useNavigation();
+  
   // Parâmetros
   const { idDecisao } = route.params;
 
@@ -225,6 +230,17 @@ export default function CadastroFeedback({ route }) {
       console.warn(error);
     }
   };
+
+  function handleBackButtonClick() {
+    navigation.navigate('Teste');
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+    };
+  }, []);
 
   useEffect(() => { ChangeSizeUp(); }, []);
   useEffect(() => { BuscarDecisao(); }, []);

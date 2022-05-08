@@ -10,8 +10,6 @@ import {
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import * as Font from 'expo-font';
-// import AppLoading from 'expo-app-loading';
 import jwt_decode from "jwt-decode";
 import apiGp1 from "../../services/apiGp1"
 

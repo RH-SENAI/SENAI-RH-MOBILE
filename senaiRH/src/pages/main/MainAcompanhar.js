@@ -44,11 +44,11 @@ export default function MainAcompanhar() {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => {
-          //Alert.alert("Modal has been closed.");
-          setModalVisible(false);
-          navigation.navigate('Dashboard');
-        }}
+        // onRequestClose={() => {
+        //   //Alert.alert("Modal has been closed.");
+        //   setModalVisible(false);
+        //   navigation.navigate('Dashboard');
+        // }}
       >
 
         <View style={styles.modalView}>
@@ -58,19 +58,19 @@ export default function MainAcompanhar() {
             size={30}
             color="black"
             onPress={() => {
-              (setModalVisible(false), navigation.navigate('Dashboard'));
+              (setModalVisible(false));
             }}
           />
           <View style={styles.containerLinks}>
             <Text style={styles.titulo}>ÁREA DE DEMOCRATIZAÇÃO</Text>
             <Text style={styles.titulo}>O que você gostaria de fazer?</Text>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ListarDecisao')}>
+            <TouchableOpacity style={styles.button} onPress={() => {setModalVisible(false),navigation.navigate('ListarDecisao')}}>
               <Text style={styles.texto}>Visualisar decisões</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ListarFeedbacks')}>
+            <TouchableOpacity style={styles.button} onPress={() => {setModalVisible(false),navigation.navigate('ListarFeedbacks')}}>
               <Text style={styles.texto}>Visualisar feedbacks</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CadastrarFeedback')}>
+            <TouchableOpacity style={styles.button} onPress={() => {setModalVisible(false),navigation.navigate('CadastrarFeedback')}}>
               <Text style={styles.texto}>Cadastrar um novo feedback</Text>
             </TouchableOpacity>
           </View>
