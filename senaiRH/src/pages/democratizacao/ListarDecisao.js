@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
   FlatList,
-  ImageBackground
+  BackHandler
 } from "react-native";
 
 // Expo
@@ -38,7 +38,8 @@ export default function ListarDecisao() {
   
   //States
   const [listaDecisao, setListaDecisao] = useState([]);
-  
+
+
 
 
   // Fontes utilizada
@@ -68,17 +69,28 @@ export default function ListarDecisao() {
     }
   };
 
+  function handleBackButtonClick() {
+
+  };
+
   useEffect(() => {
     BuscarDecisao();
   }, []);
 
-  const renderItem = ({ item }) => (
-    <View style={styles.containerRenderItem}>
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress',() =>     navigation.navigate('Teste'))
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress',() =>     navigation.navigate('Teste'));
+    };
+  }, []);
 
-      <View key={item.idFeedback} style={styles.imgPerfilCardWrapper}>
+  const renderItem = ({ item }) => (
+    <View key={item.idDecisao} style={styles.containerRenderItem}>
+
+      <View key={item.idDecisao} style={styles.imgPerfilCardWrapper}>
 
         <Image
-          key={item.idFeedback}
+          key={item.idDecisao}
           source={{
             uri:
               "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
@@ -100,7 +112,7 @@ export default function ListarDecisao() {
             })
           }
         >
-          <View style={styles.containerCard}>
+          <View key={item.idDecisao} style={styles.containerCard}>
 
             <View key={item.idDecisao} style={styles.tituloCardWrapper}>
 
@@ -109,7 +121,7 @@ export default function ListarDecisao() {
                 {item.descricaoDecisao}"
               </Text>
 
-              <Text style={styles.mensagem}>Clique e de seu feedback!</Text>
+              <Text key={item.idDecisao} style={styles.mensagem}>Clique e de seu feedback!</Text>
 
             </View>
 

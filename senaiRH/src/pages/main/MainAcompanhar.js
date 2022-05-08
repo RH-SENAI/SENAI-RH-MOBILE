@@ -30,67 +30,65 @@ function ButtonNew({ size, color }) {
   );
 }
 
-function ModalDemocratizacao(props) {
 
-  const navigation = useNavigation();
-
-  
-  const [modalAberto, setModalAberto] = useState(false);
-
-  const HandleModal = () => setModalAberto(() => !modalAberto)
-
-  useEffect(() => HandleModal(),[props]);
-
-  return (
-    <Modal animationType="slide" visible={modalAberto}>
-      
-      <View style={styles.conteudoModal}>
-        <AntDesign
-          style={styles.iconFechar}
-          name="close"
-          size={30}
-          color="black"
-          onPress={() => {
-            setModalAberto(!modalAberto);
-          }}
-        />
-        <View style={styles.containerLinks}>
-          <Text style={styles.titulo}>ÁREA DE DEMOCRATIZAÇÃO</Text>
-          <Text style={styles.titulo}>O que você deseja?</Text>
-
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('ListarDecisao')}
-          >
-            <Text style={styles.texto}>Ver decisões</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('ListarFeedbacks')}
-          >
-            <Text style={styles.texto}>Ver Feedbacks</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('CadastrarFeedback')}
-          >
-            <Text style={styles.texto}>Cadastrar Feedbacks</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Modal>
-  );
-}
 
 export default function MainAcompanhar() {
+
+  const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  function Teste() {
+    return (
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        // onRequestClose={() => {
+        //   //Alert.alert("Modal has been closed.");
+        //   setModalVisible(false);
+        //   navigation.navigate('Dashboard');
+        // }}
+      >
+
+        <View style={styles.modalView}>
+          <AntDesign
+            style={styles.iconFechar}
+            name="close"
+            size={30}
+            color="black"
+            onPress={() => {
+              (setModalVisible(false));
+            }}
+          />
+          <View style={styles.containerLinks}>
+            <Text style={styles.titulo}>ÁREA DE DEMOCRATIZAÇÃO</Text>
+            <Text style={styles.titulo}>O que você gostaria de fazer?</Text>
+            <TouchableOpacity style={styles.button} onPress={() => {setModalVisible(false),navigation.navigate('ListarDecisao')}}>
+              <Text style={styles.texto}>Visualisar decisões</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => {setModalVisible(false),navigation.navigate('ListarFeedbacks')}}>
+              <Text style={styles.texto}>Visualisar feedbacks</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => {setModalVisible(false),navigation.navigate('CadastrarFeedback')}}>
+              <Text style={styles.texto}>Cadastrar um novo feedback</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+      </Modal>
+
+    );
+  };
+
+
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: "#C20004",
         tabBarInactiveTintColor: "gray",
         tabBarShowLabel: true,
-        headerShown : false,
+        headerShown: false,
         tabBarStyle: {
           backgroundColor: "#f1f1f1",
           borderTopColor: "gray",
@@ -111,15 +109,14 @@ export default function MainAcompanhar() {
         }}
       />
       <Tab.Screen
-        name="Democratização"
-        component={ModalDemocratizacao}
-        options={{
-          tabBarIcon: ({ size, color }) => (
-            <Entypo name="chat" size={size} color={color} />
-          ),
-          headerShown: false,
-        }}
-        initialParams={{a : true}}
+        name="Teste"
+        component={Teste}
+        options={{ tabBarIcon: ({ size, color }) => (<Entypo name="chat" size={size} color={color} />), headerShown: false }}
+        listeners={() => ({
+          tabPress: () => {
+            setModalVisible(true)
+          }
+        })}
       />
 
       <Tab.Screen
@@ -170,13 +167,25 @@ const styles = StyleSheet.create({
     borderColor: "#C20004",
   },
 
-  conteudoModal: {
-    marginLeft: 30,
-    marginRight: 30,
+  modalView: {
     flex: 1,
+    backgroundColor: "white",
+    //borderRadius: 20,
+    alignItems: "center",
+    justifyContent: 'center',
+    paddingHorizontal: '5%',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
   },
   iconFechar: {
     marginTop: 16,
+    alignSelf: 'flex-start'
   },
   titulo: {
     fontSize: 28,
@@ -191,8 +200,10 @@ const styles = StyleSheet.create({
     paddingLeft: "5%",
     paddingRight: "5%",
     paddingTop: 15,
+    backgroundColor: 'transparent'
   },
   button: {
+    //backgroundColor: '#C20004',
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",

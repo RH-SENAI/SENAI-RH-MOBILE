@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
   FlatList,
+  BackHandler
 } from "react-native";
 
 // Pacotes
@@ -66,12 +67,23 @@ export default function ListaFeedback() {
     }
   };
 
+  function handleBackButtonClick() {
+    navigation.navigate('Teste');
+  };
+
   useEffect(() => {
     BuscarFeedbacks();
   }, []);
 
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+    };
+  }, []);
+
   const renderItem = ({ item }) => (
-    <View style={styles.containerRenderItem}>
+    <View key={item.idFeedback} style={styles.containerRenderItem}>
 
       <View key={item.idFeedback} style={styles.imgPerfilCardWrapper}>
 
@@ -98,7 +110,7 @@ export default function ListaFeedback() {
             })
           }
         >
-          <View style={styles.containerCard}>
+          <View style={styles.containerCard} key={item.idFeedback}>
 
             <View key={item.idFeedback} style={styles.tituloCardWrapper}>
 
@@ -107,7 +119,7 @@ export default function ListaFeedback() {
                 {item.idDecisaoNavigation.descricaoDecisao}"
               </Text>
 
-              <Text style={styles.mensagem}>{item.comentarioFeedBack}</Text>
+              <Text style={styles.mensagem} key={item.idFeedback}>{item.comentarioFeedBack}</Text>
 
             </View>
 
