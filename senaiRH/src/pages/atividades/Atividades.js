@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import {
     StyleSheet,
@@ -58,12 +59,11 @@ export default class Atividades extends Component {
             if (resposta.status == 200) {
                 const dadosAtividades = await resposta.data.atividade;
                 await this.setState({ AtividadeBuscada: dadosAtividades })
-                // console.warn(this.state.AtividadeBuscada.atividade)
 
             }
         }
         catch (erro) {
-            // console.warn(erro);
+            console.warn(erro);
         }
     }
 
@@ -135,66 +135,44 @@ export default class Atividades extends Component {
 
             <View style={styles.main}>
 
-                <FlatList
+                <View>
+                    <View style={styles.mainHeader}>
+                        <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
+                            style={styles.imgLogo}
+                        />
+                    </View>
 
-                    ListHeaderComponent={
-                        <>
+                    <View style={styles.titulo}>
 
-                            <View>
-                                <View style={styles.mainHeader}>
-                                    <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
-                                        style={styles.imgLogo}
-                                    />
+                        <Text style={styles.tituloEfects}>{'atividades'.toUpperCase()} </Text>
 
-                                </View>
+                        <View style={styles.escritaEscolha}>
+                            <View style={styles.itemEquipe}>
+                                <Pressable>
+                                    <Text style={styles.font}> Obrigatórios </Text>
 
-                                <View style={styles.titulo}>
-
-                                    <Text style={styles.tituloEfects}>{'atividades'.toUpperCase()} </Text>
-
-                                    <View style={styles.escritaEscolha}>
-                                        <View style={styles.itemEquipe}>
-                                            <Pressable>
-                                                <Text style={styles.font}> Obrigatórios </Text>
-
-                                            </Pressable>
-                                            <View style={styles.line1}></View>
-                                        </View>
-
-                                        <View style={styles.itemIndividual}>
-                                            <Pressable onPress={() => this.props.navigation.navigate('AtividadesExtras')}>
-                                                <Text style={styles.font} > Extras </Text>
-                                                <View style={styles.line2}></View>
-                                            </Pressable>
-
-                                        </View>
-
-                                    </View>
-                                </View>
+                                </Pressable>
+                                <View style={styles.line1}></View>
                             </View>
 
-                        </>
+                            <View style={styles.itemIndividual}>
+                                <Pressable onPress={() => this.props.navigation.navigate('AtividadesExtras')}>
+                                    <Text style={styles.font}> Extras </Text>
+                                    <View style={styles.line2}></View>
+                                </Pressable>
 
+                            </View>
 
-                    }
+                        </View>
+                    </View>
+                </View>
 
-
-                    ListFooterComponent={
-                        <>
-
-                        </>
-
-                    }
+                <FlatList
                     // contentContainerStyle={styles.boxAtividade}
                     // style={styles.boxAtividade}
                     data={this.state.listaAtividades}
                     keyExtractor={item => item.idAtividade}
                     renderItem={this.renderItem} />
-
-
-
-
-
 
 
             </View>
@@ -230,7 +208,7 @@ export default class Atividades extends Component {
 
                 <View style={styles.ModaleBotao}>
                     <Pressable style={styles.botao}
-                        onPress={() => this.associar(item)}
+                        onPress={() => this.associar(item.idAtividade)}
                     >
                         <View style={styles.corBotão}>
 
@@ -246,7 +224,7 @@ export default class Atividades extends Component {
             </View>
 
             <Modal
-                animationType="slide"
+                animationType="fade"
                 transparent={true}
                 visible={this.state.modalVisible}
                 key={item.idAtividade == this.state.AtividadeBuscada.idAtividade}
@@ -255,8 +233,9 @@ export default class Atividades extends Component {
                     this.setModalVisible(!this.state.modalVisible)
                 }}
             >
-                <View style={{ backgroundColor: "green"}}>
-                    <View style={styles.centeredView} >
+
+
+                <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <View style={styles.quadradoModal}></View>
                         <View style={styles.conteudoBoxModal}>
@@ -264,12 +243,12 @@ export default class Atividades extends Component {
                             <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
                             <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
                             <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
-                            {/* <Text style={styles.criadorModal}> Criador da atividade: {this.state.AtividadeBuscada.idGestorCadastroNavigation.nome} </Text> */}
+                            <Text style={styles.criadorModal}> Criador da atividade </Text>
                         </View>
                         <View style={styles.botoesModal}  >
-                            <Pressable >
+                            <Pressable onPress={() => this.associar(this.state.AtividadeBuscada.idAtividade)} >
                                 <View style={styles.associarModal}>
-                                    <Text style={styles.texto}> Me Associar </Text>
+                                    <Text style={styles.texto}> Realizar </Text>
                                 </View>
                             </Pressable>
                             <Pressable
@@ -284,9 +263,7 @@ export default class Atividades extends Component {
                         </View>
                     </View>
 
-                </View> 
                 </View>
-               
 
             </Modal>
         </View>
