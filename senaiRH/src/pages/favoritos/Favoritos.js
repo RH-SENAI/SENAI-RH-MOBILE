@@ -18,6 +18,7 @@ import { Rating, AirbnbRating } from 'react-native-ratings';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import ReadMore from 'react-native-read-more-text';
 import api from '../../services/apiGrupo2.js';
+import apiUser from '../../services/apiGp1.js';
 import apiMaps from '../../services/apiMaps.js';
 import * as Location from 'expo-location';
 const delay = require('delay');
@@ -40,174 +41,64 @@ export default class ListagemCurso extends Component {
             localizacaoCurso: [],
         };
     }
-    GetLocation = async () => {
-        const { status } = await Location.requestForegroundPermissionsAsync();
 
-        if (status !== 'granted') {
-            console.log('A permissão de localização não foi aceita!');
-
-            this.setState({
-                errorMessage: 'A permissão de localização não foi aceita'
-            })
-
-            return;
-        }
-        // console.warn(status)
-        let location = await Location.getCurrentPositionAsync({});
-
-        // console.warn(location)
-
-        let stringLocal = JSON.stringify(location);
-        let obj = JSON.parse(stringLocal);
-        let longitude = obj['coords']['longitude'];
-        let latitude = obj['coords']['latitude'];
-
-        // console.warn(longitude)
-        // console.warn(latitude)
-        this.setState({ Userlatitude: longitude })
-        this.setState({ Userlongitude: latitude })
-        // var text = JSON.stringify(this.state.location)
-        // console.warn(text) 
-    }
-
-    Favoritar = async (id) => {
+    ListarCursoFavoritos = async () => {
         try {
-            if (this.state.isFavorite == true) {
-                this.ProcurarCurso(id);
+            // const token = await AsyncStorage.getItem('userToken');
+            // console.warn(token)
 
-                const resposta = await api.post('/FavoritosCursos', {
-                    idCurso: this.state.cursoBuscado,
-                    idUsuario: 1,
-                });
+            // const resposta = await api('/FavoritosCursos',
+            //     {
+            //         headers: {
+            //             Authorization: 'Bearer ' + token,
+            //         }
+            //     },
+            // );
 
-                if (resposta.status == 200) {
-                    await AsyncStorage.setItem('userFavoritos', cursoBuscado);
-                    console.warn('Favorito adicionado');
-                }
-            }
-            else if (this.state.isFavorite == false) {
-                await AsyncStorage.setItem('userFavoritos', []);
-                this.setState(!this.state.isFavorite)
-                console.warn('Desfavoritado')
-            }
-
-        } catch (error) {
-            console.warn(error);
-        }
-    }
-
-    // Localizacao = async (longitude, latitude, destin) => {
-    //     try {
-    //         console.log(longitude)
-    //         var stringProblematica = `json?origins=${longitude}, ${latitude}&destinations=${destin}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
-    //         // console.log(stringProblematica)
-    //         const resposta = await apiMaps(stringProblematica);
-    //         // console.log(resposta.data)
-    //         let string = JSON.stringify(resposta.data);
-    //         let obj = JSON.parse(string);
-    //         // console.warn(obj)
-
-    //         let distance = obj['rows'][0]['elements'][0]['distance'].value
-    //         console.log(distance)
-    //         if (resposta.status == 200) {
-    //             console.warn('Localização encontrada!');
-    //             const dadosLocalizacao = resposta.data;
-    //             if (distance <= 750000) {
-    //                 this.setState({ localizacaoCurso: dadosLocalizacao })
-
-    //                 console.warn(distance);
-    //                 console.warn('Localização está no alcance');
-    //                 console.warn(this.state.localizacaoCurso)
-    //             }
-    //             else if (distance > 750000) {
-    //                 console.warn(distance);
-    //                 console.warn('Localização fora do alcance');
-    //             }
-    //             // console.warn(this.state.localizacaoCurso);
-    //         }
-
-    //     }
-    //     catch (erro) {
-    //         console.warn(erro);
-    //     }
-    // }
-
-    ListarCurso = async () => {
-        try {
-            //const token = await AsyncStorage.getItem('userToken')
-            // console.warn(this.state.Userlongitude)
-            // console.warn(this.state.Userlatitude)
-
-            const resposta = await api('/Cursos');
+            const resposta = await api('/FavoritosCursos');
 
             if (resposta.status == 200) {
                 const dadosCurso = resposta.data;
-                // console.warn(dadosCurso)
+
+                console.warn(dadosCurso);
+
                 var tamanhoJson = Object.keys(dadosCurso).length;
-                // console.warn(tamanhoJson);
 
-                var i = 0
+                const respostaUser = await apiUser('/Usuarios/Funcionarios');
+                if (respostaUser.status == 200) {
+                    const dadosFavoritos = respostaUser.data;
 
-                do {
-                    let stringLocalCurso = JSON.stringify(dadosCurso);
-                    let objLocalCurso = JSON.parse(stringLocalCurso);
-                    // console.warn(objLocalCurso);
-                    var localCurso = objLocalCurso[i]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
+                    var tamanhoJsonFavoritos = Object.keys(dadosFavoritos).length;
 
-                    // ----> Localização 
+                    let i = 0;
+                    let u = 0;
 
-                    var stringProblematica = `json?origins=${this.state.Userlongitude}, ${this.state.Userlatitude}&destinations=${localCurso}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
-                    // console.warn(stringProblematica)
+                    do {
+                        let stringCurso = JSON.stringify(dadosCurso);
+                        let objCurso = JSON.parse(stringCurso);
+                        var cursoId = objCurso[i]['idCurso']
 
-                    const respostaLocal = await apiMaps(stringProblematica);
-                    let string = JSON.stringify(respostaLocal.data);
-                    let obj = JSON.parse(string);
-                    console.warn(obj)
+                        do {
+                            let stringFavorito = JSON.stringify(dadosFavoritos);
+                            let objFavorito = JSON.parse(stringFavorito);
+                            var favoritoId = objFavorito[u]['idCurso']
+                            u++
+                        } while (u < tamanhoJsonFavoritos);
 
-                    let distance = obj['rows'][0]['elements'][0]['distance'].value
-                    // console.log(distance)
-                    if (respostaLocal.status == 200) {
-                        console.warn('Localização encontrada!');
-                        if (distance <= 750000) {
-                            //this.setState({ localizacaoCurso: dadosLocalizacao })
-                            // console.warn(distance);
-                            // console.warn('Localização está no alcance');
-                            // console.warn(this.state.listaCurso);
-                            var u = 0
-
-                            do {
-                                let stringCurso = JSON.stringify(dadosCurso);
-                                var objCurso = JSON.parse(stringCurso);
-                                var lugarCurso = objCurso[u]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
-
-                                var curso = objCurso[u]
-                                console.warn(curso)
-                                u++
-                            } while (lugarCurso != localCurso);
-
-                            this.state.listaCurso.push(curso);
-                            
-
+                        if (cursoId == favoritoId) {
+                            this.setState({ listaCurso: dadosCurso })
                         }
-                        else if (distance > 750000) {
-                            console.warn(distance);
-                            console.warn('Localização fora do alcance');
-                        }
-                    }
-                    console.warn('Curso encontrado');
-
-                    i++
-                } while (i < tamanhoJson);
-                // console.warn(i)
-
-                this.setState({ contadorCurso: i })
-                // console.warn(this.state.contadorCurso)
+                        i++
+                    } while (i < tamanhoJson);
+                }
+                console.warn('Favoritos encontrados');
             }
         }
         catch (erro) {
             console.warn(erro);
         }
     }
+
     setModalVisivel = (visible, id) => {
         if (visible == true) {
             this.ProcurarCurso(id)
@@ -218,11 +109,9 @@ export default class ListagemCurso extends Component {
 
         this.setState({ modalVisivel: visible })
     }
+
     componentDidMount = async () => {
-        this.GetLocation();
-        await delay(5000);
-        // setTimeout(function(){this.setState({ timeGeolocation: true})}, 1000);
-        this.ListarCurso();
+        this.ListarCursoFavoritos();
     }
 
     showAlert = () => {
@@ -288,7 +177,7 @@ export default class ListagemCurso extends Component {
                 </View>
 
                 <View style={styles.boxTituloPrincipal}>
-                    <Text style={styles.textTituloPrincipal}>cursos</Text>
+                    <Text style={styles.textTituloPrincipal}>favoritos</Text>
                 </View>
                 <View style={styles.boxSaldoUsuario}>
                     <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
@@ -308,8 +197,6 @@ export default class ListagemCurso extends Component {
     renderItem = ({ item }) => (
         <View>
             <View style={styles.containerCurso}>
-                {/* item.idEmpresaNavigation.idLocalizacaoNavigation.idLogradouroNavigation.nomeLogradouro */}
-                {/* Localizacao(this.state.Userlatitude, this.state.Userlongitude, item.idEmpresaNavigation.idLocalizacaoNavigation.idCepNavigation.cep1 */}
                 <Pressable onPress={() => this.setModalVisivel(true, item.idCurso)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
@@ -349,7 +236,7 @@ export default class ListagemCurso extends Component {
                                 <Text style={styles.textDados}>{item.valorCurso}</Text>
                             </View>
 
-                            <View style={styles.boxFavorito} onPress={() => this.Favoritar(item.idCurso)}>
+                            <View style={styles.boxFavorito}>
                                 <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
                             </View>
                         </View>
@@ -392,7 +279,7 @@ export default class ListagemCurso extends Component {
                                         <Text style={styles.textDadosModal}>{item.cargaHoraria}</Text>
 
                                         <Image source={require('../../../assets/imgGP2/mapa.png')} />
-                                        <Text style={styles.textDadosModal}>{ }</Text>
+                                        {/* <Text style={styles.textDadosModal}>{item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado}</Text> */}
                                     </View>
 
                                     <View style={styles.boxDadosModal}>
@@ -421,7 +308,7 @@ export default class ListagemCurso extends Component {
 
                                         <View style={styles.boxEmpresa}>
                                             <Text style={styles.tituloEmpresa}>Empresa: </Text>
-                                            <Text style={styles.textEmpresa}>{ }</Text>
+                                            {/* <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text> */}
                                         </View>
 
                                         <View style={styles.boxValorInscrever}>

@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 import ListagemCurso from '../listagemCurso/ListagemCurso.js';
 import Perfil from '../perfil/Perfil.js';
+import Favoritos from '../favoritos/Favoritos.js'
 
 const Tab = createBottomTabNavigator();
 
@@ -15,6 +16,7 @@ export default function MainAcompanhar() {
         <Tab.Navigator initialRouteName='NovoFeedback'>
             <Tab.Screen name="Perfil" component={Perfil} />
             <Tab.Screen name="ListagemCurso" component={ListagemCurso} options={{ headerShown: false }} />
+            <Tab.Screen name="Favoritos" component={Favoritos} options={{ headerShown: false }} />
         </Tab.Navigator>
     );
 };
