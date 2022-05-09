@@ -109,7 +109,7 @@ export default function MainAcompanhar() {
         }}
       />
       <Tab.Screen
-        name="Teste"
+        name="Democratização"
         component={Teste}
         options={{ tabBarIcon: ({ size, color }) => (<Entypo name="chat" size={size} color={color} />), headerShown: false }}
         listeners={() => ({

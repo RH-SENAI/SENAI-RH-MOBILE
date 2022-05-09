@@ -190,7 +190,8 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 16,
     width: 230,
-    height: 130
+    height: 130,
+    marginLeft:40
   },
 
   containerCard: {

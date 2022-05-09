@@ -14,6 +14,7 @@ import CadastrarFeedback from "./src/pages/democratizacao/CadastrarFeedback";
 import ListarFeedback from "./src/pages/democratizacao/ListarFeedbacks"
 import ListarDecisao from "./src/pages/democratizacao/ListarDecisao"
 
+
 const Stack = createNativeStackNavigator();
 
 function App() {

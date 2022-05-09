@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderRadius: 10,
     alignItems : 'center',
-    justifyContent : 'center'
+    justifyContent : 'center',
   },
 
   img_perfil: {
@@ -192,12 +192,13 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 16,
     width: 230,
-    height: 130
+    height: 130,
+    marginRight:40
   },
 
   containerCard: {
     width: 207,
-    height: 105
+    height: 105,
   },
 
   tituloCardWrapper: {
