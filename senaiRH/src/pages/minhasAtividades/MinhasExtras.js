@@ -49,6 +49,42 @@ import { render } from 'react-dom';
 
 const MinhasExtras = () => {
 
+    const navigation = useNavigation();
+    const [modalVisible, setModalVisible] = useState(false)
+    const [mensagem, setmensagem] = useState('');
+    const [listaAtividades, setListaAtividades] = useState([]);
+    const [MinhaAtividade, setMinhaAtividade] = useState({});
+
+    //const [concluido, setConcluido] = useState([]);
+
+    const ListarMinhas = async () => {
+
+        const token = await AsyncStorage.getItem("userToken");
+
+        const xambers = base64.decode(token.split('.')[1])
+        const user = JSON.parse(xambers)
+
+        console.warn('wertyui')
+
+        console.warn(user.jti)
+
+
+        if (token != null) {
+            const resposta = await api.get("/Atividades/MinhasAtividade/" + user.jti, {
+                headers: {
+                    Authorization: "Bearer " + token,
+                },
+            });
+
+            const dadosDaApi = await resposta.data;
+            setListaAtividades(dadosDaApi);
+        }
+    };
+
+    useEffect(() => {
+        ListarMinhas();
+    }, []);
+    
     let [customFonts] = useFonts({
         Regular: Quicksand_400Regular,
         Light: Quicksand_300Light,

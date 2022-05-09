@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SvgUri } from 'react-native-svg';
+//import { SvgUri } from 'react-native-svg';
 import {
     StyleSheet,
     Text,
@@ -21,6 +21,7 @@ import base64 from 'react-native-base64';
 import AppLoading from 'expo-app-loading';
 import api from "../../services/apiGp1";
 import { useFonts } from 'expo-font';
+import { EvilIcons,  AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import {
     Quicksand_300Light,
@@ -57,7 +58,7 @@ const MinhasAtividades = () => {
 
 
     const navigation = useNavigation();
-    const [modalVisible,setModalVisible] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false)
     const [mensagem, setmensagem] = useState('');
     const [listaAtividades, setListaAtividades] = useState([]);
     const [MinhaAtividade, setMinhaAtividade] = useState({});
@@ -69,11 +70,11 @@ const MinhasAtividades = () => {
         const token = await AsyncStorage.getItem("userToken");
 
         const xambers = base64.decode(token.split('.')[1])
-            const user = JSON.parse(xambers)
+        const user = JSON.parse(xambers)
 
-            console.warn('wertyui')
-            
-            console.warn(user.jti)
+        console.warn('wertyui')
+
+        console.warn(user.jti)
 
 
         if (token != null) {
@@ -92,8 +93,20 @@ const MinhasAtividades = () => {
         ListarMinhas();
     }, []);
 
-    const form = new FormData();
 
+    // const form = new FormData(); {
+    //     const filesElement = useRef(null);
+      
+    //     form.append('image', {
+    //         uri: "file:///...",
+    //         type: 'image/jpg',
+    //         name: 'image.jpg',
+    //       });
+          
+    //       fetch('', {
+    //         method: 'POST',
+    //         body: form
+    //       });
 
 
     // const ProcurarMinhasAtividades = async (id) => {
@@ -251,91 +264,93 @@ const MinhasAtividades = () => {
                 data={listaAtividades}
                 keyExtractor={item => item.idAtividade}
                 renderItem={({ item }) => (
-                
-                <View style={styles.MinhaAtividadeCentro} >
 
-                    <View style={styles.MinhaAtividade}>
-                        <View style={styles.quadradoeTexto}>
-                            <View style={styles.quadrado}></View>
-                            <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
+                    <View style={styles.MinhaAtividadeCentro} >
 
-                            <View style={styles.descricaoOlho}>
-                                <Text style={styles.descricao}>{item.dataConclusao} </Text>
-                            </View>
-                            <View style={styles.ModaleBotao}>
-                                {/* <View style={styles.statusImagem}></View> */}
+                        <View style={styles.MinhaAtividade}>
+                            <View style={styles.quadradoeTexto}>
+                                <View style={styles.quadrado}></View>
+                                <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
 
-                                <View style={styles.statusImagem}>
+                                <View style={styles.descricaoOlho}>
+                                    <Text style={styles.descricao}>Data de Entrega: {item.dataConclusao} </Text>
 
-                                    <Image
-                                        source={
-                                            item.idSituacaoAtividade == 1 ? require('../../../assets/img-gp1/validado.png') : item.idSituacaoAtividade == 2 ? require('../../../assets/img-gp1/pendente.png') : item.idSituacaoAtividade == 3 ? require('../../../assets/img-gp1/avaliando.png') : null
-                                        } />
-                                    <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? setmensagem('Validado') : item.idSituacaoAtividade == 2 ? setmensagem('Pendente') : item.idSituacaoAtividade == 3 ? setmensagem('Avaliando') : null} {mensagem} </Text>
-
+                                    <TouchableOpacity style={styles.Modalbotao} onPress={() => setModalVisible(true)} >
+                                        <AntDesign name="downcircleo" size={24} color="#636466" />
+                                    </TouchableOpacity>
                                 </View>
+                                <View style={styles.ModaleBotao}>
+                                    {/* <View style={styles.statusImagem}></View> */}
 
-                                <Modal
-                                    animationType="slide"
-                                    transparent={true}
-                                    visible={modalVisible}
+                                    <View style={styles.statusImagem}
                                     
-                                    key={item.idAtividade == MinhaAtividade.idAtividade}
-                                    onRequestClose={() => {
-                                        Alert.alert("Modal has been closed.");
-                                        setModalVisible(!modalVisible);
-                                    }}
-                                >
-                                    <View style={styles.centeredView}>
-                                        <View style={styles.modalView}>
-                                            <View style={styles.quadradoModal}></View>
-                                            <View style={styles.conteudoBoxModal}>
-                                                <Text style={styles.nomeBoxModal}> {MinhaAtividade.nomeAtividade} </Text>
-                                                <Text style={styles.descricaoModal}> {MinhaAtividade.descricaoAtividade} </Text>
-                                                <Text style={styles.itemPostadoModal}> {MinhaAtividade.dataInicio} </Text>
-                                                <Text style={styles.entregaModal}> {MinhaAtividade.dataConclusao} </Text>
-                                                {/* <Text style={styles.criadorModal}> {item.idGestorCadastroNavigation.nome} </Text> */}
+                                            source={
+                                                item.idSituacaoAtividade == 1 ?  <AntDesign name="check" size={24} color="black" /> : item.idSituacaoAtividade == 2 ? <EvilIcons name="exclamation" size={24} color="black" /> : item.idSituacaoAtividade == 3 ? <MaterialCommunityIcons name="timer-sand" size={24} color="black" /> : null
+                                            }>
+                                        <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? setmensagem('Validado') : item.idSituacaoAtividade == 2 ? setmensagem('Pendente') : item.idSituacaoAtividade == 3 ? setmensagem('Avaliando') : null} {mensagem} </Text>
 
-                                                <TouchableOpacity style={styles.anexo}>
-                                                    <Text style={styles.mais}>   + </Text>
-                                                    <Text style={styles.txtanexo}>    Adicionar Anexo</Text>
-                                                </TouchableOpacity>
-
-                                            </View>
-
-                                            <View style={styles.botoesModal} >
-                                                <TouchableOpacity
-                                                    onPress={() => setModalVisible(!modalVisible)}
-                                                // onPress={() => Concluir()}
-                                                >
-                                                    <View style={styles.associarModal}>
-                                                        <Text style={styles.texto}> Concluida </Text>
-                                                    </View>
-                                                </TouchableOpacity>
-                                                <TouchableOpacity
-
-                                                    onPress={() => setModalVisible(!modalVisible)}
-                                                >
-                                                    <View style={styles.fecharModal}>
-                                                        <Text style={styles.textoFechar}>Fechar X</Text>
-                                                    </View>
-
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
                                     </View>
 
+                                    
 
-                                </Modal>
-                                <TouchableOpacity style={styles.Modalbotao} onPress={() => setModalVisible(true)}>
-                                    <Image source={require('../../../assets/img-gp1/setaModal.png')} />
-                                </TouchableOpacity>
+                                    <Modal
+                                        animationType="slide"
+                                        transparent={true}
+                                        visible={modalVisible}
 
+                                        key={item.idAtividade == MinhaAtividade.idAtividade}
+                                        onRequestClose={() => {
+                                            Alert.alert("Modal has been closed.");
+                                            setModalVisible(!modalVisible);
+                                        }}
+                                    >
+                                        <View style={styles.centeredView}>
+                                            <View style={styles.modalView}>
+                                                <View style={styles.quadradoModal}></View>
+                                                <View style={styles.conteudoBoxModal}>
+                                                    <Text style={styles.nomeBoxModal}> {MinhaAtividade.nomeAtividade} </Text>
+                                                    <Text style={styles.descricaoModal}> {MinhaAtividade.descricaoAtividade} </Text>
+                                                    <Text style={styles.itemPostadoModal}> Item Postado: {MinhaAtividade.dataInicio} </Text>
+                                                    <Text style={styles.entregaModal}> Data de Entrega: {MinhaAtividade.dataConclusao} </Text>
+                                                    {/* <Text style={styles.criadorModal}> {item.idGestorCadastroNavigation.nome} </Text> */}
+
+                                                    <TouchableOpacity style={styles.anexo}>
+                                                        <Text style={styles.mais}>   + </Text>
+                                                        <Text style={styles.txtanexo}>    Adicionar Anexo</Text>
+                                                    </TouchableOpacity>
+
+                                                </View>
+
+                                                <View style={styles.botoesModal} >
+                                                    <TouchableOpacity
+                                                        onPress={() => setModalVisible(!modalVisible)}
+                                                    // onPress={() => Concluir()}
+                                                    >
+                                                        <View style={styles.associarModal}>
+                                                            <Text style={styles.texto}> Concluida </Text>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity
+
+                                                        onPress={() => setModalVisible(!modalVisible)}
+                                                    >
+                                                        <View style={styles.fecharModal}>
+                                                            <Text style={styles.textoFechar}>Fechar X</Text>
+                                                        </View>
+
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                        </View>
+
+
+                                    </Modal>
+                                    
+                                </View>
                             </View>
                         </View>
-                    </View>
 
-                </View>)}
+                    </View>)}
             />
 
             {/* <View style={styles.MinhaAtividade}>
@@ -719,10 +734,7 @@ const styles = StyleSheet.create({
     Modalbotao: {
         justifyContent: 'flex-start',
         alignItems: 'center',
-        // paddingRight: 18,
-        paddingTop: 6,
-        // marginLeft:130,
-        paddingLeft: 130
+        //paddingLeft: 90,
     },
 
     botao: {
@@ -898,12 +910,12 @@ const styles = StyleSheet.create({
         color: '#C20004'
     },
 
-    FlatList:{
-        width:'100%',
+    FlatList: {
+        width: '100%',
         // alignItems:'center'
     },
-    MinhaAtividadeCentro:{
-        alignItems:'center'
+    MinhaAtividadeCentro: {
+        alignItems: 'center'
     }
 })
 
