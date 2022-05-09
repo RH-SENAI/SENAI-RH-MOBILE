@@ -23,7 +23,7 @@ import * as Location from 'expo-location';
 const delay = require('delay');
 // import { Location, Permissions } from 'expo';
 
-export default class ListagemCurso extends Component {
+export default class ListagemDesconto extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -34,10 +34,9 @@ export default class ListagemCurso extends Component {
             isFavorite: false,
             inscrito: '',
             showAlert: false,
-            contadorCurso: 0,
-            listaCurso: [],
-            cursoBuscado: [],
-            localizacaoCurso: [],
+            contadorDesconto: 0,
+            listaDesconto: [],
+            descontoBuscado: [],
         };
     }
     GetLocation = async () => {
@@ -102,31 +101,31 @@ export default class ListagemCurso extends Component {
     //     }
     // }
 
-    ListarCurso = async () => {
+    ListarDescontos = async () => {
         try {
             //const token = await AsyncStorage.getItem('userToken')
             // console.warn(this.state.Userlongitude)
             // console.warn(this.state.Userlatitude)
 
-            const resposta = await api('/Cursos');
+            const resposta = await api('/Descontos');
 
             if (resposta.status == 200) {
-                const dadosCurso = resposta.data;
+                const dadosDesconto = resposta.data;
                 // console.warn(dadosCurso)
-                var tamanhoJson = Object.keys(dadosCurso).length;
+                var tamanhoJson = Object.keys(dadosDesconto).length;
                 // console.warn(tamanhoJson);
 
                 var i = 0
 
                 do {
-                    let stringLocalCurso = JSON.stringify(dadosCurso);
-                    let objLocalCurso = JSON.parse(stringLocalCurso);
+                    let stringLocalDesconto = JSON.stringify(dadosDesconto);
+                    let objLocalDesconto = JSON.parse(stringLocalDesconto);
                     // console.warn(objLocalCurso);
-                    var localCurso = objLocalCurso[i]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
+                    var localDesconto = objLocalDesconto[i]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
 
                     // ----> Localização 
 
-                    var stringProblematica = `json?origins=${this.state.Userlongitude}, ${this.state.Userlatitude}&destinations=${localCurso}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
+                    var stringProblematica = `json?origins=${this.state.Userlongitude}, ${this.state.Userlatitude}&destinations=${localDesconto}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
                     // console.warn(stringProblematica)
 
                     const respostaLocal = await apiMaps(stringProblematica);
@@ -146,16 +145,17 @@ export default class ListagemCurso extends Component {
                             var u = 0
 
                             do {
-                                let stringCurso = JSON.stringify(dadosCurso);
-                                var objCurso = JSON.parse(stringCurso);
-                                var lugarCurso = objCurso[u]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
+                                let stringDesconto = JSON.stringify(dadosDesconto);
+                                var objDesconto = JSON.parse(stringDesconto);
+                                var lugarDesconto = objDesconto[u]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
+                                // console.warn(lugarDesconto)
 
-                                var curso = objCurso[u]
-                                console.warn(curso)
+                                var desconto = objDesconto[u]
+                                console.warn(desconto)
                                 u++
-                            } while (lugarCurso != localCurso);
+                            } while (lugarDesconto != localDesconto);
 
-                            this.state.listaCurso.push(curso);
+                            this.state.listaDesconto.push(desconto);
 
 
                         }
@@ -164,7 +164,7 @@ export default class ListagemCurso extends Component {
                             console.warn('Localização fora do alcance');
                         }
                     }
-                    console.warn('Curso encontrado');
+                    console.warn('Desconto encontrado');
 
                     i++
                 } while (i < tamanhoJson);
@@ -180,10 +180,10 @@ export default class ListagemCurso extends Component {
     }
     setModalVisivel = (visible, id) => {
         if (visible == true) {
-            this.ProcurarCurso(id)
+            this.ProcurarDescontos(id)
         }
         else if (visible == false) {
-            this.setState({ cursoBuscado: [] })
+            this.setState({ descontoBuscado: [] })
         }
 
         this.setState({ modalVisivel: visible })
@@ -192,7 +192,7 @@ export default class ListagemCurso extends Component {
         this.GetLocation();
         await delay(5000);
         // setTimeout(function(){this.setState({ timeGeolocation: true})}, 1000);
-        this.ListarCurso();
+        this.ListarDescontos();
     }
 
     showAlert = () => {
@@ -236,15 +236,15 @@ export default class ListagemCurso extends Component {
         // ...
     }
 
-    ProcurarCurso = async (id) => {
+    ProcurarDescontos = async (id) => {
         try {
-            const resposta = await api('/Cursos/' + id);
+            const resposta = await api('/Descontos/' + id);
             // console.warn(resposta)
             if (resposta.status == 200) {
-                const dadosCurso = await resposta.data;
-                var stringCursoBuscado = JSON.stringify(dadosCurso);
-                let objCursoBuscado = JSON.parse(stringCursoBuscado)
-                this.setState({ cursoBuscado: objCursoBuscado });
+                const dadosDesconto = await resposta.data;
+                var stringDescontoBuscado = JSON.stringify(dadosDesconto);
+                let objDescontoBuscado = JSON.parse(stringDescontoBuscado)
+                this.setState({ descontoBuscado: objDescontoBuscado });
                 // console.warn(this.state.cursoBuscado)
             }
         }
@@ -261,7 +261,7 @@ export default class ListagemCurso extends Component {
                 </View>
 
                 <View style={styles.boxTituloPrincipal}>
-                    <Text style={styles.textTituloPrincipal}>cursos</Text>
+                    <Text style={styles.textTituloPrincipal}>descontos</Text>
                 </View>
                 <View style={styles.boxSaldoUsuario}>
                     <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
@@ -270,8 +270,8 @@ export default class ListagemCurso extends Component {
 
                 <FlatList
                     style={styles.flatlist}
-                    data={this.state.listaCurso}
-                    keyExtractor={item => item.idCurso}
+                    data={this.state.listaDesconto}
+                    keyExtractor={item => item.idDesconto}
                     renderItem={this.renderItem}
                 />
             </View>
@@ -283,14 +283,14 @@ export default class ListagemCurso extends Component {
             <View style={styles.containerCurso}>
                 {/* item.idEmpresaNavigation.idLocalizacaoNavigation.idLogradouroNavigation.nomeLogradouro */}
                 {/* Localizacao(this.state.Userlatitude, this.state.Userlongitude, item.idEmpresaNavigation.idLocalizacaoNavigation.idCepNavigation.cep1 */}
-                <Pressable onPress={() => this.setModalVisivel(true, item.idCurso)}>
+                <Pressable onPress={() => this.setModalVisivel(true, item.idDesconto)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
-                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemCurso}` }} />
+                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemDesconto}` }} />
                         </View>
 
                         <View style={styles.boxTituloCurso}>
-                            <Text style={styles.textTituloCurso}>{item.nomeCurso}</Text>
+                            <Text style={styles.textTituloCurso}>{item.nomeDesconto}</Text>
                         </View>
 
                         <View style={styles.boxAvaliacao}>
@@ -299,7 +299,7 @@ export default class ListagemCurso extends Component {
                                 //starImage={star}
                                 showRating={false}
                                 selectedColor={'#C20004'}
-                                defaultRating={item.mediaAvaliacaoCurso}
+                                defaultRating={item.mediaAvaliacaoDesconto}
                                 isDisabled={true}
                                 size={20} />
                         </View>
@@ -307,24 +307,24 @@ export default class ListagemCurso extends Component {
                         <View style={styles.boxDadosCurso}>
                             <View style={styles.boxDados}>
                                 <Image style={styles.imgDados} source={require('../../../assets/imgGP2/relogio.png')} />
-                                <Text style={styles.textDados}>{item.cargaHoraria}</Text>
+                                {/* <Text style={styles.textDados}>{item.cargaHoraria}</Text> */}
                             </View>
 
                             <View style={styles.boxDados}>
                                 <Image style={styles.imgDados} source={require('../../../assets/imgGP2/local.png')} />
-                                <Text style={styles.textDados}>{this.modalidade(item)}</Text>
+                                {/* <Text style={styles.textDados}>{this.modalidade(item)}</Text> */}
                             </View>
                         </View>
 
                         <View style={styles.boxPrecoFavorito}>
                             <View style={styles.boxPreco}>
                                 <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                <Text style={styles.textDados}>{item.valorCurso}</Text>
+                                <Text style={styles.textDados}>{item.valorDesconto}</Text>
                             </View>
 
-                            <View style={styles.boxFavorito} onPress={() => this.Favoritar(item.idCurso)}>
+                            <View style={styles.boxFavorito}>
                                 {/* <Pressable onPress={this.Favoritar(item.idCurso)}> */}
-                                    <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
+                                <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
                                 {/* </Pressable> */}
                             </View>
                         </View>
@@ -335,7 +335,7 @@ export default class ListagemCurso extends Component {
                     animationType="fade"
                     transparent={true}
                     visible={this.state.modalVisivel}
-                    key={item.idCurso == this.state.cursoBuscado.idCurso}
+                    key={item.idDesconto == this.state.descontoBuscado.idDesconto}
                     onRequestClose={() => {
                         this.setModalVisivel(!this.state.modalVisivel)
                     }}
@@ -346,9 +346,9 @@ export default class ListagemCurso extends Component {
                                 <ScrollView>
                                     <View style={styles.boxTituloModal}>
                                         <View style={styles.boxImgCurso}>
-                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemCurso}` }} />
+                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemDesconto}` }} />
                                         </View>
-                                        <Text style={styles.textTituloModal}>{item.nomeCurso}</Text>
+                                        <Text style={styles.textTituloModal}>{item.nomeDesconto}</Text>
                                     </View>
                                     <View style={styles.boxAvaliacaoModal}>
                                         <AirbnbRating
@@ -356,7 +356,7 @@ export default class ListagemCurso extends Component {
                                             //starImage={star}
                                             showRating={false}
                                             selectedColor={'#C20004'}
-                                            defaultRating={item.mediaAvaliacaoCurso}
+                                            defaultRating={item.mediaAvaliacaoDesconto}
                                             isDisabled={true}
                                             size={20}
                                         />
@@ -364,7 +364,7 @@ export default class ListagemCurso extends Component {
 
                                     <View style={styles.boxDadosModal}>
                                         <Image source={require('../../../assets/imgGP2/relogio.png')} />
-                                        <Text style={styles.textDadosModal}>{item.cargaHoraria}</Text>
+                                        {/* <Text style={styles.textDadosModal}>{item.cargaHoraria}</Text> */}
 
                                         <Image source={require('../../../assets/imgGP2/mapa.png')} />
                                         <Text style={styles.textDadosModal}>{ }</Text>
@@ -372,13 +372,13 @@ export default class ListagemCurso extends Component {
 
                                     <View style={styles.boxDadosModal}>
                                         <Image source={require('../../../assets/imgGP2/local.png')} />
-                                        <Text style={styles.textDadosModal}>{this.modalidade(item.modalidadeCurso)}</Text>
+                                        {/* <Text style={styles.textDadosModal}>{this.modalidade(item.modalidadeCurso)}</Text> */}
 
                                         <Image source={require('../../../assets/imgGP2/dataFinal.png')} />
                                         <Text style={styles.textDadosModal}>
-                                            {Intl.DateTimeFormat("pt-BR", {
+                                            {/* {Intl.DateTimeFormat("pt-BR", {
                                                 year: 'numeric', month: 'numeric', day: 'numeric'
-                                            }).format(new Date(item.dataFinalizacao))}
+                                            }).format(new Date(item.dataFinalizacao))} */}
                                         </Text>
                                     </View>
 
@@ -391,7 +391,7 @@ export default class ListagemCurso extends Component {
                                             renderRevealedFooter={this._renderRevealedFooter}
                                             onReady={this._handleTextReady}
                                         >
-                                            <Text style={styles.textDescricaoModal}>{item.descricaoCurso}</Text>
+                                            <Text style={styles.textDescricaoModal}>{item.descricaoDesconto}</Text>
                                         </ReadMore>
 
                                         <View style={styles.boxEmpresa}>
@@ -402,7 +402,7 @@ export default class ListagemCurso extends Component {
                                         <View style={styles.boxValorInscrever}>
                                             <View style={styles.boxPrecoModal}>
                                                 <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                                <Text style={styles.textDados}>{item.valorCurso}</Text>
+                                                <Text style={styles.textDados}>{item.valorDesconto}</Text>
                                             </View>
 
                                             <View style={styles.boxInscreverModal}>

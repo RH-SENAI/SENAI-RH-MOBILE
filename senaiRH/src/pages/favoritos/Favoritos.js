@@ -62,35 +62,36 @@ export default class ListagemCurso extends Component {
 
                 console.warn(dadosCurso);
 
-                var tamanhoJson = Object.keys(dadosCurso).length;
+                // var tamanhoJson = Object.keys(dadosCurso).length;
 
-                const respostaUser = await apiUser('/Usuarios/Funcionarios');
-                if (respostaUser.status == 200) {
-                    const dadosFavoritos = respostaUser.data;
+                // const respostaUser = await apiUser('/Usuarios/Funcionarios');
+                // if (respostaUser.status == 200) {
+                //     const dadosFavoritos = respostaUser.data;
 
-                    var tamanhoJsonFavoritos = Object.keys(dadosFavoritos).length;
+                //     var tamanhoJsonFavoritos = Object.keys(dadosFavoritos).length;
 
-                    let i = 0;
-                    let u = 0;
+                //     let i = 0;
+                //     let u = 0;
 
-                    do {
-                        let stringCurso = JSON.stringify(dadosCurso);
-                        let objCurso = JSON.parse(stringCurso);
-                        var cursoId = objCurso[i]['idCurso']
+                //     do {
+                //         let stringCurso = JSON.stringify(dadosCurso);
+                //         let objCurso = JSON.parse(stringCurso);
+                //         var cursoId = objCurso[i]['idCurso']
 
-                        do {
-                            let stringFavorito = JSON.stringify(dadosFavoritos);
-                            let objFavorito = JSON.parse(stringFavorito);
-                            var favoritoId = objFavorito[u]['idCurso']
-                            u++
-                        } while (u < tamanhoJsonFavoritos);
+                //         do {
+                //             let stringFavorito = JSON.stringify(dadosFavoritos);
+                //             let objFavorito = JSON.parse(stringFavorito);
+                //             var favoritoId = objFavorito[u]['idCurso']
+                //             u++
+                //         } while (u < tamanhoJsonFavoritos);
 
-                        if (cursoId == favoritoId) {
-                            this.setState({ listaCurso: dadosCurso })
-                        }
-                        i++
-                    } while (i < tamanhoJson);
-                }
+                //         if (cursoId == favoritoId) {
+                            
+                //         }
+                //         i++
+                //     } while (i < tamanhoJson);
+                // }
+                this.setState({ listaCurso: dadosCurso })
                 console.warn('Favoritos encontrados');
             }
         }
