@@ -119,11 +119,6 @@ export default function Perfil() {
 
               </View>
 
-              <View style={styles.sobreTrofeu}>
-                <Image source={require('../../../assets/imgMobile/trofeu.png')} />
-                <Text style={styles.textTrofeu}>{usuario.trofeus}</Text>
-              </View>
-
             </ScrollView>);
         })}
 

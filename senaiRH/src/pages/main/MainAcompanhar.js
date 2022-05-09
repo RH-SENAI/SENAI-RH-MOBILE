@@ -44,11 +44,11 @@ export default function MainAcompanhar() {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        // onRequestClose={() => {
-        //   //Alert.alert("Modal has been closed.");
-        //   setModalVisible(false);
-        //   navigation.navigate('Dashboard');
-        // }}
+        onRequestClose={() => {
+          //Alert.alert("Modal has been closed.");
+          setModalVisible(false);
+          navigation.navigate('Dashboard');
+        }}
       >
 
         <View style={styles.modalView}>
@@ -58,7 +58,7 @@ export default function MainAcompanhar() {
             size={30}
             color="black"
             onPress={() => {
-              (setModalVisible(false));
+              (setModalVisible(false), navigation.navigate('Dashboard'));
             }}
           />
           <View style={styles.containerLinks}>
