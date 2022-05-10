@@ -70,7 +70,7 @@ const MinhasExtras = () => {
 
 
         if (token != null) {
-            const resposta = await api.get("/Atividades/MinhasAtividade/" + user.jti, {
+            const resposta = await api.get("/Atividades/MinhasAtividadeExtra/" + id, {
                 headers: {
                     Authorization: "Bearer " + token,
                 },
@@ -113,11 +113,7 @@ const MinhasExtras = () => {
 
     if (!customFonts) {
         return <AppLoading />;
-    }
-
-
-    const navigation = useNavigation();
-    const [modalVisible, setModalVisible] = useState(false)
+    };
 
     return (
         <View style={styles.main}>
@@ -130,7 +126,7 @@ const MinhasExtras = () => {
 
                 </View>
 
-                <View style={styles.titulo}>
+                <View>
 
                     <Text style={styles.tituloEfects}>{'Minhas atividades'.toUpperCase()} </Text>
 
@@ -271,18 +267,12 @@ const styles = StyleSheet.create({
 
     },
 
-    titulo: {
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        // paddingTop: 40,
-    },
-
     tituloEfects: {
         fontFamily: 'SemiBoldM',
         // justifyContent: 'center',
         // alignItems: 'center',
         color: '#2A2E32',
-        fontSize: 25,
+        fontSize: 30,
         paddingTop: 40,
         textAlign: 'center'
     },
@@ -304,7 +294,7 @@ const styles = StyleSheet.create({
     font: {
         fontFamily: 'Regular',
         color: "#636466",
-        fontSize: 20,
+        fontSize: 23,
         paddingBottom: 5,
     },
 
