@@ -1,6 +1,7 @@
 // React Imports
 import { useState, useEffect } from "react";
 import react from "react";
+import { Text as PieText } from 'react-native-svg';
 import {
     Image,
     StyleSheet,
@@ -22,8 +23,11 @@ import {
 } from 'victory';
 import jwtDecode from "jwt-decode";
 
+import { PieChart } from 'react-native-svg-charts'
+
 //Services
 import api from "../../services/api";
+import apiGp1 from '../../services/apiGp1'
 
 // Fonts
 import {
@@ -46,6 +50,7 @@ export default function Dashboard() {
     const [listaUsuarios, setListaUsuarios] = useState([]);
     const [notaProdutividade, setNotaProdutividade] = useState(0);
     const [usuario, setUsuario] = useState([])
+    const [minhasAtividades, setMinhasAtividades] = useState([])
 
     // Fontes utilizada
     let [fontsLoaded] = useFonts({
@@ -71,13 +76,80 @@ export default function Dashboard() {
 
             if (resposta.status === 200) {
                 setUsuario([resposta.data]);
+                //console.warn(resposta.data)
             }
 
         } catch (error) {
             console.warn(error)
         }
     }
+
+
+    async function BuscarMinhasAtividades() {
+        try {
+            const token = await AsyncStorage.getItem('userToken');
+
+            const resposta = await apiGp1.get('Atividades/MinhasAtividade/' + jwtDecode(token).jti, {
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                },
+            });
+
+            if (resposta.status === 200) {
+                setUsuario([resposta.data]);
+                console.warn(resposta.data)
+            }
+
+        } catch (error) {
+            console.warn(error)
+        }
+    }
+
+
     useEffect(() => BuscarUsuario(), [])
+    useEffect(() => BuscarMinhasAtividades(), [])
+
+
+    //PIECHART
+    function GraficoSatisfacao() {
+        const data = [50, 10, 40, 95,]
+        const pieData = data.map((value, index) => ({
+            value,
+            key: `${index} - ${value}`,
+            svg: {
+                fill: '#FF0000'
+            }
+        }));
+
+        const Label = ({ slices }) => {
+            return slices.map((slice, index) => {
+                const { pieCentroid, data } = slice;
+                return (
+                    <PieText
+                        key={`label-${index}`}
+                        x={pieCentroid[0]}
+                        y={pieCentroid[1]}
+                        fill='black'
+                        textAnchor={'middle'}
+                        alignmentBaseline={'middle'}
+                        fontSize={12}
+                    >
+                        {data.value}
+                    </PieText>
+                )
+            })
+        }
+
+        return (
+            <PieChart style={styles.PieChart} data={pieData}>
+                <Label
+
+                />
+            </PieChart>
+        );
+    }
+
+
 
     if (!fontsLoaded) {
         return <AppLoading />;
@@ -95,34 +167,37 @@ export default function Dashboard() {
 
                 {usuario.map((usuario) => {
                     return (
-                        <View style={styles.containerDados}>
-                            <View style={styles.fotoPerfilContainer}>
-                                <Image
-                                    source={usuario.caminhoFotoPerfil == undefined ? {
-                                        uri:
-                                            "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
-                                            item.idUsuarioNavigation.caminhoFotoPerfil,
-                                    } : require("../../../assets/imgMobile/Perfil.png")}
-                                    resizeMod="cover"
-                                />
-                            </View>
+                        <View style={styles.containerAreaDados}>
+                            <View style={styles.containerDados}>
+                                <View style={styles.containerLine}>
+                                    <Image
+                                        source={usuario.caminhoFotoPerfil == undefined ? {
+                                            uri:
+                                                "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
+                                                usuario.idUsuarioNavigation.caminhoFotoPerfil,
+                                        } : require("../../../assets/imgMobile/Perfil.png")}
+                                        resizeMod="cover"
+                                    />
 
-
-                            <View style={styles.containerLine}>
-                                <View style={styles.line}>
-                                    <Text style={styles.lineTextPerfil}>{usuario.nome}</Text>
+                                    <View style={styles.containerTextos}>
+                                        <Text style={styles.lineTextPerfil}>{usuario.nome}</Text>
+                                        <Text style={styles.lineTextPerfil}>{usuario.idCargoNavigation.nomeCargo}</Text>
+                                    </View>
                                 </View>
 
-                                <View style={styles.line}>
-                                    <Text style={styles.lineTextPerfil}>{usuario.idCargoNavigation.nomeCargo}</Text>
+                                <View style={styles.containerPieChart} >
+                                    <GraficoSatisfacao />
+                                    <Text>Teste</Text>
                                 </View>
                             </View>
+
                         </View>
 
                     )
                 }
                 )
                 }
+
 
             </View>
         )
@@ -132,16 +207,16 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F2F2F2',
-        alignItems: "center"
+        alignItems: "center",
+        width: '100%',
+        backgroundColor: 'orange'
     },
-
     imgLogo: {
         width: 300,
         height: 40,
         marginTop: 40,
         marginBottom: 20,
     },
-
     tituloPage: {
         fontSize: 32,
         width: '80%',
@@ -150,35 +225,46 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         color: '#2A2E32'
     },
-
+    containerAreaDados: {
+        backgroundColor: 'yellow',
+        flex: 1,
+        width: '100%',
+        paddingHorizontal: '5%',
+    },
     containerDados: {
-        width: '85%',
-        height: 110,
+        backgroundColor: 'cyan',
+        height: 200,
+        //alignItems: 'flex-start'
+    },
+    containerLine: {
+        width: '100%',
+        //height: 110,
         borderRadius: 5,
         borderWidth: 3,
         borderColor: 'gray',
-        marginVertical: 20,
-        flexDirection: "row"
+        flexDirection: "row",
+        backgroundColor: 'green'
     },
-
-    fotoPerfilContainer: {
-        marginLeft: 16,
-        marginTop: 20
-
+    containerTextos: {
+        marginLeft: 24,
+        marginTop: 0,
+        fontFamily: ' Quicksand_300Light',
+        backgroundColor: 'blue'
     },
-
     lineTextPerfil: {
         fontFamily: ' Quicksand_300Light',
         fontSize: 25,
         color: '#000'
     },
-    containerLine: {
-        marginLeft: 24,
-        marginTop: 24,
-        fontFamily: ' Quicksand_300Light',
+    containerPieChart: {
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: 'purple',
+        justifyContent: 'flex-start'
     },
-
-    line: {
-        fontFamily: ' Quicksand_300Light',
+    PieChart: {
+        //flex: 1,
+        width: 100,
+        backgroundColor: 'white',
     }
 })

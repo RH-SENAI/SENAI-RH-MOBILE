@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import {
   View,
@@ -27,6 +28,9 @@ function ButtonNew({ size, color }) {
 
 
 export default function MainAcompanhar() {
+
+  
+  const navigation = useNavigation();
 
   return (
     <Tab.Navigator
@@ -70,6 +74,12 @@ export default function MainAcompanhar() {
           ),
           tabBarLabel: "",
           headerShown: false,
+        }}
+        listeners={{
+          tabPress: e => {
+            // Prevent default action
+            navigation.goBack();
+          }
         }}
       />
       <Tab.Screen
