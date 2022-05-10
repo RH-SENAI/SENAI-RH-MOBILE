@@ -96,8 +96,8 @@ export default function Dashboard() {
             });
 
             if (resposta.status === 200) {
-                setUsuario([resposta.data]);
-                console.warn(resposta.data)
+                setMinhasAtividades([resposta.data]);
+                //console.warn(resposta.data)
             }
 
         } catch (error) {
@@ -112,41 +112,116 @@ export default function Dashboard() {
 
     //PIECHART
     function GraficoSatisfacao() {
-        const data = [50, 10, 40, 95,]
-        const pieData = data.map((value, index) => ({
-            value,
-            key: `${index} - ${value}`,
-            svg: {
-                fill: '#FF0000'
-            }
-        }));
 
-        const Label = ({ slices }) => {
+        const u = usuario[0];
+        const maxSatisfacao = 1;
+
+
+        const data = [
+            {
+                key: 1,
+                amount: u.nivelSatisfacao,
+                svg: { fill: '#C20004' },
+            },
+            {
+                key: 2,
+                amount: maxSatisfacao - u.nivelSatisfacao,
+                svg: { fill: '#f0dfdf' }
+            },
+
+        ]
+
+        const Labels = ({ slices, height, width }) => {
             return slices.map((slice, index) => {
-                const { pieCentroid, data } = slice;
+                const { labelCentroid, pieCentroid, data } = slice;
                 return (
                     <PieText
-                        key={`label-${index}`}
+                        key={index}
                         x={pieCentroid[0]}
                         y={pieCentroid[1]}
-                        fill='black'
+                        fill={'white'}
                         textAnchor={'middle'}
                         alignmentBaseline={'middle'}
                         fontSize={12}
+                        stroke={'black'}
+                        strokeWidth={0.2}
                     >
-                        {data.value}
+                        {/* {data.amount} */}
                     </PieText>
                 )
             })
         }
 
-        return (
-            <PieChart style={styles.PieChart} data={pieData}>
-                <Label
 
-                />
+
+        return (
+            <PieChart
+                style={styles.PieChart}
+                valueAccessor={({ item }) => item.amount}
+                data={data}
+                spacing={0}
+                outerRadius={'95%'}
+            >
+                <Labels />
             </PieChart>
-        );
+        )
+    }
+
+
+    function GraficoAvaliacao() {
+
+        const u = usuario[0];
+        const maxAvaliacao = 10;
+
+
+        const data = [
+            {
+                key: 1,
+                amount: u.mediaAvaliacao,
+                svg: { fill: '#C20004' },
+            },
+            {
+                key: 2,
+                amount: maxAvaliacao - u.mediaAvaliacao,
+                svg: { fill: '#f0dfdf' }
+            },
+
+        ]
+
+        const Labels = ({ slices, height, width }) => {
+            return slices.map((slice, index) => {
+                const { labelCentroid, pieCentroid, data } = slice;
+                return (
+                    <PieText
+                        key={index}
+                        x={pieCentroid[0]}
+                        y={pieCentroid[1]}
+                        fill={'white'}
+                        textAnchor={'middle'}
+                        alignmentBaseline={'middle'}
+                        fontSize={12}
+                        stroke={'black'}
+                        strokeWidth={0.2}
+                    >
+                        {/* {data.amount} */}
+                    </PieText>
+                )
+            })
+        }
+
+
+
+        return (
+            <PieChart
+                style={styles.PieChart}
+                valueAccessor={({ item }) => item.amount}
+                data={data}
+                spacing={0}
+                outerRadius={'95%'}
+            >
+                <Labels />
+            </PieChart>
+        )
     }
 
 
@@ -186,8 +261,16 @@ export default function Dashboard() {
                                 </View>
 
                                 <View style={styles.containerPieChart} >
+                                    <View style={styles.containerLegendas}>
+                                        <Text style={styles.tituloGrafico}>Nivel de Satisfação:</Text>
+                                    </View>
                                     <GraficoSatisfacao />
-                                    <Text>Teste</Text>
+                                </View>
+                                <View style={styles.containerPieChart} >
+                                    <View style={styles.containerLegendas}>
+                                        <Text style={styles.tituloGrafico}>Média de Avaliação:</Text>
+                                    </View>
+                                    <GraficoAvaliacao />
                                 </View>
                             </View>
 
@@ -233,7 +316,9 @@ const styles = StyleSheet.create({
     },
     containerDados: {
         backgroundColor: 'cyan',
-        height: 200,
+        //height: 200,
+        flex: 1,
+        marginTop: 20,
         //alignItems: 'flex-start'
     },
     containerLine: {
@@ -243,7 +328,9 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderColor: 'gray',
         flexDirection: "row",
-        backgroundColor: 'green'
+        backgroundColor: 'green',
+        padding: 10
+
     },
     containerTextos: {
         marginLeft: 24,
@@ -257,14 +344,29 @@ const styles = StyleSheet.create({
         color: '#000'
     },
     containerPieChart: {
-        flex: 1,
+        //flex: 1,
+        borderRadius: 5,
+        borderWidth: 3,
+        borderColor: 'gray',
         flexDirection: 'row',
         backgroundColor: 'purple',
-        justifyContent: 'flex-start'
+        justifyContent: 'space-between',
+        marginTop: 20,
+        alignItems: 'center',
+        padding: 10,
+        height: 120,
+    },
+    containerLegendas: {
+        flex: 1,
+        backgroundColor: 'orange'
     },
     PieChart: {
         //flex: 1,
         width: 100,
         backgroundColor: 'white',
+    },
+    tituloGrafico: {
+        fontSize: 20,
+        marginLeft: 10
     }
 })

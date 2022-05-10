@@ -1,9 +1,35 @@
 import React from "react";
 import { Image, View, StyleSheet, TouchableOpacity, Text } from "react-native";
-
 import { useNavigation } from "@react-navigation/native";
 
+// Expo
+import AppLoading from "expo-app-loading";
+
+// Fonts
+import {
+  useFonts,
+  Montserrat_500Medium,
+  Montserrat_600SemiBold,
+} from "@expo-google-fonts/montserrat";
+
+import {
+  Quicksand_300Light,
+  Quicksand_400Regular,
+  Quicksand_600SemiBold,
+} from "@expo-google-fonts/quicksand";
+
 export default function Redirecionar() {
+   // Fontes utilizada
+   let [fontsLoaded] = useFonts({
+    //Montserrat
+    Montserrat_500Medium,
+    Montserrat_600SemiBold,
+
+    // Quicksand
+    Quicksand_300Light,
+    Quicksand_400Regular,
+    Quicksand_600SemiBold,
+  });
   const navigation = useNavigation();
 
   return (
@@ -60,7 +86,8 @@ const styles = StyleSheet.create({
     fontSize: 32,
     width: '80%',
     textAlign: 'center',
-    marginBottom: 15
+    marginBottom: 15,
+    fontFamily: "Montserrat_600SemiBold",
   },
   button: {
     flexDirection: 'row',
@@ -80,6 +107,7 @@ const styles = StyleSheet.create({
     color: "black",
     textAlign: "center",
     fontSize: 25,
+    fontFamily: " Quicksand_300Light",
     // fontWeight: "bold",
     marginLeft: 40
   },

@@ -131,19 +131,16 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 20,
   },
-  text: {
-    fontSize: 25,
-    color: '#000',
-    
-  },
-  h1nonBold: {
   
+  h1nonBold: {
     fontSize: 32,
     fontWeight: "500",
     textTransform: "uppercase",
     color: "#000000",
     textAlign:"center",
-    marginBottom:24
+    marginBottom:24,
+    fontFamily: "Montserrat_600SemiBold",
+    marginBottom:40
   },
 
   h1bold: {
@@ -152,6 +149,7 @@ const styles = StyleSheet.create({
     color: "#000000",
     color: "#2A2E32",
     marginTop: 30,
-    textAlign:"center"
+    textAlign:"center",
+   
   },
 });
