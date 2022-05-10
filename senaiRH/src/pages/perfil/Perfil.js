@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     fontFamily : 'Quicksand_400Regular',
     fontSize : 20,
     color : 'black',
-    marginRight : 203,
+    marginRight : 179,
     marginBottom : 20
   },
 
@@ -165,17 +165,17 @@ const styles = StyleSheet.create({
     height: 40,
     alignSelf: "center",
     marginTop: 40,
-    marginBottom: 20,
+    marginBottom: 40,
   },
 
   titulo: {
-    fontSize: 32,
-    width: '80%',
-    textAlign: 'center',
-    alignSelf: 'center',
-    fontFamily: 'Montserrat_600SemiBold',
-    textTransform: 'uppercase',
-    color: '#2A2E32'
+    fontFamily: "Montserrat_600SemiBold",
+    fontSize: 35,
+    color: "#000000",
+    color: "#2A2E32",
+
+    textAlign:"center",
+    textTransform: "uppercase",
   },
 
   conteudo: {

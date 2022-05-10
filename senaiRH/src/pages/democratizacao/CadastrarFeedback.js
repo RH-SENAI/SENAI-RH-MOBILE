@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
   sectionDemocratizacaoDecisao: {
     fontFamily: 'Quicksand_300Light',
     color: '#000000',
-    fontSize: 12,
+    fontSize: 20,
     paddingLeft: 4,
     paddingRight: 12
   },
@@ -490,7 +490,8 @@ const styles = StyleSheet.create({
 
   labelComentarioFeedback: {
     color: '#636466',
-    fontSize: 12,
+    fontSize: 20,
+    width:"85%",
     fontFamily: 'Quicksand_300Light',
   },
 
