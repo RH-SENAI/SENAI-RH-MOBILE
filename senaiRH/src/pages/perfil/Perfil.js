@@ -1,59 +1,129 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, Image, StyleSheet, Text, View, ScrollView } from 'react-native';
+// React Imports
+import React, { useState, useEffect } from "react";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  SafeAreaView
+} from "react-native";
 
+// Pacotes
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Perfil = () => {
+// Expo
+import AppLoading from 'expo-app-loading';
 
-  return (
+// Fonts
+import {
+  useFonts,
+  Montserrat_500Medium,
+  Montserrat_600SemiBold,
+} from '@expo-google-fonts/montserrat';
 
-    <View style={styles.container}>
-      <Image style={styles.logoSenai} source={require("../../../assets/imgMobile/logo_2S.png")} resizeMode="contain" />
+import {
+  Quicksand_300Light,
+  Quicksand_400Regular,
+  Quicksand_600SemiBold,
+} from '@expo-google-fonts/quicksand';
 
-      <Text style={styles.titulo}>PERFIL</Text>
+// Services
+import api from "../../services/api";
+import jwtDecode from "jwt-decode";
 
-      <View style={styles.conteudo}>
+export default function Perfil() {
 
-        <View style={styles.fotoPerfilContainer}>
-          <Image
-            source={require("../../../assets/imgMobile/Perfil.png")}
-            //style={styles.imgEntrando}
-            resizeMode="contain"
-          />
-        </View>
+  const [usuario, setUsuario] = useState([])
 
-        <ScrollView style={styles.boxPerfil} >
-          <View style={styles.line}>
-            <Text style={styles.titulos}>Email</Text>
-            <Text>Email@email.com</Text>
-          </View>
-          <View style={styles.line}>
-            <Text style={styles.titulos}>Senha</Text>
-            <Text>********</Text>
-          </View>
-          <View style={styles.line}>
-            <Text style={styles.titulos}>Cargo</Text>
-            <Text>Nome Cargo</Text>
-          </View>
-          <View style={styles.line}>
-            <Text style={styles.titulos}>CPF</Text>
-            <Text>***.*56.78*-**</Text>
-          </View>
-          <View style={styles.line}>
-            <Text style={styles.titulos}>Endereço</Text>
-            <Text>Rua abcd, nº1234</Text>
-          </View>
+  // Fontes utilizada
+  let [fontsLoaded] = useFonts({
 
-        </ScrollView>
+    //Montserrat
+    Montserrat_500Medium,
+    Montserrat_600SemiBold,
 
-        
+    // Quicksand
+    Quicksand_300Light,
+    Quicksand_400Regular,
+    Quicksand_600SemiBold,
+  })
 
-      </View>
+  async function BuscarUsuario() {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
 
-    </View>
+      const resposta = await api.get('Usuarios/Listar/' + jwtDecode(token).jti, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      });
 
-  );
+      if (resposta.status === 200) {
+        setUsuario([resposta.data]);
+      }
+    } catch (error) {
+      console.warn(error);
+    }
+  }
 
+  useEffect(() => BuscarUsuario(), [])
 
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
+    return (
+
+      <SafeAreaView style={styles.container}>
+        <Image style={styles.logoSenai} source={require("../../../assets/imgMobile/logo_2S.png")} resizeMode="contain" />
+
+        {usuario.map((usuario) => {
+          return (
+            <ScrollView contentContainerStyle={styles.conteudo}>
+
+              <Text style={styles.titulo}>Perfil</Text>
+              <View style={styles.fotoPerfilContainer}>
+
+                <Image
+                  source={usuario.caminhoFotoPerfil == undefined ? {
+                    uri:
+                      "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
+                      item.idUsuarioNavigation.caminhoFotoPerfil,
+                  } : require("../../../assets/imgMobile/Perfil.png")}
+                  resizeMod="cover"
+                />
+
+              </View>
+              
+              <Text style={styles.textInfGeralPerfil}>Informação Geral</Text>
+              
+              <View style={styles.boxPerfil} >
+
+                <View style={styles.line}>
+                  <Text style={styles.lineTextPerfil}>{usuario.nome}</Text>
+                </View>
+
+                <View style={styles.line}>
+                  <Text style={styles.lineTextPerfil}>{usuario.email}</Text>
+                </View>
+
+                <View style={styles.line}>
+                  <Text style={styles.lineTextPerfil}>{usuario.cpf}</Text>
+                </View>
+
+                <View style={styles.line}>
+                  <Text style={styles.lineTextPerfil}>{usuario.idCargoNavigation.nomeCargo}</Text>
+                </View>
+
+              </View>
+
+            </ScrollView>);
+        })}
+
+      </SafeAreaView>
+    );
+  }
 }
 
 
@@ -63,12 +133,10 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F2',
-    // alignItems:'center'
-
+    backgroundColor: '#F2F2F2'
   },
   fotoPerfilContainer: {
-    width: 110,
+    width: 111,
     height: 110,
     borderRadius: 5,
     alignItems: 'center',
@@ -77,6 +145,21 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     marginVertical: 20
   },
+
+  textInfGeralPerfil : {
+    fontFamily : 'Quicksand_400Regular',
+    fontSize : 20,
+    color : 'black',
+    marginRight : 203,
+    marginBottom : 20
+  },
+
+  lineTextPerfil : {
+    fontFamily : 'Quicksand_400Regular',
+    fontSize : 20,
+    color : '#B3B3B3'
+  },
+
   logoSenai: {
     width: "100%",
     height: 40,
@@ -84,20 +167,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
+
   titulo: {
     fontSize: 32,
     width: '80%',
     textAlign: 'center',
-    // backgroundColor: 'blue',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    fontFamily: 'Montserrat_600SemiBold',
+    textTransform: 'uppercase',
+    color: '#2A2E32'
   },
 
   conteudo: {
-    flex: 1,
     alignItems: 'center',
-    // backgroundColor: 'yellow',
-    // paddingTop: 20,
-
+    paddingBottom : 20
   },
 
   boxPerfil: {
@@ -108,21 +191,46 @@ const styles = StyleSheet.create({
   },
   titulos: {
     color: '#0A0A0A',
-    //fontFamily:'Montserrat-SemiBold',
     fontSize: 16,
     fontWeight: 'bold'
   },
   line: {
     width: '100%',
+    height: 50,
     borderRadius: 5,
     paddingHorizontal: '3%',
     paddingVertical: 5,
     borderColor: '#C2C2C2',
     borderWidth: 3,
-    marginBottom: 10
+    marginBottom: 10,
+    justifyContent : 'center',
+    borderRadius : 10
   },
 
+  sobreTrofeu: {
+    width: 270,
+    height: 50,
+    fontSize: 30,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+    elevation: 16,
+    backgroundColor: '#F2F2F2',
+    //boxShadow: '19px',
+    borderRadius: 5,
+    flexDirection: 'row',
+
+
+  },
+  textTrofeu: {
+    color: 'black',
+    marginLeft: 10,
+    //fontFamily:'Montserrat-Regular',
+
+
+  }
+
+
+
 });
-
-export default Perfil;
-
