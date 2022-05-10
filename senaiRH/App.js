@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Welcome from './src/pages/welcome/Welcome.js';
 import Redirecionar from './src/pages/redirecionar/Redirecionar.js';
 import MainMotivar from './src/pages/main/MainMotivar.js';
+import MainMotivar2 from './src/pages/main/mainMotivar2';
 import Login from './src/pages/login/Login.js';
 import MinhasExtras from './src/pages/minhasAtividades/MinhasExtras'
 import AtividadesExtras from './src/pages/atividades/AtividadesExtras.js';
@@ -23,8 +24,9 @@ function App() {
         {/* <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} /> */}
         <Stack.Screen name="Redirecionar" component={Redirecionar} options={{ headerShown: false }}/>
         <Stack.Screen name="MainMotivar" component={MainMotivar} options={{ headerShown: false }} />
-        <Stack.Screen name="AtividadesExtras" component={AtividadesExtras}  options={{ headerShown: false }}/>
-        <Stack.Screen name="MinhasExtras" component={MinhasExtras} options={{ headerShown: false }}/>
+        <Stack.Screen name="MainMotivar2" component={MainMotivar2} options={{ headerShown: false }} />
+         {/* <Stack.Screen name="AtividadesExtras" component={AtividadesExtras}  options={{ headerShown: false }}/> */}
+       {/* <Stack.Screen name="MinhasExtras" component={MinhasExtras} options={{ headerShown: false }}/> */}
 
 
       </Stack.Navigator>

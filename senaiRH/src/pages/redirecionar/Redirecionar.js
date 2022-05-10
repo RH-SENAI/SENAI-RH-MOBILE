@@ -5,6 +5,7 @@ import { Image, View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
+import { MaterialIcons, MaterialCommunityIcons, EvilIcons, Entypo, Feather, AntDesign } from "@expo/vector-icons";
 
 
 import {
@@ -80,17 +81,17 @@ export default function Redirecionar() {
         <Text style={styles.titulo}>REDIRECIONAR PARA:</Text>
 
         <TouchableOpacity style={styles.button}>
-          <Image style={styles.icone} source={require("../../../assets/imgMobile/computador.png")} />
+          <MaterialIcons name="computer" size={50} color="black" />
           <Text style={styles.texto}>Acompanhamento</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MainMotivar")} >
-          <Image style={styles.icone} source={require("../../../assets/imgMobile/porco.png")} />
-          <Text style={styles.texto}>Motivações</Text>
+          <MaterialCommunityIcons style={styles.porco} name="piggy-bank" size={50} color="black"  />
+          <Text style={styles.textoM}>Motivações</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button}>
-          <Image style={styles.icone} source={require("../../../assets/imgMobile/etiqueta.png")} />
+          <MaterialCommunityIcons name="label-percent" size={50} color="black" />
           <Text style={styles.texto}>Minhas Vantagens</Text>
         </TouchableOpacity>
 
@@ -149,5 +150,17 @@ const styles = StyleSheet.create({
     // fontWeight: "bold",
     marginLeft: 40,
     fontFamily:'Regular'
+  },
+
+  porco: {
+    paddingRight: 70,
+  },
+
+  textoM: {
+    color: "black",
+    fontSize: 25,
+    marginRight: 50,
+    fontFamily:'Regular',
+    
   },
 });

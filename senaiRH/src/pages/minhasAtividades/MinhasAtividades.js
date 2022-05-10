@@ -199,7 +199,7 @@ const MinhasAtividades = () => {
     }
 
 
-    return (
+    return(
         <View style={styles.main}>
             <View>
 
@@ -257,13 +257,17 @@ const MinhasAtividades = () => {
 
 renderItem = ({ item }) => (
 
-    <View >
+    <View>
         <View style={styles.quadradoeTexto}>
             <View style={styles.quadrado}></View>
             <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
 
             <View style={styles.descricaoOlho}>
                 <Text style={styles.descricao}>{item.dataConclusao} </Text>
+
+                <TouchableOpacity style={styles.Modalbotao} onPress={() => setModalVisible(true)}>
+                     <AntDesign name="downcircleo" size={24} color="#636466" />
+                </TouchableOpacity>
             </View>
             <View style={styles.ModaleBotao}>
                 {/* <View style={styles.statusImagem}></View> */}
@@ -331,9 +335,7 @@ renderItem = ({ item }) => (
 
 
                 </Modal>
-                <TouchableOpacity style={styles.Modalbotao} onPress={() => setModalVisible(true)}>
-                    <Image source={require('../../../assets/img-gp1/setaModal.png')} />
-                </TouchableOpacity>
+               
 
             </View>
         </View>
