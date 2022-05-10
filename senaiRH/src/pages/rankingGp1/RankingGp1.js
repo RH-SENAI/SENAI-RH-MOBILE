@@ -16,6 +16,7 @@ import {
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
 import Leaderboard from 'react-native-leaderboard';
+import { EvilIcons, Entypo, Feather, AntDesign } from "@expo/vector-icons";
 
 
 import {
@@ -223,16 +224,59 @@ export default function Ranking() {
                 {/* /> */}
 
 
+                {/* <View style={styles.RankingGp1}>
+                    <Text style={styles.numero}> </Text>
+                    <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
+                        style={styles.fotoRankingGp1}
+                    />
+                    <Text style={styles.nomeRankingGp1}>{item.nome}</Text>
+                    v
+                        <Image source={require('../../../assets/img-gp1/trofeu.png')}
+                            style={styles.trofeuGp1}
+                        />
+                        <Text style={styles.Ntrofeu} >{item.trofeus}</Text>
+                    </View> */}
+
+{/* 
+                <View style={styles.RankingGp1}>
+                    <Text style={styles.numero}>Rank</Text>
+                    <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
+                        style={styles.fotoRankingGp1}
+                    />
+                 
+                    <View style={styles.trofeuEnumero}>
+                        <Image source={require('../../../assets/img-gp1/trofeu.png')}
+                            style={styles.trofeuGp1}
+                        />
+                      c
+                    </View>
+
+                </View> */}
+
+                {/* <View style={styles.RankingGp1} >
+                <Text style={styles.numero}>Rank</Text>
 
 
+                <View style={styles.trofeuEnumero}>
+                     <EvilIcons name="trophy" size={35} color="#E7C037" />
+                 <Text >20</Text>   
+                </View>
+              
+                        
 
-                <Leaderboard
-                    style={styles.FlatListGp1}
+                </View> */}
+                 <View style={styles.RankingGp1}>
+                      <Leaderboard
+                    //style={styles.FlatListGp1}
+                    style={{ backgroundColor: 'black' }}
                     data={ListarRanking}
                     sortBy='trofeus'
                     labelBy='nome'
                 // contentContainerStyle={styles.RankingGp1}
-                />
+                /> 
+                 </View>
+              
+                
 
 
 
@@ -245,7 +289,7 @@ export default function Ranking() {
     )
 }
 
-// renderItem = ({ item }) => (
+// renderItem = ({item}) => (
 
 //     <View style={styles.RankingGp1Centro}>
 //         <View style={styles.RankingGp1}>
@@ -318,7 +362,6 @@ const styles = StyleSheet.create({
     },
 
     mainHeader: {
-
         alignItems: 'center',
         paddingTop: 40,
 
@@ -340,16 +383,18 @@ const styles = StyleSheet.create({
     },
 
     RankingGp1: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        height: 60,
-        borderWidth: 1,
-        borderColor: '#B3B3B3',
-        backgroundColor: '#F2F2F2',
-        borderRadius: 10,
-        marginBottom: 24,
-        width: '85%',
+        fontFamily: 'Light',
+        // flexDirection: 'row',
+        // justifyContent: 'space-between',
+        // alignItems: 'center',
+        // height: 55,
+        // borderWidth: 1,
+        // borderColor: '#B3B3B3',
+        // backgroundColor: 'white',
+        // borderRadius: 10,
+        // borderBottomColor:'#F2F2F2',
+        // marginBottom: 24,
+        // width: '85%',
 
     },
 
@@ -369,7 +414,7 @@ const styles = StyleSheet.create({
     },
 
     trofeuGp1: {
-        marginRight: 10
+        marginRight: 30
     },
     nomeRankingGp1: {
         fontFamily: 'Light',
@@ -415,10 +460,12 @@ const styles = StyleSheet.create({
         width: '78%',
 
     },
-    FlatListGp1: {
-        width: '100%',
+    // FlatListGp1: {
+    //     width:'78%',
+    //     justifyContent: 'center',
+    //     alignItems: 'center',
 
-    },
+    // },
     RankingGp1Centro: {
         alignItems: 'center',
         justifyContent: 'center',
