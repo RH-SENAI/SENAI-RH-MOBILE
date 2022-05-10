@@ -6,8 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  FlatList,
-  BackHandler
+  FlatList
 } from "react-native";
 
 // Expo
@@ -71,20 +70,12 @@ export default function ListarDecisao() {
     BuscarDecisao();
   }, []);
 
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress',() =>     navigation.navigate('Teste'))
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress',() =>     navigation.navigate('Teste'));
-    };
-  }, []);
-
   const renderItem = ({ item }) => (
-    <View key={item.idDecisao} style={styles.containerRenderItem}>
+    <View style={styles.containerRenderItem}>
 
-      <View key={item.idDecisao} style={styles.imgPerfilCardWrapper}>
+      <View style={styles.imgPerfilCardWrapper}>
 
         <Image
-          key={item.idDecisao}
           source={{
             uri:
               "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
@@ -96,26 +87,25 @@ export default function ListarDecisao() {
 
       </View>
 
-      <View key={item.idDecisao} style={styles.cardClicavel}>
+      <View style={styles.cardClicavel}>
 
         <TouchableOpacity
-          key={item.idDecisao}
           onPress={() =>
             navigation.navigate("CadastrarFeedback", {
               idDecisao: item.idDecisao,
             })
           }
         >
-          <View key={item.idDecisao} style={styles.containerCard}>
+          <View style={styles.containerCard}>
 
-            <View key={item.idDecisao} style={styles.tituloCardWrapper}>
+            <View style={styles.tituloCardWrapper}>
 
-              <Text key={item.idDecisao} style={styles.tituloCard}>
+              <Text style={styles.tituloCard}>
                 {item.idUsuarioNavigation.nome} deu essa ideia: "
                 {item.descricaoDecisao}"
               </Text>
 
-              <Text key={item.idDecisao} style={styles.mensagem}>Clique e de seu feedback!</Text>
+              <Text style={styles.mensagem}>Clique e de seu feedback!</Text>
 
             </View>
 
@@ -171,8 +161,8 @@ const styles = StyleSheet.create({
     borderColor: '#B3B3B3',
     borderWidth: 3,
     borderRadius: 10,
-    alignItems : 'center',
-    justifyContent : 'center',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   img_perfil: {
@@ -246,7 +236,7 @@ const styles = StyleSheet.create({
   },
 
   h1Bold: {
-    fontSize: 32,
+    fontSize: 30,
     fontFamily: 'Montserrat_600SemiBold',
     textTransform: "uppercase",
     color: "#000000",

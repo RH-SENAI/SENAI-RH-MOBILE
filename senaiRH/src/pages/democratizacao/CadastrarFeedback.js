@@ -44,7 +44,7 @@ import jwtDecode from 'jwt-decode';
 export default function CadastroFeedback({ route }) {
 
   const navigation = useNavigation();
-  
+
   // Parâmetros
   const { idDecisao } = route.params;
 
@@ -70,7 +70,7 @@ export default function CadastroFeedback({ route }) {
   }
   const ChangeSizeDown = () => {
     Animated.timing(sizeChanging, {
-      toValue: 100,
+      toValue: 110,
       useNativeDriver: false,
       duration: 250,
     }).start()
@@ -80,17 +80,6 @@ export default function CadastroFeedback({ route }) {
   // Float Label Animação Nota
   const moveTextNota = useRef(new Animated.Value(0)).current;
 
-  // Listeners Animação Nota
-  const onFocusHandlerNota = () => {
-    if (notaDecisao !== "") {
-      moveTextTopNota();
-    }
-  };
-  const onBlurHandlerNota = () => {
-    if (notaDecisao === "") {
-      moveTextBottomNota();
-    }
-  };
   const onChangeNota = (text) => {
     setNotaDecisao(text)
   };
@@ -99,17 +88,30 @@ export default function CadastroFeedback({ route }) {
   const moveTextTopNota = () => {
     Animated.timing(moveTextNota, {
       toValue: 1,
-      duration: 150,
+      duration: 100,
       useNativeDriver: true,
     }).start();
   };
   const moveTextBottomNota = () => {
     Animated.timing(moveTextNota, {
       toValue: 0,
-      duration: 150,
+      duration: 100,
       useNativeDriver: true,
     }).start();
   };
+
+  // Listeners Animação Nota
+  const onFocusHandlerNota = () => {
+    if (notaDecisao === '') {
+      moveTextTopNota();
+    }
+  };
+  const onBlurHandlerNota = () => {
+    if (notaDecisao === '') {
+      moveTextBottomNota();
+    }
+  };
+
 
   // Styles Animação Nota
   const yValNota = moveTextNota.interpolate({
@@ -130,8 +132,25 @@ export default function CadastroFeedback({ route }) {
   const onChangeFeedback = (text) => {
     setComentarioFeedback(text);
   };
+
+  // Actions Animação Fb
+  const moveTextTopFb = () => {
+    Animated.timing(moveTextFb, {
+      toValue: 1,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  };
+  const moveTextBottomFb = () => {
+    Animated.timing(moveTextFb, {
+      toValue: 0,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  };
+
   const onFocusHandlerFb = () => {
-    if (comentarioFeedback !== "") {
+    if (comentarioFeedback === "") {
       moveTextTopFb();
     }
   };
@@ -140,23 +159,6 @@ export default function CadastroFeedback({ route }) {
       moveTextBottomFb();
     }
   };
-
-  // Actions Animação Fb
-  const moveTextTopFb = () => {
-    Animated.timing(moveTextFb, {
-      toValue: 1,
-      duration: 150,
-      useNativeDriver: true,
-    }).start();
-  };
-  const moveTextBottomFb = () => {
-    Animated.timing(moveTextFb, {
-      toValue: 0,
-      duration: 150,
-      useNativeDriver: true,
-    }).start();
-  };
-
   // Styles Animação Fb
   const yValFb = moveTextFb.interpolate({
     inputRange: [0, 1],
@@ -231,16 +233,6 @@ export default function CadastroFeedback({ route }) {
     }
   };
 
-  function handleBackButtonClick() {
-    navigation.navigate('Teste');
-  };
-
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
-    };
-  }, []);
 
   useEffect(() => { ChangeSizeUp(); }, []);
   useEffect(() => { BuscarDecisao(); }, []);
@@ -256,9 +248,9 @@ export default function CadastroFeedback({ route }) {
 
   // UseEffect Animação Nota
   useEffect(() => {
-    if (notaDecisao !== "") {
+    if (notaDecisao !== '') {
       moveTextTopNota();
-    } else if (notaDecisao === "") {
+    } else if (notaDecisao === '') {
       moveTextBottomNota();
     }
   }, [notaDecisao])
@@ -286,7 +278,7 @@ export default function CadastroFeedback({ route }) {
   } else {
     return (
       <View style={styles.container}>
-        
+
         <View style={styles.mainHeader}>
           <Image style={styles.logoSenai} source={require("../../../assets/imgMobile/logo_2S.png")} resizeMode="contain" />
         </View>
@@ -306,11 +298,11 @@ export default function CadastroFeedback({ route }) {
         </Animated.View>
 
         <KeyboardAvoidingView style={styles.sectionDemocratizacaoBox}>
-          
+
           <Animated.View style={[styles.animatedStyle1, animStyleFb]}>
             <Text style={styles.labelComentarioFeedback}>Insira seu feedback</Text>
           </Animated.View>
-          
+
           <TextInput
             keyboardType="default"
             onChangeText={campo => onChangeFeedback(campo)}
@@ -326,25 +318,25 @@ export default function CadastroFeedback({ route }) {
           <Animated.View style={[styles.animatedStyle2, animStyleNota]}>
             <Text style={styles.labelComentarioFeedback}>Insira uma nota para o feedback</Text>
           </Animated.View>
-          
+
           <TextInput
             keyboardType="decimal-pad"
             onChangeText={campo => onChangeNota(campo)}
             value={notaDecisao}
             style={styles.sectionDemocratizacaoInput}
             editable={true}
-            onFocus={() => onFocusHandlerNota}
-            onBlur={() => onBlurHandlerNota}
+            onFocus={() => onFocusHandlerNota()}
+            onBlur={() => onBlurHandlerNota()}
             onPressIn={() => ChangeSizeDown()}
             blurOnSubmit
           />
 
         </KeyboardAvoidingView>
-        
+
         <TouchableOpacity style={styles.btnCadastro} onPress={() => CadastarFeedback()}>
           <Text style={styles.btnCadastroText}>Enviar Feedback</Text>
         </TouchableOpacity>
-      
+
       </View>
     );
   }
@@ -382,13 +374,14 @@ const styles = StyleSheet.create({
   },
 
   tituloDemocratizacao: {
-    fontSize: 35,
+    fontSize: 30,
     color: '#2A2E32',
     fontFamily: 'Montserrat_600SemiBold',
     marginTop: 32,
     marginBottom: 32,
     textTransform: 'uppercase',
-    width: '86%'
+    width: '86%',
+    textAlign:"center"
   },
 
   sectionDemocratizacao:
@@ -405,7 +398,7 @@ const styles = StyleSheet.create({
 
   sectionDemocratizacaoTxt: {
     fontFamily: 'Quicksand_600SemiBold',
-    fontSize: 15,
+    fontSize: 20,
     color: '#000000',
     paddingTop: 16,
     paddingBottom: 8,
@@ -418,7 +411,8 @@ const styles = StyleSheet.create({
     color: '#000000',
     fontSize: 12,
     paddingLeft: 4,
-    paddingRight: 12
+    paddingRight: 12,
+    marginBottom: 10
   },
 
   sectionDemocratizacaoBox: {
@@ -487,18 +481,18 @@ const styles = StyleSheet.create({
 
   labelComentarioFeedback: {
     color: '#636466',
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: 'Quicksand_300Light',
   },
 
   animatedStyle1: {
-    top: 11,
+    top: 8,
     left: 20,
     position: 'absolute',
     zIndex: 1000,
     backgroundColor: '#F2F2F2',
-    width: 95,
-    alignItems: 'center'
+    width: 120,
+    alignItems: 'center',
   },
 
   animatedStyle2: {
@@ -508,6 +502,6 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     backgroundColor: '#F2F2F2',
     alignItems: 'center',
-    width: 160,
+    width: 190,
   }
 })

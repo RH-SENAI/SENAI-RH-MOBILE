@@ -11,7 +11,8 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
-import apiGp1 from "../../services/apiGp1"
+import apiGp1 from "../../services/api";
+
 
 
 
@@ -77,7 +78,7 @@ export default class Login extends Component {
       super(props);
       this.state = {
           cpf: '0009886654',
-          senha: 'v123',
+          senha: 'AGORAVAI',
           fontsLoaded: false,
           value: '',
           //erroMensagem: '',

@@ -1,24 +1,19 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
+import React from "react";
+import { useNavigation } from "@react-navigation/native";
+
 import {
   View,
-  StyleSheet,
-  Text,
-  Image,
-  Modal,
-  TouchableOpacity,
+  StyleSheet
 } from "react-native";
+
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Entypo, Feather, AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { Entypo, Feather } from "@expo/vector-icons";
 import NovoFeedback from "../novoFeedback/NovoFeedback.js";
-import CadastrarFeedback from "../democratizacao/CadastrarFeedback.js";
-import ListarFeedbacks from "../democratizacao/ListarFeedbacks.js"
-import ListarDecisao from "../democratizacao/ListarDecisao.js"
 
 import Dashboard from "../dashboard/Dashboard.js";
 import Perfil from "../perfil/Perfil.js";
 import Ranking from "../ranking/Ranking.js";
-import Redirecionar from "../redirecionar/Redirecionar.js";
+import ModalDemocratizacao from "../modalDemocratizacao/ModalAcompanhar.js";
 
 const Tab = createBottomTabNavigator();
 
@@ -34,53 +29,8 @@ function ButtonNew({ size, color }) {
 
 export default function MainAcompanhar() {
 
+  
   const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = useState(false);
-
-  function Teste() {
-    return (
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          //Alert.alert("Modal has been closed.");
-          navigation.navigate('Dashboard');
-          setModalVisible(false);
-        }}
-      >
-
-        <View style={styles.modalView}>
-          <AntDesign
-            style={styles.iconFechar}
-            name="close"
-            size={30}
-            color="black"
-            onPress={() => {
-              (setModalVisible(false));
-            }}
-          />
-          <View style={styles.containerLinks}>
-            <Text style={styles.titulo}>ÁREA DE DEMOCRATIZAÇÃO</Text>
-            <Text style={styles.titulo}>O que você gostaria de fazer?</Text>
-            <TouchableOpacity style={styles.button} onPress={() => {setModalVisible(false),navigation.navigate('ListarDecisao')}}>
-              <Text style={styles.texto}>Visualisar decisões</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => {setModalVisible(false),navigation.navigate('ListarFeedbacks')}}>
-              <Text style={styles.texto}>Visualisar feedbacks</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => {setModalVisible(false),navigation.navigate('CadastrarFeedback')}}>
-              <Text style={styles.texto}>Cadastrar um novo feedback</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-      </Modal>
-
-    );
-  };
-
 
   return (
     <Tab.Navigator
@@ -89,12 +39,14 @@ export default function MainAcompanhar() {
         tabBarInactiveTintColor: "gray",
         tabBarShowLabel: true,
         headerShown: false,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: "#f1f1f1",
           borderTopColor: "gray",
           paddingBottom: 5,
           paddingTop: 5,
         },
+        headerLeft: () => null
       }}
       initialRouteName="Dashboard"
     >
@@ -110,24 +62,25 @@ export default function MainAcompanhar() {
       />
       <Tab.Screen
         name="Democratização"
-        component={Teste}
+        component={ModalDemocratizacao}
         options={{ tabBarIcon: ({ size, color }) => (<Entypo name="chat" size={size} color={color} />), headerShown: false }}
-        listeners={() => ({
-          tabPress: () => {
-            setModalVisible(true)
-          }
-        })}
       />
 
       <Tab.Screen
         name="NovoFeedback"
         component={NovoFeedback}
         options={{
-          tabBarIcon: ({ size, color }) => (
+          tabBarIcon: ({ color }) => (
             <ButtonNew size={40} color={color} />
           ),
           tabBarLabel: "",
           headerShown: false,
+        }}
+        listeners={{
+          tabPress: e => {
+            // Prevent default action
+            navigation.goBack();
+          }
         }}
       />
       <Tab.Screen
@@ -170,7 +123,6 @@ const styles = StyleSheet.create({
   modalView: {
     flex: 1,
     backgroundColor: "white",
-    //borderRadius: 20,
     alignItems: "center",
     justifyContent: 'center',
     paddingHorizontal: '5%',
@@ -203,7 +155,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   button: {
-    //backgroundColor: '#C20004',
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
