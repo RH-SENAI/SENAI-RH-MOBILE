@@ -382,13 +382,14 @@ const styles = StyleSheet.create({
   },
 
   tituloDemocratizacao: {
-    fontSize: 35,
+    fontSize: 30,
     color: '#2A2E32',
     fontFamily: 'Montserrat_600SemiBold',
     marginTop: 32,
     marginBottom: 32,
     textTransform: 'uppercase',
-    width: '86%'
+    width: '86%',
+    textAlign:"center"
   },
 
   sectionDemocratizacao:
@@ -405,7 +406,7 @@ const styles = StyleSheet.create({
 
   sectionDemocratizacaoTxt: {
     fontFamily: 'Quicksand_600SemiBold',
-    fontSize: 15,
+    fontSize: 20,
     color: '#000000',
     paddingTop: 16,
     paddingBottom: 8,
@@ -487,7 +488,7 @@ const styles = StyleSheet.create({
 
   labelComentarioFeedback: {
     color: '#636466',
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: 'Quicksand_300Light',
   },
 
@@ -498,7 +499,7 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     backgroundColor: '#F2F2F2',
     width: 95,
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   animatedStyle2: {

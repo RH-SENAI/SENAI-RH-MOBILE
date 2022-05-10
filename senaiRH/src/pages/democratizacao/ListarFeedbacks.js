@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     width: 230,
     height: 130,
-    marginLeft:40
+    marginRight:40
   },
 
   containerCard: {
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   },
 
   h1nonBold: {
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: "500",
     textTransform: "uppercase",
     color: "#000000",
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   },
 
   h1Bold: {
-    fontSize: 32,
+    fontSize: 30,
     fontFamily: 'Montserrat_600SemiBold',
     textTransform: "uppercase",
     color: "#000000",

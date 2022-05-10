@@ -11,7 +11,7 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
-import apiGp1 from "../../services/apiGp1"
+import apiGp1 from "../../services/api"
 
 
 
