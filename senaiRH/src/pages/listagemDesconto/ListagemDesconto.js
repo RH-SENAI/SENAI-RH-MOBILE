@@ -125,7 +125,7 @@ export default class ListagemDesconto extends Component {
 
                     // ----> Localização 
 
-                    var stringProblematica = `json?origins=${this.state.Userlongitude}, ${this.state.Userlatitude}&destinations=${localDesconto}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
+                    var stringProblematica = `/json?origins=${this.state.Userlongitude}, ${this.state.Userlatitude}&destinations=${localDesconto}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
                     console.warn(stringProblematica)
 
                     const respostaLocal = await apiMaps(stringProblematica);

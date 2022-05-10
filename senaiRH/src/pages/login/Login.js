@@ -10,17 +10,8 @@ import {
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Font from 'expo-font';
-import AppLoading from 'expo-app-loading';
 import jwt_decode from "jwt-decode";
-import api from '../../services/apiGp1'
-
-let customFonts = {
-  'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
-  'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
-  'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf')
-}
-
+import apiGp1 from "../../services/apiGp1";
 
 
 class FloatingLabelInput extends Component {
@@ -59,7 +50,7 @@ class FloatingLabelInput extends Component {
         inputRange: [0, 1],
         outputRange: ['#aaa', '#000'],
       }),
-      fontFamily: 'Quicksand-Regular',
+      // fontFamily: 'Quicksand-Regular',
       paddingLeft:40,
       paddingTop:3,
     };
@@ -110,17 +101,15 @@ export default class Login extends Component {
 
       try {
 
-          const resposta = await api.post('/Login', {
+          const resposta = await apiGp1.post('/Login', {
               cpf : this.state.cpf,
               senha : this.state.senha,
           });
 
-          console.warn(resposta);
           const token = resposta.data.token;
 
-          console.warn(token);
-
           await AsyncStorage.setItem('userToken', token);
+          await AsyncStorage.setItem('idUsuario', jwt_decode(token).jti)
           console.warn(resposta.data);
 
           if (resposta.status == 200) {
@@ -149,15 +138,15 @@ export default class Login extends Component {
 
 
   render() {
-    if (!this.state.fontsLoaded) {
-      return <AppLoading />;
-    }
+    // if (!this.state.fontsLoaded) {
+    //   return <AppLoading />;
+    // }
 
     return (
       <View style={styles.body}>
         
             <View style={styles.mainHeader}>
-                    <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
+                    <Image source={require('../../../assets/imgMobile/logo_2S.png')}
                         style={styles.imgLogo}
                     />
             </View>
@@ -212,7 +201,7 @@ export default class Login extends Component {
 
                 <Text style={styles.erroText}> 
                   {/*({this.state= erroMensagem}) */}
-                  Email ou Senha Invalidos !
+                  Email ou senha inválidos!
                 </Text>
 
                 <TouchableOpacity>
@@ -236,8 +225,7 @@ export default class Login extends Component {
 
           </View>
               <View style={styles.imgLoginView} >
-                <Image style={styles.imgLogin} source={require('../../../assets/img-gp1/imagemLogin.png')}/>
-              </View>
+            </View>
 
       </View>
 
@@ -269,7 +257,7 @@ const styles = StyleSheet.create({
   },
 
   tituloPagina:{
-    fontFamily: 'Montserrat-Bold',
+    // fontFamily: 'Montserrat-Bold',
     fontSize: 30,
     color:'#2A2E32',
     width: 175,
@@ -300,6 +288,7 @@ const styles = StyleSheet.create({
     //paddingTop:40,
     //  paddingBottom:24
     paddingLeft:15,
+    marginBottom:8
   },
   
   viewLoginCPF:{
@@ -315,14 +304,14 @@ const styles = StyleSheet.create({
   },
   
   erroText:{
-    fontFamily: 'Quicksand-Regular',
+    // fontFamily: 'Quicksand-Regular',
     fontSize: 12,
     color: '#C20004',
     paddingRight:100,
   },
 
   textEsque:{
-    fontFamily: 'Quicksand-Regular',
+    // fontFamily: 'Quicksand-Regular',
     fontSize: 12,
     color: '#C20004',
   },
@@ -341,7 +330,7 @@ const styles = StyleSheet.create({
   },
 
   btnText: {
-    fontFamily: 'Montserrat-Regular',
+    // fontFamily: 'Montserrat-Regular',
     fontSize: 12,
     color: "#F2F2F2",
     alignItems: 'center',
@@ -370,6 +359,4 @@ const styles = StyleSheet.create({
   //   flexDirection:'column',
   //   justifyContent:'space-between'
   // }
-  
-
 });

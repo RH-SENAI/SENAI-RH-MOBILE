@@ -150,10 +150,17 @@ export default class FavoritosDesconto extends Component {
                     <Text style={styles.textDados}>3024</Text>
                 </View>
 
-                <Pressable onPress={() => this.props.navigation.navigate('Favoritos')}>
-                    <Text style={styles.textDescontos}> Cursos </Text>
-                    <View style={styles.line2}></View>
-                </Pressable>
+                <View style={styles.boxSelect}>
+
+                    <Pressable onPress={() => this.props.navigation.navigate('Favoritos')}>
+                        <Text style={styles.textDescontos}> Cursos </Text>
+                    </Pressable>
+                    <View style={styles.boxTituloCursoSelect}>
+                        <Text> Descontos </Text>
+                        <View style={styles.line}></View>
+                    </View>
+
+                </View>
 
                 <FlatList
                     style={styles.flatlist}
@@ -187,7 +194,7 @@ export default class FavoritosDesconto extends Component {
                                 defaultRating={item.idDescontoNavigation.mediaAvaliacaoDesconto}
                                 isDisabled={true}
                                 size={20} />
-                        </View>                   
+                        </View>
 
                         <View style={styles.boxPrecoFavorito}>
                             <View style={styles.boxPreco}>
@@ -389,6 +396,21 @@ const styles = StyleSheet.create({
     },
     textDados: {
         marginLeft: 8
+    },
+    boxSelect: {
+        width: 200,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    boxTituloCursoSelect: {
+        alignItems: 'center',
+    },
+    line: {
+        width: 80,
+        height: 1,
+        backgroundColor: 'black',
+        marginBottom: 24
     },
     boxPrecoFavorito: {
         height: 40,
