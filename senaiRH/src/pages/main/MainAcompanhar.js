@@ -44,11 +44,11 @@ export default function MainAcompanhar() {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        // onRequestClose={() => {
-        //   //Alert.alert("Modal has been closed.");
-        //   setModalVisible(false);
-        //   navigation.navigate('Dashboard');
-        // }}
+        onRequestClose={() => {
+          //Alert.alert("Modal has been closed.");
+          navigation.navigate('Dashboard');
+          setModalVisible(false);
+        }}
       >
 
         <View style={styles.modalView}>

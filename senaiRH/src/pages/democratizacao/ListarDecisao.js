@@ -39,9 +39,6 @@ export default function ListarDecisao() {
   //States
   const [listaDecisao, setListaDecisao] = useState([]);
 
-
-
-
   // Fontes utilizada
   let [fontsLoaded] = useFonts({
 
@@ -69,9 +66,6 @@ export default function ListarDecisao() {
     }
   };
 
-  function handleBackButtonClick() {
-
-  };
 
   useEffect(() => {
     BuscarDecisao();

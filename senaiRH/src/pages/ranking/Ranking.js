@@ -6,7 +6,8 @@ import {
     Text,
     View,
     ScrollView,
-    SafeAreaView
+    SafeAreaView,
+    TouchableOpacity
 } from 'react-native';
 
 // Pacotes
