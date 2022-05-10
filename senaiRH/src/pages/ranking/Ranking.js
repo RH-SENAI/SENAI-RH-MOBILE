@@ -38,6 +38,7 @@ import jwtDecode from "jwt-decode";
 import { Touchable } from "react-native-web";
 
 export default function Ranking() {
+  const [avaliacaoUsuario, setAvaliacaoFuncionario] = useState([]);
   const [usuario, setUsuario] = useState([]);
   const buscarDados = async () => {
     const token = await AsyncStorage.getItem;
@@ -54,27 +55,45 @@ export default function Ranking() {
     Quicksand_400Regular,
     Quicksand_600SemiBold,
   });
-  async function BuscarUsuario() {
-    try {
-      const token = await AsyncStorage.getItem("userToken");
 
-      const resposta = await api.get(
-        "Usuarios/Listar/" + jwtDecode(token).jti,
-        {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        }
-      );
+  const BuscarAvaliacao = async () => {
+    const token = await AsyncStorage.getItem("userToken");
 
-      if (resposta.status === 200) {
-        setUsuario([resposta.data]);
-      }
-    } catch (error) {
-      console.warn(error);
+    if (token != null) {
+        const resposta = await api.get("/AvaliacaoUsuarios/Listar", {
+            headers: {
+                Authorization: "Bearer " + token,
+            },
+        });
+
+        const dadosDaApi = await resposta.data;
+        setAvaliacaoFuncionario(dadosDaApi);
     }
+};
+
+useEffect(()=>{
+  BuscarAvaliacao();
+}, []);
+
+  async function BuscarUsuario() {
+      try {
+          const token = await AsyncStorage.getItem('userToken');
+
+          const resposta = await api.get('Usuarios/Listar', {
+              headers: {
+                  Authorization: 'Bearer ' + token,
+              },
+          });
+
+          if (resposta.status === 200) {
+              setUsuario(resposta.data);
+          }
+
+      } catch (error) {
+          console.warn(error)
+      }
   }
-  useEffect(() => BuscarUsuario(), []);
+  useEffect(() => BuscarUsuario(), [])
 
   return (
     <View style={styles.container}>
@@ -88,20 +107,16 @@ export default function Ranking() {
         <Text style={styles.h1nonBold}>de funcionários</Text>
       </View>
 
-      {/* <View style={styles.containerDados}>
-          <Text style={styles.dados}>Ranking</Text>
-          <Text style={styles.dados}>Foto</Text>
-          <Text style={styles.dados}>Funcionário</Text>
-          <Text style={styles.dados}>Satisfação</Text>
-          <Text style={styles.dados}>Nota</Text>
-        </View> */}
-
       <View style={styles.containerUsuario}>
         <TouchableOpacity style={styles.usuario}></TouchableOpacity>
       </View>
 
-      <Leaderboard data={usuario} sortBy="id" labelBy="nome" />
+      <Leaderboard 
+      data={usuario} 
+      sortBy="mediaAvaliacao"
+      labelBy="nome"/>
     </View>
+
   );
 }
 

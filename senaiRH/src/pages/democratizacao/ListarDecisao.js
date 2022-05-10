@@ -161,8 +161,8 @@ const styles = StyleSheet.create({
     borderColor: '#B3B3B3',
     borderWidth: 3,
     borderRadius: 10,
-    alignItems : 'center',
-    justifyContent : 'center',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   img_perfil: {
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   },
 
   h1Bold: {
-    fontSize: 32,
+    fontSize: 30,
     fontFamily: 'Montserrat_600SemiBold',
     textTransform: "uppercase",
     color: "#000000",
