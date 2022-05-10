@@ -12,6 +12,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
 import apiGp1 from "../../services/apiGp1"
+import api from "../../services/api.js"
 
 
 
@@ -102,7 +103,7 @@ export default class Login extends Component {
 
       try {
 
-          const resposta = await apiGp1.post('/Login', {
+          const resposta = await api.post('/Login', {
               cpf : this.state.cpf,
               senha : this.state.senha,
           });

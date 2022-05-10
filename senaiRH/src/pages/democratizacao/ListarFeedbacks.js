@@ -6,8 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  FlatList,
-  BackHandler
+  FlatList
 } from "react-native";
 
 // Pacotes
@@ -67,28 +66,17 @@ export default function ListaFeedback() {
     }
   };
 
-  function handleBackButtonClick() {
-    navigation.navigate('Teste');
-  };
 
   useEffect(() => {
     BuscarFeedbacks();
   }, []);
 
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
-    };
-  }, []);
-
   const renderItem = ({ item }) => (
-    <View key={item.idFeedback} style={styles.containerRenderItem}>
+    <View style={styles.containerRenderItem}>
 
-      <View key={item.idFeedback} style={styles.imgPerfilCardWrapper}>
+      <View style={styles.imgPerfilCardWrapper}>
 
         <Image
-          key={item.idFeedback}
           source={{
             uri:
               "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
@@ -100,26 +88,25 @@ export default function ListaFeedback() {
 
       </View>
 
-      <View key={item.idFeedback} style={styles.cardClicavel}>
+      <View style={styles.cardClicavel}>
 
         <TouchableOpacity
-          key={item.idFeedback}
           onPress={() =>
             navigation.navigate("ListarDecisao", {
               idDecisao: item.idDecisao,
             })
           }
         >
-          <View style={styles.containerCard} key={item.idFeedback}>
+          <View style={styles.containerCard}>
 
-            <View key={item.idFeedback} style={styles.tituloCardWrapper}>
+            <View style={styles.tituloCardWrapper}>
 
-              <Text key={item.idFeedback} style={styles.tituloCard}>
+              <Text style={styles.tituloCard}>
                 O que {item.idUsuarioNavigation.nome} disse sobre: "
                 {item.idDecisaoNavigation.descricaoDecisao}"
               </Text>
 
-              <Text style={styles.mensagem} key={item.idFeedback}>{item.comentarioFeedBack}</Text>
+              <Text style={styles.mensagem}>{item.comentarioFeedBack}</Text>
 
             </View>
 
@@ -152,7 +139,7 @@ export default function ListaFeedback() {
         <FlatList
           contentContainerStyle={styles.mainBodyContent}
           data={listaFeedback}
-          keyExtractor={(item) => item.idFeedback}
+          keyExtractor={(item) => item.idFeedBack}
           renderItem={renderItem}
         />
 

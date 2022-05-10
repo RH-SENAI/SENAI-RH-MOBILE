@@ -44,7 +44,7 @@ import jwtDecode from 'jwt-decode';
 export default function CadastroFeedback({ route }) {
 
   const navigation = useNavigation();
-  
+
   // Parâmetros
   const { idDecisao } = route.params;
 
@@ -80,17 +80,6 @@ export default function CadastroFeedback({ route }) {
   // Float Label Animação Nota
   const moveTextNota = useRef(new Animated.Value(0)).current;
 
-  // Listeners Animação Nota
-  const onFocusHandlerNota = () => {
-    if (notaDecisao !== "") {
-      moveTextTopNota();
-    }
-  };
-  const onBlurHandlerNota = () => {
-    if (notaDecisao === "") {
-      moveTextBottomNota();
-    }
-  };
   const onChangeNota = (text) => {
     setNotaDecisao(text)
   };
@@ -99,17 +88,30 @@ export default function CadastroFeedback({ route }) {
   const moveTextTopNota = () => {
     Animated.timing(moveTextNota, {
       toValue: 1,
-      duration: 150,
+      duration: 100,
       useNativeDriver: true,
     }).start();
   };
   const moveTextBottomNota = () => {
     Animated.timing(moveTextNota, {
       toValue: 0,
-      duration: 150,
+      duration: 100,
       useNativeDriver: true,
     }).start();
   };
+
+  // Listeners Animação Nota
+  const onFocusHandlerNota = () => {
+    if (notaDecisao === '') {
+      moveTextTopNota();
+    }
+  };
+  const onBlurHandlerNota = () => {
+    if (notaDecisao === '') {
+      moveTextBottomNota();
+    }
+  };
+
 
   // Styles Animação Nota
   const yValNota = moveTextNota.interpolate({
@@ -130,8 +132,25 @@ export default function CadastroFeedback({ route }) {
   const onChangeFeedback = (text) => {
     setComentarioFeedback(text);
   };
+
+  // Actions Animação Fb
+  const moveTextTopFb = () => {
+    Animated.timing(moveTextFb, {
+      toValue: 1,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  };
+  const moveTextBottomFb = () => {
+    Animated.timing(moveTextFb, {
+      toValue: 0,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  };
+
   const onFocusHandlerFb = () => {
-    if (comentarioFeedback !== "") {
+    if (comentarioFeedback === "") {
       moveTextTopFb();
     }
   };
@@ -140,23 +159,6 @@ export default function CadastroFeedback({ route }) {
       moveTextBottomFb();
     }
   };
-
-  // Actions Animação Fb
-  const moveTextTopFb = () => {
-    Animated.timing(moveTextFb, {
-      toValue: 1,
-      duration: 150,
-      useNativeDriver: true,
-    }).start();
-  };
-  const moveTextBottomFb = () => {
-    Animated.timing(moveTextFb, {
-      toValue: 0,
-      duration: 150,
-      useNativeDriver: true,
-    }).start();
-  };
-
   // Styles Animação Fb
   const yValFb = moveTextFb.interpolate({
     inputRange: [0, 1],
@@ -256,9 +258,9 @@ export default function CadastroFeedback({ route }) {
 
   // UseEffect Animação Nota
   useEffect(() => {
-    if (notaDecisao !== "") {
+    if (notaDecisao !== '') {
       moveTextTopNota();
-    } else if (notaDecisao === "") {
+    } else if (notaDecisao === '') {
       moveTextBottomNota();
     }
   }, [notaDecisao])
@@ -286,7 +288,7 @@ export default function CadastroFeedback({ route }) {
   } else {
     return (
       <View style={styles.container}>
-        
+
         <View style={styles.mainHeader}>
           <Image style={styles.logoSenai} source={require("../../../assets/imgMobile/logo_2S.png")} resizeMode="contain" />
         </View>
@@ -306,11 +308,11 @@ export default function CadastroFeedback({ route }) {
         </Animated.View>
 
         <KeyboardAvoidingView style={styles.sectionDemocratizacaoBox}>
-          
+
           <Animated.View style={[styles.animatedStyle1, animStyleFb]}>
             <Text style={styles.labelComentarioFeedback}>Insira seu feedback</Text>
           </Animated.View>
-          
+
           <TextInput
             keyboardType="default"
             onChangeText={campo => onChangeFeedback(campo)}
@@ -326,25 +328,25 @@ export default function CadastroFeedback({ route }) {
           <Animated.View style={[styles.animatedStyle2, animStyleNota]}>
             <Text style={styles.labelComentarioFeedback}>Insira uma nota para o feedback</Text>
           </Animated.View>
-          
+
           <TextInput
             keyboardType="decimal-pad"
             onChangeText={campo => onChangeNota(campo)}
             value={notaDecisao}
             style={styles.sectionDemocratizacaoInput}
             editable={true}
-            onFocus={() => onFocusHandlerNota}
-            onBlur={() => onBlurHandlerNota}
+            onFocus={() => onFocusHandlerNota()}
+            onBlur={() => onBlurHandlerNota()}
             onPressIn={() => ChangeSizeDown()}
             blurOnSubmit
           />
 
         </KeyboardAvoidingView>
-        
+
         <TouchableOpacity style={styles.btnCadastro} onPress={() => CadastarFeedback()}>
           <Text style={styles.btnCadastroText}>Enviar Feedback</Text>
         </TouchableOpacity>
-      
+
       </View>
     );
   }

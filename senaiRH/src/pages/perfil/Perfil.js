@@ -62,7 +62,6 @@ export default function Perfil() {
 
       if (resposta.status === 200) {
         setUsuario([resposta.data]);
-        console.warn(resposta.data)
       }
     } catch (error) {
       console.warn(error);
