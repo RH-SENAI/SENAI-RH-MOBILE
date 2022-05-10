@@ -55,13 +55,14 @@ import {
 
 
 const MinhasAtividades = () => {
-
-
+    
     const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState(false)
     const [mensagem, setmensagem] = useState('');
     const [listaAtividades, setListaAtividades] = useState([]);
     const [MinhaAtividade, setMinhaAtividade] = useState({});
+    var modalVisibleVar = modalVisible;
+    var mensagemVar = mensagem;
 
     //const [concluido, setConcluido] = useState([]);
 
@@ -73,16 +74,26 @@ const MinhasAtividades = () => {
         const user = JSON.parse(xambers)
 
         console.warn('wertyui')
-
-        console.warn(user.jti)
+        
+        console.warn(user)
 
 
         if (token != null) {
-            const resposta = await api.get("/Atividades/MinhasAtividade/" + id, {
+            const resposta = await api.get("/Atividades/MinhasAtividade/" + user.jti, {
                 headers: {
-                    Authorization: "Bearer " + token,
+                    "Authorization":"Bearer " + token,
                 },
-            });
+                
+            })
+            .then(response => {
+                if(response.status === 200){
+                    console.warn(response)
+                    setListaAtividades(response.data)
+                }
+            })
+            .catch(response => {
+                console.warn(response)
+            })
 
             const dadosDaApi = await resposta.data;
             setListaAtividades(dadosDaApi);
@@ -111,7 +122,7 @@ const MinhasAtividades = () => {
         }
     };
 
-    setModalVisible = async (visible, id) => {
+    const setModalVisibleFunc = async (visible, id) => {
         if (visible == true) {
             //console.warn(id)
             await this.ProcurarMinhasAtividades(id)
@@ -215,6 +226,7 @@ const MinhasAtividades = () => {
 
                 </View>
 
+
                 <View>
 
                     <Text style={styles.tituloEfects}>{'Minhas atividades'.toUpperCase()} </Text>
@@ -244,8 +256,93 @@ const MinhasAtividades = () => {
             <FlatList
                 style={styles.FlatList}
                 data={listaAtividades}
-                keyExtractor={item => item.idAtividade}
-                renderItem={this.renderItem}
+                keyExtractor={item => item.idMinhasAtividades}
+                renderItem={(item) =>
+                
+                    <View >
+        <View style={styles.quadradoeTexto}>
+            <View style={styles.quadrado}></View>
+            <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
+
+            <View style={styles.descricaoOlho}>
+                <Text style={styles.descricao}>{item.dataConclusao} </Text>
+            </View>
+            <View style={styles.ModaleBotao}>
+                {/* <View style={styles.statusImagem}></View> */}
+
+                <View style={styles.statusImagem}>
+
+                    <Image
+                        source={
+                            item.idSituacaoAtividade == 1 ? require('../../../assets/img-gp1/validado.png') : item.idSituacaoAtividade == 2 ? require('../../../assets/img-gp1/pendente.png') : item.idSituacaoAtividade == 3 ? require('../../../assets/img-gp1/avaliando.png') : null
+                        } />
+                    {/* <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? setmensagem('Validado') : item.idSituacaoAtividade == 2 ? setmensagem('Pendente') : item.idSituacaoAtividade == 3 ? setmensagem('Avaliando') : null} {mensagem} </Text> */}
+
+                </View>
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={false}
+                    key={item.idAtividade}
+                    onRequestClose={() => {
+                        console.warn(item)
+                        //setModalVisible(!modalVisible)
+                        //Alert.alert("Modal has been closed.");
+                        //setModalVisible(!modalVisible);
+                    }}
+                >
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <View style={styles.quadradoModal}></View>
+                            <View style={styles.conteudoBoxModal}>
+                                <Text style={styles.nomeBoxModal}> cachorro </Text>
+                                <Text style={styles.descricaoModal}> cachorro </Text>
+                                <Text style={styles.itemPostadoModal}> cachorro </Text>
+                                <Text style={styles.entregaModal}> cachorro </Text>
+                                {/* <Text style={styles.criadorModal}> {item.idGestorCadastroNavigation.nome} </Text> */}
+
+                                <TouchableOpacity style={styles.anexo}>
+                                    <Text style={styles.mais}>   + </Text>
+                                    <Text style={styles.txtanexo}>    Adicionar Anexo</Text>
+                                </TouchableOpacity>
+
+                            </View>
+
+                            <View style={styles.botoesModal} >
+                                <TouchableOpacity
+                                   // onPress={() => setModalVisible(!modalVisibleVar)}
+                                // onPress={() => Concluir()}
+                                >
+                                    <View style={styles.associarModal}>
+                                        <Text style={styles.texto}> Concluida </Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+
+                                    //onPress={() => setModalVisible(!modalVisible)}
+                                >
+                                    <View style={styles.fecharModal}>
+                                        <Text style={styles.textoFechar}>Fechar X</Text>
+                                    </View>
+
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+
+
+                </Modal>
+                <TouchableOpacity style={styles.Modalbotao} onPress={() => setModalVisible(true)}>
+                    <Image source={require('../../../assets/img-gp1/setaModal.png')} />
+                </TouchableOpacity>
+
+            </View>
+        </View>
+    </View>
+
+                
+                }
             />
 
         </View >
@@ -256,6 +353,7 @@ const MinhasAtividades = () => {
 
 
 renderItem = ({ item }) => (
+    
 
     <View>
         <View style={styles.quadradoeTexto}>
@@ -278,18 +376,18 @@ renderItem = ({ item }) => (
                         source={
                             item.idSituacaoAtividade == 1 ? require('../../../assets/img-gp1/validado.png') : item.idSituacaoAtividade == 2 ? require('../../../assets/img-gp1/pendente.png') : item.idSituacaoAtividade == 3 ? require('../../../assets/img-gp1/avaliando.png') : null
                         } />
-                    <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? setmensagem('Validado') : item.idSituacaoAtividade == 2 ? setmensagem('Pendente') : item.idSituacaoAtividade == 3 ? setmensagem('Avaliando') : null} {mensagem} </Text>
+                    {/* <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? setmensagem('Validado') : item.idSituacaoAtividade == 2 ? setmensagem('Pendente') : item.idSituacaoAtividade == 3 ? setmensagem('Avaliando') : null} {mensagem} </Text> */}
 
                 </View>
 
                 <Modal
                     animationType="slide"
                     transparent={true}
-                    visible={modalVisible}
-                    key={item.idAtividade == this.MinhaAtividade.idAtividade}
+                    visible={false}
+                    key={item.idAtividade}
                     onRequestClose={() => {
                         console.warn(item)
-                        setModalVisible(!modalVisible)
+                        //setModalVisible(!modalVisible)
                         //Alert.alert("Modal has been closed.");
                         //setModalVisible(!modalVisible);
                     }}
@@ -298,10 +396,10 @@ renderItem = ({ item }) => (
                         <View style={styles.modalView}>
                             <View style={styles.quadradoModal}></View>
                             <View style={styles.conteudoBoxModal}>
-                                <Text style={styles.nomeBoxModal}> {this.MinhaAtividade.nomeAtividade} </Text>
-                                <Text style={styles.descricaoModal}> {this.MinhaAtividade.descricaoAtividade} </Text>
-                                <Text style={styles.itemPostadoModal}> {this.MinhaAtividade.dataInicio} </Text>
-                                <Text style={styles.entregaModal}> {this.MinhaAtividade.dataConclusao} </Text>
+                                <Text style={styles.nomeBoxModal}> cachorro </Text>
+                                <Text style={styles.descricaoModal}> cachorro </Text>
+                                <Text style={styles.itemPostadoModal}> cachorro </Text>
+                                <Text style={styles.entregaModal}> cachorro </Text>
                                 {/* <Text style={styles.criadorModal}> {item.idGestorCadastroNavigation.nome} </Text> */}
 
                                 <TouchableOpacity style={styles.anexo}>
@@ -313,7 +411,7 @@ renderItem = ({ item }) => (
 
                             <View style={styles.botoesModal} >
                                 <TouchableOpacity
-                                    onPress={() => setModalVisible(!modalVisible)}
+                                   // onPress={() => setModalVisible(!modalVisibleVar)}
                                 // onPress={() => Concluir()}
                                 >
                                     <View style={styles.associarModal}>
@@ -322,7 +420,7 @@ renderItem = ({ item }) => (
                                 </TouchableOpacity>
                                 <TouchableOpacity
 
-                                    onPress={() => setModalVisible(!modalVisible)}
+                                    //onPress={() => setModalVisible(!modalVisible)}
                                 >
                                     <View style={styles.fecharModal}>
                                         <Text style={styles.textoFechar}>Fechar X</Text>

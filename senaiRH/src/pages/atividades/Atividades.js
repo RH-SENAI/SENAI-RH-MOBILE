@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import {
     StyleSheet,
@@ -150,6 +149,7 @@ export default class AtividadesExtras extends Component {
 
                         <View style={styles.escritaEscolha}>
                             <View style={styles.itemEquipe}>
+
                                 <Pressable >
                                     <Text style={styles.font}> Obrigatórios </Text>
 
@@ -163,6 +163,33 @@ export default class AtividadesExtras extends Component {
                                 <View style={styles.line2}></View>
 
                                 </Pressable>
+
+                                <Pressable >
+                                    <Text style={styles.font}> Obrigatórios </Text>
+                                    
+                                </Pressable><View style={styles.line1}></View>
+
+                                <Pressable onPress={() => this.props.navigation.navigate('Atividades')}>
+                                    <Text style={styles.font}> Obrigatórios </Text>
+                                    <View style={styles.line1}></View>
+                                </Pressable>
+
+
+                            </View>
+
+                            <View style={styles.itemIndividual}>
+
+                                <Pressable onPress={() => this.props.navigation.navigate('AtividadesExtras')}>
+                                    <Text style={styles.font}> Extras </Text>
+                                     <View style={styles.line2}></View>
+                                </Pressable>
+                               
+
+                                <Pressable>
+                                    <Text style={styles.font}> Extras </Text>
+                                </Pressable>
+                                <View style={styles.line2}></View>
+
                             </View>
 
                         </View>
@@ -219,7 +246,10 @@ export default class AtividadesExtras extends Component {
                     </Pressable>
 
                     <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
+
                         <AntDesign name="downcircleo" size={24} color="#636466" />
+
+                        <Image source={require('../../../assets/img-gp1/setaModal.png')} />
                     </Pressable>
                 </View>
 
