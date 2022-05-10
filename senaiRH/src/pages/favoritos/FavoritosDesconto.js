@@ -19,12 +19,10 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 import ReadMore from 'react-native-read-more-text';
 import api from '../../services/apiGrupo2.js';
 import apiUser from '../../services/apiGp1.js';
-import apiMaps from '../../services/apiMaps.js';
-import * as Location from 'expo-location';
 const delay = require('delay');
 // import { Location, Permissions } from 'expo';
 
-export default class ListagemCurso extends Component {
+export default class FavoritosDesconto extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,13 +34,13 @@ export default class ListagemCurso extends Component {
             inscrito: '',
             showAlert: false,
             contadorCurso: 0,
-            listaCurso: [],
-            cursoBuscado: [],
+            listaDesconto: [],
+            descontoBuscado: [],
             localizacaoCurso: [],
         };
     }
 
-    ListarCursoFavoritos = async () => {
+    ListarDescontosFavoritos = async () => {
         try {
             // const token = await AsyncStorage.getItem('userToken');
             // console.warn(token)
@@ -55,43 +53,19 @@ export default class ListagemCurso extends Component {
             //     },
             // );
 
-            const resposta = await api('/FavoritosCursos');
+            // const jtiUser = base64.decode(token.split('.')[1])
+            // const user = JSON.parse(jtiUser)
+            // console.warn(user)
+
+            const resposta = await api(`/FavoritosDescontos/Favorito/1`);
 
             if (resposta.status == 200) {
-                const dadosCurso = resposta.data;
+                const dadosDesconto = resposta.data;
 
-                console.warn(dadosCurso);
+                console.warn(dadosDesconto);
 
-                // var tamanhoJson = Object.keys(dadosCurso).length;
-
-                // const respostaUser = await apiUser('/Usuarios/Funcionarios');
-                // if (respostaUser.status == 200) {
-                //     const dadosFavoritos = respostaUser.data;
-
-                //     var tamanhoJsonFavoritos = Object.keys(dadosFavoritos).length;
-
-                //     let i = 0;
-                //     let u = 0;
-
-                //     do {
-                //         let stringCurso = JSON.stringify(dadosCurso);
-                //         let objCurso = JSON.parse(stringCurso);
-                //         var cursoId = objCurso[i]['idCurso']
-
-                //         do {
-                //             let stringFavorito = JSON.stringify(dadosFavoritos);
-                //             let objFavorito = JSON.parse(stringFavorito);
-                //             var favoritoId = objFavorito[u]['idCurso']
-                //             u++
-                //         } while (u < tamanhoJsonFavoritos);
-
-                //         if (cursoId == favoritoId) {
-                            
-                //         }
-                //         i++
-                //     } while (i < tamanhoJson);
-                // }
-                this.setState({ listaCurso: dadosCurso })
+                this.setState({ listaDesconto: dadosDesconto })
+                console.warn(this.state.listaDesconto)
                 console.warn('Favoritos encontrados');
             }
         }
@@ -102,7 +76,7 @@ export default class ListagemCurso extends Component {
 
     setModalVisivel = (visible, id) => {
         if (visible == true) {
-            this.ProcurarCurso(id)
+            this.ProcurarDesconto(id)
         }
         else if (visible == false) {
             this.setState({ cursoBuscado: [] })
@@ -112,7 +86,7 @@ export default class ListagemCurso extends Component {
     }
 
     componentDidMount = async () => {
-        this.ListarCursoFavoritos();
+        this.ListarDescontosFavoritos();
     }
 
     showAlert = () => {
@@ -126,15 +100,6 @@ export default class ListagemCurso extends Component {
             showAlert: false
         });
     };
-
-    modalidade = (item) => {
-        if (item.modalidadeCurso == true) {
-            return 'Presencial'
-        }
-        else {
-            return 'EAD'
-        }
-    }
 
     _renderTruncatedFooter = (handlePress) => {
         return (
@@ -156,13 +121,13 @@ export default class ListagemCurso extends Component {
         // ...
     }
 
-    ProcurarCurso = async (id) => {
+    ProcurarDesconto = async (id) => {
         try {
-            const resposta = await api('/Cursos/' + id);
+            const resposta = await api('/Descontos/' + id);
             // console.warn(resposta)
             if (resposta.status == 200) {
-                const dadosCurso = await resposta.data;
-                this.setState({ cursoBuscado: dadosCurso })
+                const dadosDesconto = await resposta.data;
+                this.setState({ descontoBuscado: dadosDesconto })
             }
         }
         catch (erro) {
@@ -185,10 +150,15 @@ export default class ListagemCurso extends Component {
                     <Text style={styles.textDados}>3024</Text>
                 </View>
 
+                <Pressable onPress={() => this.props.navigation.navigate('Favoritos')}>
+                    <Text style={styles.textDescontos}> Cursos </Text>
+                    <View style={styles.line2}></View>
+                </Pressable>
+
                 <FlatList
                     style={styles.flatlist}
-                    data={this.state.listaCurso}
-                    keyExtractor={item => item.idCurso}
+                    data={this.state.listaDesconto}
+                    keyExtractor={item => item.idDescontoFavorito}
                     renderItem={this.renderItem}
                 />
             </View>
@@ -198,14 +168,14 @@ export default class ListagemCurso extends Component {
     renderItem = ({ item }) => (
         <View>
             <View style={styles.containerCurso}>
-                <Pressable onPress={() => this.setModalVisivel(true, item.idCurso)}>
+                <Pressable onPress={() => this.setModalVisivel(true, item.idDescontoNavigation.idDesconto)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
-                            <Image style={styles.imgCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
+                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idDescontoNavigation.caminhoImagemDesconto}` }} />
                         </View>
 
                         <View style={styles.boxTituloCurso}>
-                            <Text style={styles.textTituloCurso}>{item.nomeCurso}</Text>
+                            <Text style={styles.textTituloCurso}>{item.idDescontoNavigation.nomeDesconto}</Text>
                         </View>
 
                         <View style={styles.boxAvaliacao}>
@@ -214,27 +184,15 @@ export default class ListagemCurso extends Component {
                                 //starImage={star}
                                 showRating={false}
                                 selectedColor={'#C20004'}
-                                defaultRating={item.mediaAvaliacaoCurso}
+                                defaultRating={item.idDescontoNavigation.mediaAvaliacaoDesconto}
                                 isDisabled={true}
                                 size={20} />
-                        </View>
-
-                        <View style={styles.boxDadosCurso}>
-                            <View style={styles.boxDados}>
-                                <Image style={styles.imgDados} source={require('../../../assets/imgGP2/relogio.png')} />
-                                <Text style={styles.textDados}>{item.cargaHoraria}</Text>
-                            </View>
-
-                            <View style={styles.boxDados}>
-                                <Image style={styles.imgDados} source={require('../../../assets/imgGP2/local.png')} />
-                                <Text style={styles.textDados}>{this.modalidade(item)}</Text>
-                            </View>
-                        </View>
+                        </View>                   
 
                         <View style={styles.boxPrecoFavorito}>
                             <View style={styles.boxPreco}>
                                 <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                <Text style={styles.textDados}>{item.valorCurso}</Text>
+                                <Text style={styles.textDados}>{item.idDescontoNavigation.valorDesconto}</Text>
                             </View>
 
                             <View style={styles.boxFavorito}>
@@ -248,7 +206,7 @@ export default class ListagemCurso extends Component {
                     animationType="fade"
                     transparent={true}
                     visible={this.state.modalVisivel}
-                    key={item.idCurso == this.state.cursoBuscado.idCurso}
+                    key={item.idDesconto == this.state.descontoBuscado.idDesconto}
                     onRequestClose={() => {
                         this.setModalVisivel(!this.state.modalVisivel)
                     }}
@@ -259,9 +217,9 @@ export default class ListagemCurso extends Component {
                                 <ScrollView>
                                     <View style={styles.boxTituloModal}>
                                         <View style={styles.boxImgCurso}>
-                                            <Image style={styles.imgModalCurso} source={require('../../../assets/imgGP2/imgCurso.png')} />
+                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idDescontoNavigation.caminhoImagemDesconto}` }} />
                                         </View>
-                                        <Text style={styles.textTituloModal}>{item.nomeCurso}</Text>
+                                        <Text style={styles.textTituloModal}>{item.nomeDesconto}</Text>
                                     </View>
                                     <View style={styles.boxAvaliacaoModal}>
                                         <AirbnbRating
@@ -269,7 +227,7 @@ export default class ListagemCurso extends Component {
                                             //starImage={star}
                                             showRating={false}
                                             selectedColor={'#C20004'}
-                                            defaultRating={item.mediaAvaliacaoCurso}
+                                            defaultRating={item.mediaAvaliacaoDesconto}
                                             isDisabled={true}
                                             size={20}
                                         />

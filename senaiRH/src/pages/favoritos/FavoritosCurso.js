@@ -18,12 +18,13 @@ import { Rating, AirbnbRating } from 'react-native-ratings';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import ReadMore from 'react-native-read-more-text';
 import api from '../../services/apiGrupo2.js';
+import apiUser from '../../services/apiGp1.js';
 import apiMaps from '../../services/apiMaps.js';
 import * as Location from 'expo-location';
 const delay = require('delay');
 // import { Location, Permissions } from 'expo';
 
-export default class ListagemDesconto extends Component {
+export default class FavoritosDesconto extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -34,165 +35,60 @@ export default class ListagemDesconto extends Component {
             isFavorite: false,
             inscrito: '',
             showAlert: false,
-            contadorDesconto: 0,
-            listaDesconto: [],
-            descontoBuscado: [],
+            contadorCurso: 0,
+            listaCurso: [],
+            cursoBuscado: [],
+            localizacaoCurso: [],
         };
     }
-    GetLocation = async () => {
-        const { status } = await Location.requestForegroundPermissionsAsync();
 
-        if (status !== 'granted') {
-            console.log('A permissão de localização não foi aceita!');
-
-            this.setState({
-                errorMessage: 'A permissão de localização não foi aceita'
-            })
-
-            return;
-        }
-        // console.warn(status)
-        let location = await Location.getCurrentPositionAsync({});
-
-        // console.warn(location)
-
-        let stringLocal = JSON.stringify(location);
-        let obj = JSON.parse(stringLocal);
-        let longitude = obj['coords']['longitude'];
-        let latitude = obj['coords']['latitude'];
-
-        // console.warn(longitude)
-        // console.warn(latitude)
-        this.setState({ Userlatitude: longitude })
-        this.setState({ Userlongitude: latitude })
-        // var text = JSON.stringify(this.state.location)
-        // console.warn(text) 
-    }
-
-    // Favoritar = async (id) => {
-    //     try {
-    //         if (this.state.isFavorite == true) {
-    //             this.ProcurarCurso(id);
-
-    //             const jtiUser = base64.decode(token.split('.')[1])
-    //             const user = JSON.parse(jtiUser)
-    //             console.warn(user)
-
-    //             const respostaCadastro = await api.post('/FavoritosCursos', {
-    //                 idCurso: this.state.cursoBuscado,
-    //                 idUsuario: user.jti,
-    //             });
-
-    //             if (respostaCadastro.status == 200) {
-    //                 console.warn('Favorito adicionado');
-    //             }
-    //         }
-    //         else if (this.state.isFavorite == false) {
-    //             const respostaExcluir = await api.delete(`/FavoritosCursos/${id}`);
-
-    //             if (respostaExcluir.status == 200) {
-    //                 this.setState(!this.state.isFavorite)
-    //                 console.warn('Desfavoritado')
-    //             }
-    //         }
-
-    //     } catch (error) {
-    //         console.warn(error);
-    //     }
-    // }
-
-    ListarDescontos = async () => {
+    ListarCursoFavoritos = async () => {
         try {
-            //const token = await AsyncStorage.getItem('userToken')
-            // console.warn(this.state.Userlongitude)
-            // console.warn(this.state.Userlatitude)
+            // const token = await AsyncStorage.getItem('userToken');
+            // console.warn(token)
 
-            const resposta = await api('/Descontos');
+            // const resposta = await api('/FavoritosCursos',
+            //     {
+            //         headers: {
+            //             Authorization: 'Bearer ' + token,
+            //         }
+            //     },
+            // );
+
+            // const jtiUser = base64.decode(token.split('.')[1])
+            // const user = JSON.parse(jtiUser)
+            // console.warn(user)
+
+            const resposta = await api(`/FavoritosCursos/Favorito/1`);
 
             if (resposta.status == 200) {
-                const dadosDesconto = resposta.data;
-                // console.warn(dadosCurso)
-                var tamanhoJson = Object.keys(dadosDesconto).length;
-                // console.warn(tamanhoJson);
+                const dadosCurso = resposta.data;
 
-                var i = 0
+                console.warn(dadosCurso);
 
-                do {
-                    let stringLocalDesconto = JSON.stringify(dadosDesconto);
-                    let objLocalDesconto = JSON.parse(stringLocalDesconto);
-                    // console.warn(objLocalCurso);
-                    var localDesconto = objLocalDesconto[i]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
-
-                    // ----> Localização 
-
-                    var stringProblematica = `json?origins=${this.state.Userlongitude}, ${this.state.Userlatitude}&destinations=${localDesconto}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
-                    console.warn(stringProblematica)
-
-                    const respostaLocal = await apiMaps(stringProblematica);
-                    let string = JSON.stringify(respostaLocal.data);
-                    let obj = JSON.parse(string);
-                    console.warn(obj)
-
-                    let distance = obj['rows'][0]['elements'][0]['distance'].value
-                    // console.log(distance)
-                    if (respostaLocal.status == 200) {
-                        console.warn('Localização encontrada!');
-                        if (distance <= 750000) {
-                            //this.setState({ localizacaoCurso: dadosLocalizacao })
-                            // console.warn(distance);
-                            // console.warn('Localização está no alcance');
-                            // console.warn(this.state.listaCurso);
-                            var u = 0
-
-                            do {
-                                let stringDesconto = JSON.stringify(dadosDesconto);
-                                var objDesconto = JSON.parse(stringDesconto);
-                                var lugarDesconto = objDesconto[u]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
-                                // console.warn(lugarDesconto)
-
-                                var desconto = objDesconto[u]
-                                console.warn(desconto)
-                                u++
-                            } while (lugarDesconto != localDesconto);
-
-                            this.state.listaDesconto.push(desconto);
-
-
-                        }
-                        else if (distance > 750000) {
-                            console.warn(distance);
-                            console.warn('Localização fora do alcance');
-                        }
-                    }
-                    console.warn('Desconto encontrado');
-
-                    i++
-                } while (i < tamanhoJson);
-                // console.warn(i)
-
-                this.setState({ contadorDesconto: i })
-                // console.warn(this.state.contadorCurso)
+                this.setState({ listaCurso: dadosCurso })
+                console.warn(this.state.listaCurso)
+                console.warn('Favoritos encontrados');
             }
         }
         catch (erro) {
             console.warn(erro);
         }
     }
+
     setModalVisivel = (visible, id) => {
         if (visible == true) {
-            this.ProcurarDescontos(id)
+            this.ProcurarCurso(id)
         }
         else if (visible == false) {
-            this.setState({ descontoBuscado: [] })
+            this.setState({ cursoBuscado: [] })
         }
 
         this.setState({ modalVisivel: visible })
     }
+
     componentDidMount = async () => {
-        this.GetLocation();
-        await delay(5000);
-        // setTimeout(function(){this.setState({ timeGeolocation: true})}, 1000);
-        this.ListarDescontos();
+        this.ListarCursoFavoritos();
     }
 
     showAlert = () => {
@@ -236,16 +132,13 @@ export default class ListagemDesconto extends Component {
         // ...
     }
 
-    ProcurarDescontos = async (id) => {
+    ProcurarCurso = async (id) => {
         try {
-            const resposta = await api('/Descontos/' + id);
+            const resposta = await api('/Cursos/' + id);
             // console.warn(resposta)
             if (resposta.status == 200) {
-                const dadosDesconto = await resposta.data;
-                var stringDescontoBuscado = JSON.stringify(dadosDesconto);
-                let objDescontoBuscado = JSON.parse(stringDescontoBuscado)
-                this.setState({ descontoBuscado: objDescontoBuscado });
-                // console.warn(this.state.cursoBuscado)
+                const dadosCurso = await resposta.data;
+                this.setState({ cursoBuscado: dadosCurso })
             }
         }
         catch (erro) {
@@ -261,17 +154,22 @@ export default class ListagemDesconto extends Component {
                 </View>
 
                 <View style={styles.boxTituloPrincipal}>
-                    <Text style={styles.textTituloPrincipal}>descontos</Text>
+                    <Text style={styles.textTituloPrincipal}>favoritos</Text>
                 </View>
                 <View style={styles.boxSaldoUsuario}>
                     <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
                     <Text style={styles.textDados}>3024</Text>
                 </View>
 
+                <Pressable onPress={() => this.props.navigation.navigate('FavoritosDesconto')}>
+                    <Text style={styles.textDescontos}> Descontos </Text>
+                    <View style={styles.line2}></View>
+                </Pressable>
+
                 <FlatList
                     style={styles.flatlist}
-                    data={this.state.listaDesconto}
-                    keyExtractor={item => item.idDesconto}
+                    data={this.state.listaCurso}
+                    keyExtractor={item => item.idCursoFavorito}
                     renderItem={this.renderItem}
                 />
             </View>
@@ -281,16 +179,14 @@ export default class ListagemDesconto extends Component {
     renderItem = ({ item }) => (
         <View>
             <View style={styles.containerCurso}>
-                {/* item.idEmpresaNavigation.idLocalizacaoNavigation.idLogradouroNavigation.nomeLogradouro */}
-                {/* Localizacao(this.state.Userlatitude, this.state.Userlongitude, item.idEmpresaNavigation.idLocalizacaoNavigation.idCepNavigation.cep1 */}
-                <Pressable onPress={() => this.setModalVisivel(true, item.idDesconto)}>
+                <Pressable onPress={() => this.setModalVisivel(true, item.idCurso)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
-                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemDesconto}` }} />
+                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idCursoNavigation.caminhoImagemCurso}` }} />
                         </View>
 
                         <View style={styles.boxTituloCurso}>
-                            <Text style={styles.textTituloCurso}>{item.nomeDesconto}</Text>
+                            <Text style={styles.textTituloCurso}>{item.idCursoNavigation.nomeCurso}</Text>
                         </View>
 
                         <View style={styles.boxAvaliacao}>
@@ -299,21 +195,31 @@ export default class ListagemDesconto extends Component {
                                 //starImage={star}
                                 showRating={false}
                                 selectedColor={'#C20004'}
-                                defaultRating={item.mediaAvaliacaoDesconto}
+                                defaultRating={item.mediaAvaliacaoCurso}
                                 isDisabled={true}
                                 size={20} />
+                        </View>
+
+                        <View style={styles.boxDadosCurso}>
+                            <View style={styles.boxDados}>
+                                <Image style={styles.imgDados} source={require('../../../assets/imgGP2/relogio.png')} />
+                                <Text style={styles.textDados}>{item.idCursoNavigation.cargaHoraria}</Text>
+                            </View>
+
+                            <View style={styles.boxDados}>
+                                <Image style={styles.imgDados} source={require('../../../assets/imgGP2/local.png')} />
+                                <Text style={styles.textDados}>{this.modalidade(item.idCursoNavigation.modalidadeCurso)}</Text>
+                            </View>
                         </View>
 
                         <View style={styles.boxPrecoFavorito}>
                             <View style={styles.boxPreco}>
                                 <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                <Text style={styles.textDados}>{item.valorDesconto}</Text>
+                                <Text style={styles.textDados}>{item.idCursoNavigation.valorCurso}</Text>
                             </View>
 
                             <View style={styles.boxFavorito}>
-                                {/* <Pressable onPress={this.Favoritar(item.idCurso)}> */}
                                 <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
-                                {/* </Pressable> */}
                             </View>
                         </View>
                     </View>
@@ -323,7 +229,7 @@ export default class ListagemDesconto extends Component {
                     animationType="fade"
                     transparent={true}
                     visible={this.state.modalVisivel}
-                    key={item.idDesconto == this.state.descontoBuscado.idDesconto}
+                    key={item.idCurso == this.state.cursoBuscado.idCurso}
                     onRequestClose={() => {
                         this.setModalVisivel(!this.state.modalVisivel)
                     }}
@@ -334,9 +240,9 @@ export default class ListagemDesconto extends Component {
                                 <ScrollView>
                                     <View style={styles.boxTituloModal}>
                                         <View style={styles.boxImgCurso}>
-                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemDesconto}` }} />
+                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idCursoNavigation.caminhoImagemCurso}` }} />
                                         </View>
-                                        <Text style={styles.textTituloModal}>{item.nomeDesconto}</Text>
+                                        <Text style={styles.textTituloModal}>{item.nomeCurso}</Text>
                                     </View>
                                     <View style={styles.boxAvaliacaoModal}>
                                         <AirbnbRating
@@ -344,7 +250,7 @@ export default class ListagemDesconto extends Component {
                                             //starImage={star}
                                             showRating={false}
                                             selectedColor={'#C20004'}
-                                            defaultRating={item.mediaAvaliacaoDesconto}
+                                            defaultRating={item.mediaAvaliacaoCurso}
                                             isDisabled={true}
                                             size={20}
                                         />
@@ -352,15 +258,15 @@ export default class ListagemDesconto extends Component {
 
                                     <View style={styles.boxDadosModal}>
                                         <Image source={require('../../../assets/imgGP2/relogio.png')} />
-                                        {/* <Text style={styles.textDadosModal}>{item.cargaHoraria}</Text> */}
+                                        <Text style={styles.textDadosModal}>{item.cargaHoraria}</Text>
 
                                         <Image source={require('../../../assets/imgGP2/mapa.png')} />
-                                        <Text style={styles.textDadosModal}>{ }</Text>
+                                        {/* <Text style={styles.textDadosModal}>{item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado}</Text> */}
                                     </View>
 
                                     <View style={styles.boxDadosModal}>
                                         <Image source={require('../../../assets/imgGP2/local.png')} />
-                                        {/* <Text style={styles.textDadosModal}>{this.modalidade(item.modalidadeCurso)}</Text> */}
+                                        <Text style={styles.textDadosModal}>Presencial</Text>
 
                                         <Image source={require('../../../assets/imgGP2/dataFinal.png')} />
                                         <Text style={styles.textDadosModal}>
@@ -379,18 +285,18 @@ export default class ListagemDesconto extends Component {
                                             renderRevealedFooter={this._renderRevealedFooter}
                                             onReady={this._handleTextReady}
                                         >
-                                            <Text style={styles.textDescricaoModal}>{item.descricaoDesconto}</Text>
+                                            <Text style={styles.textDescricaoModal}>{item.descricaoCurso}</Text>
                                         </ReadMore>
 
                                         <View style={styles.boxEmpresa}>
                                             <Text style={styles.tituloEmpresa}>Empresa: </Text>
-                                            <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text>
+                                            {/* <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text> */}
                                         </View>
 
                                         <View style={styles.boxValorInscrever}>
                                             <View style={styles.boxPrecoModal}>
                                                 <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                                <Text style={styles.textDados}>{item.valorDesconto}</Text>
+                                                <Text style={styles.textDados}>{item.valorCurso}</Text>
                                             </View>
 
                                             <View style={styles.boxInscreverModal}>
@@ -493,6 +399,12 @@ const styles = StyleSheet.create({
         marginLeft: 16,
         marginTop: 4
     },
+    boxDados: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginTop: 8,
+        marginLeft: 16
+    },
     imgDados: {
         width: 19.6,
         height: 19.8,
@@ -505,7 +417,7 @@ const styles = StyleSheet.create({
         height: 40,
         display: 'flex',
         flexDirection: 'row',
-        marginTop: 73,
+        marginTop: 16,
         marginLeft: 16
     },
     boxPreco: {
@@ -517,7 +429,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'center'
     },
     imgCoin: {
         width: 22.1,

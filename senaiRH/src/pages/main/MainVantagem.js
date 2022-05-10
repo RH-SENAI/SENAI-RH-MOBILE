@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 import ListagemCurso from '../listagemCurso/ListagemCurso.js';
 import ListagemDesconto from '../listagemDesconto/ListagemDesconto.js';
-import Favoritos from '../favoritos/Favoritos.js'
+import Favoritos from '../favoritos/FavoritosCurso.js';
 import Perfil from '../perfil/Perfil.js';
 
 const Tab = createBottomTabNavigator();

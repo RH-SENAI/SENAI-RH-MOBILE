@@ -191,7 +191,6 @@ export default class ListagemCurso extends Component {
     componentDidMount = async () => {
         this.GetLocation();
         await delay(5000);
-        // setTimeout(function(){this.setState({ timeGeolocation: true})}, 1000);
         this.ListarCurso();
     }
 

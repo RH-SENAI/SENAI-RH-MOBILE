@@ -16,7 +16,8 @@ import Login from './src/pages/login/Login.js';
 import MinhasAtividades from './src/pages/minhasAtividades/MinhasAtividades.js';
 import MinhasExtras from './src/pages/minhasAtividades/MinhasExtras.js';
 import RankingGp1 from './src/pages/rankingGp1/RankingGp1.js';
-import Favoritos from './src/pages/favoritos/Favoritos.js'
+import Favoritos from './src/pages/favoritos/FavoritosCurso.js';
+import FavoritosDesconto from './src/pages/favoritos/FavoritosDesconto.js';
 
 import 'intl';
 import 'intl/locale-data/jsonp/en';
@@ -31,9 +32,10 @@ function App() {
     <NavigationContainer>
       <StatusBar backgroundColor={'#C20004'} barStyle="light-content" />
       <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        {/* <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} /> */}
         <Stack.Screen name="Redirecionar" component={Redirecionar} options={{ headerShown: false }} />
         <Stack.Screen name="MainVantagem" component={MainVantagem} options={{ headerShown: false }} />
+        <Stack.Screen name="FavoritosDesconto" component={FavoritosDesconto} options={{ headerShown: false }} />
         {/* 
         <Stack.Screen name="MainAcompanhar" component={MainAcompanhar} />
         <Stack.Screen name="Perfil" component={Perfil} />
