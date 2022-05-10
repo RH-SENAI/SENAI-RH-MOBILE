@@ -15,6 +15,7 @@ import {
 
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
+import Leaderboard from 'react-native-leaderboard';
 
 
 import {
@@ -150,15 +151,16 @@ export default function Ranking() {
 
                 /> */}
 
-                <FlatList
+                {/* <FlatList
                     style={styles.FlatListGp1}
-                    data={ListarRanking.sort((a, b) => b.trofeus > a.trofeus)}
+                    data={ListarRanking}
+                    // data={ListarRanking.sort((a, b) => b.trofeus > a.trofeus)}
                     keyExtractor={(item) => item.idUsuario}
-                    renderItem={({ item, indice}) => (
+                    renderItem={({ item}) => (
                         
                         <View style={styles.RankingGp1Centro}>                         
                         <View style={styles.RankingGp1}>
-                                <Text style={styles.numero}>{indice + 1} </Text>                        
+                                <Text style={styles.numero}> </Text>                        
                             <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
                                 style={styles.fotoRankingGp1}
                             />
@@ -216,13 +218,21 @@ export default function Ranking() {
                             </View>
                 
                         </View> */}
-                    </View>)}
-                    
+                {/* </View>)} */}
+
+                {/* /> */}
+
+
+
+
+
+                <Leaderboard
+                    style={styles.FlatListGp1}
+                    data={ListarRanking}
+                    sortBy='trofeus'
+                    labelBy='nome'
+                // contentContainerStyle={styles.RankingGp1}
                 />
-
-
-
-
 
 
 
@@ -239,7 +249,7 @@ export default function Ranking() {
 
 //     <View style={styles.RankingGp1Centro}>
 //         <View style={styles.RankingGp1}>
-//             <Text style={styles.numero}>{item.idUsuario}</Text>
+//             <Text style={styles.numero}></Text>
 //             <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
 //                 style={styles.fotoRankingGp1}
 //             />
@@ -405,13 +415,17 @@ const styles = StyleSheet.create({
         width: '78%',
 
     },
-    FlatListGp1:{
-        width:'100%',
-       
+    FlatListGp1: {
+        width: '100%',
+
     },
-    RankingGp1Centro:{
-        alignItems:'center',
+    RankingGp1Centro: {
+        alignItems: 'center',
         justifyContent: 'center',
-    }
+    },
+
+
 
 });
+
+

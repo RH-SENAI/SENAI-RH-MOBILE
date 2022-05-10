@@ -49,6 +49,42 @@ import { render } from 'react-dom';
 
 const MinhasExtras = () => {
 
+    const navigation = useNavigation();
+    const [modalVisible, setModalVisible] = useState(false)
+    const [mensagem, setmensagem] = useState('');
+    const [listaAtividades, setListaAtividades] = useState([]);
+    const [MinhaAtividade, setMinhaAtividade] = useState({});
+
+    //const [concluido, setConcluido] = useState([]);
+
+    const ListarMinhas = async () => {
+
+        const token = await AsyncStorage.getItem("userToken");
+
+        const xambers = base64.decode(token.split('.')[1])
+        const user = JSON.parse(xambers)
+
+        console.warn('wertyui')
+
+        console.warn(user.jti)
+
+
+        if (token != null) {
+            const resposta = await api.get("/Atividades/MinhasAtividadeExtra/" + id, {
+                headers: {
+                    Authorization: "Bearer " + token,
+                },
+            });
+
+            const dadosDaApi = await resposta.data;
+            setListaAtividades(dadosDaApi);
+        }
+    };
+
+    useEffect(() => {
+        ListarMinhas();
+    }, []);
+    
     let [customFonts] = useFonts({
         Regular: Quicksand_400Regular,
         Light: Quicksand_300Light,
@@ -77,11 +113,7 @@ const MinhasExtras = () => {
 
     if (!customFonts) {
         return <AppLoading />;
-    }
-
-
-    const navigation = useNavigation();
-    const [modalVisible, setModalVisible] = useState(false)
+    };
 
     return (
         <View style={styles.main}>
@@ -94,7 +126,7 @@ const MinhasExtras = () => {
 
                 </View>
 
-                <View style={styles.titulo}>
+                <View>
 
                     <Text style={styles.tituloEfects}>{'Minhas atividades'.toUpperCase()} </Text>
 
@@ -235,18 +267,12 @@ const styles = StyleSheet.create({
 
     },
 
-    titulo: {
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        // paddingTop: 40,
-    },
-
     tituloEfects: {
         fontFamily: 'SemiBoldM',
         // justifyContent: 'center',
         // alignItems: 'center',
         color: '#2A2E32',
-        fontSize: 25,
+        fontSize: 30,
         paddingTop: 40,
         textAlign: 'center'
     },
@@ -268,7 +294,7 @@ const styles = StyleSheet.create({
     font: {
         fontFamily: 'Regular',
         color: "#636466",
-        fontSize: 20,
+        fontSize: 23,
         paddingBottom: 5,
     },
 
