@@ -57,6 +57,7 @@ export default function Perfil() {
     Quicksand_600SemiBold,
   })
 
+  // Input nova senha
   const moveTextFb = useRef(new Animated.Value(0)).current;
 
   const onChangeNovaSenha = (text) => {
@@ -101,6 +102,8 @@ export default function Perfil() {
       },
     ],
   };
+
+  // Input Confirmação
 
   const moveTextConfirmacao = useRef(new Animated.Value(0)).current;
 
@@ -147,6 +150,52 @@ export default function Perfil() {
     ],
   };
 
+  // Input senha atual
+  const moveTextSenhaAtual = useRef(new Animated.Value(0)).current;
+
+  const onChangeSenhaAtual = (text) => {
+    setSenhaAtualUsuario(text);
+  };
+
+  // Actions Animação Fb
+  const moveTextTopSenhaAtual = () => {
+    Animated.timing(moveTextSenhaAtual, {
+      toValue: 1,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  };
+  const moveTextBottoSenhaAtual = () => {
+    Animated.timing(moveTextSenhaAtual, {
+      toValue: 0,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const onBlurHandlerSenhaAtual = () => {
+    if (senhaAtual === "") {
+      moveTextTopSenhaAtual();
+    }
+  };
+  const onFocusHandlerSenhaAtual = () => {
+    if (senhaAtual === "") {
+      moveTextBottoSenhaAtual();
+    }
+  };
+  // Styles Animação Fb
+  const yValSenhaAtual = moveTextSenhaAtual.interpolate({
+    inputRange: [0, 1],
+    outputRange: [4, -20],
+  });
+  const animStyleSenhaAtual = {
+    transform: [
+      {
+        translateY: yValSenhaAtual,
+      },
+    ],
+  };
+
   async function BuscarUsuario() {
     try {
       const token = await AsyncStorage.getItem('userToken');
@@ -168,23 +217,22 @@ export default function Perfil() {
   async function MudarSenha() {
     try {
 
-      setSenhaAtualUsuario("AGORAVAI")
-
       const token = await AsyncStorage.getItem('userToken');
       console.warn(jwtDecode(token).jti)
 
-      const resposta = await apiGp1.patch('Usuarios/AlteraSenha/' + jwtDecode(token).jti,{}, {
+      const resposta = await apiGp1.patch('Usuarios/AlteraSenha/' + jwtDecode(token).jti, {}, {
         headers: {
           'Authorization': 'Bearer ' + token,
           'ContentType': 'application/json',
-          'senhaUser' : senhaAtual,
-          'senhaNova' : senhaNova,
-          'senhaConfirmacao' : senhaConfirmacao
+          'senhaUser': senhaAtual,
+          'senhaNova': senhaNova,
+          'senhaConfirmacao': senhaConfirmacao
         },
       });
 
       if (resposta.status === 200) {
-          console.warn("foi")
+        console.warn("foi")
+        AlterarSenha()
       }
     } catch (error) {
       console.warn(error);
@@ -256,8 +304,27 @@ export default function Perfil() {
                   blurOnSubmit
                 />
 
+                <Animated.View style={[styles.animatedStyle2, animStyleSenhaAtual]}>
+                  <Text style={styles.labelComentarioFeedback}>Senha Atual</Text>
+                </Animated.View>
+
+                <TextInput
+                  keyboardType="default"
+                  onChangeText={campo => onChangeSenhaAtual(campo)}
+                  value={senhaAtual}
+                  style={styles.sectionDemocratizacaoInput}
+                  editable={true}
+                  onFocus={() => onFocusHandlerSenhaAtual()}
+                  onBlur={() => onBlurHandlerSenhaAtual()}
+                  blurOnSubmit
+                />
+
                 <TouchableOpacity style={styles.btnCadastro} onPress={() => MudarSenha()}>
                   <Text style={styles.btnCadastroText}>Alterar Senha</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.btnCadastroSenha} onPress={() => AlterarSenha()}>
+                  <Text style={styles.btnCadastroTextSenha}>Voltar</Text>
                 </TouchableOpacity>
 
               </ScrollView>
@@ -306,7 +373,7 @@ export default function Perfil() {
               <TouchableOpacity style={styles.btnCadastro} onPress={() => AlterarSenha()}>
                 <Text style={styles.btnCadastroText}>Alterar Senha</Text>
               </TouchableOpacity>
-
+              
             </ScrollView>);
         })}
 
@@ -324,6 +391,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F2F2F2'
   },
+
   fotoPerfilContainer: {
     width: 111,
     height: 110,
@@ -335,13 +403,14 @@ const styles = StyleSheet.create({
     marginVertical: 20
   },
 
-  textInfGeralPerfil : {
-    fontFamily : 'Quicksand_400Regular',
-    fontSize : 20,
-    color : 'black',
-    marginRight : 179,
-    marginBottom : 20
+  textInfGeralPerfil: {
+    fontFamily: 'Quicksand_400Regular',
+    fontSize: 20,
+    color: 'black',
+    marginRight: 179,
+    marginBottom: 20
   },
+
   animatedStyle1: {
     top: 246,
     left: 43,
@@ -351,6 +420,7 @@ const styles = StyleSheet.create({
     width: 135,
     alignItems: 'center',
   },
+
   animatedStyle2: {
     top: 307,
     left: 40,
@@ -360,11 +430,13 @@ const styles = StyleSheet.create({
     width: 110,
     alignItems: 'center',
   },
+
   labelComentarioFeedback: {
     color: '#636466',
     fontSize: 12,
     fontFamily: 'Quicksand_300Light',
   },
+
   textInfGeralPerfil: {
     fontFamily: 'Quicksand_400Regular',
     fontSize: 20,
@@ -372,6 +444,24 @@ const styles = StyleSheet.create({
     marginRight: 203,
     marginBottom: 20
   },
+
+  sectionDemocratizacaoInput: {
+    width: '90%',
+    height: 42,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: '#B3B3B3',
+    paddingLeft: 16,
+    marginBottom: 18
+  },
+
+  labelComentarioFeedback: {
+    color: '#636466',
+    fontSize: 20,
+    width: "85%",
+    fontFamily: 'Quicksand_300Light',
+  },
+
   btnCadastro: {
     width: '86%',
     height: 43,
@@ -381,10 +471,24 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: '#C20004',
   },
+
+  btnCadastroSenha : {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+    paddingBottom : 10
+  },
+
+  btnCadastroTextSenha : {
+    fontFamily: 'Montserrat_500Medium',
+    color: '#C20004'
+  },
+
   btnCadastroText: {
     fontFamily: 'Montserrat_500Medium',
     color: '#F2F2F2'
   },
+
   lineTextPerfil: {
     fontFamily: 'Quicksand_400Regular',
     fontSize: 20,
@@ -405,7 +509,7 @@ const styles = StyleSheet.create({
     color: "#000000",
     color: "#2A2E32",
 
-    textAlign:"center",
+    textAlign: "center",
     textTransform: "uppercase",
   },
 
@@ -420,11 +524,13 @@ const styles = StyleSheet.create({
     width: '100%'
 
   },
+
   titulos: {
     color: '#0A0A0A',
     fontSize: 16,
     fontWeight: 'bold'
   },
+
   line: {
     width: '100%',
     height: 50,
@@ -448,12 +554,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
     elevation: 16,
     backgroundColor: '#F2F2F2',
-    //boxShadow: '19px',
     borderRadius: 5,
     flexDirection: 'row',
-
-
   },
+
   textTrofeu: {
     color: 'black',
     marginLeft: 10

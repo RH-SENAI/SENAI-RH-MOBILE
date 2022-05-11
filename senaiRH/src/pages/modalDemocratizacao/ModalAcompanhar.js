@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     texto: {
         color: "black",
         textAlign: "center",
-        fontFamily: " Quicksand_300Light",
+        fontFamily: "Quicksand_300Light",
         fontSize: 20
     },
     logoSenai: {

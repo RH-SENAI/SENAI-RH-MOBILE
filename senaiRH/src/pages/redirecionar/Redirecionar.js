@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     color: "black",
     textAlign: "center",
     fontSize: 25,
-    fontFamily: " Quicksand_300Light",
+    fontFamily: "Quicksand_300Light",
     // fontWeight: "bold",
     marginLeft: 40
   },

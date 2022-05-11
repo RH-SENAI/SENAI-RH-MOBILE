@@ -240,7 +240,7 @@ export default function Dashboard() {
                 <Text style={styles.tituloPage}>DASHBOARD</Text>
 
 
-                {/* {usuario.map((usuario) => {
+                {usuario.map((usuario) => {
                     return (
                         <View style={styles.containerAreaDados}>
                             <View style={styles.containerDados}>
@@ -279,7 +279,7 @@ export default function Dashboard() {
                     )
                 }
                 )
-                } */}
+                }
 
 
             </View>
