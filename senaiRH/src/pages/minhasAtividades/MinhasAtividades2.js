@@ -165,20 +165,9 @@ export default class MinhasAtividades extends Component {
                 <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
 
                 <View style={styles.descricaoOlho}>
-<<<<<<< HEAD
                     <Text style={styles.descricao}>{item.criador} </Text>
                 </View>
                 {/* <Text style={styles.descricao}>{item.idGestorCadastroNavigation.nome} </Text> */}
-=======
-                    <Text style={styles.descricao}>{item.dataConclusao} </Text>
-
-                    <TouchableOpacity style={styles.Modalbotao} onPress={() => this.openModal(item.idAtividade)}>
-                        <AntDesign name="downcircleo" size={24} color="#636466" />
-                    </TouchableOpacity>
-
-                </View>
-
->>>>>>> c90b67b1f43312cd728710777dd0d04e8504a40c
                 <View style={styles.ModaleBotao}>
                     {/* <View style={styles.statusImagem}></View> */}
 
