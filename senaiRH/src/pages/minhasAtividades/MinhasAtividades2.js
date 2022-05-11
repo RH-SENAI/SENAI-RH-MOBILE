@@ -85,7 +85,7 @@ export default class MinhasAtividades extends Component {
                 }
                 )
             
-            
+            console.warn(dadosApi)
         })
         
     }
@@ -163,8 +163,9 @@ export default class MinhasAtividades extends Component {
                 <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
 
                 <View style={styles.descricaoOlho}>
-                    <Text style={styles.descricao}>{item.dataConclusao} </Text>
+                    <Text style={styles.descricao}>{item.criador} </Text>
                 </View>
+                {/* <Text style={styles.descricao}>{item.idGestorCadastroNavigation.nome} </Text> */}
                 <View style={styles.ModaleBotao}>
                     {/* <View style={styles.statusImagem}></View> */}
 
@@ -207,6 +208,7 @@ export default class MinhasAtividades extends Component {
                             <Text style={styles.descricaoModal}> {this.state.minhaAtividade.descricaoAtividade} </Text>
                             <Text style={styles.itemPostadoModal}> {this.state.minhaAtividade.dataInicio} </Text>
                             <Text style={styles.entregaModal}> {this.state.minhaAtividade.dataConclusao} </Text>
+                            <Text style={styles.entregaModal}> {this.state.minhaAtividade.criador} </Text>
                             {/* <Text style={styles.criadorModal}> {item.idGestorCadastroNavigation.nome} </Text> */}
 
                             <TouchableOpacity style={styles.anexo}>
