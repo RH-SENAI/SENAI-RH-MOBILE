@@ -1,7 +1,7 @@
 // React Imports
 import { useState, useEffect } from "react";
 import react from "react";
-import { Text as PieText } from 'react-native-svg';
+import { Text as SvgText } from 'react-native-svg';
 import {
     Image,
     StyleSheet,
@@ -23,7 +23,8 @@ import {
 } from 'victory';
 import jwtDecode from "jwt-decode";
 
-import { PieChart } from 'react-native-svg-charts'
+import { LineChart, Grid, ProgressCircle } from 'react-native-svg-charts'
+
 
 //Services
 import api from "../../services/api";
@@ -97,7 +98,7 @@ export default function Dashboard() {
 
             if (resposta.status === 200) {
                 setMinhasAtividades([resposta.data]);
-                //console.warn(resposta.data)
+                console.warn(resposta.data)
             }
 
         } catch (error) {
@@ -110,119 +111,97 @@ export default function Dashboard() {
     useEffect(() => BuscarMinhasAtividades(), [])
 
 
-    //PIECHART
-    function GraficoSatisfacao() {
-
+    const GraficoSatisfacao = () => {
         const u = usuario[0];
-        const maxSatisfacao = 1;
-
-
-        const data = [
-            {
-                key: 1,
-                amount: u.nivelSatisfacao,
-                svg: { fill: '#C20004' },
-            },
-            {
-                key: 2,
-                amount: maxSatisfacao - u.nivelSatisfacao,
-                svg: { fill: '#f0dfdf' }
-            },
-
-        ]
-
-        const Labels = ({ slices, height, width }) => {
-            return slices.map((slice, index) => {
-                const { labelCentroid, pieCentroid, data } = slice;
-                return (
-                    <PieText
-                        key={index}
-                        x={pieCentroid[0]}
-                        y={pieCentroid[1]}
-                        fill={'white'}
-                        textAnchor={'middle'}
-                        alignmentBaseline={'middle'}
-                        fontSize={12}
-                        stroke={'black'}
-                        strokeWidth={0.2}
-                    >
-                        {/* {data.amount} */}
-                    </PieText>
-                )
-            })
-        }
-
-
-
         return (
-            <PieChart
-                style={styles.PieChart}
-                valueAccessor={({ item }) => item.amount}
-                data={data}
-                spacing={0}
-                outerRadius={'95%'}
+            <ProgressCircle
+                style={styles.grafico}
+                progress={u.nivelSatisfacao}
+                progressColor={'#C20004'}
+                backgroundColor={'rgba(194, 0, 4, 0.15)'}
+                startAngle={0}
+                cornerRadius={5}
+                strokeWidth={15}
+                endAngle={360}
             >
-                <Labels />
-            </PieChart>
+                <SvgText
+                    x={-10}
+                    y={1.5}
+                    fill={'black'}
+                    textAnchor={'middle'}
+                    alignmentBaseline={'middle'}
+                    fontSize={25}
+                    fontWeight={'bolder'}
+                    stroke={'white'}
+                    opacity={'1'}
+                    strokeWidth={0.4}>
+                    {u.nivelSatisfacao * 100}%
+                </SvgText>
+            </ProgressCircle>
+
         )
     }
 
 
-    function GraficoAvaliacao() {
 
+    const GraficoAvaliacao = () => {
         const u = usuario[0];
-        const maxAvaliacao = 10;
-
-
-        const data = [
-            {
-                key: 1,
-                amount: u.mediaAvaliacao,
-                svg: { fill: '#C20004' },
-            },
-            {
-                key: 2,
-                amount: maxAvaliacao - u.mediaAvaliacao,
-                svg: { fill: '#f0dfdf' }
-            },
-
-        ]
-
-        const Labels = ({ slices, height, width }) => {
-            return slices.map((slice, index) => {
-                const { labelCentroid, pieCentroid, data } = slice;
-                return (
-                    <PieText
-                        key={index}
-                        x={pieCentroid[0]}
-                        y={pieCentroid[1]}
-                        fill={'white'}
-                        textAnchor={'middle'}
-                        alignmentBaseline={'middle'}
-                        fontSize={12}
-                        stroke={'black'}
-                        strokeWidth={0.2}
-                    >
-                        {/* {data.amount} */}
-                    </PieText>
-                )
-            })
-        }
-
-
-
         return (
-            <PieChart
-                style={styles.PieChart}
-                valueAccessor={({ item }) => item.amount}
-                data={data}
-                spacing={0}
-                outerRadius={'95%'}
+            <ProgressCircle
+                style={styles.grafico}
+                progress={u.mediaAvaliacao / 10}
+                progressColor={'#C20004'}
+                backgroundColor={'rgba(194, 0, 4, 0.15)'}
+                startAngle={0}
+                cornerRadius={5}
+                strokeWidth={15}
+                endAngle={360}
             >
-                <Labels />
-            </PieChart>
+                <SvgText
+                    x={-10}
+                    y={1.5}
+                    fill={'black'}
+                    textAnchor={'middle'}
+                    alignmentBaseline={'middle'}
+                    fontSize={25}
+                    fontWeight={'bolder'}
+                    stroke={'white'}
+                    opacity={'1'}
+                    strokeWidth={0.4}>
+                    {u.mediaAvaliacao * 10}%
+                </SvgText>
+            </ProgressCircle>
+
         )
     }
+
+
+
+    function LineChartExample() {
+
+        const atividadesFinalizadas = minhasAtividades
+        .filter(a => a.idSituacaoAtividade === 3)
+        .map(p => p.dataConclusao);
+        
+        const data = [50, 20, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80]
+        console.warn(atividadesFinalizadas);
+
+        return (
+
+
+            <LineChart
+                style={{ height: 200 }}
+                data={data}
+                svg={{ stroke: 'rgb(134, 65, 244)' }}
+                contentInset={{ top: 20, bottom: 20 }}
+            >
+                <Grid />
+            </LineChart>
+
+        )
+    }
+
+    
 
 
 
@@ -272,6 +251,8 @@ export default function Dashboard() {
                                     </View>
                                     <GraficoAvaliacao />
                                 </View>
+                                
+                                <LineChartExample />
                             </View>
 
                         </View>
@@ -292,7 +273,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F2F2F2',
         alignItems: "center",
         width: '100%',
-        backgroundColor: 'orange'
+        //backgroundColor: 'orange'
     },
     imgLogo: {
         width: 300,
@@ -309,13 +290,13 @@ const styles = StyleSheet.create({
         color: '#2A2E32'
     },
     containerAreaDados: {
-        backgroundColor: 'yellow',
+        //backgroundColor: 'yellow',
         flex: 1,
         width: '100%',
         paddingHorizontal: '5%',
     },
     containerDados: {
-        backgroundColor: 'cyan',
+        //backgroundColor: 'cyan',
         //height: 200,
         flex: 1,
         marginTop: 20,
@@ -328,7 +309,7 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderColor: 'gray',
         flexDirection: "row",
-        backgroundColor: 'green',
+        //backgroundColor: 'green',
         padding: 10
 
     },
@@ -336,7 +317,7 @@ const styles = StyleSheet.create({
         marginLeft: 24,
         marginTop: 0,
         fontFamily: ' Quicksand_300Light',
-        backgroundColor: 'blue'
+        //backgroundColor: 'blue'
     },
     lineTextPerfil: {
         fontFamily: ' Quicksand_300Light',
@@ -349,7 +330,7 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderColor: 'gray',
         flexDirection: 'row',
-        backgroundColor: 'purple',
+        //backgroundColor: 'purple',
         justifyContent: 'space-between',
         marginTop: 20,
         alignItems: 'center',
@@ -358,12 +339,13 @@ const styles = StyleSheet.create({
     },
     containerLegendas: {
         flex: 1,
-        backgroundColor: 'orange'
+        //backgroundColor: 'orange'
     },
-    PieChart: {
+    grafico: {
         //flex: 1,
-        width: 100,
-        backgroundColor: 'white',
+        width: 75,
+        height: 75,
+        // backgroundColor: 'blue',
     },
     tituloGrafico: {
         fontSize: 20,
