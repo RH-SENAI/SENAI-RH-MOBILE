@@ -1,110 +1,150 @@
-import React from 'react';
-import * as Animatable from 'react-native-animatable'
-import {
-  Image,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text
-} from 'react-native';
+import React from "react";
+import * as Animatable from "react-native-animatable";
+import { Image, View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import AppLoading from "expo-app-loading";
 
-import { useNavigation } from '@react-navigation/native'
+import {
+  useFonts,
+  Montserrat_500Medium,
+  Montserrat_600SemiBold,
+} from "@expo-google-fonts/montserrat";
+
+import {
+  Quicksand_300Light,
+  Quicksand_600SemiBold,
+} from "@expo-google-fonts/quicksand";
+
+import { useNavigation } from "@react-navigation/native";
 
 export default function Welcome() {
+  let [fontsLoaded] = useFonts({
+    //Montserrat
+    Montserrat_500Medium,
+    Montserrat_600SemiBold,
+
+    // Quicksand
+    Quicksand_300Light,
+    Quicksand_600SemiBold,
+  });
 
   const navigation = useNavigation();
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.containerLogo}>
-        <Animatable.Image
-          style={styles.tituLogo}
-          animation="fadeInDown"
-          source={require("../../../assets/imgWeb/logo.png")}
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
+    return (
+      <View style={styles.container}>
+        <View style={styles.containerLogo}>
+          <Animatable.Image
+            style={styles.tituLogo}
+            animation="fadeInDown"
+            source={require("../../../assets/imgMobile/logo_2S.png")}
+            resizeMode="contain"
+          />
+          <Animatable.Text animation="flipInY" style={styles.tituloRH}>
+            RECURSOS HUMANOS
+          </Animatable.Text>
+          <Animatable.Image
+            animation="flipInY"
+            source={require("../../../assets/imgMobile/welcome2.png")}
+            style={styles.imagem}
+            resizeMode="contain"
+          />
+        </View>
 
-          resizeMode="contain"
-        />
-        <Animatable.Text animation="flipInY" style={styles.tituloRH}>nomePojeto || logo</Animatable.Text>
-        <Animatable.Image
-          animation="flipInY"
-          source={require("../../../assets/imgMobile/welcome.png")}
-          style={{ width: '100%' }}
-          resizeMode="contain"
-        />
-      </View>
-
-      <Animatable.View delay={600} animation="fadeInUp" style={styles.containerForm}>
-        <Text style={styles.title}>Acompanhe sua motivação e benefícios, tudo em um só App!</Text>
-        <Text style={styles.text}>Faça seu login para começar</Text>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('Login')}
+        <Animatable.View
+          delay={600}
+          animation="fadeInUp"
+          style={styles.containerForm}
         >
-          <Text style={styles.buttonText}>Acessar</Text>
-        </TouchableOpacity>
-      </Animatable.View>
-
-    </View>
-  );
-};
-
+          <Text style={styles.title}>
+            Pensando sempre no conforto de nossos funcionários!
+          </Text>
+          <Text style={styles.text}>Faça seu login para começar</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate("Login")}
+          >
+            <Text style={styles.buttonText}>Acessar</Text>
+          </TouchableOpacity>
+        </Animatable.View>
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
   containerLogo: {
     flex: 2,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
   },
   tituLogo: {
-    width: '100%',
-    marginBottom: '10%'
+    width: "100%",
+    marginBottom: "10%",
+    height: 35,
+    fontFamily: "Montserrat_600SemiBold",
   },
   tituloRH: {
-    fontSize: 35,
-    fontWeight: 'bold',
-    marginBottom: '3%',
-    color: '#C20004',
-    fontStyle:'italic'
+    fontSize: 32,
+    width: "80%",
+    textAlign: "center",
+    fontFamily: "Montserrat_600SemiBold",
+    textTransform: "uppercase",
+    color: "#2A2E32",
+    marginBottom: 40,
+    fontWeight: "500",
   },
   containerForm: {
     flex: 1,
-    backgroundColor: '#C20004',
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    paddingStart: '5%',
-    paddingEnd: '5%'
+    backgroundColor: "#636466",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    paddingStart: "5%",
+    paddingEnd: "5%",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 28,
     marginBottom: 12,
-    color: 'white',
-    alignSelf: 'center'
+    color: "white",
+    alignSelf: "center",
+    fontFamily: " Quicksand_300Light",
+    textAlign: "center",
   },
   text: {
-    color: 'white',
-    alignSelf: 'center'
+    fontFamily: " Quicksand_300Light",
+    color: "white",
+    alignSelf: "center",
+    fontSize: 20,
   },
   button: {
-    position: 'absolute',
-    backgroundColor: 'white',
-    borderRadius: 50,
+    position: "absolute",
+    backgroundColor: "#C20004",
+    borderRadius: 10,
     paddingVertical: 8,
-    width: '60%',
-    alignSelf: 'center',
-    bottom: '15%',
-    alignItems: 'center',
-    justifyContent: 'center'
+    width: "70%",
+    alignSelf: "center",
+    bottom: "15%",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
+    height: 40,
   },
   buttonText: {
     fontSize: 18,
-    color: 'red',
-    fontWeight: 'bold'
-  }
-})
+    color: "white",
+    fontWeight: "bold",
+    fontFamily: " Quicksand_300Light",
+  },
+
+  imagem: {
+    height: 200,
+  },
+});

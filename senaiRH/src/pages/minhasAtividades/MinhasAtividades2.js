@@ -43,9 +43,9 @@ export default class MinhasAtividades extends Component {
         const xambers = base64.decode(token.split('.')[1])
         const user = JSON.parse(xambers)
 
-        console.warn('wertyui')
+        // console.warn('wertyui')
 
-        console.warn(user)
+        // console.warn(user)
 
 
         if (token != null) {
@@ -57,8 +57,8 @@ export default class MinhasAtividades extends Component {
             })
                 .then(response => {
                     if (response.status === 200) {
-                        console.warn(response)
-                        console.warn(this.state.modalVisible)
+                        // console.warn(response)
+                        // console.warn(this.state.modalVisible)
                         this.setState({ listaAtividades: response.data });
                     }
                 })
@@ -72,7 +72,7 @@ export default class MinhasAtividades extends Component {
     };
 
     openModal = async (id) => {
-        console.warn(id)
+        // console.warn(id)
         await api.get("/Atividades/" + id, {})
 
         .then(response => {
@@ -156,33 +156,44 @@ export default class MinhasAtividades extends Component {
     }
     renderItem = ({ item }) => (
 
+        <View style={styles.MinhaAtividadeCentro}>
 
-        <View >
+       
+        <View style={styles.MinhaAtividade}>
             <View style={styles.quadradoeTexto}>
                 <View style={styles.quadrado}></View>
                 <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
 
                 <View style={styles.descricaoOlho}>
+<<<<<<< HEAD
                     <Text style={styles.descricao}>{item.criador} </Text>
                 </View>
                 {/* <Text style={styles.descricao}>{item.idGestorCadastroNavigation.nome} </Text> */}
+=======
+                    <Text style={styles.descricao}>{item.dataConclusao} </Text>
+
+                    <TouchableOpacity style={styles.Modalbotao} onPress={() => this.openModal(item.idAtividade)}>
+                        <AntDesign name="downcircleo" size={24} color="#636466" />
+                    </TouchableOpacity>
+
+                </View>
+
+>>>>>>> c90b67b1f43312cd728710777dd0d04e8504a40c
                 <View style={styles.ModaleBotao}>
                     {/* <View style={styles.statusImagem}></View> */}
 
-                    <View style={styles.statusImagem}>
+                    {/* <View style={styles.statusImagem}>
 
                         <Image
                             source={
                                 item.idSituacaoAtividade == 1 ? require('../../../assets/img-gp1/validado.png') : item.idSituacaoAtividade == 2 ? require('../../../assets/img-gp1/pendente.png') : item.idSituacaoAtividade == 3 ? require('../../../assets/img-gp1/avaliando.png') : null
                             } />
-                        {/* <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? setmensagem('Validado') : item.idSituacaoAtividade == 2 ? setmensagem('Pendente') : item.idSituacaoAtividade == 3 ? setmensagem('Avaliando') : null} {mensagem} </Text> */}
+                        <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({mensagem: 'Validado'}) : item.idSituacaoAtividade == 2 ? this.setState({mensagem: 'Pendente'}) : item.idSituacaoAtividade == 3 ? this.setState({mensagem: 'Avaliando'}) : null } </Text>
 
-                    </View>
+                    </View> */}
 
 
-                    <TouchableOpacity style={styles.Modalbotao} onPress={() => this.openModal(item.idAtividade)}>
-                        <Image source={require('../../../assets/img-gp1/setaModal.png')} />
-                    </TouchableOpacity>
+                    
 
                 </View>
             </View>
@@ -194,7 +205,7 @@ export default class MinhasAtividades extends Component {
                 visible={this.state.modalVisible}
                 key={this.state.minhaAtividade.idMinhasAtividades}
                 onRequestClose={() => {
-                    console.warn(item)
+                    // console.warn(item)
                     //setModalVisible(!modalVisible)
                     //Alert.alert("Modal has been closed.");
                     //setModalVisible(!modalVisible);
@@ -242,6 +253,8 @@ export default class MinhasAtividades extends Component {
 
 
             </Modal>
+        </View>
+
         </View>
     )
 }
@@ -347,7 +360,6 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 8,
         marginRight: 16,
 
-        // flexDirection:'row',
     },
 
     TituloAtividade: {
@@ -437,7 +449,10 @@ const styles = StyleSheet.create({
     Modalbotao: {
         justifyContent: 'flex-start',
         alignItems: 'center',
-        //paddingLeft: 90,
+        // paddingRight: 18,
+        paddingTop: 6,
+        // marginLeft:130,
+        paddingLeft: 130
     },
 
     botao: {
@@ -613,6 +628,21 @@ const styles = StyleSheet.create({
     },
 
     MinhaAtividadeCentro: {
-        alignItems: 'center'
-    }
+        alignItems: 'center',
+        marginBottom: 40
+    },
+
+    MinhaAtividade: {
+        // paddingTop: 80,
+        // alignItems:'center',
+        // justifyContent:'center',
+        height: 120,
+        borderWidth: 1,
+        borderColor: '#B3B3B3',
+        backgroundColor: '#F2F2F2',
+        borderRadius: 10,
+        // marginBottom: 70,
+        width: '85%',
+
+    },
 })

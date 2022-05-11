@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import { Component } from "react";
+import React, { useState, useEffect } from 'react';
+//import { SvgUri } from 'react-native-svg';
 import {
     StyleSheet,
     Text,
@@ -10,248 +12,246 @@ import {
     Image,
     Alert,
     Pressable,
+    Button
 } from 'react-native';
+import { BlurView } from 'expo-blur';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
+import base64 from 'react-native-base64';
 import AppLoading from 'expo-app-loading';
+import api from "../../services/apiGp1";
 import { useFonts } from 'expo-font';
+import { EvilIcons, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 
-import {
-    Quicksand_300Light,
-    Quicksand_400Regular,
-    Quicksand_500Medium,
-    Quicksand_600SemiBold,
-    Quicksand_700Bold,
-} from '@expo-google-fonts/quicksand'
+export default class MinhasAtividades extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            modalVisible: false,
+            mensagem: '',
+            listaAtividades: [],
+            minhaAtividade: {}
+        }
 
-import {
-    Montserrat_100Thin,
-    Montserrat_200ExtraLight,
-    Montserrat_300Light,
-    Montserrat_400Regular,
-    Montserrat_500Medium,
-    Montserrat_600SemiBold,
-    Montserrat_700Bold,
-    Montserrat_800ExtraBold,
-    Montserrat_900Black,
-    Montserrat_100Thin_Italic,
-    Montserrat_200ExtraLight_Italic,
-    Montserrat_300Light_Italic,
-    Montserrat_400Regular_Italic,
-    Montserrat_500Medium_Italic,
-    Montserrat_600SemiBold_Italic,
-    Montserrat_700Bold_Italic,
-    Montserrat_800ExtraBold_Italic,
-    Montserrat_900Black_Italic,
-} from '@expo-google-fonts/montserrat';
-import { render } from 'react-dom';
+    }
 
-
-const MinhasExtras = () => {
-
-    const navigation = useNavigation();
-    const [modalVisible, setModalVisible] = useState(false)
-    const [mensagem, setmensagem] = useState('');
-    const [listaAtividades, setListaAtividades] = useState([]);
-    const [MinhaAtividade, setMinhaAtividade] = useState({});
-
-    //const [concluido, setConcluido] = useState([]);
-
-    const ListarMinhas = async () => {
+    ListarMinhas = async () => {
 
         const token = await AsyncStorage.getItem("userToken");
 
         const xambers = base64.decode(token.split('.')[1])
         const user = JSON.parse(xambers)
 
-        console.warn('wertyui')
+        // console.warn('wertyui')
 
-        console.warn(user.jti)
+        // console.warn(user)
 
 
         if (token != null) {
-            const resposta = await api.get("/Atividades/MinhasAtividadeExtra/" + id, {
+            await api.get("/Atividades/MinhasAtividadeExtra/" + user.jti, {
                 headers: {
-                    Authorization: "Bearer " + token,
+                    "Authorization": "Bearer " + token,
                 },
-            });
 
-            const dadosDaApi = await resposta.data;
-            setListaAtividades(dadosDaApi);
+            })
+                .then(response => {
+                    if (response.status === 200) {
+                        // console.warn(response)
+                        // console.warn(this.state.modalVisible)
+                        this.setState({ listaAtividades: response.data });
+                    }
+                })
+                .catch(response => {
+                    console.warn(response)
+                })
+
+
+
         }
     };
 
-    useEffect(() => {
-        ListarMinhas();
-    }, []);
-    
-    let [customFonts] = useFonts({
-        Regular: Quicksand_400Regular,
-        Light: Quicksand_300Light,
-        SemiBold: Quicksand_600SemiBold,
-        Bold: Quicksand_700Bold,
-        Medium: Quicksand_500Medium,
-        Montserrat_100Thin,
-        Montserrat_200ExtraLight,
-        Montserrat_300Light,
-        Montserrat_400Regular,
-        MediumM: Montserrat_500Medium,
-        SemiBoldM: Montserrat_600SemiBold,
-        Montserrat_700Bold,
-        Montserrat_800ExtraBold,
-        Montserrat_900Black,
-        Montserrat_100Thin_Italic,
-        Montserrat_200ExtraLight_Italic,
-        Montserrat_300Light_Italic,
-        Montserrat_400Regular_Italic,
-        Montserrat_500Medium_Italic,
-        Montserrat_600SemiBold_Italic,
-        Montserrat_700Bold_Italic,
-        Montserrat_800ExtraBold_Italic,
-        Montserrat_900Black_Italic,
-    });
+    openModal = async (id) => {
+        // console.warn(id)
+        await api.get("/Atividades/" + id, {})
 
-    if (!customFonts) {
-        return <AppLoading />;
-    };
+        .then(response => {
+            let dadosApi = response.data.atividade
+            //console.warn(dadosApi)
+            this.setState(
+                {
+                    minhaAtividade: dadosApi,
+                    modalVisible : true
+                }
+                )
+            
+            
+        })
+        
+    }
 
-    return (
-        <View style={styles.main}>
-            <View>
+    closeModal = () => {
+        this.setState({modalVisible : false})
+    }
 
-                <View style={styles.mainHeader}>
-                    <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
-                        style={styles.imgLogo}
-                    />
+    componentDidMount() {
+        this.ListarMinhas();
+    }
 
-                </View>
+    render() {
+        return (
 
+            <View style={styles.main}>
                 <View>
 
-                    <Text style={styles.tituloEfects}>{'Minhas atividades'.toUpperCase()} </Text>
+                    <View style={styles.mainHeader}>
+                        <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
+                            style={styles.imgLogo}
+                        />
 
-                    <View style={styles.escritaEscolha}>
-                        <View style={styles.itemEquipe}>
-                            <TouchableOpacity onPress={() => navigation.navigate('MinhasAtividades')}>
-                                <Text style={styles.font}> Obrigatórios </Text>
-                                <View style={styles.line1}></View>
-                            </TouchableOpacity>
-
-                        </View>
-
-                        <View style={styles.itemIndividual}>
-                            <TouchableOpacity >
-                                <Text style={styles.font}> Extras </Text>
-
-                            </TouchableOpacity>
-                            <View style={styles.line2}></View>
-                        </View>
+                        {/* IMPORTACAO DE IMAGENS */}
+                        {/* <SvgUri
+                        uri= "http"
+                    /> */}
 
                     </View>
+
+
+                    <View>
+
+                        <Text style={styles.tituloEfects}>{'Minhas atividades'.toUpperCase()} </Text>
+
+                        <View style={styles.escritaEscolha}>
+                            <View style={styles.itemEquipe}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('MinhasAtividades2')}>
+                                    <Text style={styles.font}> Obrigatórios </Text>
+ <View style={styles.line1}></View>
+                                </TouchableOpacity>
+                               
+                            </View>
+
+                            <View style={styles.itemIndividual}>
+                                <TouchableOpacity >
+                                    <Text style={styles.font}> Extras </Text>
+                                    
+                                </TouchableOpacity>
+<View style={styles.line2}></View>
+                            </View>
+
+                        </View>
+                    </View>
+                </View>
+
+
+                <FlatList
+                    style={styles.FlatList}
+                    data={this.state.listaAtividades}
+                    keyExtractor={item => item.idMinhasAtividades}
+                    renderItem={this.renderItem}
+                />
+
+            </View >
+
+        );
+    }
+    renderItem = ({ item }) => (
+
+        <View style={styles.MinhaAtividadeCentro}>
+
+       
+        <View style={styles.MinhaAtividade}>
+            <View style={styles.quadradoeTexto}>
+                <View style={styles.quadrado}></View>
+                <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
+
+                <View style={styles.descricaoOlho}>
+                    <Text style={styles.descricao}>{item.dataConclusao} </Text>
+
+                    <TouchableOpacity style={styles.Modalbotao} onPress={() => this.openModal(item.idAtividade)}>
+                        <AntDesign name="downcircleo" size={24} color="#636466" />
+                    </TouchableOpacity>
+
+                </View>
+
+                <View style={styles.ModaleBotao}>
+                    {/* <View style={styles.statusImagem}></View> */}
+
+                    {/* <View style={styles.statusImagem}>
+
+                        <Image
+                            source={
+                                item.idSituacaoAtividade == 1 ? require('../../../assets/img-gp1/validado.png') : item.idSituacaoAtividade == 2 ? require('../../../assets/img-gp1/pendente.png') : item.idSituacaoAtividade == 3 ? require('../../../assets/img-gp1/avaliando.png') : null
+                            } />
+                        <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({mensagem: 'Validado'}) : item.idSituacaoAtividade == 2 ? this.setState({mensagem: 'Pendente'}) : item.idSituacaoAtividade == 3 ? this.setState({mensagem: 'Avaliando'}) : null } </Text>
+
+                    </View> */}
+
+
+                    
+
                 </View>
             </View>
 
+            
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={this.state.modalVisible}
+                key={this.state.minhaAtividade.idMinhasAtividades}
+                onRequestClose={() => {
+                    // console.warn(item)
+                    //setModalVisible(!modalVisible)
+                    //Alert.alert("Modal has been closed.");
+                    //setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <View style={styles.quadradoModal}></View>
+                        <View style={styles.conteudoBoxModal}>
+                            <Text style={styles.nomeBoxModal}> {this.state.minhaAtividade.nomeAtividade} </Text>
+                            <Text style={styles.descricaoModal}> {this.state.minhaAtividade.descricaoAtividade} </Text>
+                            <Text style={styles.itemPostadoModal}> {this.state.minhaAtividade.dataInicio} </Text>
+                            <Text style={styles.entregaModal}> {this.state.minhaAtividade.dataConclusao} </Text>
+                            {/* <Text style={styles.criadorModal}> {item.idGestorCadastroNavigation.nome} </Text> */}
 
-            <FlatList
-                data={listaAtividades}
-                keyExtractor={item => item.idAtividade}
-                renderItem={() => { renderItem() }}
-            />
+                            <TouchableOpacity style={styles.anexo}>
+                                <Text style={styles.mais}>   + </Text>
+                                <Text style={styles.txtanexo}>    Adicionar Anexo</Text>
+                            </TouchableOpacity>
+
+                        </View>
+
+                        <View style={styles.botoesModal} >
+                            <TouchableOpacity
+                            // onPress={() => setModalVisible(!modalVisibleVar)}
+                            // onPress={() => Concluir()}
+                            >
+                                <View style={styles.associarModal}>
+                                    <Text style={styles.texto}> Concluida </Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+
+                            //onPress={() => setModalVisible(!modalVisible)}
+                            >
+                                <View style={styles.fecharModal}>
+                                    <Text style={styles.textoFechar} onPress={() => this.closeModal()} >Fechar X</Text>
+                                </View>
+
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
 
 
+            </Modal>
+        </View>
 
-
-        </View >
-
-    );
-
+        </View>
+    )
 }
 
-renderItem = ({ item }) => (
-    <View style={styles.MinhaAtividade}>
-        <View style={styles.quadradoeTexto}>
-            <View style={styles.quadrado}></View>
-            <Text style={styles.TituloAtividade}>{item.nomeAtividade} </Text>
-
-            <View style={styles.descricaoOlho}>
-                <Text style={styles.descricao}>{item.dataConclusao} </Text>
-
-                <TouchableOpacity style={styles.Modalbotao} onPress={() => setModalVisible(true)}>
-                     <AntDesign name="downcircleo" size={24} color="#636466" />
-                </TouchableOpacity>
-            </View>
-            <View style={styles.ModaleBotao}>
-                <View style={styles.statusImagem}></View>
-                <View style={styles.statusImagem}>
-                    <Image source={require('../../../assets/img-gp1/avaliando.png')} style={styles.avaliando} />
-                    <Text style={styles.status}>Em avaliação </Text>
-
-                    {/* 
-                         <Image source={require('../../../assets/img-gp1/pendente.png')} style={styles.avaliando}/>
-              <Text style={styles.status}>Pendente </Text> 
-              
-              <Image source={require('../../../assets/img-gp1/validado.png')} style={styles.avaliando}/>
-            <Text style={styles.status}>Validado </Text>  */}
-
-
-                </View>
-
-
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => {
-                        Alert.alert("Modal has been closed.");
-                        setModalVisible(!modalVisible);
-                    }}
-                >
-
-
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <View style={styles.quadradoModal}></View>
-                            <View style={styles.conteudoBoxModal}>
-                                <Text style={styles.nomeBoxModal}> Titulo Atividade </Text>
-                                <Text style={styles.descricaoModal}> Descrição Atividade </Text>
-                                <Text style={styles.itemPostadoModal}> Item Postado: 01/03/2022 </Text>
-                                <Text style={styles.entregaModal}> Data de Entrega: 18/03/2022 </Text>
-                                <Text style={styles.criadorModal}> Nome pessoa reponsavel </Text>
-                                <TouchableOpacity style={styles.anexo}>
-                                    <Text style={styles.mais}>   + </Text>
-                                    <Text style={styles.txtanexo}>    Adicionar Anexo</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={styles.botoesModal}  >
-                                <TouchableOpacity >
-                                    <View style={styles.associarModal}>
-                                        <Text style={styles.texto}> Concluida </Text>
-                                    </View>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-
-                                    onPress={() => setModalVisible(!modalVisible)}
-                                >
-                                    <View style={styles.fecharModal}>
-                                        <Text style={styles.textoFechar}>Fechar X</Text>
-                                    </View>
-
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-
-
-                </Modal>
-
-
-
-
-
-            </View>
-        </View>
-    </View>
-);
 
 const styles = StyleSheet.create({
 
@@ -262,8 +262,10 @@ const styles = StyleSheet.create({
     },
 
     mainHeader: {
+
         alignItems: 'center',
         paddingTop: 40,
+
     },
 
     tituloEfects: {
@@ -321,7 +323,7 @@ const styles = StyleSheet.create({
     titulo: {
         color: '#B83F52',
         fontSize: 18,
-        fontFamily: 'SemiBold'
+        fontFamily: 'SemiBold',
     },
 
 
@@ -334,16 +336,13 @@ const styles = StyleSheet.create({
         borderColor: '#B3B3B3',
         backgroundColor: '#F2F2F2',
         borderRadius: 10,
-        // marginBottom: 70,
+        marginBottom: 20,
         width: '85%',
-
     },
 
     quadradoeTexto: {
         flexWrap: "wrap",
-
     },
-
 
     quadrado: {
         backgroundColor: '#2A2E32',
@@ -354,7 +353,6 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 8,
         marginRight: 16,
 
-        // flexDirection:'row',
     },
 
     TituloAtividade: {
@@ -423,13 +421,11 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 35,
         alignItems: "center",
-        // height: ,
         width: 280
-
     },
 
     button: {
-        borderRadius: 20,
+        borderRadius: 10,
         padding: 10,
         elevation: 2,
         height: 40,
@@ -441,7 +437,6 @@ const styles = StyleSheet.create({
     boxTextos: {
         marginBottom: 30,
         marginTop: 20,
-
     },
 
     Modalbotao: {
@@ -495,8 +490,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-
-
     },
 
     textoIndisp: {
@@ -521,7 +514,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         // marginBottom: 20,
         width: '78%',
-
     },
 
     quadradoModal: {
@@ -530,14 +522,13 @@ const styles = StyleSheet.create({
         width: '100%',
         borderTopRightRadius: 8,
         borderTopLeftRadius: 8
-
     },
+
     nomeBoxModal: {
-        fontFamily: 'SemiBoldM',
+        fontFamily: 'SemiBold',
         textAlign: "center",
         paddingTop: 24,
         fontSize: 20
-
     },
 
     descricaoModal: {
@@ -584,7 +575,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#C20004',
         alignItems: 'center',
         justifyContent: 'center',
-
     },
 
     fecharModal: {
@@ -610,7 +600,6 @@ const styles = StyleSheet.create({
         height: 30
     },
 
-
     txtanexo: {
         fontFamily: 'Regular',
         marginRight: 40
@@ -624,11 +613,29 @@ const styles = StyleSheet.create({
     textoFechar: {
         fontFamily: 'MediumM',
         color: '#C20004'
-    }
+    },
 
+    FlatList: {
+        width: '100%',
+        // alignItems:'center'
+    },
 
+    MinhaAtividadeCentro: {
+        alignItems: 'center',
+        marginBottom: 40
+    },
 
+    MinhaAtividade: {
+        // paddingTop: 80,
+        // alignItems:'center',
+        // justifyContent:'center',
+        height: 120,
+        borderWidth: 1,
+        borderColor: '#B3B3B3',
+        backgroundColor: '#F2F2F2',
+        borderRadius: 10,
+        // marginBottom: 70,
+        width: '85%',
 
+    },
 })
-
-export default MinhasExtras;

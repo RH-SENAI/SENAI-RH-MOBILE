@@ -73,9 +73,9 @@ const MinhasAtividades = () => {
         const xambers = base64.decode(token.split('.')[1])
         const user = JSON.parse(xambers)
 
-        console.warn('wertyui')
+        // console.warn('wertyui')
         
-        console.warn(user)
+        // console.warn(user)
 
 
         if (token != null) {
@@ -87,12 +87,12 @@ const MinhasAtividades = () => {
             })
             .then(response => {
                 if(response.status === 200){
-                    console.warn(response)
+                    // console.warn(response)
                     setListaAtividades(response.data)
                 }
             })
             .catch(response => {
-                console.warn(response)
+                // console.warn(response)
             })
 
             const dadosDaApi = await resposta.data;
@@ -259,7 +259,7 @@ const MinhasAtividades = () => {
                 keyExtractor={item => item.idMinhasAtividades}
                 renderItem={(item) =>
                 
-                    <View >
+         <View >
         <View style={styles.quadradoeTexto}>
             <View style={styles.quadrado}></View>
             <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
@@ -286,7 +286,7 @@ const MinhasAtividades = () => {
                     visible={false}
                     key={item.idAtividade}
                     onRequestClose={() => {
-                        console.warn(item)
+                        // console.warn(item)
                         //setModalVisible(!modalVisible)
                         //Alert.alert("Modal has been closed.");
                         //setModalVisible(!modalVisible);
@@ -386,7 +386,7 @@ renderItem = ({ item }) => (
                     visible={false}
                     key={item.idAtividade}
                     onRequestClose={() => {
-                        console.warn(item)
+                        // console.warn(item)
                         //setModalVisible(!modalVisible)
                         //Alert.alert("Modal has been closed.");
                         //setModalVisible(!modalVisible);

@@ -53,7 +53,7 @@ export default function Perfil() {
                 setUsuario([resposta.data]);
             }
         } catch (error) {
-            console.warn(error);
+            // console.warn(error);
         }
     }
 

@@ -20,13 +20,22 @@ function App() {
       <StatusBar backgroundColor={'#C20004'} barStyle="light-content" />
       <Stack.Navigator>
 
+<<<<<<< HEAD
         {/* <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} /> */}
+=======
+        <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
+>>>>>>> c90b67b1f43312cd728710777dd0d04e8504a40c
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Redirecionar" component={Redirecionar} options={{ headerShown: false }}/>
         <Stack.Screen name="MainMotivar" component={MainMotivar} options={{ headerShown: false }} />
         <Stack.Screen name="MainMotivar2" component={MainMotivar2} options={{ headerShown: false }} />
+<<<<<<< HEAD
         <Stack.Screen name="AtividadesExtras" component={AtividadesExtras}  options={{ headerShown: false }}/> 
        <Stack.Screen name="MinhasExtras" component={MinhasExtras} options={{ headerShown: false }}/> 
+=======
+         <Stack.Screen name="AtividadesExtras" component={AtividadesExtras}  options={{ headerShown: false }}/>
+       <Stack.Screen name="MinhasExtras" component={MinhasExtras} options={{ headerShown: false }}/>
+>>>>>>> c90b67b1f43312cd728710777dd0d04e8504a40c
 
 
       </Stack.Navigator>
