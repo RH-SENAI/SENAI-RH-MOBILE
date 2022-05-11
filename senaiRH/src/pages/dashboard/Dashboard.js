@@ -1,7 +1,8 @@
 // React Imports
 import { useState, useEffect } from "react";
-import react from "react";
+import React from "react";
 import { Text as SvgText } from 'react-native-svg';
+import * as scale from 'd3-scale'
 import {
     Image,
     StyleSheet,
@@ -23,7 +24,7 @@ import {
 } from 'victory';
 import jwtDecode from "jwt-decode";
 
-import { LineChart, Grid, ProgressCircle } from 'react-native-svg-charts'
+import { BarChart, XAxis, ProgressCircle, Grid } from 'react-native-svg-charts'
 
 
 //Services
@@ -97,7 +98,7 @@ export default function Dashboard() {
 
             if (resposta.status === 200) {
                 setMinhasAtividades(resposta.data);
-                
+
             }
 
         } catch (error) {
@@ -124,14 +125,14 @@ export default function Dashboard() {
                 endAngle={360}
             >
                 <SvgText
-                    x={-10}
+                    x={-7.5}
                     y={1.5}
                     fill={'black'}
                     textAnchor={'middle'}
                     alignmentBaseline={'middle'}
-                    fontSize={25}
-                    fontWeight={'bolder'}
-                    stroke={'white'}
+                    fontSize={16}
+                    fontWeight={'normal'}
+                    //stroke={'white'}
                     opacity={'1'}
                     strokeWidth={0.4}>
                     {u.nivelSatisfacao * 100}%
@@ -157,14 +158,14 @@ export default function Dashboard() {
                 endAngle={360}
             >
                 <SvgText
-                    x={-10}
+                    x={-7.5}
                     y={1.5}
                     fill={'black'}
                     textAnchor={'middle'}
                     alignmentBaseline={'middle'}
-                    fontSize={25}
-                    fontWeight={'bolder'}
-                    stroke={'white'}
+                    fontSize={16}
+                    fontWeight={'normal'}
+                    //stroke={'white'}
                     opacity={'1'}
                     strokeWidth={0.4}>
                     {u.mediaAvaliacao * 10}%
@@ -176,35 +177,89 @@ export default function Dashboard() {
 
 
 
-    function LineChartExample() {
-        
+    // function LineChartExample() {
 
-        const atividadesFinalizadas = minhasAtividades
+
+    //     const atividadesFinalizadas = minhasAtividades
+    //         .filter(a => a.idSituacaoAtividade === 3)
+    //         .map((p) => {
+
+    //            return parseInt(p.dataConclusao.split('-')[1]);
+
+    //         });
+
+    //     console.warn(atividadesFinalizadas);
+
+    //     return (
+
+
+    //         <LineChart
+    //             style={{ height: 200 }}
+    //             data={atividadesFinalizadas}
+    //             svg={{ stroke: 'rgb(134, 65, 244)' }}
+    //             contentInset={{ top: 20, bottom: 20 }}
+    //         >
+    //             <Grid />
+    //         </LineChart>
+
+    //     )
+    // }
+
+    function GraficoBarras() {
+
+        const dataFinalizacao = minhasAtividades
             .filter(a => a.idSituacaoAtividade === 3)
             .map((p) => {
-                
-               return parseInt(p.dataConclusao.split('-')[1]);
-
+                return parseInt(p.dataConclusao.split('-')[2]);
             });
 
-        console.warn(atividadesFinalizadas);
+        const d1_5 = dataFinalizacao.filter(d => d <= 5).length
+        const d6_10 = dataFinalizacao.filter(d => d > 5 && d <= 10).length
+        const d11_15 = dataFinalizacao.filter(d => d > 10 && d <= 15).length
+        const d16_20 = dataFinalizacao.filter(d => d > 15 && d <= 20).length
+        const d21_25 = dataFinalizacao.filter(d => d > 20 && d <= 25).length
+        const d26_31 = dataFinalizacao.filter(d => d > 25 && d <= 31).length
+
+        //console.warn(d6_10);
+
+        //const data = [d1_5, d6_10, d11_15, d16_20, d21_25, d26_31]
+        const data = [d1_5, 2, 4, 5, 10, 11,]
+
+        const CUT_OFF = 20
+        const Labels = ({ x, y, bandwidth, data }) => (
+            data.map((value, index) => (
+                <SvgText
+                    key={ index }
+                    x={ x(index) + (bandwidth / 2) }
+                    y={ value < CUT_OFF ? y(value) - 10 : y(value) + 15 }
+                    fontSize={ 14 }
+                    fill={ value >= CUT_OFF ? 'white' : 'black' }
+                    alignmentBaseline={ 'middle' }
+                    textAnchor={ 'middle' }
+                >
+                    {value}
+                </SvgText>
+            ))
+        )
 
         return (
-
-
-            <LineChart
-                style={{ height: 200 }}
-                data={atividadesFinalizadas}
-                svg={{ stroke: 'rgb(134, 65, 244)' }}
-                contentInset={{ top: 20, bottom: 20 }}
-            >
-                <Grid />
-            </LineChart>
-
+            <View style={{ flexDirection: 'row', height: 200, paddingVertical: 16 }}>
+                <BarChart
+                    style={{ flex: 1 }}
+                    data={data}
+                    svg={{ fill: 'rgba(194, 0, 4, 0.85)' }}
+                    contentInset={{ top: 10, bottom: 10 }}
+                    spacing={0.2}
+                    gridMin={0}
+                >
+                    <Grid direction={Grid.Direction.HORIZONTAL}/>
+                    <Labels />
+                </BarChart>
+            </View>
         )
+
+
     }
-
-
 
 
 
@@ -251,12 +306,20 @@ export default function Dashboard() {
                                     </View>
                                     <View style={styles.containerPieChart} >
                                         <View style={styles.containerLegendas}>
+                                            <Text style={styles.tituloGrafico}>Produtividade:</Text>
+                                        </View>
+                                        <GraficoAvaliacao />
+                                    </View>
+                                    <GraficoBarras />
+                                    <View style={styles.containerPieChart} >
+                                        <View style={styles.containerLegendas}>
                                             <Text style={styles.tituloGrafico}>Média de Avaliação:</Text>
                                         </View>
                                         <GraficoAvaliacao />
                                     </View>
 
-                                    <LineChartExample />
+                                    {/* <LineChartExample /> */}
+                                    
                                 </View>
 
                             </View>
@@ -336,9 +399,10 @@ const styles = StyleSheet.create({
         //backgroundColor: 'purple',
         justifyContent: 'space-between',
         marginTop: 20,
+        paddingRight: '5%',
         alignItems: 'center',
         padding: 10,
-        height: 120,
+        height: 100,
     },
     containerLegendas: {
         flex: 1,
