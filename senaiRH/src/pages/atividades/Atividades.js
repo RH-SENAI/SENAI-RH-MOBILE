@@ -148,33 +148,19 @@ export default class AtividadesExtras extends Component {
 
                         <View style={styles.escritaEscolha}>
                             <View style={styles.itemEquipe}>
-<<<<<<< HEAD
                                 <Pressable >
                                     <Text style={styles.font}> Obrigatórios </Text>
                                     
                                 </Pressable><View style={styles.line1}></View>
-=======
-                                <Pressable onPress={() => this.props.navigation.navigate('Atividades')}>
-                                    <Text style={styles.font}> Obrigatórios </Text>
-                                    <View style={styles.line1}></View>
-                                </Pressable>
->>>>>>> 737970663bae3b301996d0414bbff7ca7c9a7100
 
                             </View>
 
                             <View style={styles.itemIndividual}>
-<<<<<<< HEAD
                                 <Pressable onPress={() => this.props.navigation.navigate('AtividadesExtras')}>
                                     <Text style={styles.font}> Extras </Text>
                                      <View style={styles.line2}></View>
                                 </Pressable>
                                
-=======
-                                <Pressable>
-                                    <Text style={styles.font}> Extras </Text>
-                                </Pressable>
-                                <View style={styles.line2}></View>
->>>>>>> 737970663bae3b301996d0414bbff7ca7c9a7100
                             </View>
 
                         </View>
