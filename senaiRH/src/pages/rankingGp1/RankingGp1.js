@@ -10,7 +10,8 @@ import {
     Image,
     Alert,
     Pressable,
-    ScrollView
+    ScrollView,
+    SafeAreaView,
 } from 'react-native';
 
 import AppLoading from 'expo-app-loading';
@@ -122,7 +123,10 @@ export default function Ranking() {
     // };
 
     return (
+        <SafeAreaView>
+            <ScrollView>
         <View style={styles.main}>
+
 
             <View>
                 <View style={styles.mainHeader}>
@@ -285,6 +289,8 @@ export default function Ranking() {
 
 
         </View>
+        </ScrollView>
+        </SafeAreaView>
 
     )
 }

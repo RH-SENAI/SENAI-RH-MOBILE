@@ -25,14 +25,14 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 // import 'intl';
 
-let customFonts = {
-    'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
-    'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
-    'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
-    'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
-    'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
-    'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
-}
+// let customFonts = {
+//     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
+//     'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
+//     'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
+//     'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
+//     'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
+//     'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
+// }
 
 export default class AtividadesExtras extends Component {
 
@@ -73,10 +73,10 @@ export default class AtividadesExtras extends Component {
 
     setModalVisible = async (visible, id) => {
         if (visible == true) {
-            //console.warn(id)
+            // console.warn(id)
             await this.ProcurarAtividades(id)
             this.setState({ modalVisible: true });
-            //console.warn(this.state.AtividadeBuscada)
+            // console.warn(this.state.AtividadeBuscada)
         }
         else if (visible == false) {
             this.setState({ AtividadeBuscada: {} })
@@ -86,13 +86,13 @@ export default class AtividadesExtras extends Component {
     }
 
 
-    async _loadFontsAsync() {
-        await Font.loadAsync(customFonts);
-        this.setState({ fontsLoaded: true });
-    }
+    // async _loadFontsAsync() {
+    //     await Font.loadAsync(customFonts);
+    //     this.setState({ fontsLoaded: true });
+    // }
 
     componentDidMount() {
-        this._loadFontsAsync();
+        // this._loadFontsAsync();
         this.buscarAtividade();
     }
 
@@ -116,14 +116,14 @@ export default class AtividadesExtras extends Component {
                     },
                 },
 
-                console.warn(resposta)
+               // console.warn(resposta)
 
 
             );
             if (resposta.status == 200) {
-                //console.warn('Voce se associou a uma atividade');
+               console.warn('Voce se associou a uma atividade');
             } else {
-                //console.warn('Falha ao se associar.');
+                console.warn('Falha ao se associar.');
             }
         } catch (error) {
             console.warn(error);
@@ -131,9 +131,9 @@ export default class AtividadesExtras extends Component {
     }
 
     render() {
-        if (!customFonts) {
-            return <AppLoading />;
-        }
+        // if (!customFonts) {
+        //     return <AppLoading />;
+        // }
         return (
 
             <View style={styles.main}>
@@ -212,7 +212,7 @@ export default class AtividadesExtras extends Component {
                     >
                         <View style={styles.corBotão}>
 
-                            <Text style={styles.texto}> Me Associar </Text>
+                            <Text style={styles.texto}> Realizar </Text>
                         </View>
                     </Pressable>
 
@@ -251,7 +251,7 @@ export default class AtividadesExtras extends Component {
                         <View style={styles.botoesModal}  >
                             <Pressable onPress={() => this.associar(this.state.AtividadeBuscada.idAtividade)} >
                                 <View style={styles.associarModal}>
-                                    <Text style={styles.texto}> Me Associar </Text>
+                                    <Text style={styles.texto}> Realizar </Text>
                                 </View>
                             </Pressable>
                             <Pressable
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
         borderColor: '#B3B3B3',
         backgroundColor: '#F2F2F2',
         borderRadius: 10,
-        marginBottom: 70,
+        marginBottom: 40,
         width: '85%',
     },
 
@@ -423,7 +423,7 @@ const styles = StyleSheet.create({
         height: 30,
         width: 87,
         backgroundColor: '#C20004',
-        //alignItems: 'center',
+        alignItems: 'center',
         justifyContent: 'center',
     },
 

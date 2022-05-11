@@ -21,6 +21,7 @@ import * as Font from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../services/apiGp1'
 import base64 from 'react-native-base64';
+import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 // import 'intl';
 
 let customFonts = {
@@ -95,12 +96,13 @@ export default class AtividadesExtras extends Component {
 
     associar = async (item) => {
         try {
-            console.log(item)
+            console.warn(item)
             const token = await AsyncStorage.getItem('userToken');
-
+            
             const xambers = base64.decode(token.split('.')[1])
             const user = JSON.parse(xambers)
             //console.warn(item)
+           //console.warn(item)
 
             const resposta = await api.post(
                 '/Atividades/Associar/' + user.jti + '/' + item,
@@ -113,11 +115,11 @@ export default class AtividadesExtras extends Component {
                     },
                 },
 
-                console.warn(resposta)
-
-
-            );
-            if (resposta.status == 200) {
+                
+                
+                );
+                if (resposta.status == 200) {
+                    console.warn(resposta)
                 //console.warn('Voce se associou a uma atividade');
             } else {
                 //console.warn('Falha ao se associar.');
@@ -187,11 +189,7 @@ export default class AtividadesExtras extends Component {
                 <View style={styles.quadrado}></View>
                 <View style={styles.espacoPontos}>
                     <Text style={styles.pontos}> {item.recompensaMoeda} Cashs </Text>
-                    <Image source={require('../../../assets/img-gp1/coins.png')}
-
-                        style={styles.imgCoins}
-                    />
-
+                    <FontAwesome5 name="coins" size={24} color="black" />
                 </View>
                 <View style={styles.conteudoBox}>
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
@@ -216,7 +214,10 @@ export default class AtividadesExtras extends Component {
                     </Pressable>
 
                     <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
-                        <Image source={require('../../../assets/img-gp1/setaModal.png')} />
+
+                        <AntDesign name="downcircleo" size={24} color="#636466" />
+
+                        
                     </Pressable>
                 </View>
 
@@ -358,7 +359,7 @@ const styles = StyleSheet.create({
         borderColor: '#B3B3B3',
         backgroundColor: '#F2F2F2',
         borderRadius: 10,
-        marginBottom: 70,
+        marginBottom: 40,
         width: '85%',
     },
 
@@ -420,7 +421,7 @@ const styles = StyleSheet.create({
         height: 30,
         width: 87,
         backgroundColor: '#C20004',
-        //alignItems: 'center',
+        alignItems: 'center',
         justifyContent: 'center',
     },
 
