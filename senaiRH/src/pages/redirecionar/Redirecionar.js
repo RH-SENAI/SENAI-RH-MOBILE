@@ -75,7 +75,7 @@ export default function Redirecionar() {
   return (
     <View style={styles.container}>
 
-      <Image style={styles.logoSenai} source={require("../../../assets/imgMobile/logo_2S.png")} resizeMode="contain" />
+      <Image style={styles.logoSenai} source={require('../../../assets/img-gp1/logoSenai2.png')}resizeMode="contain" />
 
       <View style={styles.containerLinks}>
         <Text style={styles.titulo}>REDIRECIONAR PARA:</Text>
@@ -106,13 +106,15 @@ const styles = StyleSheet.create({
     flex: 1,
     // backgroundColor: "white",
   },
+  
   logoSenai: {
-    width: "100%",
-    height: 40,
+    // width: "100%",
+    // height: 40,
     alignSelf: "center",
     marginTop: 40,
-    marginBottom: 20,
+    //marginBottom: 20,
   },
+
   containerLinks: {
     flex: 1,
     // backgroundColor: 'cyan',
@@ -120,14 +122,17 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingLeft: "5%",
     paddingRight: "5%",
-    paddingTop: 15
+    paddingTop:32,
   },
+
   titulo: {
-    fontSize: 32,
+    fontSize: 30,
     width: '80%',
     textAlign: 'center',
     marginBottom: 15,
-    fontFamily:'SemiBoldM'
+    fontFamily:'SemiBoldM',
+    paddingTop: 32,
+    paddingBottom: 32,
   },
   button: {
     flexDirection: 'row',

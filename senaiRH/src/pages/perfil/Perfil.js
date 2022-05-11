@@ -78,8 +78,9 @@ export default function Perfil() {
     return (
 
         <SafeAreaView style={styles.container}>
-            <View>
-                <Image style={styles.mainHeader} source={require('../../../assets/img-gp1/logoSenai2.png')} />
+
+            <View style={styles.mainHeader} >
+                <Image source={require('../../../assets/img-gp1/logoSenai2.png')} />
 
             </View>
 
@@ -140,7 +141,28 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F2F2F2',
         alignItems: 'center',
-        
+
+    },
+
+    mainHeader: {
+        alignItems: 'center',
+        paddingTop: 40,
+    },
+
+    conteudo: {
+        alignItems: 'center',
+        paddingTop: 40,
+    },
+
+    titulo: {
+        fontSize: 32,
+        width: '80%',
+        textAlign: 'center',
+        alignSelf: 'center',
+        fontFamily: 'Montserrat_600SemiBold',
+        textTransform: 'uppercase',
+        color: '#2A2E32',
+        paddingBottom: 20,
     },
 
     fotoPerfilContainer: {
@@ -152,62 +174,24 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderColor: 'gray',
         marginVertical: 20,
-        
-    },
 
-    titulo:{
-        
     },
 
     textInfGeralPerfil: {
         fontFamily: 'Quicksand_400Regular',
         fontSize: 20,
         color: 'black',
-        marginRight: 203,
-        marginBottom: 20
-    },
-
-    lineTextPerfil: {
-        fontFamily: 'Quicksand_400Regular',
-        fontSize: 20,
-        color: '#B3B3B3'
-    },
-
-    logoSenai: {
-        width: "100%",
-        height: 40,
-        alignSelf: "center",
-        marginTop: 60,
+        paddingRight: 203,
         marginBottom: 20,
     },
-
-    titulo: {
-        fontSize: 32,
-        width: '80%',
-        textAlign: 'center',
-        alignSelf: 'center',
-        fontFamily: 'Montserrat_600SemiBold',
-        textTransform: 'uppercase',
-        color: '#2A2E32'
-    },
-
-    conteudo: {
-        alignItems: 'center',
-        paddingBottom: 20,
-        paddingTop:40,
-    },
-
+    
     boxPerfil: {
+        height: 46,
         backgroundColor: "#F2F2F2",
-        paddingHorizontal: '5%',
         width: '100%'
 
     },
-    titulos: {
-        color: '#0A0A0A',
-        fontSize: 16,
-        fontWeight: 'bold'
-    },
+
     line: {
         width: '100%',
         height: 50,
@@ -221,26 +205,10 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
 
-    sobreTrofeu: {
-        width: 270,
-        height: 50,
-        fontSize: 30,
-        borderRadius: 5,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 10,
-        elevation: 16,
-        backgroundColor: '#F2F2F2',
-        //boxShadow: '19px',
-        borderRadius: 5,
-        flexDirection: 'row',
-
-
-    },
-    textTrofeu: {
-        color: 'black',
-        marginLeft: 10,
-        //fontFamily:'Montserrat-Regular',
+    lineTextPerfil: {
+        fontFamily: 'Quicksand_400Regular',
+        fontSize: 20,
+        color: '#B3B3B3'
     },
 
 });

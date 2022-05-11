@@ -100,7 +100,7 @@ export default class AtividadesExtras extends Component {
 
             const xambers = base64.decode(token.split('.')[1])
             const user = JSON.parse(xambers)
-            console.warn(item)
+            //console.warn(item)
 
             const resposta = await api.post(
                 '/Atividades/Associar/' + user.jti + '/' + item,
@@ -118,9 +118,9 @@ export default class AtividadesExtras extends Component {
 
             );
             if (resposta.status == 200) {
-                console.warn('Voce se associou a uma atividade');
+                //console.warn('Voce se associou a uma atividade');
             } else {
-                console.warn('Falha ao se associar.');
+                //console.warn('Falha ao se associar.');
             }
         } catch (error) {
             console.warn(error);
@@ -242,6 +242,7 @@ export default class AtividadesExtras extends Component {
                             <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
                             <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
                             <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
+                            <Text style={styles.pessoasModal}> Em {this.state.AtividadeBuscada.equipe} </Text>
                             <Text style={styles.criadorModal}> Criador da atividade </Text>
                         </View>
                         <View style={styles.botoesModal}  >
@@ -510,6 +511,13 @@ const styles = StyleSheet.create({
     },
 
     entregaModal: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingBottom: 16,
+        marginLeft: 16
+    },
+
+    pessoasModal:{
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
         paddingBottom: 16,

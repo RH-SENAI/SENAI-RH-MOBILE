@@ -75,13 +75,13 @@ export default class Login extends Component {
         senha: this.state.senha,
       });
 
-      console.warn(resposta);
+      //console.warn(resposta);
       const token = resposta.data.token;
 
-      console.warn(token);
+      //console.warn(token);
 
       await AsyncStorage.setItem('userToken', token);
-      console.warn(resposta.data);
+      //console.warn(resposta.data);
 
       if (resposta.status === 200) {
 
@@ -216,12 +216,7 @@ export default class Login extends Component {
 
 
           <View style={styles.erroMsg}>
-            {/* <Animated.Text 
-              onPress={this.realizarLogin} 
-              style={styles.erroText}
-              animation="flipInY">
-                Email ou Senha inválidos!
-            </Animated.Text> */}
+            
 
             
               <TouchableOpacity  onPress={() => this.props.navigation.navigate('alterarSenha')}>
@@ -307,36 +302,6 @@ const styles = StyleSheet.create({
     paddingLeft: 32
   },
   
-
-  // inputEmail:{
-  //   width: 350,
-  //   height: 46,
-  //   borderWidth: 1,
-  //   borderColor: '#B3B3B3',
-  // },
-
-  // inputSenha:{
-  //   borderWidth: 1,
-  //   borderColor: '#B3B3B3',
-  // },
-
-
-  // inputLogin: {
-  //   //backgroundColor: 'white',
-  //   //borderRadius: 10,
-  //   //padding: 30,
-  //   //alignItems: 'center',
-  //   //justifyContent: 'center',
-  //   shadowColor: '#c0c0c0',
-  //   shadowOpacity: 0.9,
-  //   shadowOffset: {
-  //     height: 2,
-  //     width: 2,
-  //   },
-  //   shadowRadius: 8,
-  //   //elevation: 6,
-  // },
-
   inputLogin: {
     width: 350,
     height: 46,
@@ -405,7 +370,6 @@ const styles = StyleSheet.create({
 
 
   imgLoginView: {
-    //justifyContent:'flex-start',
     marginTop: 92,
     //width: 180,
     //height: 165,

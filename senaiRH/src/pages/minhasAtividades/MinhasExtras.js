@@ -9,7 +9,7 @@ import {
     FlatList,
     Image,
     Alert,
-    Pressable
+    Pressable,
 } from 'react-native';
 
 import { useNavigation } from "@react-navigation/native";
@@ -262,10 +262,8 @@ const styles = StyleSheet.create({
     },
 
     mainHeader: {
-
         alignItems: 'center',
         paddingTop: 40,
-
     },
 
     tituloEfects: {
