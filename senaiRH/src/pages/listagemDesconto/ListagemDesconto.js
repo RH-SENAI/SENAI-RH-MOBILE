@@ -18,6 +18,7 @@ import { Rating, AirbnbRating } from 'react-native-ratings';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import ReadMore from 'react-native-read-more-text';
 import api from '../../services/apiGrupo2.js';
+import apiGp1 from '../../services/apiGp1.js';
 import apiMaps from '../../services/apiMaps.js';
 import * as Location from 'expo-location';
 const delay = require('delay');
@@ -35,10 +36,22 @@ export default class ListagemDesconto extends Component {
             inscrito: '',
             showAlert: false,
             contadorDesconto: 0,
+            saldoUsuario: 0,
             listaDesconto: [],
             descontoBuscado: [],
         };
     }
+    SaldoUsuario = async () => {
+        const idUser = await AsyncStorage.getItem('idUsuario');
+        console.log(idUser)
+        const resposta = await apiGp1(`/Usuarios/BuscarUsuario/${idUser}`)
+        if (resposta.status == 200) {
+            var dadosUsuario = resposta.data
+            console.log(dadosUsuario);
+            this.setState({ saldoUsuario: dadosUsuario.saldoMoeda })
+        }
+    }
+
     GetLocation = async () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
 
@@ -190,7 +203,8 @@ export default class ListagemDesconto extends Component {
     }
     componentDidMount = async () => {
         this.GetLocation();
-        await delay(5000);
+        this.SaldoUsuario();
+        await delay(2000);
         // setTimeout(function(){this.setState({ timeGeolocation: true})}, 1000);
         this.ListarDescontos();
     }
@@ -265,7 +279,7 @@ export default class ListagemDesconto extends Component {
                 </View>
                 <View style={styles.boxSaldoUsuario}>
                     <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                    <Text style={styles.textDados}>3024</Text>
+                    <Text style={styles.textDados}>{this.state.saldoUsuario}</Text>
                 </View>
 
                 <FlatList
@@ -286,7 +300,7 @@ export default class ListagemDesconto extends Component {
                 <Pressable onPress={() => this.setModalVisivel(true, item.idDesconto)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
-                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemDesconto}` }} />
+                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemDesconto}` }} resizeMode="stretch" />
                         </View>
 
                         <View style={styles.boxTituloCurso}>
@@ -334,7 +348,7 @@ export default class ListagemDesconto extends Component {
                                 <ScrollView>
                                     <View style={styles.boxTituloModal}>
                                         <View style={styles.boxImgCurso}>
-                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemDesconto}` }} />
+                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemDesconto}` }} resizeMode="stretch"  />
                                         </View>
                                         <Text style={styles.textTituloModal}>{item.nomeDesconto}</Text>
                                     </View>
@@ -351,23 +365,15 @@ export default class ListagemDesconto extends Component {
                                     </View>
 
                                     <View style={styles.boxDadosModal}>
-                                        <Image source={require('../../../assets/imgGP2/relogio.png')} />
-                                        {/* <Text style={styles.textDadosModal}>{item.cargaHoraria}</Text> */}
-
-                                        <Image source={require('../../../assets/imgGP2/mapa.png')} />
-                                        <Text style={styles.textDadosModal}>{ }</Text>
-                                    </View>
-
-                                    <View style={styles.boxDadosModal}>
-                                        <Image source={require('../../../assets/imgGP2/local.png')} />
-                                        {/* <Text style={styles.textDadosModal}>{this.modalidade(item.modalidadeCurso)}</Text> */}
-
                                         <Image source={require('../../../assets/imgGP2/dataFinal.png')} />
                                         <Text style={styles.textDadosModal}>
-                                            {/* {Intl.DateTimeFormat("pt-BR", {
+                                            {Intl.DateTimeFormat("pt-BR", {
                                                 year: 'numeric', month: 'numeric', day: 'numeric'
-                                            }).format(new Date(item.dataFinalizacao))} */}
+                                            }).format(new Date(item.validadeDesconto))}
                                         </Text>
+
+                                        <Image source={require('../../../assets/imgGP2/mapa.png')} />
+                                        <Text style={styles.textDadosModal}>{item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado}</Text>
                                     </View>
 
                                     <View style={styles.boxDescricaoModal}>
@@ -395,7 +401,7 @@ export default class ListagemDesconto extends Component {
 
                                             <View style={styles.boxInscreverModal}>
                                                 <Pressable style={styles.inscreverModal} onPress={() => { this.showAlert() }}  >
-                                                    <Text style={styles.textDetalhes}>Inscreva-se</Text>
+                                                    <Text style={styles.textDetalhes}>Pegue</Text>
                                                 </Pressable>
                                             </View>
                                         </View>
@@ -404,8 +410,10 @@ export default class ListagemDesconto extends Component {
                                             style={styles.bao}
                                             show={this.state.showAlert}
                                             showProgress={false}
-                                            title="Sucesso"
-                                            message="Você foi inscrito no curso!"
+                                            title="Sucesso" 
+                                            titleStyle={styles.tituloAlert}                                       
+                                            message="Você resgatou o desconto!"
+                                            messageStyle={styles.textAlert}
                                             closeOnTouchOutside={true}
                                             closeOnHardwareBackPress={false}
                                             showCancelButton={true}
@@ -443,6 +451,7 @@ const styles = StyleSheet.create({
     },
     textTituloPrincipal: {
         textTransform: 'uppercase',
+        fontFamily: 'Montserrat-Bold',
         fontSize: 30
     },
     boxSaldoUsuario: {
@@ -473,15 +482,16 @@ const styles = StyleSheet.create({
     },
     imgCurso: {
         width: 275,
-        height: 83,
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8,
+        height: 125,
+        borderTopLeftRadius: 4,
+        borderTopRightRadius: 4,
     },
     boxTituloCurso: {
         marginLeft: 16
     },
     textTituloCurso: {
         fontSize: 20,
+        fontFamily: 'Montserrat-Medium',
         marginTop: 8,
     },
     boxAvaliacao: {
@@ -493,19 +503,27 @@ const styles = StyleSheet.create({
         marginLeft: 16,
         marginTop: 4
     },
+    boxDados: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginTop: 8,
+        marginLeft: 16
+    },
     imgDados: {
-        width: 19.6,
+        width: 19.7,
         height: 19.8,
         marginTop: 1
     },
     textDados: {
-        marginLeft: 8
+        fontFamily: 'Quicksand-Regular',
+        marginLeft: 8,
+        marginBottom: 3
     },
     boxPrecoFavorito: {
         height: 40,
         display: 'flex',
         flexDirection: 'row',
-        marginTop: 73,
+        marginTop: 35,
         marginLeft: 16
     },
     boxPreco: {
@@ -517,7 +535,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'center'
     },
     imgCoin: {
         width: 22.1,
@@ -539,19 +557,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    textDetalhes: {
-        color: 'white'
-    },
     totalModal: {
         flex: 1,
-        backgroundColor: 'rgba(255,255,255,0.5)',
+        backgroundColor: 'rgba(0,0,0,0.3)',
     },
     containerModal: {
         width: '83%',
         height: '81%',
         backgroundColor: '#F2F2F2',
         borderWidth: 2,
-        borderTopWidth: 0,
+        borderTopWidth: 1,
         borderColor: '#B3B3B3',
         //borderStyle: 'dashed',
         marginLeft: 33,
@@ -562,13 +577,13 @@ const styles = StyleSheet.create({
         //alignItems: 'center',
     },
     imgModalCurso: {
-        width: '101.5%',
-        height: 100,
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
+        width: '100%',
+        height: 150,
+        borderTopLeftRadius: 4,
+        borderTopRightRadius: 4,
     },
     textTituloModal: {
-        //fontFamily: 'Montserrat-Bold',
+        fontFamily: 'Montserrat-Bold',
         fontSize: 20,
         color: '#000',
         marginTop: 24,
@@ -588,6 +603,7 @@ const styles = StyleSheet.create({
     },
     textDadosModal: {
         width: 120,
+        fontFamily: 'Quicksand-Regular',
         marginLeft: 16
     },
     boxDescricaoModal: {
@@ -596,18 +612,18 @@ const styles = StyleSheet.create({
         marginTop: 24
     },
     descricaoModal: {
-        //fontFamily: 'Montserrat-Bold',
+        fontFamily: 'Montserrat-Medium',
         fontSize: 16,
         color: '#000',
     },
     boxVerMais: {
-        height: 50
+        height: 150
     },
     textDescricaoModal: {
-        //fontFamily: 'Montserrat-Normal',
+        fontFamily: 'Quicksand-Regular',
         width: 280,
         height: '18%',
-        fontSize: 14,
+        fontSize: 12,
         color: '#000',
         alignItems: 'center',
         display: 'flex',
@@ -617,15 +633,15 @@ const styles = StyleSheet.create({
     boxEmpresa: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 32
+        marginTop: 165
     },
     tituloEmpresa: {
-        //fontFamily: 'Montserrat-Bold',
-        fontSize: 12,
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 14,
         color: '#000',
     },
     textEmpresa: {
-        //fontFamily: 'Montserrat-Normal',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 14,
         color: '#000',
         marginLeft: 10
@@ -645,7 +661,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 32,
+        marginTop: 24,
         marginRight: 40
     },
     boxInscreverModal: {
@@ -658,7 +674,14 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 32,
-        marginLeft: 24
+        marginTop: 24,
+        marginLeft: 8
     },
+    textDetalhes: {
+        color: 'white',
+        fontFamily: 'Montserrat-Medium',
+    },
+    tituloAlert: {
+        color: 'green'
+    }
 })

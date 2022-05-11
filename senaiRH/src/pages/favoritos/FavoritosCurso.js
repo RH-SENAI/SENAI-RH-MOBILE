@@ -18,7 +18,7 @@ import { Rating, AirbnbRating } from 'react-native-ratings';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import ReadMore from 'react-native-read-more-text';
 import api from '../../services/apiGrupo2.js';
-import apiUser from '../../services/apiGp1.js';
+import apiGp1 from '../../services/apiGp1.js';
 import apiMaps from '../../services/apiMaps.js';
 import * as Location from 'expo-location';
 const delay = require('delay');
@@ -36,10 +36,21 @@ export default class FavoritosDesconto extends Component {
             inscrito: '',
             showAlert: false,
             contadorCurso: 0,
+            saldoUsuario: 0,
             listaCurso: [],
             cursoBuscado: [],
             localizacaoCurso: [],
         };
+    }
+    SaldoUsuario = async () => {
+        const idUser = await AsyncStorage.getItem('idUsuario');
+        console.log(idUser)
+        const resposta = await apiGp1(`/Usuarios/BuscarUsuario/${idUser}`)
+        if (resposta.status == 200) {
+            var dadosUsuario = resposta.data
+            console.log(dadosUsuario);
+            this.setState({ saldoUsuario: dadosUsuario.saldoMoeda })
+        }
     }
 
     ListarCursoFavoritos = async () => {
@@ -88,6 +99,8 @@ export default class FavoritosDesconto extends Component {
     }
 
     componentDidMount = async () => {
+        this.SaldoUsuario();
+        await delay(3000);
         this.ListarCursoFavoritos();
     }
 
@@ -158,16 +171,16 @@ export default class FavoritosDesconto extends Component {
                 </View>
                 <View style={styles.boxSaldoUsuario}>
                     <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                    <Text style={styles.textDados}>3024</Text>
+                    <Text style={styles.textDados}>{this.state.saldoUsuario}</Text>
                 </View>
 
                 <View style={styles.boxSelect}>
                     <View style={styles.boxTituloCursoSelect}>
-                        <Text> Cursos </Text>
+                        <Text style={styles.textSelect}> Cursos </Text>
                         <View style={styles.line}></View>
                     </View>
                     <Pressable onPress={() => this.props.navigation.navigate('FavoritosDesconto')}>
-                        <Text style={styles.textDescontos}> Descontos </Text>
+                        <Text style={styles.textSelect}> Descontos </Text>
                     </Pressable>
                 </View>
 
@@ -234,7 +247,7 @@ export default class FavoritosDesconto extends Component {
                     animationType="fade"
                     transparent={true}
                     visible={this.state.modalVisivel}
-                    key={item.idCurso == this.state.cursoBuscado.idCurso}
+                    key={item.idCursoFavorito == this.state.cursoBuscado.idCursoFavorito}
                     onRequestClose={() => {
                         this.setModalVisivel(!this.state.modalVisivel)
                     }}
@@ -247,7 +260,7 @@ export default class FavoritosDesconto extends Component {
                                         <View style={styles.boxImgCurso}>
                                             <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idCursoNavigation.caminhoImagemCurso}` }} />
                                         </View>
-                                        <Text style={styles.textTituloModal}>{item.nomeCurso}</Text>
+                                        <Text style={styles.textTituloModal}>{item.idCursoNavigation.nomeCurso}</Text>
                                     </View>
                                     <View style={styles.boxAvaliacaoModal}>
                                         <AirbnbRating
@@ -354,6 +367,7 @@ const styles = StyleSheet.create({
     },
     textTituloPrincipal: {
         textTransform: 'uppercase',
+        fontFamily: 'Montserrat-Bold',
         fontSize: 30
     },
     boxSaldoUsuario: {
@@ -393,6 +407,7 @@ const styles = StyleSheet.create({
     },
     textTituloCurso: {
         fontSize: 20,
+        fontFamily: 'Montserrat-Medium',
         marginTop: 8,
     },
     boxAvaliacao: {
@@ -416,7 +431,9 @@ const styles = StyleSheet.create({
         marginTop: 1
     },
     textDados: {
-        marginLeft: 8
+        fontFamily: 'Quicksand-Regular',
+        marginLeft: 8,
+        marginBottom: 3
     },
     boxSelect: {
         width: 200,
@@ -432,6 +449,9 @@ const styles = StyleSheet.create({
         height: 1,
         backgroundColor: 'black',
         marginBottom: 24
+    },
+    textSelect: {
+        fontFamily: 'Montserrat-Medium',
     },
     boxPrecoFavorito: {
         height: 40,
@@ -471,12 +491,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    textDetalhes: {
-        color: 'white'
-    },
     totalModal: {
         flex: 1,
-        backgroundColor: 'rgba(255,255,255,0.5)',
+        backgroundColor: 'rgba(0,0,0,0.3)',
     },
     containerModal: {
         width: '83%',
@@ -500,7 +517,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 10,
     },
     textTituloModal: {
-        //fontFamily: 'Montserrat-Bold',
+        fontFamily: 'Montserrat-Bold',
         fontSize: 20,
         color: '#000',
         marginTop: 24,
@@ -520,6 +537,7 @@ const styles = StyleSheet.create({
     },
     textDadosModal: {
         width: 120,
+        fontFamily: 'Quicksand-Regular',
         marginLeft: 16
     },
     boxDescricaoModal: {
@@ -528,18 +546,18 @@ const styles = StyleSheet.create({
         marginTop: 24
     },
     descricaoModal: {
-        //fontFamily: 'Montserrat-Bold',
+        fontFamily: 'Montserrat-Medium',
         fontSize: 16,
         color: '#000',
     },
     boxVerMais: {
-        height: 50
+        height: 150
     },
     textDescricaoModal: {
-        //fontFamily: 'Montserrat-Normal',
+        fontFamily: 'Quicksand-Regular',
         width: 280,
         height: '18%',
-        fontSize: 14,
+        fontSize: 12,
         color: '#000',
         alignItems: 'center',
         display: 'flex',
@@ -552,12 +570,12 @@ const styles = StyleSheet.create({
         marginTop: 32
     },
     tituloEmpresa: {
-        //fontFamily: 'Montserrat-Bold',
-        fontSize: 12,
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 14,
         color: '#000',
     },
     textEmpresa: {
-        //fontFamily: 'Montserrat-Normal',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 14,
         color: '#000',
         marginLeft: 10
@@ -591,6 +609,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 32,
-        marginLeft: 24
+        marginLeft: 8
     },
+    textDetalhes: {
+        color: 'white',
+        fontFamily: 'Montserrat-Medium',
+    },
+    tituloAlert: {
+        color: 'green'
+    }
 })

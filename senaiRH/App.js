@@ -20,7 +20,7 @@ import FavoritosCurso from './src/pages/favoritos/FavoritosCurso.js';
 import FavoritosDesconto from './src/pages/favoritos/FavoritosDesconto.js';
 
 import 'intl';
-import 'intl/locale-data/jsonp/en';
+import 'intl/locale-data/jsonp/pt-BR';
 
 const Stack = createNativeStackNavigator();
 

@@ -18,7 +18,7 @@ import { Rating, AirbnbRating } from 'react-native-ratings';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import ReadMore from 'react-native-read-more-text';
 import api from '../../services/apiGrupo2.js';
-import apiUser from '../../services/apiGp1.js';
+import apiGp1 from '../../services/apiGp1.js';
 const delay = require('delay');
 // import { Location, Permissions } from 'expo';
 
@@ -34,10 +34,21 @@ export default class FavoritosDesconto extends Component {
             inscrito: '',
             showAlert: false,
             contadorCurso: 0,
+            saldoUsuario: 0,
             listaDesconto: [],
             descontoBuscado: [],
             localizacaoCurso: [],
         };
+    }
+    SaldoUsuario = async () => {
+        const idUser = await AsyncStorage.getItem('idUsuario');
+        console.log(idUser)
+        const resposta = await apiGp1(`/Usuarios/BuscarUsuario/${idUser}`)
+        if (resposta.status == 200) {
+            var dadosUsuario = resposta.data
+            console.log(dadosUsuario);
+            this.setState({ saldoUsuario: dadosUsuario.saldoMoeda })
+        }
     }
 
     ListarDescontosFavoritos = async () => {
@@ -86,6 +97,8 @@ export default class FavoritosDesconto extends Component {
     }
 
     componentDidMount = async () => {
+        this.SaldoUsuario();
+        await delay(3000);
         this.ListarDescontosFavoritos();
     }
 
@@ -147,7 +160,7 @@ export default class FavoritosDesconto extends Component {
                 </View>
                 <View style={styles.boxSaldoUsuario}>
                     <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                    <Text style={styles.textDados}>3024</Text>
+                    <Text style={styles.textDados}>{this.state.saldoUsuario}</Text>
                 </View>
 
                 <View style={styles.boxSelect}>

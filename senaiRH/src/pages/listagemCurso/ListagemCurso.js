@@ -18,6 +18,7 @@ import { Rating, AirbnbRating } from 'react-native-ratings';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import ReadMore from 'react-native-read-more-text';
 import api from '../../services/apiGrupo2.js';
+import apiGp1 from '../../services/apiGp1.js';
 import apiMaps from '../../services/apiMaps.js';
 import * as Location from 'expo-location';
 const delay = require('delay');
@@ -35,11 +36,23 @@ export default class ListagemCurso extends Component {
             inscrito: '',
             showAlert: false,
             contadorCurso: 0,
+            saldoUsuario: 0,
             listaCurso: [],
             cursoBuscado: [],
             localizacaoCurso: [],
         };
     }
+    SaldoUsuario = async () => {
+        const idUser = await AsyncStorage.getItem('idUsuario');
+        console.log(idUser)
+        const resposta = await apiGp1(`/Usuarios/BuscarUsuario/${idUser}`)
+        if (resposta.status == 200) {
+            var dadosUsuario = resposta.data
+            console.log(dadosUsuario);
+            this.setState({ saldoUsuario: dadosUsuario.saldoMoeda })
+        }
+    }
+
     GetLocation = async () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
 
@@ -126,7 +139,7 @@ export default class ListagemCurso extends Component {
 
                     // ----> Localização 
 
-                    var stringProblematica = `json?origins=${this.state.Userlongitude}, ${this.state.Userlatitude}&destinations=${localCurso}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
+                    var stringProblematica = `/json?origins=${this.state.Userlongitude}, ${this.state.Userlatitude}&destinations=${localCurso}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
                     // console.warn(stringProblematica)
 
                     const respostaLocal = await apiMaps(stringProblematica);
@@ -190,7 +203,8 @@ export default class ListagemCurso extends Component {
     }
     componentDidMount = async () => {
         this.GetLocation();
-        await delay(5000);
+        this.SaldoUsuario();
+        await delay(2000);
         this.ListarCurso();
     }
 
@@ -264,7 +278,7 @@ export default class ListagemCurso extends Component {
                 </View>
                 <View style={styles.boxSaldoUsuario}>
                     <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                    <Text style={styles.textDados}>3024</Text>
+                    <Text style={styles.textDados}>{this.state.saldoUsuario}</Text>
                 </View>
 
                 <FlatList
@@ -306,12 +320,12 @@ export default class ListagemCurso extends Component {
                         <View style={styles.boxDadosCurso}>
                             <View style={styles.boxDados}>
                                 <Image style={styles.imgDados} source={require('../../../assets/imgGP2/relogio.png')} />
-                                <Text style={styles.textDados}>{item.cargaHoraria}</Text>
+                                <Text style={styles.textDados}>{item.cargaHoraria} horas</Text>
                             </View>
 
                             <View style={styles.boxDados}>
                                 <Image style={styles.imgDados} source={require('../../../assets/imgGP2/local.png')} />
-                                <Text style={styles.textDados}>{this.modalidade(item)}</Text>
+                                <Text style={styles.textDados}>{this.modalidade(item.modalidadeCurso)}</Text>
                             </View>
                         </View>
 
@@ -323,7 +337,7 @@ export default class ListagemCurso extends Component {
 
                             <View style={styles.boxFavorito} onPress={() => this.Favoritar(item.idCurso)}>
                                 {/* <Pressable onPress={this.Favoritar(item.idCurso)}> */}
-                                    <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
+                                <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
                                 {/* </Pressable> */}
                             </View>
                         </View>
@@ -366,7 +380,7 @@ export default class ListagemCurso extends Component {
                                         <Text style={styles.textDadosModal}>{item.cargaHoraria}</Text>
 
                                         <Image source={require('../../../assets/imgGP2/mapa.png')} />
-                                        <Text style={styles.textDadosModal}>{ }</Text>
+                                        <Text style={styles.textDadosModal}>{item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado}</Text>
                                     </View>
 
                                     <View style={styles.boxDadosModal}>
@@ -383,15 +397,16 @@ export default class ListagemCurso extends Component {
 
                                     <View style={styles.boxDescricaoModal}>
                                         <Text style={styles.descricaoModal}>Descrição:</Text>
-                                        <ReadMore
-                                            style={styles.boxVerMais}
-                                            numberOfLines={3}
-                                            renderTruncatedFooter={this._renderTruncatedFooter}
-                                            renderRevealedFooter={this._renderRevealedFooter}
-                                            onReady={this._handleTextReady}
-                                        >
-                                            <Text style={styles.textDescricaoModal}>{item.descricaoCurso}</Text>
-                                        </ReadMore>
+                                        <View style={styles.boxVerMais}>
+                                            <ReadMore
+                                                numberOfLines={3}
+                                                renderTruncatedFooter={this._renderTruncatedFooter}
+                                                renderRevealedFooter={this._renderRevealedFooter}
+                                                onReady={this._handleTextReady}
+                                            >
+                                                <Text style={styles.textDescricaoModal}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</Text>
+                                            </ReadMore>
+                                        </View>
 
                                         <View style={styles.boxEmpresa}>
                                             <Text style={styles.tituloEmpresa}>Empresa: </Text>
@@ -416,6 +431,7 @@ export default class ListagemCurso extends Component {
                                             show={this.state.showAlert}
                                             showProgress={false}
                                             title="Sucesso"
+                                            titleStyle={styles.tituloAlert}  
                                             message="Você foi inscrito no curso!"
                                             closeOnTouchOutside={true}
                                             closeOnHardwareBackPress={false}
@@ -454,6 +470,7 @@ const styles = StyleSheet.create({
     },
     textTituloPrincipal: {
         textTransform: 'uppercase',
+        fontFamily: 'Montserrat-Bold',
         fontSize: 30
     },
     boxSaldoUsuario: {
@@ -493,6 +510,7 @@ const styles = StyleSheet.create({
     },
     textTituloCurso: {
         fontSize: 20,
+        fontFamily: 'Montserrat-Medium',
         marginTop: 8,
     },
     boxAvaliacao: {
@@ -511,12 +529,14 @@ const styles = StyleSheet.create({
         marginLeft: 16
     },
     imgDados: {
-        width: 19.6,
+        width: 19.7,
         height: 19.8,
         marginTop: 1
     },
     textDados: {
-        marginLeft: 8
+        fontFamily: 'Quicksand-Regular',
+        marginLeft: 8,
+        marginBottom: 3
     },
     boxPrecoFavorito: {
         height: 40,
@@ -556,12 +576,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    textDetalhes: {
-        color: 'white'
-    },
     totalModal: {
         flex: 1,
-        backgroundColor: 'rgba(255,255,255,0.5)',
+        backgroundColor: 'rgba(0,0,0,0.3)',
     },
     containerModal: {
         width: '83%',
@@ -585,7 +602,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 10,
     },
     textTituloModal: {
-        //fontFamily: 'Montserrat-Bold',
+        fontFamily: 'Montserrat-Bold',
         fontSize: 20,
         color: '#000',
         marginTop: 24,
@@ -605,6 +622,7 @@ const styles = StyleSheet.create({
     },
     textDadosModal: {
         width: 120,
+        fontFamily: 'Quicksand-Regular',
         marginLeft: 16
     },
     boxDescricaoModal: {
@@ -613,18 +631,18 @@ const styles = StyleSheet.create({
         marginTop: 24
     },
     descricaoModal: {
-        //fontFamily: 'Montserrat-Bold',
+        fontFamily: 'Montserrat-Medium',
         fontSize: 16,
         color: '#000',
     },
     boxVerMais: {
-        height: 50
+        height: 150
     },
     textDescricaoModal: {
-        //fontFamily: 'Montserrat-Normal',
+        fontFamily: 'Quicksand-Regular',
         width: 280,
         height: '18%',
-        fontSize: 14,
+        fontSize: 12,
         color: '#000',
         alignItems: 'center',
         display: 'flex',
@@ -637,12 +655,12 @@ const styles = StyleSheet.create({
         marginTop: 32
     },
     tituloEmpresa: {
-        //fontFamily: 'Montserrat-Bold',
-        fontSize: 12,
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 14,
         color: '#000',
     },
     textEmpresa: {
-        //fontFamily: 'Montserrat-Normal',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 14,
         color: '#000',
         marginLeft: 10
@@ -676,6 +694,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 32,
-        marginLeft: 24
+        marginLeft: 8
     },
+    textDetalhes: {
+        color: 'white',
+        fontFamily: 'Montserrat-Medium',
+    },
+    tituloAlert: {
+        color: 'green'
+    }
 })
