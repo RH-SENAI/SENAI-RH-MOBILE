@@ -19,9 +19,8 @@ import {
 
 const Tab = createBottomTabNavigator();
 
-import Atividades from "../atividades/Atividades.js";
-import AtividadesExtras from "../atividades/AtividadesExtras.js";
-import MinhasAtividades from "../minhasAtividades/MinhasAtividades2.js";
+import AtividadeExtras from "../atividades/AtividadesExtras.js";
+import MinhasExtras from "../minhasAtividades/MinhasExtras.js";
 import RankingGp1 from "../rankingGp1/RankingGp1.js";
 import Perfil from "../perfil/Perfil.js";
 import Redirecionar from "../redirecionar/Redirecionar.js";
@@ -36,7 +35,7 @@ function ButtonNew({ size, color }) {
 }
 
 
-export default function MainMotivar() {
+export default function MainMotivar2() {
   
   let [fontsLoaded] = useFonts({
     Regular: Quicksand_400Regular,
@@ -66,22 +65,23 @@ export default function MainMotivar() {
         },
         headerShown: false,
       }}
-      initialRouteName="Atividades"
+      //initialRouteName="AtividadesExtras"
     >
-      <Tab.Screen
-        name="Atividades"
-        component={Atividades}
+
+     <Tab.Screen
+        name="AtividadeExtras"
+        component={AtividadeExtras}
         options={{
           tabBarIcon: ({ size, color }) => (
-            <Entypo name="news" size={size} color={color} />
+            <AntDesign name="solution1" size={size} color={color} />
           ),
           headerShown: false,
         }}
       />
 
       <Tab.Screen
-        name="MinhasAtividades"
-        component={MinhasAtividades}
+        name="MinhasExtras"
+        component={MinhasExtras}
         options={{
           tabBarIcon: ({ size, color }) => (
             <AntDesign name="solution1" size={size} color={color} />

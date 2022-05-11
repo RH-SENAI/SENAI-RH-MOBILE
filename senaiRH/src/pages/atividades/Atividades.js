@@ -21,6 +21,8 @@ import * as Font from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../services/apiGp1'
 import base64 from 'react-native-base64';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 // import 'intl';
 
 let customFonts = {
@@ -43,6 +45,7 @@ export default class AtividadesExtras extends Component {
         };
     }
 
+
     buscarAtividade = async () => {
         const resposta = await api.get('/Atividades/ListarObrigatorias');
         const dadosDaApi = resposta.data;
@@ -58,7 +61,7 @@ export default class AtividadesExtras extends Component {
             if (resposta.status == 200) {
                 const dadosAtividades = await resposta.data.atividade;
                 await this.setState({ AtividadeBuscada: dadosAtividades })
-                
+
 
             }
         }
@@ -95,12 +98,12 @@ export default class AtividadesExtras extends Component {
 
     associar = async (item) => {
         try {
-            console.log(item)
+            //console.log(item)
             const token = await AsyncStorage.getItem('userToken');
 
             const xambers = base64.decode(token.split('.')[1])
             const user = JSON.parse(xambers)
-            console.warn(item)
+            //console.warn(item)
 
             const resposta = await api.post(
                 '/Atividades/Associar/' + user.jti + '/' + item,
@@ -118,9 +121,9 @@ export default class AtividadesExtras extends Component {
 
             );
             if (resposta.status == 200) {
-                console.warn('Voce se associou a uma atividade');
+                //console.warn('Voce se associou a uma atividade');
             } else {
-                console.warn('Falha ao se associar.');
+                //console.warn('Falha ao se associar.');
             }
         } catch (error) {
             console.warn(error);
@@ -135,7 +138,7 @@ export default class AtividadesExtras extends Component {
 
             <View style={styles.main}>
 
-             <View>
+                <View>
                     <View style={styles.mainHeader}>
                         <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
                             style={styles.imgLogo}
@@ -150,7 +153,7 @@ export default class AtividadesExtras extends Component {
                             <View style={styles.itemEquipe}>
                                 <Pressable >
                                     <Text style={styles.font}> Obrigatórios </Text>
-                                    
+
                                 </Pressable><View style={styles.line1}></View>
 
                             </View>
@@ -158,7 +161,7 @@ export default class AtividadesExtras extends Component {
                             <View style={styles.itemIndividual}>
                                 <Pressable onPress={() => this.props.navigation.navigate('AtividadesExtras')}>
                                     <Text style={styles.font}> Extras </Text>
-                                     <View style={styles.line2}></View>
+                                    <View style={styles.line2}></View>
                                 </Pressable>
                                
                             </View>
@@ -172,7 +175,8 @@ export default class AtividadesExtras extends Component {
                     // style={styles.boxAtividade}
                     data={this.state.listaAtividades}
                     keyExtractor={item => item.idAtividade}
-                    renderItem={this.renderItem} />
+                    renderItem={this.renderItem}
+                />
 
 
             </View>
@@ -188,11 +192,7 @@ export default class AtividadesExtras extends Component {
                 <View style={styles.quadrado}></View>
                 <View style={styles.espacoPontos}>
                     <Text style={styles.pontos}> {item.recompensaMoeda} Cashs </Text>
-                    <Image source={require('../../../assets/img-gp1/coins.png')}
-
-                        style={styles.imgCoins}
-                    />
-
+                    <FontAwesome5 name="coins" size={24} color="black" />
                 </View>
                 <View style={styles.conteudoBox}>
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
@@ -217,7 +217,10 @@ export default class AtividadesExtras extends Component {
                     </Pressable>
 
                     <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
-                        <Image source={require('../../../assets/img-gp1/setaModal.png')} />
+
+                        <AntDesign name="downcircleo" size={24} color="#636466" />
+
+                        
                     </Pressable>
                 </View>
 
@@ -246,7 +249,7 @@ export default class AtividadesExtras extends Component {
                             <Text style={styles.criadorModal}> Criador da atividade </Text>
                         </View>
                         <View style={styles.botoesModal}  >
-                            <Pressable  onPress={() => this.associar(this.state.AtividadeBuscada.idAtividade)} >
+                            <Pressable onPress={() => this.associar(this.state.AtividadeBuscada.idAtividade)} >
                                 <View style={styles.associarModal}>
                                     <Text style={styles.texto}> Me Associar </Text>
                                 </View>
