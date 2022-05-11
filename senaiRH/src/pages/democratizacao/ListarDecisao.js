@@ -32,9 +32,9 @@ import {
 import api from "../../services/api";
 
 export default function ListarDecisao() {
-  
+
   const navigation = useNavigation();
-  
+
   //States
   const [listaDecisao, setListaDecisao] = useState([]);
 
@@ -149,10 +149,12 @@ export default function ListarDecisao() {
 
 const styles = StyleSheet.create({
   containerRenderItem: {
-    width: 370,
+    width: 380,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
+    flex: 1,
+    //backgroundColor: 'green'
   },
 
   imgPerfilCardWrapper: {
@@ -177,7 +179,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     width: 230,
     height: 130,
-    marginRight:40
+    marginRight: 40
   },
 
   containerCard: {
@@ -209,6 +211,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     marginHorizontal: '5%',
+    //backgroundColor: 'cyan'
   },
 
   header: {
@@ -217,6 +220,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: 16,
     marginBottom: 32,
+    //backgroundColor: 'blue'
   },
 
   imgLogo: {

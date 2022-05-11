@@ -223,19 +223,19 @@ export default function Dashboard() {
         //console.warn(d6_10);
 
         //const data = [d1_5, d6_10, d11_15, d16_20, d21_25, d26_31]
-        const data = [d1_5, 2, 4, 5, 10, 11,]
+        const data = [4, 2, 4, 5, 3]
 
         const CUT_OFF = 20
         const Labels = ({ x, y, bandwidth, data }) => (
             data.map((value, index) => (
                 <SvgText
-                    key={ index }
-                    x={ x(index) + (bandwidth / 2) }
-                    y={ value < CUT_OFF ? y(value) - 10 : y(value) + 15 }
-                    fontSize={ 14 }
-                    fill={ value >= CUT_OFF ? 'white' : 'black' }
-                    alignmentBaseline={ 'middle' }
-                    textAnchor={ 'middle' }
+                    key={index}
+                    x={x(index) + (bandwidth / 2)}
+                    y={value < CUT_OFF ? y(value) - 10 : y(value) + 15}
+                    fontSize={14}
+                    fill={value >= CUT_OFF ? 'white' : 'black'}
+                    alignmentBaseline={'middle'}
+                    textAnchor={'middle'}
                 >
                     {value}
                 </SvgText>
@@ -243,16 +243,17 @@ export default function Dashboard() {
         )
 
         return (
-            <View style={{ flexDirection: 'row', height: 200, paddingVertical: 16 }}>
+            <View style={styles.graficoBarrasContainer}>
                 <BarChart
-                    style={{ flex: 1 }}
+                    //style={{ flex: 1 }}
+                    style={styles.graficoBarras}
                     data={data}
-                    svg={{ fill: 'rgba(194, 0, 4, 0.85)' }}
-                    contentInset={{ top: 10, bottom: 10 }}
+                    svg={{ fill: 'rgba(194, 0, 4, 0.8)' }}
+                    contentInset={{ top: 20, bottom: 10 }}
                     spacing={0.2}
                     gridMin={0}
                 >
-                    <Grid direction={Grid.Direction.HORIZONTAL}/>
+                    <Grid direction={Grid.Direction.HORIZONTAL} />
                     <Labels />
                 </BarChart>
             </View>
@@ -304,13 +305,15 @@ export default function Dashboard() {
                                         </View>
                                         <GraficoSatisfacao />
                                     </View>
-                                    <View style={styles.containerPieChart} >
-                                        <View style={styles.containerLegendas}>
+                                    <View style={styles.containerProdutividade} >
+                                        <View style={styles.containerProdutividadeSup}>
                                             <Text style={styles.tituloGrafico}>Produtividade:</Text>
+                                            <GraficoAvaliacao />
                                         </View>
-                                        <GraficoAvaliacao />
+                                        <GraficoBarras />
+                                        <Text style={styles.subtituloProdutividade}>Entregas de atividade por semana: </Text>
+
                                     </View>
-                                    <GraficoBarras />
                                     <View style={styles.containerPieChart} >
                                         <View style={styles.containerLegendas}>
                                             <Text style={styles.tituloGrafico}>Média de Avaliação:</Text>
@@ -319,7 +322,7 @@ export default function Dashboard() {
                                     </View>
 
                                     {/* <LineChartExample /> */}
-                                    
+
                                 </View>
 
                             </View>
@@ -399,23 +402,59 @@ const styles = StyleSheet.create({
         //backgroundColor: 'purple',
         justifyContent: 'space-between',
         marginTop: 20,
-        paddingRight: '5%',
+        //paddingRight: '5%',
         alignItems: 'center',
         padding: 10,
         height: 100,
+    },
+    containerProdutividade: {
+        flex: 1,
+        borderRadius: 5,
+        borderWidth: 3,
+        borderColor: 'gray',
+        //flexDirection: 'row',
+        //backgroundColor: 'purple',
+        //justifyContent: 'space-between',
+        marginTop: 20,
+        //paddingRight: '5%',
+        //alignItems: 'center',
+        padding: 10,
+        //flexWrap: 'wrap',
+        //height: 500,
+    },
+    subtituloProdutividade: {
+        fontSize: 16,
+        marginTop: -20,
     },
     containerLegendas: {
         flex: 1,
         //backgroundColor: 'orange'
     },
+    containerProdutividadeSup: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        //backgroundColor: 'green'
+    },
     grafico: {
         //flex: 1,
         width: 75,
         height: 75,
-        // backgroundColor: 'blue',
+        //backgroundColor: 'blue',
     },
     tituloGrafico: {
         fontSize: 20,
-        marginLeft: 10
+        //marginLeft: 15,
+        //backgroundColor: 'green'
+    },
+    graficoBarrasContainer: {
+        flexDirection: 'row',
+        height: 200,
+        paddingVertical: 16
+    },
+    graficoBarras: {
+        flex: 1,
+        //backgroundColor: 'yellow'
     }
 })
