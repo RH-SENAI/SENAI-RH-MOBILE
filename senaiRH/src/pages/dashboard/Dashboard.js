@@ -77,7 +77,6 @@ export default function Dashboard() {
 
             if (resposta.status === 200) {
                 setUsuario([resposta.data]);
-                //console.warn(resposta.data)
             }
 
         } catch (error) {
@@ -97,8 +96,8 @@ export default function Dashboard() {
             });
 
             if (resposta.status === 200) {
-                setMinhasAtividades([resposta.data]);
-                console.warn(resposta.data)
+                setMinhasAtividades(resposta.data);
+                
             }
 
         } catch (error) {
@@ -178,12 +177,16 @@ export default function Dashboard() {
 
 
     function LineChartExample() {
+        
 
         const atividadesFinalizadas = minhasAtividades
-        .filter(a => a.idSituacaoAtividade === 3)
-        .map(p => p.dataConclusao);
-        
-        const data = [50, 20, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80]
+            .filter(a => a.idSituacaoAtividade === 3)
+            .map((p) => {
+                
+               return parseInt(p.dataConclusao.split('-')[1]);
+
+            });
+
         console.warn(atividadesFinalizadas);
 
         return (
@@ -191,7 +194,7 @@ export default function Dashboard() {
 
             <LineChart
                 style={{ height: 200 }}
-                data={data}
+                data={atividadesFinalizadas}
                 svg={{ stroke: 'rgb(134, 65, 244)' }}
                 contentInset={{ top: 20, bottom: 20 }}
             >
@@ -201,7 +204,7 @@ export default function Dashboard() {
         )
     }
 
-    
+
 
 
 
@@ -209,61 +212,61 @@ export default function Dashboard() {
         return <AppLoading />;
     } else {
         return (
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <Image
-                        source={require("../../../assets/imgMobile/logo_2S.png")}
-                        style={styles.imgLogo}
-                    />
-                </View>
-                <Text style={styles.tituloPage}>DASHBOARD</Text>
+            <ScrollView>
+                <View style={styles.container}>
+                    <View style={styles.header}>
+                        <Image
+                            source={require("../../../assets/imgMobile/logo_2S.png")}
+                            style={styles.imgLogo}
+                        />
+                    </View>
+                    <Text style={styles.tituloPage}>DASHBOARD</Text>
 
 
-                {usuario.map((usuario) => {
-                    return (
-                        <View style={styles.containerAreaDados}>
-                            <View style={styles.containerDados}>
-                                <View style={styles.containerLine}>
-                                    <Image
-                                        source={usuario.caminhoFotoPerfil == undefined ? {
-                                            uri:
-                                                "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
-                                                usuario.caminhoFotoPerfil,
-                                        } : require("../../../assets/imgMobile/Perfil.png")}
-                                        resizeMod="cover"
-                                    />
+                    {usuario.map((usuario) => {
+                        return (
+                            <View style={styles.containerAreaDados}>
+                                <View style={styles.containerDados}>
+                                    <View style={styles.containerLine}>
+                                        <Image
+                                            source={usuario.caminhoFotoPerfil == undefined ? {
+                                                uri:
+                                                    "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
+                                                    usuario.caminhoFotoPerfil,
+                                            } : require("../../../assets/imgMobile/Perfil.png")}
+                                            resizeMod="cover"
+                                        />
 
-                                    <View style={styles.containerTextos}>
-                                        <Text style={styles.lineTextPerfil}>{usuario.nome}</Text>
-                                        <Text style={styles.lineTextPerfil}>{usuario.idCargoNavigation.nomeCargo}</Text>
+                                        <View style={styles.containerTextos}>
+                                            <Text style={styles.lineTextPerfil}>{usuario.nome}</Text>
+                                            <Text style={styles.lineTextPerfil}>{usuario.idCargoNavigation.nomeCargo}</Text>
+                                        </View>
                                     </View>
+
+                                    <View style={styles.containerPieChart} >
+                                        <View style={styles.containerLegendas}>
+                                            <Text style={styles.tituloGrafico}>Nivel de Satisfação:</Text>
+                                        </View>
+                                        <GraficoSatisfacao />
+                                    </View>
+                                    <View style={styles.containerPieChart} >
+                                        <View style={styles.containerLegendas}>
+                                            <Text style={styles.tituloGrafico}>Média de Avaliação:</Text>
+                                        </View>
+                                        <GraficoAvaliacao />
+                                    </View>
+
+                                    <LineChartExample />
                                 </View>
 
-                                <View style={styles.containerPieChart} >
-                                    <View style={styles.containerLegendas}>
-                                        <Text style={styles.tituloGrafico}>Nivel de Satisfação:</Text>
-                                    </View>
-                                    <GraficoSatisfacao />
-                                </View>
-                                <View style={styles.containerPieChart} >
-                                    <View style={styles.containerLegendas}>
-                                        <Text style={styles.tituloGrafico}>Média de Avaliação:</Text>
-                                    </View>
-                                    <GraficoAvaliacao />
-                                </View>
-                                
-                                <LineChartExample />
                             </View>
 
-                        </View>
-
+                        )
+                    }
                     )
-                }
-                )
-                }
-
-
-            </View>
+                    }
+                </View>
+            </ScrollView>
         )
     }
 }
@@ -316,11 +319,11 @@ const styles = StyleSheet.create({
     containerTextos: {
         marginLeft: 24,
         marginTop: 0,
-        fontFamily: ' Quicksand_300Light',
+        fontFamily: 'Quicksand_300Light',
         //backgroundColor: 'blue'
     },
     lineTextPerfil: {
-        fontFamily: ' Quicksand_300Light',
+        fontFamily: 'Quicksand_300Light',
         fontSize: 25,
         color: '#000'
     },
