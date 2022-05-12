@@ -176,6 +176,38 @@ export default function Dashboard() {
     }
 
 
+    const GraficoProdutividade = () => {
+        const u = usuario[0];
+        return (
+            <ProgressCircle
+                style={styles.grafico}
+                progress={.55}
+                progressColor={'#C20004'}
+                backgroundColor={'rgba(194, 0, 4, 0.15)'}
+                startAngle={0}
+                cornerRadius={5}
+                strokeWidth={15}
+                endAngle={360}
+            >
+                <SvgText
+                    x={-7.5}
+                    y={1.5}
+                    fill={'black'}
+                    textAnchor={'middle'}
+                    alignmentBaseline={'middle'}
+                    fontSize={16}
+                    fontWeight={'normal'}
+                    //stroke={'white'}
+                    opacity={'1'}
+                    strokeWidth={0.4}>
+                    {55}%
+                </SvgText>
+            </ProgressCircle>
+
+        )
+    }
+
+
 
     // function LineChartExample() {
 
@@ -308,7 +340,7 @@ export default function Dashboard() {
                                     <View style={styles.containerProdutividade} >
                                         <View style={styles.containerProdutividadeSup}>
                                             <Text style={styles.tituloGrafico}>Produtividade:</Text>
-                                            <GraficoAvaliacao />
+                                            <GraficoProdutividade />
                                         </View>
                                         <GraficoBarras />
                                         <Text style={styles.subtituloProdutividade}>Entregas de atividade por semana: </Text>

@@ -115,11 +115,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     color: "white",
     alignSelf: "center",
-    fontFamily: " Quicksand_300Light",
+    fontFamily: "Quicksand_300Light",
     textAlign: "center",
   },
   text: {
-    fontFamily: " Quicksand_300Light",
+    fontFamily: "Quicksand_300Light",
     color: "white",
     alignSelf: "center",
     fontSize: 20,
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "white",
     fontWeight: "bold",
-    fontFamily: " Quicksand_300Light",
+    fontFamily: "Quicksand_300Light",
   },
 
   imagem: {

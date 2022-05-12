@@ -316,7 +316,7 @@ export default function CadastroFeedback({ route }) {
           />
 
           <Animated.View style={[styles.animatedStyle2, animStyleNota]}>
-            <Text style={styles.labelComentarioFeedback}>Insira uma nota para o feedback</Text>
+            <Text style={styles.labelComentarioNota}>Insira uma nota para o feedback</Text>
           </Animated.View>
 
           <TextInput
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
   sectionDemocratizacaoDecisao: {
     fontFamily: 'Quicksand_300Light',
     color: '#000000',
-    fontSize: 20,
+    fontSize: 18,
     paddingLeft: 4,
     paddingRight: 12,
     marginBottom: 10
@@ -481,19 +481,28 @@ const styles = StyleSheet.create({
 
   labelComentarioFeedback: {
     color: '#636466',
-    fontSize: 20,
-    width:"85%",
+    fontSize: 13,
     fontFamily: 'Quicksand_300Light',
+    justifyContent : 'center',
+    alignItems : 'center'
+  },
+
+  labelComentarioNota: {
+    color: '#636466',
+    fontSize: 13,
+    fontFamily: 'Quicksand_300Light',
+    justifyContent : 'center',
+    alignItems : 'center'
   },
 
   animatedStyle1: {
-    top: 8,
-    left: 20,
+    top: 6,
+    left : 20,
     position: 'absolute',
+    backgroundColor : '#F2F2F2',
+    paddingLeft : 5,
     zIndex: 1000,
-    backgroundColor: '#F2F2F2',
-    width: 120,
-    alignItems: 'center',
+    width: 129
   },
 
   animatedStyle2: {
@@ -503,6 +512,6 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     backgroundColor: '#F2F2F2',
     alignItems: 'center',
-    width: 190,
+    width: 210,
   }
 })

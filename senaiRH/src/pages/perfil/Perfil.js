@@ -290,7 +290,7 @@ export default function Perfil() {
                 />
 
                 <Animated.View style={[styles.animatedStyle2, animStyleConfirmacao]}>
-                  <Text style={styles.labelComentarioFeedback}>Confirmar senha</Text>
+                  <Text style={styles.labelComentarioConfirmar}>Confirmar senha</Text>
                 </Animated.View>
 
                 <TextInput
@@ -304,8 +304,8 @@ export default function Perfil() {
                   blurOnSubmit
                 />
 
-                <Animated.View style={[styles.animatedStyle2, animStyleSenhaAtual]}>
-                  <Text style={styles.labelComentarioFeedback}>Senha Atual</Text>
+                <Animated.View style={[styles.animatedStyle3, animStyleSenhaAtual]}>
+                  <Text style={styles.labelComentarioNota}>Senha Atual</Text>
                 </Animated.View>
 
                 <TextInput
@@ -412,30 +412,47 @@ const styles = StyleSheet.create({
   },
 
   animatedStyle1: {
-    top: 246,
-    left: 43,
+    top: 250,
+    left : 42,
     position: 'absolute',
+    backgroundColor : '#F2F2F2',
+    paddingLeft : 5,
     zIndex: 1000,
-    backgroundColor: '#F2F2F2',
-    width: 135,
-    alignItems: 'center',
+    width: 170
   },
 
   animatedStyle2: {
-    top: 307,
-    left: 40,
+    top: 310,
+    left: 44,
     position: 'absolute',
     zIndex: 1000,
     backgroundColor: '#F2F2F2',
-    width: 110,
     alignItems: 'center',
+    width: 110,
+  },
+
+  animatedStyle3: {
+    top: 370,
+    left: 30,
+    position: 'absolute',
+    zIndex: 1000,
+    backgroundColor: '#F2F2F2',
+    alignItems: 'center',
+    width: 110,
   },
 
   labelComentarioFeedback: {
     color: '#636466',
-    fontSize: 12,
+    fontSize: 13,
     fontFamily: 'Quicksand_300Light',
   },
+
+  labelComentarioNota: {
+    color: '#636466',
+    fontSize: 13,
+    fontFamily: 'Quicksand_300Light',
+  },
+
 
   textInfGeralPerfil: {
     fontFamily: 'Quicksand_400Regular',
@@ -455,13 +472,12 @@ const styles = StyleSheet.create({
     marginBottom: 18
   },
 
-  labelComentarioFeedback: {
+  labelComentarioConfirmar : {
     color: '#636466',
-    fontSize: 20,
-    width: "85%",
+    fontSize: 14,
+    width: "100%",
     fontFamily: 'Quicksand_300Light',
   },
-
   btnCadastro: {
     width: '86%',
     height: 43,
