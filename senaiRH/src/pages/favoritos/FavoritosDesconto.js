@@ -42,11 +42,11 @@ export default class FavoritosDesconto extends Component {
     }
     SaldoUsuario = async () => {
         const idUser = await AsyncStorage.getItem('idUsuario');
-        console.log(idUser)
+        // console.log(idUser)
         const resposta = await apiGp1(`/Usuarios/BuscarUsuario/${idUser}`)
         if (resposta.status == 200) {
             var dadosUsuario = resposta.data
-            console.log(dadosUsuario);
+            // console.log(dadosUsuario);
             this.setState({ saldoUsuario: dadosUsuario.saldoMoeda })
         }
     }
@@ -73,11 +73,11 @@ export default class FavoritosDesconto extends Component {
             if (resposta.status == 200) {
                 const dadosDesconto = resposta.data;
 
-                console.warn(dadosDesconto);
+                // console.warn(dadosDesconto);
 
                 this.setState({ listaDesconto: dadosDesconto })
-                console.warn(this.state.listaDesconto)
-                console.warn('Favoritos encontrados');
+                // console.warn(this.state.listaDesconto)
+                // console.warn('Favoritos encontrados');
             }
         }
         catch (erro) {
@@ -166,10 +166,10 @@ export default class FavoritosDesconto extends Component {
                 <View style={styles.boxSelect}>
 
                     <Pressable onPress={() => this.props.navigation.navigate('Favoritos')}>
-                        <Text style={styles.textDescontos}> Cursos </Text>
+                        <Text style={styles.textSelect}> Cursos </Text>
                     </Pressable>
                     <View style={styles.boxTituloCursoSelect}>
-                        <Text> Descontos </Text>
+                        <Text style={styles.textSelect}> Descontos </Text>
                         <View style={styles.line}></View>
                     </View>
 
@@ -346,6 +346,7 @@ const styles = StyleSheet.create({
     },
     textTituloPrincipal: {
         textTransform: 'uppercase',
+        fontFamily: 'Montserrat-Bold',
         fontSize: 30
     },
     boxSaldoUsuario: {
@@ -376,15 +377,16 @@ const styles = StyleSheet.create({
     },
     imgCurso: {
         width: 275,
-        height: 83,
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8,
+        height: 125,
+        borderTopLeftRadius: 4,
+        borderTopRightRadius: 4,
     },
     boxTituloCurso: {
         marginLeft: 16
     },
     textTituloCurso: {
         fontSize: 20,
+        fontFamily: 'Montserrat-Medium',
         marginTop: 8,
     },
     boxAvaliacao: {
@@ -403,12 +405,14 @@ const styles = StyleSheet.create({
         marginLeft: 16
     },
     imgDados: {
-        width: 19.6,
+        width: 19.7,
         height: 19.8,
         marginTop: 1
     },
     textDados: {
-        marginLeft: 8
+        fontFamily: 'Quicksand-Regular',
+        marginLeft: 8,
+        marginBottom: 3
     },
     boxSelect: {
         width: 200,
@@ -425,11 +429,14 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         marginBottom: 24
     },
+    textSelect: {
+        fontFamily: 'Montserrat-Medium',
+    },
     boxPrecoFavorito: {
         height: 40,
         display: 'flex',
         flexDirection: 'row',
-        marginTop: 16,
+        marginTop: 35,
         marginLeft: 16
     },
     boxPreco: {
@@ -463,19 +470,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    textDetalhes: {
-        color: 'white'
-    },
     totalModal: {
         flex: 1,
-        backgroundColor: 'rgba(255,255,255,0.5)',
+        backgroundColor: 'rgba(0,0,0,0.3)',
     },
     containerModal: {
         width: '83%',
         height: '81%',
         backgroundColor: '#F2F2F2',
         borderWidth: 2,
-        borderTopWidth: 0,
+        borderTopWidth: 1,
         borderColor: '#B3B3B3',
         //borderStyle: 'dashed',
         marginLeft: 33,
@@ -486,13 +490,13 @@ const styles = StyleSheet.create({
         //alignItems: 'center',
     },
     imgModalCurso: {
-        width: '101.5%',
-        height: 100,
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
+        width: '100%',
+        height: 150,
+        borderTopLeftRadius: 4,
+        borderTopRightRadius: 4,
     },
     textTituloModal: {
-        //fontFamily: 'Montserrat-Bold',
+        fontFamily: 'Montserrat-Bold',
         fontSize: 20,
         color: '#000',
         marginTop: 24,
@@ -512,6 +516,7 @@ const styles = StyleSheet.create({
     },
     textDadosModal: {
         width: 120,
+        fontFamily: 'Quicksand-Regular',
         marginLeft: 16
     },
     boxDescricaoModal: {
@@ -520,18 +525,18 @@ const styles = StyleSheet.create({
         marginTop: 24
     },
     descricaoModal: {
-        //fontFamily: 'Montserrat-Bold',
+        fontFamily: 'Montserrat-Medium',
         fontSize: 16,
         color: '#000',
     },
     boxVerMais: {
-        height: 50
+        height: 150
     },
     textDescricaoModal: {
-        //fontFamily: 'Montserrat-Normal',
+        fontFamily: 'Quicksand-Regular',
         width: 280,
         height: '18%',
-        fontSize: 14,
+        fontSize: 12,
         color: '#000',
         alignItems: 'center',
         display: 'flex',
@@ -541,15 +546,15 @@ const styles = StyleSheet.create({
     boxEmpresa: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 32
+        marginTop: 165
     },
     tituloEmpresa: {
-        //fontFamily: 'Montserrat-Bold',
-        fontSize: 12,
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 14,
         color: '#000',
     },
     textEmpresa: {
-        //fontFamily: 'Montserrat-Normal',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 14,
         color: '#000',
         marginLeft: 10
@@ -569,7 +574,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 32,
+        marginTop: 24,
         marginRight: 40
     },
     boxInscreverModal: {
@@ -582,7 +587,14 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 32,
-        marginLeft: 24
+        marginTop: 24,
+        marginLeft: 8
     },
+    textDetalhes: {
+        color: 'white',
+        fontFamily: 'Montserrat-Medium',
+    },
+    tituloAlert: {
+        color: 'green'
+    }
 })

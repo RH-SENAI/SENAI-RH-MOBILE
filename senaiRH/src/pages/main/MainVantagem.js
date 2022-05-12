@@ -10,6 +10,7 @@ import NovoFeedback from "../novoFeedback/NovoFeedback.js";
 import ListagemCurso from '../listagemCurso/ListagemCurso.js';
 import ListagemDesconto from '../listagemDesconto/ListagemDesconto.js';
 import Favoritos from '../favoritos/FavoritosCurso.js';
+import FavoritosDesconto from '../favoritos/FavoritosDesconto.js';
 import Perfil from '../perfil/Perfil.js';
 // import MainFavoritos from '../main/MainFavoritos.js';
 import { Entypo, Feather } from "@expo/vector-icons";
@@ -83,22 +84,28 @@ export default function MainAcompanhar() {
                     }
                 }}
             />
-            <Tab.Screen
-                name="Favoritos"
-                component={Favoritos}
-                options={{
-                    tabBarIcon: ({ size, color }) => (
-                        <Feather name="heart" size={size} color={color} />
-                    ),
-                    headerShown: false,
-                }}
-                // listeners={{
-                //     tabPress: e => {
-                //       // Prevent default action
-                //       navigation.goBack();
-                //     }
-                //   }}
-            />
+            <>
+                <Tab.Screen
+                    name="Favoritos"
+                    component={Favoritos}
+                    options={{
+                        tabBarIcon: ({ size, color }) => (
+                            <Feather name="heart" size={size} color={color} />
+                        ),
+                        headerShown: false,
+                    }}
+                />
+                {/* <Tab.Screen
+                    name="FavoritosDesconto"
+                    component={FavoritosDesconto}
+                    options={{
+                        tabBarIcon: ({ size, color }) => (
+                            <Feather name="heart" size={size} color={color} />
+                        ),
+                        headerShown: false,
+                    }}
+                /> */}
+            </>
             <Tab.Screen
                 name="Perfil"
                 component={Perfil}

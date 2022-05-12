@@ -124,16 +124,16 @@ export default class ListagemDesconto extends Component {
 
             if (resposta.status == 200) {
                 const dadosDesconto = resposta.data;
-                // console.warn(dadosCurso)
+                console.warn(dadosDesconto)
                 var tamanhoJson = Object.keys(dadosDesconto).length;
-                // console.warn(tamanhoJson);
+                console.warn(tamanhoJson);
 
                 var i = 0
 
                 do {
                     let stringLocalDesconto = JSON.stringify(dadosDesconto);
                     let objLocalDesconto = JSON.parse(stringLocalDesconto);
-                    // console.warn(objLocalCurso);
+                    // console.warn(objLocalDesconto);
                     var localDesconto = objLocalDesconto[i]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
 
                     // ----> Localização 
@@ -144,12 +144,12 @@ export default class ListagemDesconto extends Component {
                     const respostaLocal = await apiMaps(stringProblematica);
                     let string = JSON.stringify(respostaLocal.data);
                     let obj = JSON.parse(string);
-                    console.warn(obj)
+                    console.warn(respostaLocal)
 
                     let distance = obj['rows'][0]['elements'][0]['distance'].value
-                    // console.log(distance)
+                    console.log(distance)
                     if (respostaLocal.status == 200) {
-                        console.warn('Localização encontrada!');
+                        // console.warn('Localização encontrada!');
                         if (distance <= 750000) {
                             //this.setState({ localizacaoCurso: dadosLocalizacao })
                             // console.warn(distance);
@@ -164,20 +164,18 @@ export default class ListagemDesconto extends Component {
                                 // console.warn(lugarDesconto)
 
                                 var desconto = objDesconto[u]
-                                console.warn(desconto)
+                                // console.warn(desconto)
                                 u++
                             } while (lugarDesconto != localDesconto);
 
                             this.state.listaDesconto.push(desconto);
-
-
                         }
                         else if (distance > 750000) {
-                            console.warn(distance);
-                            console.warn('Localização fora do alcance');
+                            // console.warn(distance);
+                            // console.warn('Localização fora do alcance');
                         }
                     }
-                    console.warn('Desconto encontrado');
+                    // console.warn('Desconto encontrado');
 
                     i++
                 } while (i < tamanhoJson);
@@ -204,7 +202,7 @@ export default class ListagemDesconto extends Component {
     componentDidMount = async () => {
         this.GetLocation();
         this.SaldoUsuario();
-        await delay(2000);
+        await delay(3000);
         // setTimeout(function(){this.setState({ timeGeolocation: true})}, 1000);
         this.ListarDescontos();
     }

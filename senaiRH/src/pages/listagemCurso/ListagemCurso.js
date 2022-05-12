@@ -145,12 +145,12 @@ export default class ListagemCurso extends Component {
                     const respostaLocal = await apiMaps(stringProblematica);
                     let string = JSON.stringify(respostaLocal.data);
                     let obj = JSON.parse(string);
-                    console.warn(obj)
+                    // console.warn(obj)
 
                     let distance = obj['rows'][0]['elements'][0]['distance'].value
                     // console.log(distance)
                     if (respostaLocal.status == 200) {
-                        console.warn('Localização encontrada!');
+                        // console.warn('Localização encontrada!');
                         if (distance <= 750000) {
                             //this.setState({ localizacaoCurso: dadosLocalizacao })
                             // console.warn(distance);
@@ -164,7 +164,7 @@ export default class ListagemCurso extends Component {
                                 var lugarCurso = objCurso[u]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
 
                                 var curso = objCurso[u]
-                                console.warn(curso)
+                                // console.warn(curso)
                                 u++
                             } while (lugarCurso != localCurso);
 
@@ -173,11 +173,11 @@ export default class ListagemCurso extends Component {
 
                         }
                         else if (distance > 750000) {
-                            console.warn(distance);
-                            console.warn('Localização fora do alcance');
+                            // console.warn(distance);
+                            // console.warn('Localização fora do alcance');
                         }
                     }
-                    console.warn('Curso encontrado');
+                    // console.warn('Curso encontrado');
 
                     i++
                 } while (i < tamanhoJson);
@@ -204,7 +204,7 @@ export default class ListagemCurso extends Component {
     componentDidMount = async () => {
         this.GetLocation();
         this.SaldoUsuario();
-        await delay(2000);
+        await delay(3000);
         this.ListarCurso();
     }
 
@@ -315,6 +315,10 @@ export default class ListagemCurso extends Component {
                                 defaultRating={item.mediaAvaliacaoCurso}
                                 isDisabled={true}
                                 size={20} />
+                            {/* <View>
+                                <Image style={styles.imgDistancia} source={require('../../../assets/imgGP2/walk.png')} />
+                                <Text>{}</Text>
+                            </View> */}
                         </View>
 
                         <View style={styles.boxDadosCurso}>
@@ -431,7 +435,7 @@ export default class ListagemCurso extends Component {
                                             show={this.state.showAlert}
                                             showProgress={false}
                                             title="Sucesso"
-                                            titleStyle={styles.tituloAlert}  
+                                            titleStyle={styles.tituloAlert}
                                             message="Você foi inscrito no curso!"
                                             closeOnTouchOutside={true}
                                             closeOnHardwareBackPress={false}
