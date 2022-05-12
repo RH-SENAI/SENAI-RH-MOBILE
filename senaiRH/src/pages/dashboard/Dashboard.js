@@ -153,8 +153,8 @@ export default function Dashboard() {
                 progressColor={'#C20004'}
                 backgroundColor={'rgba(194, 0, 4, 0.15)'}
                 startAngle={0}
-                cornerRadius={5}
-                strokeWidth={15}
+                cornerRadius={2}
+                strokeWidth={10}
                 endAngle={360}
             >
                 <SvgText

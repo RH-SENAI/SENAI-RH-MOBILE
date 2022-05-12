@@ -19,8 +19,8 @@ import {
 } from "@expo-google-fonts/quicksand";
 
 export default function Redirecionar() {
-   // Fontes utilizada
-   let [fontsLoaded] = useFonts({
+  // Fontes utilizada
+  let [fontsLoaded] = useFonts({
     //Montserrat
     Montserrat_500Medium,
     Montserrat_600SemiBold,
@@ -38,22 +38,25 @@ export default function Redirecionar() {
       <Image style={styles.logoSenai} source={require("../../../assets/imgMobile/logo_2S.png")} resizeMode="contain" />
 
       <View style={styles.containerLinks}>
-        <Text style={styles.titulo}>REDIRECIONAR PARA:</Text>
+        <Text style={styles.titulo}>Olá, Fulano</Text>
+        <Text style={styles.msg}>Qual o seu interesse?</Text>
+        <View style={styles.containerButtons}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MainAcompanhar")}>
+            <Image style={styles.icone} source={require("../../../assets/imgMobile/computador.png")} />
+            <Text style={styles.texto}>Acompanhamento</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MainAcompanhar")}>
-          <Image style={styles.icone} source={require("../../../assets/imgMobile/computador.png")} />
-          <Text style={styles.texto}>Acompanhamento</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Image style={styles.icone} source={require("../../../assets/imgMobile/porco.png")} />
+            <Text style={styles.texto}>Motivações</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
-          <Image style={styles.icone} source={require("../../../assets/imgMobile/porco.png")} />
-          <Text style={styles.texto}>Motivações</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Image style={styles.icone} source={require("../../../assets/imgMobile/etiqueta.png")} />
+            <Text style={styles.texto}>Minhas Vantagens</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
-          <Image style={styles.icone} source={require("../../../assets/imgMobile/etiqueta.png")} />
-          <Text style={styles.texto}>Minhas Vantagens</Text>
-        </TouchableOpacity>
+        </View>
 
       </View>
 
@@ -64,46 +67,61 @@ export default function Redirecionar() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "white",
+    backgroundColor: "gold",
   },
   logoSenai: {
     width: "100%",
     height: 40,
     alignSelf: "center",
-    marginTop: 40,
+    marginTop: 20,
     marginBottom: 20,
+    backgroundColor: 'gray'
   },
   containerLinks: {
     flex: 1,
-    // backgroundColor: 'cyan',
+    backgroundColor: 'cyan',
     alignItems: "center",
     width: "100%",
     paddingLeft: "5%",
     paddingRight: "5%",
-    paddingTop: 15
   },
   titulo: {
     fontSize: 32,
-    width: '80%',
+    width: '100%',
     textAlign: 'center',
-    marginBottom: 15,
     fontFamily: "Montserrat_600SemiBold",
+    backgroundColor: 'blue'
+  },
+  msg: {
+    fontSize: 16,
+    width: '100%',
+    textAlign: 'center',
+    fontFamily: "Montserrat_600SemiBold",
+    backgroundColor: 'purple'
+  },
+  containerButtons: {
+    backgroundColor: 'green',
+    flex: 1,
+    justifyContent: 'center',
+    width: '100%'
+
   },
   button: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: "#C20004",
+    backgroundColor: "#C20004",
     borderWidth: 2,
     borderColor: 'gray',
     width: "100%",
-    height: 85,
+    height: 70,
     borderRadius: 5,
     marginTop: 15,
     marginBottom: 15,
   },
+  
   texto: {
-    // backgroundColor: 'blue',
+    //backgroundColor: 'blue',
     color: "black",
     textAlign: "center",
     fontSize: 25,
