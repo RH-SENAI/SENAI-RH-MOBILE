@@ -55,7 +55,8 @@ export default function ModalDemocratizacao() {
                 />
                 <View style={styles.modalView}>
                     <View style={styles.containerLinks}>
-                        <Text style={styles.titulo}>ÁREA DE DEMOCRATIZAÇÃO</Text>
+                        <Text style={styles.titulo1}>ÁREA DE</Text>
+                        <Text style={styles.titulo2}>DEMOCRATIZAÇÃO</Text>
                         <Text style={styles.subTitulo}>O que você gostaria de fazer?</Text>
                         <View style={styles.boxButton}>
                             <TouchableOpacity style={styles.button} onPress={() => { navigation.navigate('ListarDecisao') }}>
@@ -84,27 +85,36 @@ const styles = StyleSheet.create({
         marginTop: 16,
         alignSelf: 'flex-start'
     },
-    titulo: {
-        marginTop : 60,
-        fontSize: 25,
+    titulo1: {
+        
+        fontSize: 32,
         width: "100%",
         textAlign: "center",
         marginBottom: 4,
-        fontFamily: 'Montserrat_600SemiBold'
+        fontFamily: 'Montserrat_600SemiBold',
+    },
+    titulo2: {
+        
+        fontSize: 32,
+        width: "100%",
+        textAlign: "center",
+        marginBottom: 40,
+        fontFamily: 'Montserrat_600SemiBold',
+        marginBottom:16
     },
     subTitulo: {
         fontSize: 20,
         textAlign: "center",
-        marginBottom: 26,
-        fontFamily: 'Montserrat_500Medium'
+        fontFamily: 'Montserrat_500Medium',
+        marginBottom: 40,
     },
     button: {
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        borderWidth: 4,
+        borderWidth: 2,
         borderColor: "gray",
-        width: "70%",
+        width: '85%',
         height: 85,
         borderRadius: 5,
         marginTop: 15,
@@ -113,13 +123,14 @@ const styles = StyleSheet.create({
     texto: {
         color: "black",
         textAlign: "center",
+        fontFamily: "Quicksand_300Light",
         fontSize: 20
     },
     logoSenai: {
         width: 300,
         height: 40,
         marginTop: 40,
-        marginBottom: 20,
+        marginBottom: 40,
     },
     boxButton : {
         width : '100%',

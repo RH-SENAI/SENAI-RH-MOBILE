@@ -70,7 +70,7 @@ export default function CadastroFeedback({ route }) {
   }
   const ChangeSizeDown = () => {
     Animated.timing(sizeChanging, {
-      toValue: 100,
+      toValue: 110,
       useNativeDriver: false,
       duration: 250,
     }).start()
@@ -233,16 +233,6 @@ export default function CadastroFeedback({ route }) {
     }
   };
 
-  function handleBackButtonClick() {
-    navigation.navigate('Teste');
-  };
-
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
-    };
-  }, []);
 
   useEffect(() => { ChangeSizeUp(); }, []);
   useEffect(() => { BuscarDecisao(); }, []);
@@ -419,9 +409,10 @@ const styles = StyleSheet.create({
   sectionDemocratizacaoDecisao: {
     fontFamily: 'Quicksand_300Light',
     color: '#000000',
-    fontSize: 12,
+    fontSize: 20,
     paddingLeft: 4,
-    paddingRight: 12
+    paddingRight: 12,
+    marginBottom: 10
   },
 
   sectionDemocratizacaoBox: {
@@ -490,17 +481,18 @@ const styles = StyleSheet.create({
 
   labelComentarioFeedback: {
     color: '#636466',
-    fontSize: 12,
+    fontSize: 20,
+    width:"85%",
     fontFamily: 'Quicksand_300Light',
   },
 
   animatedStyle1: {
-    top: 11,
+    top: 8,
     left: 20,
     position: 'absolute',
     zIndex: 1000,
     backgroundColor: '#F2F2F2',
-    width: 95,
+    width: 120,
     alignItems: 'center',
   },
 
@@ -511,6 +503,6 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     backgroundColor: '#F2F2F2',
     alignItems: 'center',
-    width: 160,
+    width: 190,
   }
 })

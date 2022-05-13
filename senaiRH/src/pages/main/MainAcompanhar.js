@@ -39,6 +39,7 @@ export default function MainAcompanhar() {
         tabBarInactiveTintColor: "gray",
         tabBarShowLabel: true,
         headerShown: false,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: "#f1f1f1",
           borderTopColor: "gray",
@@ -69,7 +70,7 @@ export default function MainAcompanhar() {
         name="NovoFeedback"
         component={NovoFeedback}
         options={{
-          tabBarIcon: ({ size, color }) => (
+          tabBarIcon: ({ color }) => (
             <ButtonNew size={40} color={color} />
           ),
           tabBarLabel: "",
@@ -122,7 +123,6 @@ const styles = StyleSheet.create({
   modalView: {
     flex: 1,
     backgroundColor: "white",
-    //borderRadius: 20,
     alignItems: "center",
     justifyContent: 'center',
     paddingHorizontal: '5%',
@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   button: {
-    //backgroundColor: '#C20004',
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
