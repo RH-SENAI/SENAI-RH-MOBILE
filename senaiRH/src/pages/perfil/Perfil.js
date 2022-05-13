@@ -400,7 +400,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 3,
     borderColor: 'gray',
-    marginVertical: 20
+    marginVertical: 20,
+    backgroundColor: 'blue'
   },
 
   textInfGeralPerfil: {
@@ -515,13 +516,15 @@ const styles = StyleSheet.create({
 
   conteudo: {
     alignItems: 'center',
-    paddingBottom: 20
+    paddingBottom: 20,
+    //backgroundColor: 'green'
   },
 
   boxPerfil: {
     backgroundColor: "#F2F2F2",
     paddingHorizontal: '5%',
-    width: '100%'
+    width: '100%',
+    backgroundColor: 'yellow'
 
   },
 

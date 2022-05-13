@@ -1,6 +1,7 @@
 import React from "react";
 import { Image, View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { Entypo, Feather } from "@expo/vector-icons";
 
 // Expo
 import AppLoading from "expo-app-loading";
@@ -38,22 +39,36 @@ export default function Redirecionar() {
       <Image style={styles.logoSenai} source={require("../../../assets/imgMobile/logo_2S.png")} resizeMode="contain" />
 
       <View style={styles.containerLinks}>
+        <Image
+          style={styles.fotoPerfilContainer}
+          source={require("../../../assets/imgMobile/Perfil.png")}
+          resizeMod="cover"
+        />
         <Text style={styles.titulo}>Olá, Fulano</Text>
-        <Text style={styles.msg}>Qual o seu interesse?</Text>
+        <Text style={styles.msg}>O que você deseja acessar?</Text>
         <View style={styles.containerButtons}>
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MainAcompanhar")}>
-            <Image style={styles.icone} source={require("../../../assets/imgMobile/computador.png")} />
-            <Text style={styles.texto}>Acompanhamento</Text>
+            {/* <Image style={styles.icone} source={require("../../../assets/imgMobile/line-graph.svg")} /> */}
+            <Entypo name="line-graph" size={40} color={'white'} />
+            <View style={styles.containerTextoLink}>
+              <Text style={styles.texto}>Acompanhamento</Text>
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.button}>
-            <Image style={styles.icone} source={require("../../../assets/imgMobile/porco.png")} />
-            <Text style={styles.texto}>Motivações</Text>
+            {/* <Image style={styles.icone} source={require("../../../assets/imgMobile/porco.png")} /> */}
+            <Entypo name="price-ribbon" size={40} color={'white'} />
+            <View style={styles.containerTextoLink}>
+              <Text style={styles.texto}>Motivações</Text>
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.button}>
-            <Image style={styles.icone} source={require("../../../assets/imgMobile/etiqueta.png")} />
-            <Text style={styles.texto}>Minhas Vantagens</Text>
+            {/* <Image style={styles.icone} source={require("../../../assets/imgMobile/etiqueta.png")} /> */}
+            <Entypo name="shopping-cart" size={40} color={'white'} />
+            <View style={styles.containerTextoLink}>
+              <Text style={styles.texto}>Minhas Vantagens</Text>
+            </View>
           </TouchableOpacity>
 
         </View>
@@ -67,7 +82,7 @@ export default function Redirecionar() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "gold",
+    //backgroundColor: "gold",
   },
   logoSenai: {
     width: "100%",
@@ -75,58 +90,82 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: 20,
     marginBottom: 20,
-    backgroundColor: 'gray'
+    //backgroundColor: 'gray'
   },
   containerLinks: {
     flex: 1,
-    backgroundColor: 'cyan',
     alignItems: "center",
     width: "100%",
     paddingLeft: "5%",
     paddingRight: "5%",
+    //backgroundColor: 'cyan',
+  },
+  fotoPerfilContainer: {
+    width: 110,
+    height: 110,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 3,
+    borderColor: 'gray',
+    marginBottom: 20,
+    marginTop: 20,
+    //backgroundColor: 'blue'
   },
   titulo: {
     fontSize: 32,
     width: '100%',
     textAlign: 'center',
     fontFamily: "Montserrat_600SemiBold",
-    backgroundColor: 'blue'
+    //backgroundColor: 'blue'
   },
   msg: {
     fontSize: 16,
     width: '100%',
     textAlign: 'center',
     fontFamily: "Montserrat_600SemiBold",
-    backgroundColor: 'purple'
+    //backgroundColor: 'purple'
   },
   containerButtons: {
-    backgroundColor: 'green',
     flex: 1,
-    justifyContent: 'center',
-    width: '100%'
-
+    justifyContent: 'space-evenly',
+    width: '100%',
+    //backgroundColor: 'green',
+    paddingVertical: '5%',
+    //marginBottom: '5%'
   },
   button: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: "#C20004",
-    borderWidth: 2,
-    borderColor: 'gray',
+    //borderWidth: 2,
+    //borderColor: 'gray',
     width: "100%",
     height: 70,
-    borderRadius: 5,
-    marginTop: 15,
-    marginBottom: 15,
+    borderRadius: 10,
+    paddingHorizontal: '10%'
+    //marginTop: 20,
+    //marginBottom: 20,
   },
-  
+  containerTextoLink: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    //backgroundColor: 'blue',
+  },
   texto: {
     //backgroundColor: 'blue',
-    color: "black",
+    color: "white",
     textAlign: "center",
     fontSize: 25,
     fontFamily: "Quicksand_300Light",
+    width: '100%'
     // fontWeight: "bold",
-    marginLeft: 40
   },
+  icone: {
+    color: 'white',
+    backgroundColor: 'blue',
+    width: 75,
+    height: 75
+  }
 });
