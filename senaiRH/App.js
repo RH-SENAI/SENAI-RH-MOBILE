@@ -32,7 +32,7 @@ function App() {
     <NavigationContainer>
       <StatusBar backgroundColor={'#C20004'} barStyle="light-content" />
       <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        {/* <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} /> */}
         <Stack.Screen name="Redirecionar" component={Redirecionar} options={{ headerShown: false }} />
         <Stack.Screen name="MainVantagem" component={MainVantagem} options={{ headerShown: false }} />
         <Stack.Screen name="FavoritosDesconto" component={FavoritosDesconto} options={{ headerShown: false }} />
