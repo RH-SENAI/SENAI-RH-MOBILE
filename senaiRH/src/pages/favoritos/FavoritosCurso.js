@@ -49,7 +49,7 @@ ListarCursoFavoritos = async () => {
         // const user = JSON.parse(jtiUser)
         // console.warn(user)
 
-        const resposta = await api(`/FavoritosCursos/Favorito/1`);
+        const resposta = await api(`/FavoritosCursos/Favorito/${idUser}`);
 
         if (resposta.status == 200) {
             const dadosCurso = resposta.data;
@@ -81,6 +81,7 @@ componentDidMount = async () => {
     this.SaldoUsuario();
     await delay(3000);
     this.ListarCursoFavoritos();
+    await delay(3000);
 }
 
 showAlert = () => {
@@ -146,6 +147,7 @@ export default class TabViewExample extends React.Component {
             { key: 'first', title: 'Cursos' },
             { key: 'second', title: 'Descontos' },
         ],
+        listaCurso: []
     };
 
     _handleIndexChange = (index) => this.setState({ index });
@@ -200,14 +202,6 @@ export default class TabViewExample extends React.Component {
             />
         </View>
     );
-    SecondRoute = () => (
-        <View style={[styles.container, { backgroundColor: '#673ab7' }]} />
-    );
-
-    _renderScene = SceneMap({
-        first: this.FirstRoute,
-        second: this.SecondRoute,
-    });
 
     renderItem = ({ item }) => (
         <View>
@@ -367,6 +361,15 @@ export default class TabViewExample extends React.Component {
             </View>
         </View>
     );
+
+    SecondRoute = () => (
+        <View style={[styles.container, { backgroundColor: '#673ab7' }]} />
+    );
+
+    _renderScene = SceneMap({
+        first: this.FirstRoute,
+        second: this.SecondRoute,
+    });
 
     render() {
         return (

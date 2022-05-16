@@ -152,29 +152,24 @@ export default class ListagemCurso extends Component {
                     if (respostaLocal.status == 200) {
                         // console.warn('Localização encontrada!');
                         if (distance <= 750000) {
+                            console.warn(distance);
                             //this.setState({ localizacaoCurso: dadosLocalizacao })
                             // console.warn(distance);
                             // console.warn('Localização está no alcance');
                             // console.warn(this.state.listaCurso);
-                            var u = 0
 
-                            do {
-                                let stringCurso = JSON.stringify(dadosCurso);
-                                var objCurso = JSON.parse(stringCurso);
-                                var lugarCurso = objCurso[u]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
+                            let stringCurso = JSON.stringify(dadosCurso);
+                            var objCurso = JSON.parse(stringCurso);
+                            //var lugarCurso = objCurso[u]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
 
-                                var curso = objCurso[u]
-                                // console.warn(curso)
-                                u++
-                            } while (lugarCurso != localCurso);
-
+                            var curso = objCurso[i]
+                            // console.warn(curso)
                             this.state.listaCurso.push(curso);
-
 
                         }
                         else if (distance > 750000) {
-                            // console.warn(distance);
-                            // console.warn('Localização fora do alcance');
+                            console.warn(distance);
+                            console.warn('Localização fora do alcance');
                         }
                     }
                     // console.warn('Curso encontrado');

@@ -155,24 +155,20 @@ export default class ListagemDesconto extends Component {
                             // console.warn(distance);
                             // console.warn('Localização está no alcance');
                             // console.warn(this.state.listaCurso);
-                            var u = 0
 
-                            do {
-                                let stringDesconto = JSON.stringify(dadosDesconto);
-                                var objDesconto = JSON.parse(stringDesconto);
-                                var lugarDesconto = objDesconto[u]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
-                                // console.warn(lugarDesconto)
+                            let stringDesconto = JSON.stringify(dadosDesconto);
+                            var objDesconto = JSON.parse(stringDesconto);
+                            //var lugarDesconto = objDesconto[u]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
+                            // console.warn(lugarDesconto)
 
-                                var desconto = objDesconto[u]
-                                // console.warn(desconto)
-                                u++
-                            } while (lugarDesconto != localDesconto);
+                            var desconto = objDesconto[i]
+                            // console.warn(desconto)
 
                             this.state.listaDesconto.push(desconto);
                         }
                         else if (distance > 750000) {
-                            // console.warn(distance);
-                            // console.warn('Localização fora do alcance');
+                            console.warn(distance);
+                            console.warn('Localização fora do alcance');
                         }
                     }
                     // console.warn('Desconto encontrado');
@@ -346,7 +342,7 @@ export default class ListagemDesconto extends Component {
                                 <ScrollView>
                                     <View style={styles.boxTituloModal}>
                                         <View style={styles.boxImgCurso}>
-                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemDesconto}` }} resizeMode="stretch"  />
+                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemDesconto}` }} resizeMode="stretch" />
                                         </View>
                                         <Text style={styles.textTituloModal}>{item.nomeDesconto}</Text>
                                     </View>
@@ -408,8 +404,8 @@ export default class ListagemDesconto extends Component {
                                             style={styles.bao}
                                             show={this.state.showAlert}
                                             showProgress={false}
-                                            title="Sucesso" 
-                                            titleStyle={styles.tituloAlert}                                       
+                                            title="Sucesso"
+                                            titleStyle={styles.tituloAlert}
                                             message="Você resgatou o desconto!"
                                             messageStyle={styles.textAlert}
                                             closeOnTouchOutside={true}
