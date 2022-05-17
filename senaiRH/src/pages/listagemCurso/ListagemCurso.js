@@ -294,7 +294,7 @@ export default class ListagemCurso extends Component {
                 <Pressable onPress={() => this.setModalVisivel(true, item.idCurso)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
-                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemCurso}` }} />
+                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemCurso}` }} resizeMode='stretch' />
                         </View>
 
                         <View style={styles.boxTituloCurso}>

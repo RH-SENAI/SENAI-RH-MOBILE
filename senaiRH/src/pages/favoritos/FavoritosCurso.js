@@ -29,7 +29,8 @@ export default class TabViewExample extends React.Component {
             { key: 'second', title: 'Descontos' },
         ],
         errorMessage: '',
-        modalVisivel: false,
+        modalVisivelCurso: false,
+        modalVisivelDesconto: false,
         isFavorite: false,
         inscrito: '',
         showAlert: false,
@@ -120,7 +121,7 @@ export default class TabViewExample extends React.Component {
             this.setState({ cursoBuscado: [] })
         }
 
-        this.setState({ modalVisivel: visible })
+        this.setState({ modalVisivelCurso: visible })
     }
 
     setModalVisivelDesconto = (visible, id) => {
@@ -131,7 +132,7 @@ export default class TabViewExample extends React.Component {
             this.setState({ cursoBuscado: [] })
         }
 
-        this.setState({ modalVisivel: visible })
+        this.setState({ modalVisivelDesconto: visible })
     }
 
     showAlert = () => {
@@ -244,6 +245,7 @@ export default class TabViewExample extends React.Component {
                                 style={styles.tabItem}
                                 onPress={() => this.setState({ index: i })}>
                                 <Animated.Text style={{ opacity }}>{route.title}</Animated.Text>
+                                <View style={styles.line} />
                             </TouchableOpacity>
                         );
                     })}
@@ -269,7 +271,7 @@ export default class TabViewExample extends React.Component {
                 <Pressable onPress={() => this.setModalVisivelCurso(true, item.idCurso)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
-                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idCursoNavigation.caminhoImagemCurso}` }} />
+                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idCursoNavigation.caminhoImagemCurso}` }} resizeMode='stretch'  />
                         </View>
 
                         <View style={styles.boxTituloCurso}>
@@ -315,19 +317,19 @@ export default class TabViewExample extends React.Component {
                 <Modal
                     animationType="fade"
                     transparent={true}
-                    visible={this.state.modalVisivel}
+                    visible={this.state.modalVisivelCurso}
                     key={item.idCursoFavorito == this.state.cursoBuscado.idCursoFavorito}
                     onRequestClose={() => {
-                        this.setModalVisivelCurso(!this.state.modalVisivel)
+                        this.setModalVisivelCurso(!this.state.modalVisivelCurso)
                     }}
                 >
                     <View style={styles.totalModal}>
-                        <Pressable onPress={() => this.setModalVisivelCurso(!this.state.modalVisivel)} >
+                        <Pressable onPress={() => this.setModalVisivelCurso(!this.state.modalVisivelCurso)} >
                             <View style={styles.containerModal}>
                                 <ScrollView>
                                     <View style={styles.boxTituloModal}>
                                         <View style={styles.boxImgCurso}>
-                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idCursoNavigation.caminhoImagemCurso}` }} />
+                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idCursoNavigation.caminhoImagemCurso}` }} resizeMode='stretch' />
                                         </View>
                                         <Text style={styles.textTituloModal}>{item.idCursoNavigation.nomeCurso}</Text>
                                     </View>
@@ -439,7 +441,7 @@ export default class TabViewExample extends React.Component {
                 <Pressable onPress={() => this.setModalVisivelDesconto(true, item.idDescontoNavigation.idDesconto)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
-                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idDescontoNavigation.caminhoImagemDesconto}` }} />
+                            <Image style={styles.imgDesconto} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idDescontoNavigation.caminhoImagemDesconto}` }} resizeMode='stretch'  />
                         </View>
 
                         <View style={styles.boxTituloCurso}>
@@ -457,7 +459,7 @@ export default class TabViewExample extends React.Component {
                                 size={20} />
                         </View>
 
-                        <View style={styles.boxPrecoFavorito}>
+                        <View style={styles.boxPrecoFavoritoDesconto}>
                             <View style={styles.boxPreco}>
                                 <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
                                 <Text style={styles.textDados}>{item.idDescontoNavigation.valorDesconto}</Text>
@@ -473,19 +475,19 @@ export default class TabViewExample extends React.Component {
                 <Modal
                     animationType="fade"
                     transparent={true}
-                    visible={this.state.modalVisivel}
+                    visible={this.state.modalVisivelDesconto}
                     key={item.idDescontoFavorito == this.state.descontoBuscado.idDescontoFavorito}
                     onRequestClose={() => {
-                        this.setModalVisivelDesconto(!this.state.modalVisivel)
+                        this.setModalVisivelDesconto(!this.state.modalVisivelDesconto)
                     }}
                 >
                     <View style={styles.totalModal}>
-                        <Pressable onPress={() => this.setModalVisivelDesconto(!this.state.modalVisivel)} >
+                        <Pressable onPress={() => this.setModalVisivelDesconto(!this.state.modalVisivelDesconto)} >
                             <View style={styles.containerModal}>
                                 <ScrollView>
                                     <View style={styles.boxTituloModal}>
                                         <View style={styles.boxImgCurso}>
-                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idDescontoNavigation.caminhoImagemDesconto}` }} />
+                                            <Image style={styles.imgModalDesconto} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idDescontoNavigation.caminhoImagemDesconto}` }} resizeMode="stretch" />
                                         </View>
                                         <Text style={styles.textTituloModal}>{item.idDescontoNavigation.nomeDesconto}</Text>
                                     </View>
@@ -660,6 +662,12 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 8,
         borderTopRightRadius: 8,
     },
+    imgDesconto: {
+        width: 275,
+        height: 125,
+        borderTopLeftRadius: 4,
+        borderTopRightRadius: 4,
+    },
     boxTituloCurso: {
         marginLeft: 16
     },
@@ -718,6 +726,13 @@ const styles = StyleSheet.create({
         marginTop: 16,
         marginLeft: 16
     },
+    boxPrecoFavoritoDesconto: {
+        height: 40,
+        display: 'flex',
+        flexDirection: 'row',
+        marginTop: 34,
+        marginLeft: 16
+    },
     boxPreco: {
         width: 90,
         height: 42,
@@ -769,10 +784,16 @@ const styles = StyleSheet.create({
         //alignItems: 'center',
     },
     imgModalCurso: {
-        width: '101.5%',
+        width: '100%',
         height: 100,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
+    },
+    imgModalDesconto: {
+        width: '100%',
+        height: 150,
+        borderTopLeftRadius: 4,
+        borderTopRightRadius: 4,
     },
     textTituloModal: {
         // fontFamily: 'Montserrat-Bold',
