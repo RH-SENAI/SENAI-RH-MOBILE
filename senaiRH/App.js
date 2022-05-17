@@ -20,7 +20,7 @@ function App() {
       <StatusBar backgroundColor={'#C20004'} barStyle="light-content" />
       <Stack.Navigator>
 
-        {/* <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} /> */}
+        <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Redirecionar" component={Redirecionar} options={{ headerShown: false }}/>
         <Stack.Screen name="MainMotivar" component={MainMotivar} options={{ headerShown: false }} />
