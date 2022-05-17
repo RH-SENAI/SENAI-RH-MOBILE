@@ -217,7 +217,7 @@ export default class AtividadesExtras extends Component {
                     >
                         <View style={styles.corBotão}>
 
-                            <Text style={styles.texto}> Realizar </Text>
+                            <Text style={styles.texto}>+ Minha Lista </Text>
                         </View>
                     </Pressable>
 
@@ -257,7 +257,7 @@ export default class AtividadesExtras extends Component {
                         <View style={styles.botoesModal}  >
                             <Pressable onPress={() => this.associar(this.state.AtividadeBuscada.idAtividade)} >
                                 <View style={styles.associarModal}>
-                                    <Text style={styles.texto}> Minha Lista </Text>
+                                    <Text style={styles.texto}>+ Minha Lista </Text>
                                 </View>
                             </Pressable>
                             <Pressable
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
     corBotão: {
         borderRadius: 15,
         height: 30,
-        width: 87,
+        width: 100,
         backgroundColor: '#C20004',
         alignItems: 'center',
         justifyContent: 'center',

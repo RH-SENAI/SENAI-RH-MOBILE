@@ -46,19 +46,21 @@ export default class MinhasAtividades extends Component {
     }
 
     ListarMinhas = async () => {
+        
+        var Buffer = require('buffer/').Buffer
+        
+        
+        const token = (await AsyncStorage.getItem('userToken'));
+        let base64Url = token.split('.')[1]; // token you get
+        let base64 = base64Url.replace('-', '+').replace('_', '/');
+        let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+        //const xambers = JSON.parse(atob(token.split('.')[1]))
+        console.warn(decodedData);
 
-        const token = await AsyncStorage.getItem("userToken");
-
-        const xambers = base64.decode(token.split('.')[1])
-        const user = JSON.parse(xambers)
-
-        // console.warn('wertyui')
-
-        // console.warn(user)
-
+        
 
         if (token != null) {
-            await api.get("/Atividades/MinhasAtividade/" + user.jti, {
+            await api.get("/Atividades/MinhasAtividade/" + decodedData.jti, {
                 headers: {
                     "Authorization": "Bearer " + token,
                 },
@@ -68,7 +70,9 @@ export default class MinhasAtividades extends Component {
                     if (response.status === 200) {
                         // console.warn(response)
                         // console.warn(this.state.modalVisible)
-                        this.setState({ listaAtividades: response.data });
+                        const dadosMinhasAtividades =  response.data;
+                        console.warn(dadosMinhasAtividades);
+                        this.setState({ listaAtividades: dadosMinhasAtividades });
                     }
                 })
                 .catch(response => {
@@ -105,9 +109,7 @@ export default class MinhasAtividades extends Component {
         this.setState({ modalVisible: false })
     }
 
-    componentDidMount() {
-        this.ListarMinhas();
-    }
+    
 
     async _loadFontsAsync() {
         await Font.loadAsync(customFonts);
@@ -116,6 +118,9 @@ export default class MinhasAtividades extends Component {
 
     componentDidMount() {
         this._loadFontsAsync();
+        () => {
+            this.ListarMinhas();
+        }
     }
 
     render() {
