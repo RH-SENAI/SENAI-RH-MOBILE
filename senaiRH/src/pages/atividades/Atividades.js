@@ -97,16 +97,21 @@ export default class AtividadesExtras extends Component {
     }
 
     associar = async (item) => {
+        var Buffer = require('buffer/').Buffer
         try {
-            //console.log(item)
-            const token = await AsyncStorage.getItem('userToken');
-
-            const xambers = base64.decode(token.split('.')[1])
-            const user = JSON.parse(xambers)
-            //console.warn(item)
+            console.warn(item)
+            const token = (await AsyncStorage.getItem('userToken'));
+            let base64Url = token.split('.')[1]; // token you get
+            let base64 = base64Url.replace('-', '+').replace('_', '/');
+            let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+            //const xambers = JSON.parse(atob(token.split('.')[1]))
+            console.warn(decodedData);
+            
+            
+            
 
             const resposta = await api.post(
-                '/Atividades/Associar/' + user.jti + '/' + item,
+                '/Atividades/Associar/' + decodedData.jti + '/' + item,
                 {
 
                 },
