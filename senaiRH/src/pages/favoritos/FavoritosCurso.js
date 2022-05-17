@@ -638,10 +638,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 24
     },
-    line: {
-        width: 30,
-        height: 1
-    },
+    // line: {
+    //     width: 30,
+    //     height: 1,
+    // },
     containerCurso: {
         marginBottom: 50,
     },
@@ -713,7 +713,7 @@ const styles = StyleSheet.create({
     line: {
         width: 80,
         height: 1,
-        backgroundColor: 'black',
+        backgroundColor: 'rgba(0,0,0,0.3)',
         marginBottom: 24
     },
     textSelect: {

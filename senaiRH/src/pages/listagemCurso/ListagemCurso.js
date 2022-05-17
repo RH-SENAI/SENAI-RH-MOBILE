@@ -83,37 +83,34 @@ export default class ListagemCurso extends Component {
         // console.warn(text) 
     }
 
-    // Favoritar = async (id) => {
-    //     try {
-    //         if (this.state.isFavorite == true) {
-    //             this.ProcurarCurso(id);
+    Favoritar = async (id) => {
+        try {
+            if (this.state.isFavorite == true) {
+                this.ProcurarCurso(id);
 
-    //             const jtiUser = base64.decode(token.split('.')[1])
-    //             const user = JSON.parse(jtiUser)
-    //             console.warn(user)
+                const idUser = await AsyncStorage.getItem('idUsuario');
+                const respostaCadastro = await api.post('/FavoritosCursos', {
+                    idCurso: this.state.cursoBuscado.idCurso,
+                    idUsuario: idUser,
+                });
 
-    //             const respostaCadastro = await api.post('/FavoritosCursos', {
-    //                 idCurso: this.state.cursoBuscado,
-    //                 idUsuario: user.jti,
-    //             });
+                if (respostaCadastro.status == 201) {
+                    console.warn('Favorito adicionado');
+                }
+            }
+            else if (this.state.isFavorite == false) {
+                const respostaExcluir = await api.delete(`/FavoritosCursos/deletar/${id}`);
 
-    //             if (respostaCadastro.status == 200) {
-    //                 console.warn('Favorito adicionado');
-    //             }
-    //         }
-    //         else if (this.state.isFavorite == false) {
-    //             const respostaExcluir = await api.delete(`/FavoritosCursos/${id}`);
+                if (respostaExcluir.status == 204) {
+                    this.setState(!this.state.isFavorite)
+                    console.warn('Desfavoritado')
+                }
+            }
 
-    //             if (respostaExcluir.status == 200) {
-    //                 this.setState(!this.state.isFavorite)
-    //                 console.warn('Desfavoritado')
-    //             }
-    //         }
-
-    //     } catch (error) {
-    //         console.warn(error);
-    //     }
-    // }
+        } catch (error) {
+            console.warn(error);
+        }
+    }
 
     ListarCurso = async () => {
         try {
@@ -334,10 +331,11 @@ export default class ListagemCurso extends Component {
                                 <Text style={styles.textDados}>{item.valorCurso}</Text>
                             </View>
 
-                            <View style={styles.boxFavorito} onPress={() => this.Favoritar(item.idCurso)}>
-                                {/* <Pressable onPress={this.Favoritar(item.idCurso)}> */}
-                                <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
-                                {/* </Pressable> */}
+                            <View style={styles.boxFavorito}>
+                                <Pressable>
+                                    {/* <Text onPress={() => this.setState(!this.state.isFavorite)} style={styles.textDetalhes}>Inscreva-se</Text> */}
+                                    {/* <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} /> */}
+                                </Pressable>
                             </View>
                         </View>
                     </View>
