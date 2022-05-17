@@ -21,8 +21,17 @@ import { useNavigation } from "@react-navigation/native";
 import base64 from 'react-native-base64';
 import AppLoading from 'expo-app-loading';
 import api from "../../services/apiGp1";
-import { useFonts } from 'expo-font';
-import { EvilIcons, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import * as Font from 'expo-font';
+import { Feather, EvilIcons, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+
+let customFonts = {
+    'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
+    'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
+    'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
+    'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
+    'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
+    'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
+}
 
 export default class MinhasAtividades extends Component {
     constructor(props) {
@@ -71,34 +80,48 @@ export default class MinhasAtividades extends Component {
         }
     };
 
+
+
     openModal = async (id) => {
         // console.warn(id)
         await api.get("/Atividades/" + id, {})
 
-        .then(response => {
-            let dadosApi = response.data.atividade
-            //console.warn(dadosApi)
-            this.setState(
-                {
-                    minhaAtividade: dadosApi,
-                    modalVisible : true
-                }
+            .then(response => {
+                let dadosApi = response.data.atividade
+                //console.warn(dadosApi)
+                this.setState(
+                    {
+                        minhaAtividade: dadosApi,
+                        modalVisible: true
+                    }
                 )
-            
-            console.warn(dadosApi)
-        })
-        
+
+                console.warn(dadosApi)
+            })
+
     }
 
     closeModal = () => {
-        this.setState({modalVisible : false})
+        this.setState({ modalVisible: false })
     }
 
     componentDidMount() {
         this.ListarMinhas();
     }
 
+    async _loadFontsAsync() {
+        await Font.loadAsync(customFonts);
+        this.setState({ fontsLoaded: true });
+    }
+
+    componentDidMount() {
+        this._loadFontsAsync();
+    }
+
     render() {
+        if (!this.state.fontsLoaded) {
+            return <AppLoading />;
+        }
         return (
 
             <View style={styles.main}>
@@ -158,91 +181,92 @@ export default class MinhasAtividades extends Component {
 
         <View style={styles.MinhaAtividadeCentro}>
 
-       
-        <View style={styles.MinhaAtividade}>
-            <View style={styles.quadradoeTexto}>
-                <View style={styles.quadrado}></View>
-                <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
 
-                <View style={styles.descricaoOlho}>
-                    <Text style={styles.descricao}>{item.criador} </Text>
-                </View>
-                {/* <Text style={styles.descricao}>{item.idGestorCadastroNavigation.nome} </Text> */}
-                <View style={styles.ModaleBotao}>
-                    {/* <View style={styles.statusImagem}></View> */}
+            <View style={styles.MinhaAtividade}>
+                <View style={styles.quadradoeTexto}>
+                    <View style={styles.quadrado}></View>
+                    <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
 
-                    {/* <View style={styles.statusImagem}>
+                    <View style={styles.descricaoOlho}>
+                        <Text style={styles.descricao}>{item.criador} </Text>
+                    </View>
 
-                        <Image
-                            source={
-                                item.idSituacaoAtividade == 1 ? require('../../../assets/img-gp1/validado.png') : item.idSituacaoAtividade == 2 ? require('../../../assets/img-gp1/pendente.png') : item.idSituacaoAtividade == 3 ? require('../../../assets/img-gp1/avaliando.png') : null
-                            } />
-                        <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({mensagem: 'Validado'}) : item.idSituacaoAtividade == 2 ? this.setState({mensagem: 'Pendente'}) : item.idSituacaoAtividade == 3 ? this.setState({mensagem: 'Avaliando'}) : null } </Text>
+                    <View style={styles.ModaleBotao}>
 
-                    </View> */}
+                        <View style={styles.statusImagem}>
 
-
-                    
-
-                </View>
-            </View>
-
-            
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={this.state.modalVisible}
-                key={this.state.minhaAtividade.idMinhasAtividades}
-                onRequestClose={() => {
-                    // console.warn(item)
-                    //setModalVisible(!modalVisible)
-                    //Alert.alert("Modal has been closed.");
-                    //setModalVisible(!modalVisible);
-                }}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <View style={styles.quadradoModal}></View>
-                        <View style={styles.conteudoBoxModal}>
-                            <Text style={styles.nomeBoxModal}> {this.state.minhaAtividade.nomeAtividade} </Text>
-                            <Text style={styles.descricaoModal}> {this.state.minhaAtividade.descricaoAtividade} </Text>
-                            <Text style={styles.itemPostadoModal}> {this.state.minhaAtividade.dataInicio} </Text>
-                            <Text style={styles.entregaModal}> {this.state.minhaAtividade.dataConclusao} </Text>
-                            <Text style={styles.entregaModal}> {this.state.minhaAtividade.criador} </Text>
-                            {/* <Text style={styles.criadorModal}> {item.idGestorCadastroNavigation.nome} </Text> */}
-
-                            <TouchableOpacity style={styles.anexo}>
-                                <Text style={styles.mais}>   + </Text>
-                                <Text style={styles.txtanexo}>    Adicionar Anexo</Text>
-                            </TouchableOpacity>
+                            {item.idSituacaoAtividade == 1 &&
+                               <AntDesign name="check" size={24} color="black" />                                
+                            }
+                            {item.idSituacaoAtividade == 2 &&
+                              <Feather name="alert-triangle" size={24} color="black" />                              
+                            }
+                            {item.idSituacaoAtividade == 3 &&
+                              <MaterialCommunityIcons name="clipboard-clock-outline" size={24} color="black" />                            
+                            }
+                            <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({ mensagem: 'Validado' }) : item.idSituacaoAtividade == 2 ? this.setState({ mensagem: 'Pendente' }) : item.idSituacaoAtividade == 3 ? this.setState({ mensagem: 'Avaliando' }) : null} </Text> 
 
                         </View>
 
-                        <View style={styles.botoesModal} >
-                            <TouchableOpacity
-                            // onPress={() => setModalVisible(!modalVisibleVar)}
-                            // onPress={() => Concluir()}
-                            >
-                                <View style={styles.associarModal}>
-                                    <Text style={styles.texto}> Concluida </Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-
-                            //onPress={() => setModalVisible(!modalVisible)}
-                            >
-                                <View style={styles.fecharModal}>
-                                    <Text style={styles.textoFechar} onPress={() => this.closeModal()} >Fechar X</Text>
-                                </View>
-
-                            </TouchableOpacity>
-                        </View>
                     </View>
                 </View>
 
 
-            </Modal>
-        </View>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={this.state.modalVisible}
+                    key={this.state.minhaAtividade.idMinhasAtividades}
+                    onRequestClose={() => {
+                        // console.warn(item)
+                        //setModalVisible(!modalVisible)
+                        //Alert.alert("Modal has been closed.");
+                        //setModalVisible(!modalVisible);
+                    }}
+                >
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <View style={styles.quadradoModal}></View>
+                            <View style={styles.conteudoBoxModal}>
+                                <Text style={styles.nomeBoxModal}> {this.state.minhaAtividade.nomeAtividade} </Text>
+                                <Text style={styles.descricaoModal}> {this.state.minhaAtividade.descricaoAtividade} </Text>
+                                <Text style={styles.itemPostadoModal}> {this.state.minhaAtividade.dataInicio} </Text>
+                                <Text style={styles.entregaModal}> Data de Entrega: {this.state.minhaAtividade.dataConclusao} </Text>
+                                <Text style={styles.entregaModal}> {this.state.minhaAtividade.criador} </Text>
+                               
+
+                                <TouchableOpacity style={styles.anexo}>
+                                    {/* <Text style={styles.mais}>   + </Text> */}
+                                    <Text style={styles.txtanexo}> +   Adicionar Anexo</Text>
+                                </TouchableOpacity>
+
+                            </View>
+
+                            <View style={styles.botoesModal} >
+                                <TouchableOpacity
+                                // onPress={() => setModalVisible(!modalVisibleVar)}
+                                // onPress={() => Concluir()}
+                                >
+                                    <View style={styles.associarModal}>
+                                        <Text style={styles.texto}> Concluida </Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+
+                                //onPress={() => setModalVisible(!modalVisible)}
+                                >
+                                    <View style={styles.fecharModal}>
+                                        <Text style={styles.textoFechar} onPress={() => this.closeModal()} >Fechar X</Text>
+                                    </View>
+
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+
+
+                </Modal>
+            </View>
 
         </View>
     )
@@ -289,7 +313,7 @@ const styles = StyleSheet.create({
     },
 
     font: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         color: "#636466",
         fontSize: 23,
         paddingBottom: 5,
@@ -352,7 +376,7 @@ const styles = StyleSheet.create({
     },
 
     TituloAtividade: {
-        //  fontFamily: "Quicksand-SemiBold",
+        fontFamily: "Quicksand-SemiBold",
         fontSize: 18,
         color: "#0E0E0E",
         marginTop: 16,
@@ -362,7 +386,7 @@ const styles = StyleSheet.create({
     },
 
     descricao: {
-        fontFamily: "Regular",
+        fontFamily: "Quicksand-Regular",
         textAlign: 'center',
         fontSize: 14,
         color: "#636466",
@@ -370,7 +394,7 @@ const styles = StyleSheet.create({
     },
 
     status: {
-        fontFamily: "Regular",
+        fontFamily: "Quicksand-Regular",
         fontSize: 14,
         color: "#636466",
     },
@@ -461,7 +485,7 @@ const styles = StyleSheet.create({
     },
 
     texto: {
-        fontFamily: 'MediumM',
+        fontFamily: 'Montserrat-Medium',
         color: '#E2E2E2',
         fontSize: 11,
         alignItems: 'center',
@@ -489,7 +513,7 @@ const styles = StyleSheet.create({
     },
 
     textoIndisp: {
-        fontFamily: 'SemiBoldM',
+        fontFamily: 'Montserrat-SemiBold',
         color: '#000000',
         fontSize: 11,
         alignItems: 'center',
@@ -521,14 +545,14 @@ const styles = StyleSheet.create({
     },
 
     nomeBoxModal: {
-        fontFamily: 'SemiBold',
+        fontFamily: 'Quicksand-SemiBold',
         textAlign: "center",
         paddingTop: 24,
         fontSize: 20
     },
 
     descricaoModal: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         paddingTop: 24,
         fontSize: 15,
         paddingBottom: 16,
@@ -536,28 +560,28 @@ const styles = StyleSheet.create({
     },
 
     itemPostadoModal: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     entregaModal: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     criadorModal: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     botoesModal: {
-        fontFamily: 'MediumM',
+        fontFamily: 'Montserrat-Medium',
         flexDirection: 'row',
         justifyContent: 'center',
         justifyContent: 'space-evenly',
@@ -597,7 +621,7 @@ const styles = StyleSheet.create({
     },
 
     txtanexo: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         marginRight: 40
     },
 
@@ -607,7 +631,7 @@ const styles = StyleSheet.create({
     },
 
     textoFechar: {
-        fontFamily: 'MediumM',
+        fontFamily: 'Montserrat-Medium',
         color: '#C20004'
     },
 

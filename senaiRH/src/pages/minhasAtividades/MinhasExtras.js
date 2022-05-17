@@ -21,8 +21,16 @@ import { useNavigation } from "@react-navigation/native";
 import base64 from 'react-native-base64';
 import AppLoading from 'expo-app-loading';
 import api from "../../services/apiGp1";
-import { useFonts } from 'expo-font';
+import * as Font from 'expo-font';
 import { EvilIcons, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+
+let customFonts = {
+    'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
+    'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
+    'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
+    'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf')
+}
+
 
 export default class MinhasAtividades extends Component {
     constructor(props) {
@@ -34,6 +42,15 @@ export default class MinhasAtividades extends Component {
             minhaAtividade: {}
         }
 
+    }
+
+    async _loadFontsAsync() {
+        await Font.loadAsync(customFonts);
+        this.setState({ fontsLoaded: true });
+    }
+
+    componentDidMount() {
+        this._loadFontsAsync();
     }
 
     ListarMinhas = async () => {
@@ -75,23 +92,23 @@ export default class MinhasAtividades extends Component {
         // console.warn(id)
         await api.get("/Atividades/" + id, {})
 
-        .then(response => {
-            let dadosApi = response.data.atividade
-            //console.warn(dadosApi)
-            this.setState(
-                {
-                    minhaAtividade: dadosApi,
-                    modalVisible : true
-                }
+            .then(response => {
+                let dadosApi = response.data.atividade
+                //console.warn(dadosApi)
+                this.setState(
+                    {
+                        minhaAtividade: dadosApi,
+                        modalVisible: true
+                    }
                 )
-            
-            
-        })
-        
+
+
+            })
+
     }
 
     closeModal = () => {
-        this.setState({modalVisible : false})
+        this.setState({ modalVisible: false })
     }
 
     componentDidMount() {
@@ -99,6 +116,10 @@ export default class MinhasAtividades extends Component {
     }
 
     render() {
+        if (!this.state.fontsLoaded) {
+            return <AppLoading />;
+        }
+
         return (
 
             <View style={styles.main}>
@@ -125,17 +146,17 @@ export default class MinhasAtividades extends Component {
                             <View style={styles.itemEquipe}>
                                 <TouchableOpacity onPress={() => this.props.navigation.navigate('MinhasAtividades2')}>
                                     <Text style={styles.font}> Obrigatórios </Text>
- <View style={styles.line1}></View>
+                                    <View style={styles.line1}></View>
                                 </TouchableOpacity>
-                               
+
                             </View>
 
                             <View style={styles.itemIndividual}>
                                 <TouchableOpacity >
                                     <Text style={styles.font}> Extras </Text>
-                                    
+
                                 </TouchableOpacity>
-<View style={styles.line2}></View>
+                                <View style={styles.line2}></View>
                             </View>
 
                         </View>
@@ -158,41 +179,46 @@ export default class MinhasAtividades extends Component {
 
         <View style={styles.MinhaAtividadeCentro}>
 
-       
-        <View style={styles.MinhaAtividade}>
-            <View style={styles.quadradoeTexto}>
-                <View style={styles.quadrado}></View>
-                <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
 
-                <View style={styles.descricaoOlho}>
-                    <Text style={styles.descricao}>{item.dataConclusao} </Text>
+            <View style={styles.MinhaAtividade}>
+                <View style={styles.quadradoeTexto}>
+                    <View style={styles.quadrado}></View>
+                    <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
 
-                    <TouchableOpacity style={styles.Modalbotao} onPress={() => this.openModal(item.idAtividade)}>
-                        <AntDesign name="downcircleo" size={24} color="#636466" />
-                    </TouchableOpacity>
+                    <View style={styles.descricaoOlho}>
+                        <Text style={styles.descricao}>{item.dataConclusao} </Text>
 
-                </View>
+                        <TouchableOpacity style={styles.Modalbotao} onPress={() => this.openModal(item.idAtividade)}>
+                            <AntDesign name="downcircleo" size={24} color="#636466" />
+                        </TouchableOpacity>
 
-                <View style={styles.ModaleBotao}>
-                    {/* <View style={styles.statusImagem}></View> */}
+                    </View>
 
-                    {/* <View style={styles.statusImagem}>
+                    <View style={styles.ModaleBotao}>
+                        <View style={styles.statusImagem}>
 
-                        <Image
-                            source={
-                                item.idSituacaoAtividade == 1 ? require('../../../assets/img-gp1/validado.png') : item.idSituacaoAtividade == 2 ? require('../../../assets/img-gp1/pendente.png') : item.idSituacaoAtividade == 3 ? require('../../../assets/img-gp1/avaliando.png') : null
-                            } />
-                        <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({mensagem: 'Validado'}) : item.idSituacaoAtividade == 2 ? this.setState({mensagem: 'Pendente'}) : item.idSituacaoAtividade == 3 ? this.setState({mensagem: 'Avaliando'}) : null } </Text>
+                            {item.idSituacaoAtividade == 1 &&
+                                <AntDesign name="check" size={24} color="black" />
+                            }
+                            {item.idSituacaoAtividade == 2 &&
+                                <Feather name="alert-triangle" size={24} color="black" />
+                            }
+                            {item.idSituacaoAtividade == 3 &&
+                                <MaterialCommunityIcons name="clipboard-clock-outline" size={24} color="black" />
+                            }
+                            <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({ mensagem: 'Validado' }) : item.idSituacaoAtividade == 2 ? this.setState({ mensagem: 'Pendente' }) : item.idSituacaoAtividade == 3 ? this.setState({ mensagem: 'Avaliando' }) : null} </Text>
 
-                    </View> */}
+                        </View>
+
+                    </View> 
 
 
-                    
+
 
                 </View>
             </View>
 
-            
+
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -213,7 +239,8 @@ export default class MinhasAtividades extends Component {
                             <Text style={styles.descricaoModal}> {this.state.minhaAtividade.descricaoAtividade} </Text>
                             <Text style={styles.itemPostadoModal}> {this.state.minhaAtividade.dataInicio} </Text>
                             <Text style={styles.entregaModal}> {this.state.minhaAtividade.dataConclusao} </Text>
-                            {/* <Text style={styles.criadorModal}> {item.idGestorCadastroNavigation.nome} </Text> */}
+                            <Text style={styles.entregaModal}> {this.state.minhaAtividade.criador} </Text>
+
 
                             <TouchableOpacity style={styles.anexo}>
                                 <Text style={styles.mais}>   + </Text>
@@ -246,8 +273,6 @@ export default class MinhasAtividades extends Component {
 
 
             </Modal>
-        </View>
-
         </View>
     )
 }

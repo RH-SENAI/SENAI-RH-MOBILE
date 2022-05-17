@@ -25,14 +25,14 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 // import 'intl';
 
-// let customFonts = {
-//     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
-//     'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
-//     'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
-//     'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
-//     'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
-//     'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
-// }
+let customFonts = {
+    'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
+    'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
+    'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
+    'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
+    'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
+    'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
+}
 
 export default class AtividadesExtras extends Component {
 
@@ -246,12 +246,13 @@ export default class AtividadesExtras extends Component {
                             <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
                             <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
                             <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
-                            <Text style={styles.criadorModal}> Criador da atividade </Text>
+                            <Text style={styles.criadorModal}> {this.state.AtividadeBuscada.criador} </Text>
+                            
                         </View>
                         <View style={styles.botoesModal}  >
                             <Pressable onPress={() => this.associar(this.state.AtividadeBuscada.idAtividade)} >
                                 <View style={styles.associarModal}>
-                                    <Text style={styles.texto}> Realizar </Text>
+                                    <Text style={styles.texto}> Minha Lista </Text>
                                 </View>
                             </Pressable>
                             <Pressable
