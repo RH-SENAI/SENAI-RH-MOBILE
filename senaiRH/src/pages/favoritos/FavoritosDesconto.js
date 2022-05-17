@@ -68,8 +68,9 @@ export default class FavoritosDesconto extends Component {
             // const user = JSON.parse(jtiUser)
             // console.warn(user)
 
-            const resposta = await api(`/FavoritosDescontos/Favorito/1`);
+            const idUser = await AsyncStorage.getItem('idUsuario');
 
+            const resposta = await api(`/FavoritosDescontos/Favorito/${idUser}`);
             if (resposta.status == 200) {
                 const dadosDesconto = resposta.data;
 
