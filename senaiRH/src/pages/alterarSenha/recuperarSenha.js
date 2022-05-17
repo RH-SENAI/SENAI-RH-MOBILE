@@ -15,7 +15,6 @@ import jwt_decode from "jwt-decode";
 import api from '../../services/apiGp1';
 import { render } from 'react-dom';
 
-
 export default class AlterarSenha extends Component {
 
 
@@ -34,34 +33,38 @@ export default class AlterarSenha extends Component {
                 <View style={styles.container}>
 
                     <Text style={styles.tituloPagina}>{'alterar senha'.toUpperCase()}</Text>
-                    <Text style={styles.textoPagina}> Altera aqui sua senha de acesso!</Text>
+                    <Text style={styles.textoPagina}> Insira o email da conta que será recuperada, e depois, insira o codigo que foi enviado por email!</Text>
 
                     <View style={styles.text1}>
                         <TextInput style={styles.inputs}
-                            placeholder="Nova Senha"
+                            placeholder="Email"
                             keyboardType="default"
+                            placeholderTextColor="#B3B3B3"
                         />
-                    </View>
-
-                    <View>
-                        <TextInput style={styles.inputs}
-                            placeholder="Confirme a nova senha"
-                            keyboardType="default"
-                            secureTextEntry={true}
-                        />
-                    </View>
-
-                    <View>
                         <TouchableOpacity
-                            style={styles.btnAlterar}
-                            //onPress={this.realizarLogin}
+                            style={styles.btnEmail}
+                        //onPress={this.realizarLogin}
                         >
-                            <Text style={styles.btnText}>
-                                Alterar Senha
-                            </Text>
-
+                            <Text style={styles.btnText}> Enviar Email</Text>
                         </TouchableOpacity>
                     </View>
+
+                    <View >
+                        <TextInput style={styles.inputs}
+                            placeholder="Código"
+                            keyboardType="numeric"
+                            secureTextEntry={true}
+                            placeholderTextColor="#B3B3B3"
+                        />
+
+                        <TouchableOpacity
+                            style={styles.btnCodigo}
+                        //onPress={this.realizarLogin}
+                        >
+                            <Text style={styles.btnText}> Enviar Código</Text>
+                        </TouchableOpacity>
+                    </View>
+
                 </View>
             </View>
         )
@@ -99,6 +102,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
+    textoPagina:{
+
+    },
+
     text1: {
 
     },
@@ -117,7 +124,7 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
     },
 
-    btnAlterar: {
+    btnEmail: {
         width: 350,
         height: 46,
         fontSize: 20,
@@ -128,13 +135,27 @@ const styles = StyleSheet.create({
         elevation: 16,
         backgroundColor: '#C20004',
         borderRadius: 10,
-      },
+    },
 
-      btnText: {
+    btnCodigo:{
+        width: 350,
+        height: 46,
+        fontSize: 20,
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 24,
+        elevation: 16,
+        backgroundColor: '#2A2E32',
+        borderRadius: 10,
+    },
+
+    btnText: {
         fontFamily: 'Montserrat-Regular',
         fontSize: 12,
         color: "#F2F2F2",
         alignItems: 'center',
         justifyContent: 'center',
-      },
+    },
+
 });

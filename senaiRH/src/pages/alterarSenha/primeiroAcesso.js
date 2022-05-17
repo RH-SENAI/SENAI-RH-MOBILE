@@ -38,8 +38,16 @@ export default class AlterarSenha extends Component {
 
                     <View style={styles.text1}>
                         <TextInput style={styles.inputs}
+                            placeholder="Senha Atual"
+                            keyboardType="default"
+                        />
+                    </View>
+
+                    <View>
+                        <TextInput style={styles.inputs}
                             placeholder="Nova Senha"
                             keyboardType="default"
+                            secureTextEntry={true}
                         />
                     </View>
 
@@ -57,7 +65,7 @@ export default class AlterarSenha extends Component {
                             //onPress={this.realizarLogin}
                         >
                             <Text style={styles.btnText}>
-                                Alterar Senha
+                                Digite sua senha novamente
                             </Text>
 
                         </TouchableOpacity>
