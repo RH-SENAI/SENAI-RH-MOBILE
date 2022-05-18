@@ -1,0 +1,37 @@
+USUARIO
+decimal MedFeedbackNeg
+decimal MedFeedbackNeu
+decimal MedFeedbackPos
+
+decimal MedCursosNeg
+decimal MedCursosNeu
+decimal MedCursosPos
+
+decimal MedDescontosNeg
+decimal MedDescontosNeu
+decimal MedDescontosPos
+
+decimal MedSatisfacaoGeral
+
+
+
+
+HISTORICO_SATISFACAO
+id historico_satisfacao
+id usuario(.navigation.medSatisfacaoGeral)
+date atualizadoEm
+
+HISTORICO_AVALIACAO
+id historico_avaliacao
+id usuario(.navigation.mediaAvaliacao)
+date atualizadoEm
+
+HISTORICO_PRODUTIVIDADE
+id historico_produtividade
+id usuario(.navigation.notaProdutividade)
+date atualizadoEm
+
+
+
+***OBS
+ver com grupo 2 sobre remover avaliações de cursos e descontos
