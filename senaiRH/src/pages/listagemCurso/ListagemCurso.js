@@ -7,12 +7,13 @@ import {
     Pressable,
     Image,
     FlatList,
-    ScrollView
+    ScrollView,
+    TextInput
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Component } from 'react/cjs/react.production.min';
-import { AppRegistry } from 'react-native-web';
+// import { AppRegistry, TextInput } from 'react-native-web';
 import ExplodingHeart from 'react-native-exploding-heart';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -37,6 +38,7 @@ export default class ListagemCurso extends Component {
             showAlert: false,
             contadorCurso: 0,
             saldoUsuario: 0,
+            distanceUser: 0,
             listaCurso: [],
             cursoBuscado: [],
             localizacaoCurso: [],
@@ -139,6 +141,10 @@ export default class ListagemCurso extends Component {
             //const token = await AsyncStorage.getItem('userToken')
             // console.warn(this.state.Userlongitude)
             // console.warn(this.state.Userlatitude)
+            var distanceBase = 150000;
+            if (this.state.distanceUser != 0) {
+                distanceBase = this.state.distanceUser * 1000
+            }
 
             const resposta = await api('/Cursos');
 
@@ -170,7 +176,7 @@ export default class ListagemCurso extends Component {
                     // console.log(distance)
                     if (respostaLocal.status == 200) {
                         // console.warn('Localização encontrada!');
-                        if (distance <= 750000) {
+                        if (distance <= distanceBase) {
                             console.warn(distance);
                             //this.setState({ localizacaoCurso: dadosLocalizacao })
                             // console.warn(distance);
@@ -186,7 +192,7 @@ export default class ListagemCurso extends Component {
                             this.state.listaCurso.push(curso);
 
                         }
-                        else if (distance > 750000) {
+                        else if (distance > distanceBase) {
                             console.warn(distance);
                             console.warn('Localização fora do alcance');
                         }
@@ -217,6 +223,7 @@ export default class ListagemCurso extends Component {
     }
     componentDidMount = async () => {
         this.GetLocation();
+        await delay(2000);
         this.SaldoUsuario();
         await delay(3000);
         this.ListarCurso();
@@ -310,9 +317,19 @@ export default class ListagemCurso extends Component {
                 <View style={styles.boxTituloPrincipal}>
                     <Text style={styles.textTituloPrincipal}>cursos</Text>
                 </View>
-                <View style={styles.boxSaldoUsuario}>
-                    <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                    <Text style={styles.textDados}>{this.state.saldoUsuario}</Text>
+                <View style={styles.boxInputSaldo}>
+                    <View style={styles.boxSaldoUsuario}>
+                        <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
+                        <Text style={styles.textDados}>{this.state.saldoUsuario}</Text>
+                    </View>
+                    <TextInput
+                        style={styles.inputDistance}
+                        onChangeText={distanceUser => this.setState({ distanceUser })}
+                        placeholder="150 km"
+                        placeholderTextColor="#B3B3B3"
+                        keyboardType="numeric"
+                        maxLength={3}
+                    />
                 </View>
 
                 <FlatList
@@ -320,6 +337,7 @@ export default class ListagemCurso extends Component {
                     data={this.state.listaCurso}
                     keyExtractor={item => item.idCurso}
                     renderItem={this.renderItem}
+                    refreshControl
                 />
             </View>
 
@@ -374,7 +392,7 @@ export default class ListagemCurso extends Component {
                             </View>
 
                             <View style={styles.boxFavorito}>
-                                <Pressable onPress={() => this.Favoritar(true, item.idCurso)}>
+                                <Pressable style={styles.boxTextFavorito} onPress={() => this.Favoritar(true, item.idCurso)}>
                                     <Text style={styles.textFavoritos}>Favoritar</Text>
                                     {/* <ExplodingHeart width={80} onChange={(ev) => console.log(ev)} /> */}
                                 </Pressable>
@@ -512,6 +530,14 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Bold',
         fontSize: 30
     },
+    boxInputSaldo: {
+        width: 275,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 24
+    },
     boxSaldoUsuario: {
         width: 90,
         height: 42,
@@ -522,7 +548,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 24
+    },
+    inputDistance: {
+        width: 100,
+        height: 42,
+        borderColor: '#B3B3B3',
+        borderWidth: 2,
+        borderRadius: 15,
+        display: 'flex',
+        alignItems: 'center',
+        paddingLeft: 28 
     },
     containerCurso: {
         marginBottom: 50,
@@ -607,8 +642,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginLeft: 105,
     },
+    boxTextFavorito: {
+        width: 100,
+        height: 48,
+        backgroundColor: '#C20004',
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 64
+    },
     textFavoritos: {
-        color: 'black'
+        color: 'white'
     },
     modalAbrir: {
         width: 100,
