@@ -83,27 +83,49 @@ export default class ListagemCurso extends Component {
         // console.warn(text) 
     }
 
-    Favoritar = async (id) => {
+    Favoritar = async (favorite, id) => {
         try {
-            if (this.state.isFavorite == true) {
+            if (favorite == true) {
                 this.ProcurarCurso(id);
+                await delay(2000);
 
+                //Id usuário
                 const idUser = await AsyncStorage.getItem('idUsuario');
-                const respostaCadastro = await api.post('/FavoritosCursos', {
-                    idCurso: this.state.cursoBuscado.idCurso,
-                    idUsuario: idUser,
-                });
 
-                if (respostaCadastro.status == 201) {
-                    console.warn('Favorito adicionado');
-                }
+                //Requisição favoritos pelo id do usuário
+                const respostaFavoritos = await api('/FavoritosCursos/' + idUser)
+
+                //Tamanho do json do respostaFavoritos
+                var tamanhoJson = Object.keys(respostaFavoritos).length;
+                var p = 0;
+
+                do {
+                    let stringFavoritos = JSON.stringify(respostaFavoritos);
+                    let objFavoritos = JSON.parse(stringFavoritos);
+                    let cursoId = objFavoritos['idCursoFavorito']['idCursoNavigation']['idCurso'][p];
+
+                    if (cursoId != id) {
+                        const respostaCadastro = await api.post('/FavoritosCursos', {
+                            idCurso: this.state.cursoBuscado.idCurso,
+                            idUsuario: idUser,
+                        });
+
+                        if (respostaCadastro.status == 201) {
+                            this.setState({ isFavorite: favorite });
+                            console.warn('Favorito adicionado');
+                            console.warn(this.state.isFavorite)
+                        }
+                    }
+
+                    p++
+                } while (p < tamanhoJson);
             }
             else if (this.state.isFavorite == false) {
                 const respostaExcluir = await api.delete(`/FavoritosCursos/deletar/${id}`);
 
                 if (respostaExcluir.status == 204) {
-                    this.setState(!this.state.isFavorite)
-                    console.warn('Desfavoritado')
+                    this.setState(!this.state.isFavorite);
+                    console.warn('Desfavoritado');
                 }
             }
 
@@ -200,6 +222,10 @@ export default class ListagemCurso extends Component {
         this.ListarCurso();
     }
 
+    componentWillUnmount = () => {
+        this.ListarCurso();
+    }
+
     showAlert = () => {
         this.setState({
             showAlert: true
@@ -239,6 +265,22 @@ export default class ListagemCurso extends Component {
 
     _handleTextReady = () => {
         // ...
+    }
+
+    ProcurarFavorito = async (id) => {
+        try {
+            const resposta = await api('/FavoritosCursos/' + id);
+            // console.warn(resposta)
+            if (resposta.status == 200) {
+                const dadosFavoritoCurso = await resposta.data;
+                var stringFavoritoCursoBuscado = JSON.stringify(dadosFavoritoCurso);
+                let objFavoritoCursoBuscado = JSON.parse(stringFavoritoCursoBuscado)
+                this.setState({ cursoFavoritoBuscado: objFavoritoCursoBuscado });
+                // console.warn(this.state.cursoBuscado)
+            }
+        } catch (erro) {
+            console.warn(erro);
+        }
     }
 
     ProcurarCurso = async (id) => {
@@ -332,9 +374,9 @@ export default class ListagemCurso extends Component {
                             </View>
 
                             <View style={styles.boxFavorito}>
-                                <Pressable>
-                                    {/* <Text onPress={() => this.setState(!this.state.isFavorite)} style={styles.textDetalhes}>Inscreva-se</Text> */}
-                                    {/* <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} /> */}
+                                <Pressable onPress={() => this.Favoritar(true, item.idCurso)}>
+                                    <Text style={styles.textFavoritos}>Favoritar</Text>
+                                    {/* <ExplodingHeart width={80} onChange={(ev) => console.log(ev)} /> */}
                                 </Pressable>
                             </View>
                         </View>
@@ -564,6 +606,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: 105,
+    },
+    textFavoritos: {
+        color: 'black'
     },
     modalAbrir: {
         width: 100,

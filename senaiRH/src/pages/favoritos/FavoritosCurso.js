@@ -211,6 +211,11 @@ export default class TabViewExample extends React.Component {
         this.ListarDescontosFavoritos();
     }
 
+    componentWillUnmount = () => {
+        this.ListarCursoFavoritos();
+        this.ListarDescontosFavoritos();
+    }
+
     _handleIndexChange = (index) => this.setState({ index });
 
     _renderTabBar = (props) => {
@@ -623,7 +628,7 @@ const styles = StyleSheet.create({
     },
     textTituloPrincipal: {
         textTransform: 'uppercase',
-        // fontFamily: 'Montserrat-Bold',
+        fontFamily: 'Montserrat-Bold',
         fontSize: 30
     },
     boxSaldoUsuario: {
@@ -673,7 +678,7 @@ const styles = StyleSheet.create({
     },
     textTituloCurso: {
         fontSize: 20,
-        // fontFamily: 'Montserrat-Medium',
+        fontFamily: 'Montserrat-Medium',
         marginTop: 8,
     },
     boxAvaliacao: {
@@ -697,7 +702,7 @@ const styles = StyleSheet.create({
         marginTop: 1
     },
     textDados: {
-        // fontFamily: 'Quicksand-Regular',
+        fontFamily: 'Quicksand-Regular',
         marginLeft: 8,
         marginBottom: 3
     },
@@ -717,7 +722,7 @@ const styles = StyleSheet.create({
         marginBottom: 24
     },
     textSelect: {
-        // fontFamily: 'Montserrat-Medium',
+        fontFamily: 'Montserrat-Medium',
     },
     boxPrecoFavorito: {
         height: 40,
@@ -796,7 +801,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 4,
     },
     textTituloModal: {
-        // fontFamily: 'Montserrat-Bold',
+        fontFamily: 'Montserrat-Bold',
         fontSize: 20,
         color: '#000',
         marginTop: 24,
@@ -816,7 +821,7 @@ const styles = StyleSheet.create({
     },
     textDadosModal: {
         width: 120,
-        // fontFamily: 'Quicksand-Regular',
+        fontFamily: 'Quicksand-Regular',
         marginLeft: 16
     },
     boxDescricaoModal: {
@@ -825,7 +830,7 @@ const styles = StyleSheet.create({
         marginTop: 24
     },
     descricaoModal: {
-        // fontFamily: 'Montserrat-Medium',
+        fontFamily: 'Montserrat-Medium',
         fontSize: 16,
         color: '#000',
     },
@@ -833,7 +838,7 @@ const styles = StyleSheet.create({
         height: 150
     },
     textDescricaoModal: {
-        // fontFamily: 'Quicksand-Regular',
+        fontFamily: 'Quicksand-Regular',
         width: 280,
         height: '18%',
         fontSize: 12,
@@ -892,7 +897,7 @@ const styles = StyleSheet.create({
     },
     textDetalhes: {
         color: 'white',
-        // fontFamily: 'Montserrat-Medium',
+        fontFamily: 'Montserrat-Medium',
     },
     tituloAlert: {
         color: 'green'
