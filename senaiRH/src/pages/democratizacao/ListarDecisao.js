@@ -149,12 +149,10 @@ export default function ListarDecisao() {
 
 const styles = StyleSheet.create({
   containerRenderItem: {
-    width: 380,
+    width: 370,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    flex: 1,
-    //backgroundColor: 'green'
   },
 
   imgPerfilCardWrapper: {
@@ -179,12 +177,12 @@ const styles = StyleSheet.create({
     marginTop: 16,
     width: 230,
     height: 130,
-    marginRight: 40
+    marginRight:40
   },
 
   containerCard: {
     width: 207,
-    height: 105,
+    height: 105
   },
 
   tituloCardWrapper: {
@@ -211,7 +209,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     marginHorizontal: '5%',
-    //backgroundColor: 'cyan'
   },
 
   header: {
@@ -220,7 +217,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: 16,
     marginBottom: 32,
-    //backgroundColor: 'blue'
   },
 
   imgLogo: {
@@ -232,7 +228,7 @@ const styles = StyleSheet.create({
   },
 
   h1nonBold: {
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: "500",
     textTransform: "uppercase",
     color: "#000000",

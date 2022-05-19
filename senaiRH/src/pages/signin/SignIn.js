@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from "react";
+
 import {
   StyleSheet,
   Text,
@@ -9,51 +10,52 @@ import {
   Animated,
   Alert,
   ColorPropType,
-} from 'react-native';
+} from "react-native";
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Font from 'expo-font';
-import AppLoading from 'expo-app-loading';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Font from "expo-font";
+import AppLoading from "expo-app-loading";
 import jwt_decode from "jwt-decode";
-import api from '../../services/apiGp1';
-import AwesomeAlert from 'react-native-awesome-alerts';
-import AnimatedInput from 'react-native-animated-input';
-import axios from 'axios';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-
+import api from "../../services/apiGp1";
+import AwesomeAlert from "react-native-awesome-alerts";
+import AnimatedInput from "react-native-animated-input";
+import axios from "axios";
+import { Colors } from "react-native/Libraries/NewAppScreen";
+// import { MaskedTextInput } from "react-native-mask-text";
+import { TextInputMask } from "react-native-masked-text";
+import { Ionicons } from "@expo/vector-icons";
 
 let customFonts = {
-  'Montserrat-Regular': require('../../../assets/fonts/montserrat/Montserrat-Regular.ttf'),
-  'Montserrat-Medium' : require('../../../assets/fonts/montserrat/Montserrat-Medium.ttf'),
-  'Montserrat-Bold': require('../../../assets/fonts/montserrat/Montserrat-Bold.ttf'),
-  'Quicksand-Regular': require('../../../assets/fonts/quicksand/Quicksand-Regular.ttf')
-}
-
+  "Montserrat-Regular": require("../../../assets/fonts/montserrat/Montserrat-Regular.ttf"),
+  "Montserrat-Medium": require("../../../assets/fonts/montserrat/Montserrat-Medium.ttf"),
+  "Montserrat-Bold": require("../../../assets/fonts/montserrat/Montserrat-Bold.ttf"),
+  "Quicksand-Regular": require("../../../assets/fonts/quicksand/Quicksand-Regular.ttf"),
+};
 
 export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cpf: '0009886654',
-      senha: 'AGORAVAI',
+      cpf: "71696553067",
+      senha: "Sesisenai@2022",
       fontsLoaded: false,
-      error: 'Email ou Senha inválidos!',
+      error: "Email ou Senha inválidos!",
       //erroMensagem: '',
       setLoading: false,
-      showAlert: false
-    }
+      showAlert: false,
+      hidePass: true,
+    };
   }
 
   showAlert = () => {
-    this.setState({showAlert: true})
-  }
-  
-  hideAlert = () => {
-    this.setState({
-      showAlert: false
-    });
+    this.setState({ showAlert: true });
   };
 
+  hideAlert = () => {
+    this.setState({
+      showAlert: false,
+    });
+  };
 
   async _loadFontsAsync() {
     await Font.loadAsync(customFonts);
@@ -65,12 +67,8 @@ export default class Login extends Component {
   }
 
   realizarLogin = async () => {
-    
-
     try {
-
-      
-      const resposta = await api.post('/Login', {
+      const resposta = await api.post("/Login", {
         cpf: this.state.cpf,
         senha: this.state.senha,
       });
@@ -80,50 +78,38 @@ export default class Login extends Component {
 
       console.warn(token);
 
-      await AsyncStorage.setItem('userToken', token);
+      await AsyncStorage.setItem("userToken", token);
       console.warn(resposta.data);
 
       if (resposta.status === 200) {
-
-        console.warn('Login Realizado')
+        console.warn("Login Realizado");
         //console.warn(jwt_decode(token).role)
 
         // this.state({isLoading:false})
 
-        var certo = jwt_decode(token).role
+        var certo = jwt_decode(token).role;
         //console.warn('certo ' + certo)
 
-        this.props.navigation.navigate('Redirecionar');
-
+        this.props.navigation.navigate("Redirecionar");
       }
-
     } catch (error) {
-      console.warn(error)
+      console.warn(error);
       this.showAlert();
     }
-
-  }
-
-  
+  };
 
   render() {
     if (!this.state.fontsLoaded) {
       return <AppLoading />;
     }
-    
 
     return (
-      
-      
       <View style={styles.body}>
-        
         <AwesomeAlert
           show={this.state.showAlert}
           showProgress={false}
           title="Login Inválido!"
-          titleStyle={
-            styles.tituloModalLogin
-          }
+          titleStyle={styles.tituloModalLogin}
           message="O CPF ou a senha inserídos são inválidos!"
           messageStyle={styles.textoModalLogin}
           closeOnTouchOutside={true}
@@ -138,14 +124,16 @@ export default class Login extends Component {
           }}
         />
         <View style={styles.mainHeader}>
-          <Image source={require("../../../assets/imgMobile/logo_2S.png")}
+          <Image
+            source={require("../../../assets/imgMobile/logo_2S.png")}
             style={styles.imgLogo}
           />
         </View>
 
         <View style={styles.container}>
-
-          <Text style={styles.tituloPagina}>{'recursos humanos'.toUpperCase()}</Text>
+          <Text style={styles.tituloPagina}>
+            {"recursos humanos".toUpperCase()}
+          </Text>
 
           {/* ANIMAÇÃO PRECISA FAZER OU NÃO */}
           {/* <View >
@@ -189,28 +177,30 @@ export default class Login extends Component {
             />
           </View> */}
 
-
           <View style={styles.viewLoginCPF}>
-            <TextInput style={styles.inputLogin}
+            <TextInputMask
+              style={styles.inputLogin}
               placeholder="CPF"
+              type={"cpf"}
+              value={this.state.value}
               keyboardType="numeric"
               placeholderTextColor="#B3B3B3"
-              onChangeText={cpf => this.setState({ cpf })}
-              value={this.state.value}
+              onChangeText={(cpf) => this.setState({ cpf })}
             />
           </View>
 
           <View style={styles.TextEmail}>
-            <TextInput style={styles.inputLogin}
+            <TextInput
+              style={styles.inputLogin}
               placeholder="Senha"
               placeholderTextColor="#B3B3B3"
               keyboardType="default"
-              onChangeText={senha => this.setState({ senha })}
+              onChangeText={(senha) => this.setState({ senha })}
               secureTextEntry={true}
               value={this.state.value}
+            
             />
           </View>
-
 
           <View style={styles.erroMsg}>
             {/* <Animated.Text 
@@ -220,52 +210,39 @@ export default class Login extends Component {
                 Email ou Senha inválidos!
             </Animated.Text> */}
 
-            
-              <TouchableOpacity  onPress={() => this.props.navigation.navigate('alterarSenha')}>
-                <Text style={styles.textEsque}> Esqueci a Senha</Text>
-              </TouchableOpacity>
-           
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate("alterarSenha")}
+            >
+              <Text style={styles.textEsque}> Esqueci a Senha</Text>
+            </TouchableOpacity>
           </View>
-
-         
-
-
 
           <TouchableOpacity
             style={styles.btnLogin}
             onPress={this.realizarLogin}
           >
-            <Text style={styles.btnText}>
-              Entrar
-            </Text>
-
+            <Text style={styles.btnText}>Entrar</Text>
           </TouchableOpacity>
-
-
-
         </View>
-        <View style={styles.imgLoginView} >
-          <Image source={require('../../../assets/imgMobile/imagemLogin.png')} />
+        <View style={styles.imgLoginView}>
+          <Image
+            source={require("../../../assets/imgMobile/imagemLogin.png")}
+          />
         </View>
-
       </View>
-
-    )
+    );
   }
-};
-
-
+}
 
 const styles = StyleSheet.create({
-
   body: {
-    backgroundColor: '#F2F2F2',
+    backgroundColor: "#F2F2F2",
   },
 
   mainHeader: {
     paddingTop: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   imgLogo: {
@@ -274,36 +251,33 @@ const styles = StyleSheet.create({
   },
 
   container: {
-    alignItems: 'center',
+    alignItems: "center",
   },
 
   tituloPagina: {
-    fontFamily: 'Montserrat-Bold',
+    fontFamily: "Montserrat-Bold",
     fontSize: 30,
-    color: '#2A2E32',
+    color: "#2A2E32",
     width: 175,
     paddingTop: 64,
     paddingBottom: 50,
-    alignItems: 'center',
+    alignItems: "center",
   },
-  tituloModalLogin:
-  {
-    color: '#C20004',
-    fontFamily: 'Montserrat-Medium',
+  tituloModalLogin: {
+    color: "#C20004",
+    fontFamily: "Montserrat-Medium",
     fontSize: 23,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
-  textoModalLogin:
-  {
+  textoModalLogin: {
     width: 200,
-    textAlign: 'center'
+    textAlign: "center",
   },
-  confirmButton:{
+  confirmButton: {
     width: 100,
-   
-    paddingLeft: 32
+
+    paddingLeft: 32,
   },
-  
 
   // inputEmail:{
   //   width: 350,
@@ -316,7 +290,6 @@ const styles = StyleSheet.create({
   //   borderWidth: 1,
   //   borderColor: '#B3B3B3',
   // },
-
 
   // inputLogin: {
   //   //backgroundColor: 'white',
@@ -338,12 +311,12 @@ const styles = StyleSheet.create({
     width: 350,
     height: 46,
     borderWidth: 1,
-    borderColor: '#B3B3B3',
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderColor: "#B3B3B3",
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 10,
     fontSize: 14,
-    flexDirection: 'column',
+    flexDirection: "column",
     //paddingTop: 8,
     //paddingBottom:24,
     paddingLeft: 15,
@@ -356,24 +329,24 @@ const styles = StyleSheet.create({
 
   erroMsg: {
     paddingTop: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    marginLeft: 250
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    marginLeft: 250,
   },
 
   erroText: {
-    fontFamily: 'Quicksand-Regular',
+    fontFamily: "Quicksand-Regular",
     fontSize: 12,
-    color: '#C20004',
+    color: "#C20004",
     paddingRight: 115,
     //paddingTop: 24,
   },
 
   textEsque: {
-    fontFamily: 'Quicksand-Regular',
+    fontFamily: "Quicksand-Regular",
     fontSize: 12,
-    color: '#C20004',
+    color: "#C20004",
     //position:'absolute',
     //paddingTop: 1,
     //paddingRight: 50,
@@ -384,22 +357,21 @@ const styles = StyleSheet.create({
     height: 46,
     fontSize: 20,
     borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 24,
     elevation: 16,
-    backgroundColor: '#C20004',
+    backgroundColor: "#C20004",
     borderRadius: 10,
   },
 
   btnText: {
-    fontFamily: 'Montserrat-Regular',
+    fontFamily: "Montserrat-Regular",
     fontSize: 12,
     color: "#F2F2F2",
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
-
 
   imgLoginView: {
     //justifyContent:'flex-start',
@@ -407,7 +379,7 @@ const styles = StyleSheet.create({
     //width: 180,
     //height: 165,
     paddingLeft: 40,
-    alignItems: 'flex-start',
-    flexDirection: 'column',
+    alignItems: "flex-start",
+    flexDirection: "column",
   },
 });

@@ -1,19 +1,21 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import {
-  View,
-  StyleSheet
-} from "react-native";
+import { View, StyleSheet } from "react-native";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Entypo, Feather } from "@expo/vector-icons";
-import NovoFeedback from "../novoFeedback/NovoFeedback.js";
+import {
+  Entypo,
+  Feather,
+  Ionicons,
+  AntDesign,
+} from "@expo/vector-icons";
 
+import Redirecionar from "../redirecionar/Redirecionar";
 import Dashboard from "../dashboard/Dashboard.js";
 import Perfil from "../perfil/Perfil.js";
-import Ranking from "../ranking/Ranking.js";
-import ModalDemocratizacao from "../modalDemocratizacao/ModalAcompanhar.js";
+import Feedback from "../democratizacao/ListarFeedbacks.js";
+import Decisao from "../democratizacao/ListarDecisao.js";
 
 const Tab = createBottomTabNavigator();
 
@@ -25,11 +27,7 @@ function ButtonNew({ size, color }) {
   );
 }
 
-
-
 export default function MainAcompanhar() {
-
-  
   const navigation = useNavigation();
 
   return (
@@ -46,7 +44,7 @@ export default function MainAcompanhar() {
           paddingBottom: 5,
           paddingTop: 5,
         },
-        headerLeft: () => null
+        headerLeft: () => null,
       }}
       initialRouteName="Dashboard"
     >
@@ -61,34 +59,37 @@ export default function MainAcompanhar() {
         }}
       />
       <Tab.Screen
-        name="Democratização"
-        component={ModalDemocratizacao}
-        options={{ tabBarIcon: ({ size, color }) => (<Entypo name="chat" size={size} color={color} />), headerShown: false }}
+        name="Decisões"
+        component={Decisao}
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <Ionicons name="chatbox-outline" size={size} color={color} />
+          ),
+          headerShown: false,
+        }}
       />
 
       <Tab.Screen
-        name="NovoFeedback"
-        component={NovoFeedback}
+        name="Redirecionar"
+        component={Redirecionar}
         options={{
-          tabBarIcon: ({ color }) => (
-            <ButtonNew size={40} color={color} />
-          ),
+          tabBarIcon: ({ color }) => <ButtonNew size={40} color={color} />,
           tabBarLabel: "",
           headerShown: false,
         }}
         listeners={{
-          tabPress: e => {
+          tabPress: (e) => {
             // Prevent default action
             navigation.goBack();
-          }
+          },
         }}
       />
       <Tab.Screen
-        name="Ranking"
-        component={Ranking}
+        name="Feedbacks"
+        component={Feedback}
         options={{
           tabBarIcon: ({ size, color }) => (
-            <Entypo name="medal" size={size} color={color} />
+            <AntDesign name="exclamationcircleo" size={size} color={color} />
           ),
           headerShown: false,
         }}
@@ -124,20 +125,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     alignItems: "center",
-    justifyContent: 'center',
-    paddingHorizontal: '5%',
+    justifyContent: "center",
+    paddingHorizontal: "5%",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
   },
   iconFechar: {
     marginTop: 16,
-    alignSelf: 'flex-start'
+    alignSelf: "flex-start",
   },
   titulo: {
     fontSize: 28,
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
     paddingLeft: "5%",
     paddingRight: "5%",
     paddingTop: 15,
-    backgroundColor: 'transparent'
+    backgroundColor: "transparent",
   },
   button: {
     flexDirection: "row",
