@@ -8,7 +8,8 @@ import {
     Image,
     FlatList,
     ScrollView,
-    TextInput
+    TextInput,
+    RefreshControl
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -36,9 +37,11 @@ export default class ListagemCurso extends Component {
             isFavorite: false,
             inscrito: '',
             showAlert: false,
+            refreshing: false,
             contadorCurso: 0,
             saldoUsuario: 0,
             distanceUser: 0,
+            switch: false,
             listaCurso: [],
             cursoBuscado: [],
             localizacaoCurso: [],
@@ -203,6 +206,14 @@ export default class ListagemCurso extends Component {
                 } while (i < tamanhoJson);
                 // console.warn(i)
 
+                // console.warn(this.state.listaCurso)
+                if (this.state.listaCurso == '') {
+                    this.setState({ switch: true})
+                }
+                else {
+                    this.setState({ switch: false })
+                }
+
                 this.setState({ contadorCurso: i })
                 // console.warn(this.state.contadorCurso)
             }
@@ -229,9 +240,9 @@ export default class ListagemCurso extends Component {
         this.ListarCurso();
     }
 
-    componentWillUnmount = () => {
-        this.ListarCurso();
-    }
+    // componentWillUnmount = () => {
+    //     this.ListarCurso();
+    // }
 
     showAlert = () => {
         this.setState({
@@ -274,6 +285,17 @@ export default class ListagemCurso extends Component {
         // ...
     }
 
+    wait = (timeout) => {
+        return new Promise(resolve => setTimeout(resolve, timeout));
+    }
+
+    onRefresh = async () => {
+        this.setState({ refreshing: true });
+        this.wait(2000).then(() => this.setState({ refreshing: false }));
+        this.setState({ listaCurso: [] })
+        this.ListarCurso();
+    };
+
     ProcurarFavorito = async (id) => {
         try {
             const resposta = await api('/FavoritosCursos/' + id);
@@ -307,6 +329,21 @@ export default class ListagemCurso extends Component {
         }
     }
 
+    verifyList = () => {
+        if (this.state.switch == true)       
+        {
+            console.warn('Cheguei bao');
+            return (
+                <View style={styles.containerRefresh}>
+                    <Text style={styles.verify}>Sem cursos nesse raio de alcance!</Text>
+                    <Pressable style={styles.boxRefresh} onPress={() => this.onRefresh()}>
+                        <Text style={styles.textRefresh}>Refresh</Text>
+                    </Pressable>
+                </View>
+            )
+        }
+    }
+
     render() {
         return (
             <View style={styles.containerListagem}>
@@ -332,15 +369,21 @@ export default class ListagemCurso extends Component {
                     />
                 </View>
 
+                {this.verifyList()}
+
                 <FlatList
                     style={styles.flatlist}
                     data={this.state.listaCurso}
                     keyExtractor={item => item.idCurso}
                     renderItem={this.renderItem}
-                    refreshControl
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.onRefresh}
+                        />
+                    }
                 />
             </View>
-
         );
     }
     renderItem = ({ item }) => (
@@ -514,6 +557,12 @@ export default class ListagemCurso extends Component {
     );
 }
 const styles = StyleSheet.create({
+    containerRefresh: {
+        alignItems: 'center'
+    },
+    verify: {
+        color: 'black'
+    },
     containerListagem: {
         flex: 1,
         alignItems: 'center'
@@ -557,7 +606,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         display: 'flex',
         alignItems: 'center',
-        paddingLeft: 28 
+        paddingLeft: 28
     },
     containerCurso: {
         marginBottom: 50,
