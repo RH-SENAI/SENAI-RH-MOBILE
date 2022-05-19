@@ -16,24 +16,13 @@ import {
     Animated,
 } from 'react-native';
 
-//import { TabView, SceneMap, } from 'react-native-tab-view';
-import { Component } from 'react/cjs/react.production.min';
+import { TabView, SceneMap} from 'react-native-tab-view';
 import AppLoading from 'expo-app-loading';
-import * as Font from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../services/apiGp1';
 import base64 from 'react-native-base64';
 import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 
-
-let customFonts = {
-    'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
-    'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
-    'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
-    'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
-    'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
-    'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
-}
 
 export default class TabViewExample extends React.Component {
 
@@ -188,15 +177,9 @@ export default class TabViewExample extends React.Component {
         }
     }
 
-    async _loadFontsAsync() {
-        await Font.loadAsync(customFonts);
-        this.setState({ fontsLoaded: true });
-      }
-
     componentDidMount() {
         this.buscarAtividade();
         this.buscarExtras();
-        this._loadFontsAsync();
     }
 
     componentWillUnmount = () => {
@@ -237,8 +220,8 @@ export default class TabViewExample extends React.Component {
                             <TouchableOpacity
                                 style={styles.tabItem}
                                 onPress={() => this.setState({ index: i })}>
-                                <Animated.Text style={{ opacity }}>{route.title}</Animated.Text>
-                                <View style={styles.line} />
+                                <Animated.Text style={{ opacity, fontFamily: 'Montserrat-SemiBold', }}>{route.title}</Animated.Text>
+                                <Animated.View style={{ opacity,width: '100%', borderBottomWidth: 1, }} />
                             </TouchableOpacity>
                         );
                     })}
@@ -279,7 +262,6 @@ export default class TabViewExample extends React.Component {
                         onPress={() => this.associarAtividade(item.idAtividade)}
                     >
                         <View style={styles.corBotão}>
-
                             <Text style={styles.texto}>+ Minha Lista </Text>
                         </View>
                     </Pressable>
@@ -488,7 +470,7 @@ const styles = StyleSheet.create({
     tabItem: {
         flex: 1,
         alignItems: 'center',
-        padding: 16,
+        padding: 40,
         backgroundColor: '#F2F2F2',
     },
 
@@ -512,19 +494,12 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
     },
 
-    line: {
-        width: '100%',
-        borderBottomWidth: 1,
-    },
-
     itemIndividual: {
         alignItems: 'center',
     },
 
     boxAtividade: {
-
         paddingTop: 40,
-
         alignItems: 'center',
     },
 

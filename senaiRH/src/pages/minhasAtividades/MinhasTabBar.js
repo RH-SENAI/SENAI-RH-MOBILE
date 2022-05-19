@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { BlurView } from 'expo-blur';
 
-//import { TabView, SceneMap, } from 'react-native-tab-view';
+import { TabView, SceneMap, } from 'react-native-tab-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
 import base64 from 'react-native-base64';
@@ -23,6 +23,7 @@ import AppLoading from 'expo-app-loading';
 import api from "../../services/apiGp1";
 import * as Font from 'expo-font';
 import { Feather, EvilIcons, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import * as DocumentPicker from 'expo-document-picker';
 
 let customFonts = {
     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
@@ -164,6 +165,12 @@ export default class TabViewExample extends React.Component {
         this.setState({ fontsLoaded: true });
     }
 
+    pickDoc = async() =>{
+        let result =  DocumentPicker.getDocumentAsync({})
+        alert(result.uri)
+        console.log(result)
+    }
+
     componentDidMount() {
         this._loadFontsAsync();
         () => {
@@ -212,7 +219,7 @@ export default class TabViewExample extends React.Component {
                                 style={styles.tabItem}
                                 onPress={() => this.setState({ index: i })}>
                                 <Animated.Text style={{ opacity }}>{route.title}</Animated.Text>
-                                <View style={styles.line} />
+                                <Animated.View style={{ opacity, width: '100%', borderBottomWidth: 1, }} />
                             </TouchableOpacity>
                         );
                     })}
@@ -287,7 +294,7 @@ export default class TabViewExample extends React.Component {
                                 <Text style={styles.entregaModal}> Responsável: {this.state.minhaAtividade.criador} </Text>
 
 
-                                <TouchableOpacity style={styles.anexo}>
+                                <TouchableOpacity style={styles.anexo} onPress={() => {pickDoc()}}>
                                     {/* <Text style={styles.mais}>   + </Text> */}
                                     <Text style={styles.txtanexo}> +   Adicionar Anexo</Text>
                                 </TouchableOpacity>
@@ -303,8 +310,8 @@ export default class TabViewExample extends React.Component {
                                         <Text style={styles.texto}> Concluida </Text>
                                     </View>
                                 </TouchableOpacity>
-                                <TouchableOpacity
 
+                                <TouchableOpacity
                                 //onPress={() => setModalVisible(!modalVisible)}
                                 >
                                     <View style={styles.fecharModal}>
@@ -482,7 +489,7 @@ const styles = StyleSheet.create({
     tabItem: {
         flex: 1,
         alignItems: 'center',
-        padding: 16,
+        padding: 40,
         backgroundColor: '#F2F2F2',
     },
 
@@ -505,11 +512,6 @@ const styles = StyleSheet.create({
         color: "#636466",
         fontSize: 23,
         paddingBottom: 5,
-    },
-
-    line: {
-        width: '100%',
-        borderBottomWidth: 1,
     },
 
     itemIndividual: {

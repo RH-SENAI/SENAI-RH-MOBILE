@@ -8,9 +8,6 @@ import Welcome from './src/pages/welcome/Welcome.js';
 import Redirecionar from './src/pages/redirecionar/Redirecionar.js';
 import MainMotivar from './src/pages/main/MainMotivar.js';
 import Login from './src/pages/login/Login.js';
-import MinhasExtras from './src/pages/minhasAtividades/MinhasExtras'
-import AtividadesExtras from './src/pages/atividades/AtividadesExtras.js';
-import TabBar from './src/pages/atividades/AtividadeTabBar.js'
 
 const Stack = createNativeStackNavigator();
 
@@ -24,9 +21,6 @@ function App() {
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Redirecionar" component={Redirecionar} options={{ headerShown: false }}/>
         <Stack.Screen name="MainMotivar" component={MainMotivar} options={{ headerShown: false }} />
-        <Stack.Screen name="TabBar" component={TabBar} options={{ headerShown: false }}/>
-        {/* <Stack.Screen name="AtividadesExtras" component={AtividadesExtras}  options={{ headerShown: false }}/>  */}
-       {/* <Stack.Screen name="MinhasExtras" component={MinhasExtras} options={{ headerShown: false }}/>  */}
 
 
       </Stack.Navigator>
