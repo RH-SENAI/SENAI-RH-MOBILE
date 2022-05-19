@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import {
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
     Image,
-    ImageBackground,
     TextInput,
     Modal,
     AnimatableBlurView,
@@ -13,16 +12,19 @@ import {
     SectionList,
     SafeAreaView,
     ScrollView,
-    Pressable
+    Pressable,
+    Animated,
 } from 'react-native';
 
+//import { TabView, SceneMap, } from 'react-native-tab-view';
+import { Component } from 'react/cjs/react.production.min';
 import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import api from '../../services/apiGp1'
+import api from '../../services/apiGp1';
 import base64 from 'react-native-base64';
 import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
-// import 'intl';
+
 
 let customFonts = {
     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
@@ -33,23 +35,30 @@ let customFonts = {
     'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
 }
 
-export default class AtividadesExtras extends Component {
+export default class TabViewExample extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            listaAtividades: [],
-            AtividadeBuscada: {},
-            modalVisible: false,
-        };
-    }
+    state = {
+        index: 0,
+        routes: [
+            { key: 'first', title: 'Obrigatórios' },
+            { key: 'second', title: 'Extras' },
+        ],
+        listaAtividades: [],
+        AtividadeBuscada: {},
+        modalVisible: false,
+    };
 
     buscarAtividade = async () => {
-        const resposta = await api.get('/Atividades/ListarExtras');
+        const resposta = await api.get('/Atividades/ListarObrigatorias');
         const dadosDaApi = resposta.data;
         this.setState({ listaAtividades: dadosDaApi });
     };
 
+    buscarExtras = async () => {
+        const resposta = await api.get('/Atividades/ListarExtras');
+        const dadosDaApi = resposta.data;
+        this.setState({ listaAtividades: dadosDaApi });
+    };
 
     ProcurarAtividades = async (id) => {
         //console.warn(id)
@@ -59,8 +68,21 @@ export default class AtividadesExtras extends Component {
             if (resposta.status == 200) {
                 const dadosAtividades = await resposta.data.atividade;
                 await this.setState({ AtividadeBuscada: dadosAtividades })
-                
+            }
+        }
+        catch (erro) {
+            console.warn(erro);
+        }
+    }
 
+    ProcurarExtras = async (id) => {
+        //console.warn(id)
+        try {
+
+            const resposta = await api('/Atividades/' + id);
+            if (resposta.status == 200) {
+                const dadosAtividades = await resposta.data.atividade;
+                await this.setState({ AtividadeBuscada: dadosAtividades })
             }
         }
         catch (erro) {
@@ -69,10 +91,24 @@ export default class AtividadesExtras extends Component {
     }
 
 
-    setModalVisible = async (visible, id) => {
+    setModalVisibleAtividade = async (visible, id) => {
+        if (visible == true) {
+            // console.warn(id)
+            await this.ProcurarAtividades(id)
+            this.setState({ modalVisible: true });
+            // console.warn(this.state.AtividadeBuscada)
+        }
+        else if (visible == false) {
+            this.setState({ AtividadeBuscada: {} })
+            this.setState({ modalVisible: false })
+        }
+
+    }
+
+    setModalVisibleExtras = async (visible, id) => {
         if (visible == true) {
             //console.warn(id)
-            await this.ProcurarAtividades(id)
+            await this.ProcurarExtras(id)
             this.setState({ modalVisible: true });
             //console.warn(this.state.AtividadeBuscada)
         }
@@ -83,18 +119,7 @@ export default class AtividadesExtras extends Component {
 
     }
 
-
-    async _loadFontsAsync() {
-        await Font.loadAsync(customFonts);
-        this.setState({ fontsLoaded: true });
-    }
-
-    componentDidMount() {
-        this._loadFontsAsync();
-        this.buscarAtividade();
-    }
-
-    associar = async (item) => {
+    associarAtividade = async (item) => {
         var Buffer = require('buffer/').Buffer
         try {
             console.warn(item)
@@ -116,29 +141,78 @@ export default class AtividadesExtras extends Component {
                     },
                 },
 
-                
-                
-                );
-                if (resposta.status == 200) {
-                    console.warn(resposta)
-                //console.warn('Voce se associou a uma atividade');
+                // console.warn(resposta)
+
+
+            );
+            if (resposta.status == 200) {
+                console.warn('Voce se associou a uma atividade');
             } else {
-                //console.warn('Falha ao se associar.');
+                console.warn('Falha ao se associar.');
             }
         } catch (error) {
             console.warn(error);
         }
     }
 
-    render() {
-        if (!customFonts) {
-            return <AppLoading />;
-        }
-        return (
+    associarExtras = async (item) => {
+        var Buffer = require('buffer/').Buffer
+        try {
+            console.warn(item)
+            const token = (await AsyncStorage.getItem('userToken'));
+            let base64Url = token.split('.')[1]; // token you get
+            let base64 = base64Url.replace('-', '+').replace('_', '/');
+            let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+            //const xambers = JSON.parse(atob(token.split('.')[1]))
+            console.warn(decodedData);
 
+            const resposta = await api.post(
+                '/Atividades/Associar/' + decodedData.jti + '/' + item,
+                {
+
+                },
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + token,
+                    },
+                },
+
+            ); if (resposta.status == 200) {
+                console.warn(resposta)
+                console.warn('Voce se associou a uma atividade');
+            } else {
+                console.warn('Falha ao se associar.');
+            }
+        } catch (error) {
+            console.warn(error);
+        }
+    }
+
+    async _loadFontsAsync() {
+        await Font.loadAsync(customFonts);
+        this.setState({ fontsLoaded: true });
+      }
+
+    componentDidMount() {
+        this.buscarAtividade();
+        this.buscarExtras();
+        this._loadFontsAsync();
+    }
+
+    componentWillUnmount = () => {
+        this.buscarAtividade();
+        this.buscarExtras();
+    }
+
+    _handleIndexChange = (index) => this.setState({ index });
+
+    _renderTabBar = (props) => {
+        const inputRange = props.navigationState.routes.map((x, i) => i);
+
+        return (
             <View style={styles.main}>
 
-             <View>
+                <View>
                     <View style={styles.mainHeader}>
                         <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
                             style={styles.imgLogo}
@@ -148,41 +222,40 @@ export default class AtividadesExtras extends Component {
                     <View style={styles.titulo}>
 
                         <Text style={styles.tituloEfects}>{'atividades'.toUpperCase()} </Text>
-
-                        <View style={styles.escritaEscolha}>
-                            <View style={styles.itemEquipe}>
-                                <Pressable onPress={() => this.props.navigation.navigate('Atividades')}>
-                                    <Text style={styles.font}> Obrigatórios </Text>
-                                    <View style={styles.line1}></View>
-                                </Pressable>
-
-                            </View>
-
-                            <View style={styles.itemIndividual}>
-                                <Pressable>
-                                    <Text style={styles.font}> Extras </Text>
-                                </Pressable>
-                                <View style={styles.line2}></View>
-                            </View>
-
-                        </View>
                     </View>
                 </View>
+                <View style={styles.tabBar}>
+                    {props.navigationState.routes.map((route, i) => {
+                        const opacity = props.position.interpolate({
+                            inputRange,
+                            outputRange: inputRange.map((inputIndex) =>
+                                inputIndex === i ? 1 : 0.5
+                            ),
+                        });
 
-                <FlatList
-                    // contentContainerStyle={styles.boxAtividade}
-                    // style={styles.boxAtividade}
-                    data={this.state.listaAtividades}
-                    keyExtractor={item => item.idAtividade}
-                    renderItem={this.renderItem} />
-
+                        return (
+                            <TouchableOpacity
+                                style={styles.tabItem}
+                                onPress={() => this.setState({ index: i })}>
+                                <Animated.Text style={{ opacity }}>{route.title}</Animated.Text>
+                                <View style={styles.line} />
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
             </View>
+        );
+    };
 
-        )
-    }
+    FirstRoute = () => (
+        <FlatList
+            data={this.state.listaAtividades}
+            keyExtractor={item => item.idAtividade}
+            renderItem={this.renderItem}
+        />
+    );
 
     renderItem = ({ item }) => (
-
 
         <View style={styles.boxAtividade}>
             <View style={styles.box}>
@@ -196,17 +269,18 @@ export default class AtividadesExtras extends Component {
 
                     <Text style={styles.criador}> Responsável: {item.idGestorCadastroNavigation.nome} </Text>
                     <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
-                    year: 'numeric', month: 'short', day: 'numeric',
-                }).format(new Date(item.dataCriacao))} </Text>
+                        year: 'numeric', month: 'short', day: 'numeric',
+                    }).format(new Date(item.dataCriacao))}
+                    </Text>
                 </View>
 
                 <View style={styles.ModaleBotao}>
                     <Pressable style={styles.botao}
-                        onPress={() => this.associar(item.idAtividade)}
+                        onPress={() => this.associarAtividade(item.idAtividade)}
                     >
                         <View style={styles.corBotão}>
 
-                            <Text style={styles.texto}> Me Associar </Text>
+                            <Text style={styles.texto}>+ Minha Lista </Text>
                         </View>
                     </Pressable>
 
@@ -214,7 +288,7 @@ export default class AtividadesExtras extends Component {
 
                         <AntDesign name="downcircleo" size={24} color="#636466" />
 
-                        
+
                     </Pressable>
                 </View>
 
@@ -227,7 +301,101 @@ export default class AtividadesExtras extends Component {
                 key={item.idAtividade == this.state.AtividadeBuscada.idAtividade}
                 onRequestClose={() => {
                     console.warn(item)
-                    this.setModalVisible(!this.state.modalVisible)
+                    this.setModalVisibleAtividade(!this.state.modalVisible)
+                }}
+            >
+
+
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <View style={styles.quadradoModal}></View>
+                        <View style={styles.conteudoBoxModal}>
+                            <Text style={styles.nomeBoxModal}>{this.state.AtividadeBuscada.nomeAtividade} </Text>
+                            <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
+                            <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
+                            <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
+                            <Text style={styles.criadorModal}> Responsável: {this.state.AtividadeBuscada.criador} </Text>
+
+                        </View>
+                        <View style={styles.botoesModal}  >
+                            <Pressable onPress={() => this.associarAtividade(this.state.AtividadeBuscada.idAtividade)} >
+                                <View style={styles.associarModal}>
+                                    <Text style={styles.texto}>+ Minha Lista </Text>
+                                </View>
+                            </Pressable>
+                            <Pressable
+
+                                onPress={() => this.setModalVisibleAtividade(!this.state.modalVisible)}
+                            >
+                                <View style={styles.fecharModal}>
+                                    <Text style={styles.textoFechar}>Fechar X</Text>
+                                </View>
+
+                            </Pressable>
+                        </View>
+                    </View>
+
+                </View>
+
+            </Modal>
+        </View>
+
+    );
+
+    SecondRoute = () => (
+        <FlatList
+            data={this.state.listaAtividades}
+            keyExtractor={item => item.idAtividade}
+            renderItem={this.renderItem2}
+        />
+    );
+
+    renderItem2 = ({ item }) => (
+
+        <View style={styles.boxAtividade}>
+            <View style={styles.box}>
+                <View style={styles.quadrado}></View>
+                <View style={styles.espacoPontos}>
+                    <Text style={styles.pontos}> {item.recompensaMoeda} Cashs </Text>
+                    <FontAwesome5 name="coins" size={24} color="black" />
+                </View>
+                <View style={styles.conteudoBox}>
+                    <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
+
+                    <Text style={styles.criador}> Responsável: {item.idGestorCadastroNavigation.nome} </Text>
+                    <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
+                        year: 'numeric', month: 'short', day: 'numeric',
+                    }).format(new Date(item.dataCriacao))} </Text>
+                </View>
+
+                <View style={styles.ModaleBotao}>
+                    <Pressable style={styles.botao}
+                        onPress={() => this.associarExtras(item.idAtividade)}
+                    >
+                        <View style={styles.corBotão}>
+
+                            <Text style={styles.texto}> Me Associar </Text>
+                        </View>
+                    </Pressable>
+
+                    <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisibleExtras(true, item.idAtividade)}  >
+
+                        <AntDesign name="downcircleo" size={24} color="#636466" />
+
+
+                    </Pressable>
+                </View>
+
+            </View>
+
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={this.state.modalVisible}
+                key={item.idAtividade == this.state.AtividadeBuscada.idAtividade}
+                onRequestClose={() => {
+                    console.warn(item)
+                    this.setModalVisibleExtras(!this.state.modalVisible)
                 }}
             >
 
@@ -244,14 +412,14 @@ export default class AtividadesExtras extends Component {
                             <Text style={styles.criadorModal}> Responsável: {this.state.AtividadeBuscada.criador} </Text>
                         </View>
                         <View style={styles.botoesModal}  >
-                            <Pressable  onPress={() => this.associar(this.state.AtividadeBuscada.idAtividade)} >
+                            <Pressable onPress={() => this.associarExtras(this.state.AtividadeBuscada.idAtividade)} >
                                 <View style={styles.associarModal}>
                                     <Text style={styles.texto}> Me Associar </Text>
                                 </View>
                             </Pressable>
                             <Pressable
 
-                                onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                                onPress={() => this.setModalVisibleExtras(!this.state.modalVisible)}
                             >
                                 <View style={styles.fecharModal}>
                                     <Text style={styles.textoFechar}>Fechar X</Text>
@@ -266,9 +434,25 @@ export default class AtividadesExtras extends Component {
             </Modal>
         </View>
 
-    )
+    );
 
-};
+    _renderScene = SceneMap({
+        first: this.FirstRoute,
+        second: this.SecondRoute,
+    });
+
+    render() {
+        return (
+            <TabView
+                navigationState={this.state}
+                renderScene={this._renderScene}
+                renderTabBar={this._renderTabBar}
+                onIndexChange={this._handleIndexChange}
+            />
+        );
+    }
+}
+
 const styles = StyleSheet.create({
 
     main: {
@@ -277,10 +461,8 @@ const styles = StyleSheet.create({
     },
 
     mainHeader: {
-
         alignItems: 'center',
         paddingTop: 40,
-
     },
 
     titulo: {
@@ -295,6 +477,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         color: '#2A2E32',
         fontSize: 30,
+    },
+
+    tabBar: {
+        flexDirection: 'row',
+        backgroundColor: '#B3B3B3',
+        // marginTop: 50,
+    },
+
+    tabItem: {
+        flex: 1,
+        alignItems: 'center',
+        padding: 16,
+        backgroundColor: '#F2F2F2',
     },
 
     escritaEscolha: {
@@ -317,18 +512,13 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
     },
 
-    line1: {
+    line: {
         width: '100%',
         borderBottomWidth: 1,
     },
 
     itemIndividual: {
         alignItems: 'center',
-    },
-
-    line2: {
-        width: '100%',
-        borderBottomWidth: 1,
     },
 
     boxAtividade: {
@@ -346,9 +536,6 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 8,
 
     },
-
-
-
 
     box: {
         height: 210,
@@ -396,6 +583,7 @@ const styles = StyleSheet.create({
         paddingTop: 8,
     },
 
+
     data: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
@@ -416,7 +604,7 @@ const styles = StyleSheet.create({
     corBotão: {
         borderRadius: 15,
         height: 30,
-        width: 87,
+        width: 100,
         backgroundColor: '#C20004',
         alignItems: 'center',
         justifyContent: 'center',
@@ -515,13 +703,6 @@ const styles = StyleSheet.create({
         marginLeft: 16
     },
 
-    pessoasModal:{
-        fontFamily: 'Quicksand-Regular',
-        fontSize: 15,
-        paddingBottom: 16,
-        marginLeft: 16
-    },
-
     criadorModal: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
@@ -559,8 +740,5 @@ const styles = StyleSheet.create({
     textoFechar: {
         fontFamily: 'Montserrat-Medium',
         color: '#C20004'
-    }
-
-
-
-})
+    }, 
+});

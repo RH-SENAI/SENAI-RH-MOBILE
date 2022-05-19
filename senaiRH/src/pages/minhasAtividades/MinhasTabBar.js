@@ -1,6 +1,4 @@
-import { Component } from "react";
-import React, { useState, useEffect } from 'react';
-//import { SvgUri } from 'react-native-svg';
+import * as React from 'react';
 import {
     StyleSheet,
     Text,
@@ -12,48 +10,81 @@ import {
     Image,
     Alert,
     Pressable,
-    Button
+    Button,
+    Animated,
 } from 'react-native';
 import { BlurView } from 'expo-blur';
 
+//import { TabView, SceneMap, } from 'react-native-tab-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
 import base64 from 'react-native-base64';
 import AppLoading from 'expo-app-loading';
 import api from "../../services/apiGp1";
 import * as Font from 'expo-font';
-import { EvilIcons, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, EvilIcons, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 
 let customFonts = {
     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
     'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
     'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
-    'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf')
+    'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
+    'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
+    'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
 }
 
 
-export default class MinhasAtividades extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            modalVisible: false,
-            mensagem: '',
-            listaAtividades: [],
-            minhaAtividade: {}
-        }
+export default class TabViewExample extends React.Component {
 
-    }
-
-    async _loadFontsAsync() {
-        await Font.loadAsync(customFonts);
-        this.setState({ fontsLoaded: true });
-    }
-
-    componentDidMount() {
-        this._loadFontsAsync();
+    state = {
+        index: 0,
+        routes: [
+            { key: 'first', title: 'Obrigatórios' },
+            { key: 'second', title: 'Extras' },
+        ],
+        modalVisible: false,
+        mensagem: '',
+        listaAtividades: [],
+        minhaAtividade: {}
     }
 
     ListarMinhas = async () => {
+
+        var Buffer = require('buffer/').Buffer
+
+
+        const token = (await AsyncStorage.getItem('userToken'));
+        let base64Url = token.split('.')[1]; // token you get
+        let base64 = base64Url.replace('-', '+').replace('_', '/');
+        let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+        //const xambers = JSON.parse(atob(token.split('.')[1]))
+        console.warn(decodedData);
+
+
+
+        if (token != null) {
+            await api.get("/Atividades/MinhasAtividade/" + decodedData.jti, {
+                headers: {
+                    "Authorization": "Bearer " + token,
+                },
+
+            })
+                .then(response => {
+                    if (response.status === 200) {
+                        // console.warn(response)
+                        // console.warn(this.state.modalVisible)
+                        const dadosMinhasAtividades = response.data;
+                        console.warn(dadosMinhasAtividades);
+                        this.setState({ listaAtividades: dadosMinhasAtividades });
+                    }
+                })
+                .catch(response => {
+                    console.warn(response)
+                })
+        }
+    };
+
+    ListarMinhasExtras = async () => {
 
         const token = await AsyncStorage.getItem("userToken");
 
@@ -82,13 +113,10 @@ export default class MinhasAtividades extends Component {
                 .catch(response => {
                     console.warn(response)
                 })
-
-
-
         }
     };
 
-    openModal = async (id) => {
+    openModalMinhas = async (id) => {
         // console.warn(id)
         await api.get("/Atividades/" + id, {})
 
@@ -102,23 +130,58 @@ export default class MinhasAtividades extends Component {
                     }
                 )
 
-
+                console.warn(dadosApi)
             })
 
     }
 
-    closeModal = () => {
+    closeModalMinhas = () => {
         this.setState({ modalVisible: false })
     }
 
-    componentDidMount() {
-        this.ListarMinhas();
+    openModalExtras = async (id) => {
+        // console.warn(id)
+        await api.get("/Atividades/" + id, {})
+
+            .then(response => {
+                let dadosApi = response.data.atividade
+                //console.warn(dadosApi)
+                this.setState(
+                    {
+                        minhaAtividade: dadosApi,
+                        modalVisible: true
+                    }
+                )
+            })
     }
 
-    render() {
-        if (!this.state.fontsLoaded) {
-            return <AppLoading />;
+    closeModalExtras = () => {
+        this.setState({ modalVisible: false })
+    }
+
+    async _loadFontsAsync() {
+        await Font.loadAsync(customFonts);
+        this.setState({ fontsLoaded: true });
+    }
+
+    componentDidMount() {
+        this._loadFontsAsync();
+        () => {
+            this.ListarMinhas();
+            this.ListarMinhasExtras();
         }
+    }
+
+    componentWillUnmount = () => {
+        this.ListarMinhas();
+        this.ListarMinhasExtras();
+    }
+
+
+    _handleIndexChange = (index) => this.setState({ index });
+
+    _renderTabBar = (props) => {
+        const inputRange = props.navigationState.routes.map((x, i) => i);
 
         return (
 
@@ -129,52 +192,44 @@ export default class MinhasAtividades extends Component {
                         <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
                             style={styles.imgLogo}
                         />
-
-                        {/* IMPORTACAO DE IMAGENS */}
-                        {/* <SvgUri
-                        uri= "http"
-                    /> */}
-
                     </View>
-
 
                     <View>
-
                         <Text style={styles.tituloEfects}>{'Minhas atividades'.toUpperCase()} </Text>
-
-                        <View style={styles.escritaEscolha}>
-                            <View style={styles.itemEquipe}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate('MinhasAtividades2')}>
-                                    <Text style={styles.font}> Obrigatórios </Text>
-                                    <View style={styles.line1}></View>
-                                </TouchableOpacity>
-
-                            </View>
-
-                            <View style={styles.itemIndividual}>
-                                <TouchableOpacity >
-                                    <Text style={styles.font}> Extras </Text>
-
-                                </TouchableOpacity>
-                                <View style={styles.line2}></View>
-                            </View>
-
-                        </View>
                     </View>
                 </View>
+                <View style={styles.tabBar}>
+                    {props.navigationState.routes.map((route, i) => {
+                        const opacity = props.position.interpolate({
+                            inputRange,
+                            outputRange: inputRange.map((inputIndex) =>
+                                inputIndex === i ? 1 : 0.5
+                            ),
+                        });
 
+                        return (
+                            <TouchableOpacity
+                                style={styles.tabItem}
+                                onPress={() => this.setState({ index: i })}>
+                                <Animated.Text style={{ opacity }}>{route.title}</Animated.Text>
+                                <View style={styles.line} />
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
+            </View>
+        )
+    };
 
-                <FlatList
-                    style={styles.FlatList}
-                    data={this.state.listaAtividades}
-                    keyExtractor={item => item.idMinhasAtividades}
-                    renderItem={this.renderItem}
-                />
+    FirstRoute = () => (
+        <FlatList
+            style={styles.FlatList}
+            data={this.state.listaAtividades}
+            keyExtractor={item => item.idMinhasAtividades}
+            renderItem={this.renderItem}
+        />
+    );
 
-            </View >
-
-        );
-    }
     renderItem = ({ item }) => (
 
         <View style={styles.MinhaAtividadeCentro}>
@@ -187,10 +242,112 @@ export default class MinhasAtividades extends Component {
 
                     <View style={styles.descricaoOlho}>
                         <Text style={styles.descricao}> Data de Entrega: {Intl.DateTimeFormat("pt-BR", {
-                    year: 'numeric', month: 'short', day: 'numeric',
-                }).format(new Date(item.dataConclusao))} </Text>
+                            year: 'numeric', month: 'short', day: 'numeric',
+                        }).format(new Date(item.dataConclusao))}</Text>
 
-                        <TouchableOpacity style={styles.Modalbotao} onPress={() => this.openModal(item.idAtividade)}>
+                        <TouchableOpacity style={styles.Modalbotao} onPress={() => this.openModalMinhas(item.idAtividade)}>
+                            <AntDesign name="downcircleo" size={24} color="#636466" />
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.ModaleBotao}>
+
+                        <View style={styles.statusImagem}>
+
+                            {item.idSituacaoAtividade == 1 &&
+                                <AntDesign name="check" size={24} color="black" />
+                            }
+                            {item.idSituacaoAtividade == 2 &&
+                                <Feather name="alert-triangle" size={24} color="black" />
+                            }
+                            <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({ mensagem: 'Validado' }) : item.idSituacaoAtividade == 2 ? this.setState({ mensagem: 'Pendente' }) : null} </Text>
+
+                        </View>
+
+                    </View>
+                </View>
+
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={this.state.modalVisible}
+                    key={item.idMinhasAtividades == this.state.minhaAtividade.idMinhasAtividades}
+                    onRequestClose={() => {
+                    }}
+                >
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <View style={styles.quadradoModal}></View>
+                            <View style={styles.conteudoBoxModal}>
+                                <Text style={styles.nomeBoxModal}> {this.state.minhaAtividade.nomeAtividade} </Text>
+                                <Text style={styles.descricaoModal}> {this.state.minhaAtividade.descricaoAtividade} </Text>
+                                <Text style={styles.itemPostadoModal}>Item Postado: {this.state.minhaAtividade.dataInicio} </Text>
+                                <Text style={styles.entregaModal}> Data de Entrega: {this.state.minhaAtividade.dataConclusao} </Text>
+                                <Text style={styles.entregaModal}> Responsável: {this.state.minhaAtividade.criador} </Text>
+
+
+                                <TouchableOpacity style={styles.anexo}>
+                                    {/* <Text style={styles.mais}>   + </Text> */}
+                                    <Text style={styles.txtanexo}> +   Adicionar Anexo</Text>
+                                </TouchableOpacity>
+
+                            </View>
+
+                            <View style={styles.botoesModal} >
+                                <TouchableOpacity
+                                // onPress={() => setModalVisible(!modalVisibleVar)}
+                                // onPress={() => Concluir()}
+                                >
+                                    <View style={styles.associarModal}>
+                                        <Text style={styles.texto}> Concluida </Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+
+                                //onPress={() => setModalVisible(!modalVisible)}
+                                >
+                                    <View style={styles.fecharModal}>
+                                        <Text style={styles.textoFechar} onPress={() => this.closeModalMinhas()} >Fechar X</Text>
+                                    </View>
+
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+
+
+                </Modal>
+            </View>
+
+        </View>
+    );
+
+    SecondRoute = () => (
+        <FlatList
+            style={styles.FlatList}
+            data={this.state.listaAtividades}
+            keyExtractor={item => item.idMinhasAtividades}
+            renderItem={this.renderItem2}
+        />
+    );
+
+    renderItem2 = ({ item }) => (
+
+        <View style={styles.MinhaAtividadeCentro}>
+
+
+            <View style={styles.MinhaAtividade}>
+                <View style={styles.quadradoeTexto}>
+                    <View style={styles.quadrado}></View>
+                    <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
+
+                    <View style={styles.descricaoOlho}>
+                        <Text style={styles.descricao}> Data de Entrega: {Intl.DateTimeFormat("pt-BR", {
+                            year: 'numeric', month: 'short', day: 'numeric',
+                        }).format(new Date(item.dataConclusao))} </Text>
+
+                        <TouchableOpacity style={styles.Modalbotao} onPress={() => this.openModalExtras(item.idAtividade)}>
                             <AntDesign name="downcircleo" size={24} color="#636466" />
                         </TouchableOpacity>
 
@@ -212,7 +369,7 @@ export default class MinhasAtividades extends Component {
 
                         </View>
 
-                    </View> 
+                    </View>
 
 
 
@@ -227,10 +384,6 @@ export default class MinhasAtividades extends Component {
                 visible={this.state.modalVisible}
                 key={this.state.minhaAtividade.idMinhasAtividades}
                 onRequestClose={() => {
-                    // console.warn(item)
-                    //setModalVisible(!modalVisible)
-                    //Alert.alert("Modal has been closed.");
-                    //setModalVisible(!modalVisible);
                 }}
             >
                 <View style={styles.centeredView}>
@@ -265,7 +418,7 @@ export default class MinhasAtividades extends Component {
                             //onPress={() => setModalVisible(!modalVisible)}
                             >
                                 <View style={styles.fecharModal}>
-                                    <Text style={styles.textoFechar} onPress={() => this.closeModal()} >Fechar X</Text>
+                                    <Text style={styles.textoFechar} onPress={() => this.closeModalExtras()} >Fechar X</Text>
                                 </View>
 
                             </TouchableOpacity>
@@ -276,9 +429,24 @@ export default class MinhasAtividades extends Component {
 
             </Modal>
         </View>
-    )
-}
+    );
+    _renderScene = SceneMap({
+        first: this.FirstRoute,
+        second: this.SecondRoute,
+    });
 
+    render() {
+        return (
+            <TabView
+                navigationState={this.state}
+                renderScene={this._renderScene}
+                renderTabBar={this._renderTabBar}
+                onIndexChange={this._handleIndexChange}
+            />
+        );
+    }
+
+};
 
 const styles = StyleSheet.create({
 
@@ -305,6 +473,19 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
 
+    tabBar: {
+        flexDirection: 'row',
+        backgroundColor: '#B3B3B3',
+        // marginTop: 50,
+    },
+
+    tabItem: {
+        flex: 1,
+        alignItems: 'center',
+        padding: 16,
+        backgroundColor: '#F2F2F2',
+    },
+
     escritaEscolha: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -320,13 +501,13 @@ const styles = StyleSheet.create({
     },
 
     font: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         color: "#636466",
         fontSize: 23,
         paddingBottom: 5,
     },
 
-    line1: {
+    line: {
         width: '100%',
         borderBottomWidth: 1,
     },
@@ -334,12 +515,6 @@ const styles = StyleSheet.create({
     itemIndividual: {
         alignItems: 'center',
     },
-
-    line2: {
-        width: '100%',
-        borderBottomWidth: 1,
-    },
-
 
     boxTitulo: {
         justifyContent: 'center',
@@ -383,7 +558,7 @@ const styles = StyleSheet.create({
     },
 
     TituloAtividade: {
-        //  fontFamily: "Quicksand-SemiBold",
+        fontFamily: "Quicksand-SemiBold",
         fontSize: 18,
         color: "#0E0E0E",
         marginTop: 16,
@@ -393,7 +568,7 @@ const styles = StyleSheet.create({
     },
 
     descricao: {
-        fontFamily: "Regular",
+        fontFamily: "Quicksand-Regular",
         textAlign: 'center',
         fontSize: 14,
         color: "#636466",
@@ -401,7 +576,7 @@ const styles = StyleSheet.create({
     },
 
     status: {
-        fontFamily: "Regular",
+        fontFamily: "Quicksand-Regular",
         fontSize: 14,
         color: "#636466",
     },
@@ -492,7 +667,7 @@ const styles = StyleSheet.create({
     },
 
     texto: {
-        fontFamily: 'MediumM',
+        fontFamily: 'Montserrat-Medium',
         color: '#E2E2E2',
         fontSize: 11,
         alignItems: 'center',
@@ -520,7 +695,7 @@ const styles = StyleSheet.create({
     },
 
     textoIndisp: {
-        fontFamily: 'SemiBoldM',
+        fontFamily: 'Montserrat-SemiBold',
         color: '#000000',
         fontSize: 11,
         alignItems: 'center',
@@ -552,14 +727,14 @@ const styles = StyleSheet.create({
     },
 
     nomeBoxModal: {
-        fontFamily: 'SemiBold',
+        fontFamily: 'Quicksand-SemiBold',
         textAlign: "center",
         paddingTop: 24,
         fontSize: 20
     },
 
     descricaoModal: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         paddingTop: 24,
         fontSize: 15,
         paddingBottom: 16,
@@ -567,28 +742,28 @@ const styles = StyleSheet.create({
     },
 
     itemPostadoModal: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     entregaModal: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     criadorModal: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
         paddingBottom: 16,
         marginLeft: 16
     },
 
     botoesModal: {
-        fontFamily: 'MediumM',
+        fontFamily: 'Montserrat-Medium',
         flexDirection: 'row',
         justifyContent: 'center',
         justifyContent: 'space-evenly',
@@ -628,7 +803,7 @@ const styles = StyleSheet.create({
     },
 
     txtanexo: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         marginRight: 40
     },
 
@@ -638,7 +813,7 @@ const styles = StyleSheet.create({
     },
 
     textoFechar: {
-        fontFamily: 'MediumM',
+        fontFamily: 'Montserrat-Medium',
         color: '#C20004'
     },
 
@@ -652,17 +827,4 @@ const styles = StyleSheet.create({
         marginBottom: 40
     },
 
-    MinhaAtividade: {
-        // paddingTop: 80,
-        // alignItems:'center',
-        // justifyContent:'center',
-        height: 120,
-        borderWidth: 1,
-        borderColor: '#B3B3B3',
-        backgroundColor: '#F2F2F2',
-        borderRadius: 10,
-        // marginBottom: 70,
-        width: '85%',
-
-    },
 })

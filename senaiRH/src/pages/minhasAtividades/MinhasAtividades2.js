@@ -193,7 +193,9 @@ export default class MinhasAtividades extends Component {
                     <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
 
                     <View style={styles.descricaoOlho}>
-                        <Text style={styles.descricao}>{item.criador} </Text>
+                        <Text style={styles.descricao}> Data de Entrega: {Intl.DateTimeFormat("pt-BR", {
+                    year: 'numeric', month: 'short', day: 'numeric',
+                }).format(new Date(item.dataConclusao))}</Text>
                     </View>
 
                     <View style={styles.ModaleBotao}>
@@ -206,10 +208,7 @@ export default class MinhasAtividades extends Component {
                             {item.idSituacaoAtividade == 2 &&
                               <Feather name="alert-triangle" size={24} color="black" />                              
                             }
-                            {item.idSituacaoAtividade == 3 &&
-                              <MaterialCommunityIcons name="clipboard-clock-outline" size={24} color="black" />                            
-                            }
-                            <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({ mensagem: 'Validado' }) : item.idSituacaoAtividade == 2 ? this.setState({ mensagem: 'Pendente' }) : item.idSituacaoAtividade == 3 ? this.setState({ mensagem: 'Avaliando' }) : null} </Text> 
+                            <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({ mensagem: 'Validado' }) : item.idSituacaoAtividade == 2 ? this.setState({ mensagem: 'Pendente' }) : null} </Text> 
 
                         </View>
 
@@ -221,7 +220,7 @@ export default class MinhasAtividades extends Component {
                     animationType="slide"
                     transparent={true}
                     visible={this.state.modalVisible}
-                    key={this.state.minhaAtividade.idMinhasAtividades}
+                    key={item.idMinhasAtividades == this.state.minhaAtividade.idMinhasAtividades}
                     onRequestClose={() => {
                         // console.warn(item)
                         //setModalVisible(!modalVisible)
@@ -235,9 +234,9 @@ export default class MinhasAtividades extends Component {
                             <View style={styles.conteudoBoxModal}>
                                 <Text style={styles.nomeBoxModal}> {this.state.minhaAtividade.nomeAtividade} </Text>
                                 <Text style={styles.descricaoModal}> {this.state.minhaAtividade.descricaoAtividade} </Text>
-                                <Text style={styles.itemPostadoModal}> {this.state.minhaAtividade.dataInicio} </Text>
+                                <Text style={styles.itemPostadoModal}>Item Postado: {this.state.minhaAtividade.dataInicio} </Text>
                                 <Text style={styles.entregaModal}> Data de Entrega: {this.state.minhaAtividade.dataConclusao} </Text>
-                                <Text style={styles.entregaModal}> {this.state.minhaAtividade.criador} </Text>
+                                <Text style={styles.entregaModal}> Responsável: {this.state.minhaAtividade.criador} </Text>
                                
 
                                 <TouchableOpacity style={styles.anexo}>

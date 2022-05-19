@@ -19,8 +19,7 @@ import {
 
 const Tab = createBottomTabNavigator();
 
-import Atividades from "../atividades/Atividades.js";
-import AtividadesExtras from "../atividades/AtividadesExtras.js";
+import AtividadesTabBar from "../atividades/AtividadeTabBar";
 import MinhasAtividades from "../minhasAtividades/MinhasAtividades2.js";
 import RankingGp1 from "../rankingGp1/RankingGp1.js";
 import Perfil from "../perfil/Perfil.js";
@@ -69,7 +68,7 @@ export default function MainMotivar() {
       initialRouteName="Atividades"
     >
       <Tab.Screen
-        name="Atividades"
+        name="AtividadesTabBar"
         component={Atividades}
         options={{
           tabBarIcon: ({ size, color }) => (

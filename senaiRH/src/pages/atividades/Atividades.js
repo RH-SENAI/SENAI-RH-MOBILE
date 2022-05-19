@@ -21,7 +21,6 @@ import * as Font from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../services/apiGp1'
 import base64 from 'react-native-base64';
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 // import 'intl';
 
@@ -52,7 +51,7 @@ export default class AtividadesExtras extends Component {
         this.setState({ listaAtividades: dadosDaApi });
     };
 
-
+    
     ProcurarAtividades = async (id) => {
         //console.warn(id)
         try {
@@ -61,8 +60,6 @@ export default class AtividadesExtras extends Component {
             if (resposta.status == 200) {
                 const dadosAtividades = await resposta.data.atividade;
                 await this.setState({ AtividadeBuscada: dadosAtividades })
-
-
             }
         }
         catch (erro) {
@@ -202,12 +199,10 @@ export default class AtividadesExtras extends Component {
                 <View style={styles.conteudoBox}>
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
 
-                    <Text style={styles.criador}> {item.idGestorCadastroNavigation.nome} </Text>
-                    <Text style={styles.dataCriacao}>
-                        {/* {Intl.DateTimeFormat("pt-BR", {
+                    <Text style={styles.criador}> Responsável: {item.idGestorCadastroNavigation.nome} </Text>
+                    <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
                     year: 'numeric', month: 'short', day: 'numeric',
-                    hour: 'numeric', minute: 'numeric', hour12: true
-                }).format(new Date(item.dataCriacao))}   */} {item.dataCriacao}
+                }).format(new Date(item.dataCriacao))} 
                     </Text>
                 </View>
 
@@ -251,7 +246,7 @@ export default class AtividadesExtras extends Component {
                             <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
                             <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
                             <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
-                            <Text style={styles.criadorModal}> {this.state.AtividadeBuscada.criador} </Text>
+                            <Text style={styles.criadorModal}> Responsável: {this.state.AtividadeBuscada.criador} </Text>
                             
                         </View>
                         <View style={styles.botoesModal}  >
@@ -406,6 +401,7 @@ const styles = StyleSheet.create({
 
         paddingTop: 8,
     },
+    
 
     data: {
         fontFamily: 'Quicksand-Regular',
