@@ -103,7 +103,22 @@ export default function Ranking() {
         }
     };
 
+    const retornaRanking = async () => {
+        const token = await AsyncStorage.getItem("userToken");
+        // const xambers = base64.decode(token.split('.')[1])
+        // const user = JSON.parse(xambers)
 
+        if (token != null) {
+            const resposta = await api.get("/Usuarios/Ranking/" + decodedData.jti, {
+                headers: {
+                    Authorization: "Bearer " + token,
+                },
+            });
+
+            const dadosDaApi = await resposta.data;
+            setListarRanking(dadosDaApi);
+        }
+    };
     useEffect(() => {
         retornaRanking();
     }, []);
@@ -275,7 +290,7 @@ export default function Ranking() {
                     style={{ backgroundColor: 'black' }}
                     data={ListarRanking}
                     sortBy='trofeus'
-                    labelBy='nome'
+                    //labelBy='nome'
                 // contentContainerStyle={styles.RankingGp1}
                 /> 
                  </View>

@@ -21,7 +21,6 @@ const Tab = createBottomTabNavigator();
 
 import AtividadesTabBar from "../atividades/AtividadeTabBar.js";
 import MinhasTabBar from "../minhasAtividades/MinhasTabBar.js";
-import MinhasAtividades from "../minhasAtividades/MinhasAtividades2.js";
 import RankingGp1 from "../rankingGp1/RankingGp1.js";
 import Perfil from "../perfil/Perfil.js";
 import Redirecionar from "../redirecionar/Redirecionar.js";
