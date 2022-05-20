@@ -22,6 +22,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../services/apiGp1'
 import base64 from 'react-native-base64';
 import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
+import Constants from 'expo-constants'
+import * as ImagePicker from 'expo-image-picker'
+import * as Permission from 'expo-permissions';
+import axios from 'axios';
 // import 'intl';
 
 let customFonts = {
@@ -41,15 +45,103 @@ export default class AtividadesExtras extends Component {
             listaAtividades: [],
             AtividadeBuscada: {},
             modalVisible: false,
+            imagemEntrega: {}
         };
+    }
+
+    finalizarAtividade = async (item) => {
+        console.warn(item)
+        
+        const token = await AsyncStorage.getItem('userToken');
+        
+        const data = new FormData();
+        
+        data.append('arquivo', {
+            uri: this.state.imagemEntrega.uri,
+            type: this.state.imagemEntrega.type
+        })
+        console.warn(data)
+        
+        
+        // axios({
+        //     method: 'patch',
+        //     url: 'http://192.168.3.84:5000/api/Atividades/FinalizarAtividade/'+ item,
+        //     data : data,
+        //     headers:{
+        //         "Content-Type": "multipart/form-data",
+        //     }
+        // })
+        // .then(resposta =>{
+        //     console.warn(resposta)
+        // })
+        const resposta = await axios.patch('http://192.168.3.84:5000/api/Atividades/FinalizarAtividade/' + item, {
+            arquivo : data
+        }, {
+            headers:{
+                "Content-Type": "multipart/form-data"
+                
+            }
+        })
+        console.warn(resposta)
+        
+
+        
     }
 
 
     buscarAtividade = async () => {
-        const resposta = await api.get('/Atividades/ListarObrigatorias');
+        var Buffer = require('buffer/').Buffer 
+
+        const token = (await AsyncStorage.getItem('userToken'));
+        let base64Url = token.split('.')[1]; // token you get
+        let base64 = base64Url.replace('-', '+').replace('_', '/');
+        let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+        console.warn(decodedData.jti);
+
+        const resposta = await api.get('/Atividades/MinhasAtividade/' + decodedData.jti);
         const dadosDaApi = resposta.data;
+        //console.warn(resposta)
         this.setState({ listaAtividades: dadosDaApi });
     };
+
+    // ListarMinhas = async () => {
+        
+    //     var Buffer = require('buffer/').Buffer
+        
+        
+    //     const token = (await AsyncStorage.getItem('userToken'));
+    //     let base64Url = token.split('.')[1]; // token you get
+    //     let base64 = base64Url.replace('-', '+').replace('_', '/');
+    //     let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+    //     //const xambers = JSON.parse(atob(token.split('.')[1]))
+    //     console.warn(decodedData);
+
+        
+
+    //     if (token != null) {
+    //         await api.get("/Atividades/MinhasAtividade/" + decodedData.jti, {
+    //             headers: {
+    //                 "Authorization": "Bearer " + token,
+    //             },
+
+    //         })
+    //             .then(response => {
+    //                 if (response.status === 200) {
+    //                     // console.warn(response)
+    //                     // console.warn(this.state.modalVisible)
+    //                     const dadosMinhasAtividades =  response.data;
+    //                     console.warn(dadosMinhasAtividades);
+    //                     this.setState({ listaAtividades: dadosMinhasAtividades });
+    //                 }
+    //             })
+    //             .catch(response => {
+    //                 console.warn(response)
+    //             })
+
+
+
+    //     }
+    // };
 
 
     ProcurarAtividades = async (id) => {
@@ -60,6 +152,7 @@ export default class AtividadesExtras extends Component {
             if (resposta.status == 200) {
                 const dadosAtividades = await resposta.data.atividade;
                 await this.setState({ AtividadeBuscada: dadosAtividades })
+                console.warn(dadosAtividades.idAtividade)
             }
         }
         catch (erro) {
@@ -131,6 +224,21 @@ export default class AtividadesExtras extends Component {
         }
     }
 
+    imagePickerCall= async () =>{
+        if(Constants.platform.ios){
+            const result = await Permission.askAsync(Permission.MEDIA_LIBRARY)
+            if(result.status !== 'granted'){
+                console.warn('permissão necessária')
+            }
+        }
+
+        const data = await ImagePicker.launchImageLibraryAsync({})
+
+        this.setState({imagemEntrega: data})
+
+        console.warn(this.state.imagemEntrega)
+    }
+
     render() {
         // if (!customFonts) {
         //     return <AppLoading />;
@@ -198,11 +306,11 @@ export default class AtividadesExtras extends Component {
                 <View style={styles.conteudoBox}>
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
 
-                    <Text style={styles.criador}> Responsável: {item.idGestorCadastroNavigation.nome} </Text>
-                    <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
+                    <Text style={styles.criador}> Responsável: {item.criador} </Text>
+                    {/* <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
                     year: 'numeric', month: 'short', day: 'numeric',
                 }).format(new Date(item.dataCriacao))} 
-                    </Text>
+                    </Text> */}
                 </View>
 
                 <View style={styles.ModaleBotao}>
@@ -245,11 +353,13 @@ export default class AtividadesExtras extends Component {
                             <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
                             <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
                             <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
-                            <Text style={styles.criadorModal}> Responsável: {this.state.AtividadeBuscada.criador} </Text>
-                            
+                            <Text style={styles.criadorModal}> Responsável: {this.state.AtividadeBuscada.idAtividade} </Text>
+                            <TouchableOpacity onPress={this.imagePickerCall}>
+                                <Text>Escolher foto</Text>
+                            </TouchableOpacity>
                         </View>
                         <View style={styles.botoesModal}  >
-                            <Pressable onPress={() => this.associar(this.state.AtividadeBuscada.idAtividade)} >
+                            <Pressable onPress={() => this.finalizarAtividade(this.state.AtividadeBuscada.idAtividade)} >
                                 <View style={styles.associarModal}>
                                     <Text style={styles.texto}>+ Minha Lista </Text>
                                 </View>

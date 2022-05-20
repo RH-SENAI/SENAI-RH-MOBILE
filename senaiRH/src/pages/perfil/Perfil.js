@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     },
     
     boxPerfil: {
-        height: 46,
+        height: '100%',
         backgroundColor: "#F2F2F2",
         width: '100%'
 
