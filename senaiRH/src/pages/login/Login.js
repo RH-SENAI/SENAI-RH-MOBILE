@@ -15,8 +15,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import jwt_decode from "jwt-decode";
-import api from '../../services/apiGp1';
-//import api from '../../services/apiGp3';
+//import api from '../../services/apiGp1';
+import api from '../../services/apiGp3';
+import recuperar from "../alterarSenha/recuperarSenha.js"
 import AwesomeAlert from 'react-native-awesome-alerts';
 import AnimatedInput from 'react-native-animated-input';
 import axios from 'axios';
@@ -35,7 +36,7 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cpf: '11111111176',
+      cpf: '71696553067',
       senha: 'Sesisenai@2022',
       fontsLoaded: false,
       error: 'Email ou Senha inválidos!',
@@ -220,7 +221,7 @@ export default class Login extends Component {
             
 
             
-              <TouchableOpacity  onPress={() => this.props.navigation.navigate('alterarSenha')}>
+              <TouchableOpacity  onPress={() => this.props.navigation.navigate('primeiroAcesso')}>
                 <Text style={styles.textEsque}> Esqueci a Senha</Text>
               </TouchableOpacity>
            

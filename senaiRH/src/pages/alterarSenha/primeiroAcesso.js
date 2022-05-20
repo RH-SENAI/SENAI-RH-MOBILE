@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {
     StyleSheet,
     Text,
@@ -16,12 +16,9 @@ import api from '../../services/apiGp1';
 import { render } from 'react-dom';
 
 
-export default class AlterarSenha extends Component {
+export default function SenhaAcesso() {
 
-
-
-
-    render() {
+    
         return (
             <View style={styles.body}>
 
@@ -73,7 +70,6 @@ export default class AlterarSenha extends Component {
                 </View>
             </View>
         )
-    }
 }
 
 const styles = StyleSheet.create({
