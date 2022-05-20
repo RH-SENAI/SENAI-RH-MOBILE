@@ -298,14 +298,10 @@ export default function CadastroFeedback({ route }) {
         </Animated.View>
 
         <KeyboardAvoidingView style={styles.sectionDemocratizacaoBox}>
-
-          <Animated.View style={[styles.animatedStyle1, animStyleFb]}>
-            <Text style={styles.labelComentarioFeedback}>Insira seu feedback</Text>
-          </Animated.View>
-
           <TextInput
             keyboardType="default"
             onChangeText={campo => onChangeFeedback(campo)}
+            placeholder="Insira seu feedback"
             value={comentarioFeedback}
             style={styles.sectionDemocratizacaoInput}
             editable={true}
@@ -315,13 +311,10 @@ export default function CadastroFeedback({ route }) {
             blurOnSubmit
           />
 
-          <Animated.View style={[styles.animatedStyle2, animStyleNota]}>
-            <Text style={styles.labelComentarioNota}>Insira uma nota para o feedback</Text>
-          </Animated.View>
-
           <TextInput
             keyboardType="decimal-pad"
             onChangeText={campo => onChangeNota(campo)}
+            placeholder="Insira uma nota para o feedback"
             value={notaDecisao}
             style={styles.sectionDemocratizacaoInput}
             editable={true}

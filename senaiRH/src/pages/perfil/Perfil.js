@@ -9,27 +9,27 @@ import {
   TouchableOpacity,
   Animated,
   TextInput,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
 } from "react-native";
 
 // Pacotes
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Expo
-import AppLoading from 'expo-app-loading';
+import AppLoading from "expo-app-loading";
 
 // Fonts
 import {
   useFonts,
   Montserrat_500Medium,
   Montserrat_600SemiBold,
-} from '@expo-google-fonts/montserrat';
+} from "@expo-google-fonts/montserrat";
 
 import {
   Quicksand_300Light,
   Quicksand_400Regular,
   Quicksand_600SemiBold,
-} from '@expo-google-fonts/quicksand';
+} from "@expo-google-fonts/quicksand";
 
 // Services
 import api from "../../services/api";
@@ -37,16 +37,14 @@ import apiGp1 from "../../services/apiGp1";
 import jwtDecode from "jwt-decode";
 
 export default function Perfil() {
-
   const [usuario, setUsuario] = useState([]);
-  const [senhaAtual, setSenhaAtualUsuario] = useState('');
+  const [senhaAtual, setSenhaAtualUsuario] = useState("");
   const [mudarSenha, setMudarSenha] = useState(false);
-  const [senhaNova, setSenhaNovaUsuario] = useState('');
-  const [senhaConfirmacao, setSenhaConfirmacaoUsuario] = useState('');
+  const [senhaNova, setSenhaNovaUsuario] = useState("");
+  const [senhaConfirmacao, setSenhaConfirmacaoUsuario] = useState("");
 
   // Fontes utilizada
   let [fontsLoaded] = useFonts({
-
     //Montserrat
     Montserrat_500Medium,
     Montserrat_600SemiBold,
@@ -55,7 +53,7 @@ export default function Perfil() {
     Quicksand_300Light,
     Quicksand_400Regular,
     Quicksand_600SemiBold,
-  })
+  });
 
   // Input nova senha
   const moveTextFb = useRef(new Animated.Value(0)).current;
@@ -198,13 +196,16 @@ export default function Perfil() {
 
   async function BuscarUsuario() {
     try {
-      const token = await AsyncStorage.getItem('userToken');
+      const token = await AsyncStorage.getItem("userToken");
 
-      const resposta = await api.get('Usuarios/Listar/' + jwtDecode(token).jti, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      });
+      const resposta = await api.get(
+        "Usuarios/Listar/" + jwtDecode(token).jti,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
 
       if (resposta.status === 200) {
         setUsuario([resposta.data]);
@@ -216,23 +217,26 @@ export default function Perfil() {
 
   async function MudarSenha() {
     try {
+      const token = await AsyncStorage.getItem("userToken");
+      console.warn(jwtDecode(token).jti);
 
-      const token = await AsyncStorage.getItem('userToken');
-      console.warn(jwtDecode(token).jti)
-
-      const resposta = await apiGp1.patch('Usuarios/AlteraSenha/' + jwtDecode(token).jti, {}, {
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'ContentType': 'application/json',
-          'senhaUser': senhaAtual,
-          'senhaNova': senhaNova,
-          'senhaConfirmacao': senhaConfirmacao
-        },
-      });
+      const resposta = await apiGp1.patch(
+        "Usuarios/AlteraSenha/" + jwtDecode(token).jti,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+            ContentType: "application/json",
+            senhaUser: senhaAtual,
+            senhaNova: senhaNova,
+            senhaConfirmacao: senhaConfirmacao,
+          },
+        }
+      );
 
       if (resposta.status === 200) {
-        console.warn("foi")
-        AlterarSenha()
+        console.warn("foi");
+        AlterarSenha();
       }
     } catch (error) {
       console.warn(error);
@@ -240,47 +244,48 @@ export default function Perfil() {
   }
 
   function AlterarSenha() {
-    setMudarSenha(!mudarSenha)
+    setMudarSenha(!mudarSenha);
   }
 
-  useEffect(() => BuscarUsuario(), [])
+  useEffect(() => BuscarUsuario(), []);
 
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {
     return (
-
       <KeyboardAvoidingView style={styles.container}>
-
-        <Image style={styles.logoSenai} source={require("../../../assets/imgMobile/logo_2S.png")} resizeMode="contain" />
+        <Image
+          style={styles.logoSenai}
+          source={require("../../../assets/imgMobile/logo_2S.png")}
+          resizeMode="contain"
+        />
 
         {usuario.map((usuario) => {
-
           if (mudarSenha) {
             return (
               <ScrollView contentContainerStyle={styles.conteudo}>
                 <Text style={styles.titulo}>Perfil</Text>
                 <View style={styles.fotoPerfilContainer}>
-
                   <Image
-                    source={usuario.caminhoFotoPerfil == undefined ? {
-                      uri:
-                        "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
-                        usuario.caminhoFotoPerfil,
-                    } : require("../../../assets/imgMobile/Perfil.png")}
+                    source={
+                      usuario.caminhoFotoPerfil == undefined
+                        ? {
+                            uri:
+                              "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
+                              usuario.caminhoFotoPerfil,
+                          }
+                        : require("../../../assets/imgMobile/Perfil.png")
+                    }
                     resizeMod="cover"
                   />
                 </View>
 
                 <Text style={styles.textInfGeralPerfil}>Atualizar Senha</Text>
 
-                <Animated.View style={[styles.animatedStyle1, animStyleFb]}>
-                  <Text style={styles.labelComentarioFeedback}>Insira sua nova senha</Text>
-                </Animated.View>
-
                 <TextInput
                   keyboardType="default"
-                  onChangeText={campo => onChangeNovaSenha(campo)}
+                  onChangeText={(campo) => onChangeNovaSenha(campo)}
+                  placeholder="Insira sua nova senha"
                   value={senhaNova}
                   style={styles.sectionDemocratizacaoInput}
                   editable={true}
@@ -289,13 +294,10 @@ export default function Perfil() {
                   blurOnSubmit
                 />
 
-                <Animated.View style={[styles.animatedStyle2, animStyleConfirmacao]}>
-                  <Text style={styles.labelComentarioConfirmar}>Confirmar senha</Text>
-                </Animated.View>
-
                 <TextInput
                   keyboardType="default"
-                  onChangeText={campo => onChangeConfirmacaoSenha(campo)}
+                  onChangeText={(campo) => onChangeConfirmacaoSenha(campo)}
+                  placeholder="Confirmar senha"
                   value={senhaConfirmacao}
                   style={styles.sectionDemocratizacaoInput}
                   editable={true}
@@ -304,13 +306,10 @@ export default function Perfil() {
                   blurOnSubmit
                 />
 
-                <Animated.View style={[styles.animatedStyle3, animStyleSenhaAtual]}>
-                  <Text style={styles.labelComentarioNota}>Senha Atual</Text>
-                </Animated.View>
-
                 <TextInput
                   keyboardType="default"
-                  onChangeText={campo => onChangeSenhaAtual(campo)}
+                  onChangeText={(campo) => onChangeSenhaAtual(campo)}
+                  placeholder="Senha atual"
                   value={senhaAtual}
                   style={styles.sectionDemocratizacaoInput}
                   editable={true}
@@ -319,39 +318,43 @@ export default function Perfil() {
                   blurOnSubmit
                 />
 
-                <TouchableOpacity style={styles.btnCadastro} onPress={() => MudarSenha()}>
+                <TouchableOpacity
+                  style={styles.btnCadastro}
+                  onPress={() => MudarSenha()}
+                >
                   <Text style={styles.btnCadastroText}>Alterar Senha</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.btnCadastroSenha} onPress={() => AlterarSenha()}>
+                <TouchableOpacity
+                  style={styles.btnCadastroSenha}
+                  onPress={() => AlterarSenha()}
+                >
                   <Text style={styles.btnCadastroTextSenha}>Voltar</Text>
                 </TouchableOpacity>
-
               </ScrollView>
-            )
+            );
           }
           return (
             <ScrollView contentContainerStyle={styles.conteudo}>
-
               <Text style={styles.titulo}>Perfil</Text>
               <View style={styles.fotoPerfilContainer}>
-
                 <Image
-                  source={usuario.caminhoFotoPerfil == undefined ? {
-                    uri:
-                      "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
-                      usuario.caminhoFotoPerfil,
-                  } : require("../../../assets/imgMobile/Perfil.png")}
+                  source={
+                    usuario.caminhoFotoPerfil == undefined
+                      ? {
+                          uri:
+                            "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
+                            usuario.caminhoFotoPerfil,
+                        }
+                      : require("../../../assets/imgMobile/Perfil.png")
+                  }
                   resizeMod="cover"
                 />
-
               </View>
-
 
               <Text style={styles.textInfGeralPerfil}>Informação Geral</Text>
 
-              <View style={styles.boxPerfil} >
-
+              <View style={styles.boxPerfil}>
                 <View style={styles.line}>
                   <Text style={styles.lineTextPerfil}>{usuario.nome}</Text>
                 </View>
@@ -365,158 +368,154 @@ export default function Perfil() {
                 </View>
 
                 <View style={styles.line}>
-                  <Text style={styles.lineTextPerfil}>{usuario.idCargoNavigation.nomeCargo}</Text>
+                  <Text style={styles.lineTextPerfil}>
+                    {usuario.idCargoNavigation.nomeCargo}
+                  </Text>
                 </View>
-
               </View>
 
-              <TouchableOpacity style={styles.btnCadastro} onPress={() => AlterarSenha()}>
+              <TouchableOpacity
+                style={styles.btnCadastro}
+                onPress={() => AlterarSenha()}
+              >
                 <Text style={styles.btnCadastroText}>Alterar Senha</Text>
               </TouchableOpacity>
-              
-            </ScrollView>);
+            </ScrollView>
+          );
         })}
-
       </KeyboardAvoidingView>
     );
   }
 }
 
-
-
 const styles = StyleSheet.create({
-
-
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F2'
+    backgroundColor: "#F2F2F2",
   },
 
   fotoPerfilContainer: {
     width: 111,
     height: 110,
     borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 3,
-    borderColor: 'gray',
-    marginVertical: 20
+    borderColor: "gray",
+    marginVertical: 20,
   },
 
   textInfGeralPerfil: {
-    fontFamily: 'Quicksand_400Regular',
+    fontFamily: "Quicksand_400Regular",
     fontSize: 20,
-    color: 'black',
+    color: "black",
     marginRight: 179,
-    marginBottom: 20
+    marginBottom: 20,
   },
 
   animatedStyle1: {
     top: 250,
-    left : 42,
-    position: 'absolute',
-    backgroundColor : '#F2F2F2',
-    paddingLeft : 5,
+    left: 42,
+    position: "absolute",
+    backgroundColor: "#F2F2F2",
+    paddingLeft: 5,
     zIndex: 1000,
-    width: 170
+    width: 170,
   },
 
   animatedStyle2: {
     top: 310,
     left: 44,
-    position: 'absolute',
+    position: "absolute",
     zIndex: 1000,
-    backgroundColor: '#F2F2F2',
-    alignItems: 'center',
+    backgroundColor: "#F2F2F2",
+    alignItems: "center",
     width: 110,
   },
 
   animatedStyle3: {
     top: 370,
     left: 30,
-    position: 'absolute',
+    position: "absolute",
     zIndex: 1000,
-    backgroundColor: '#F2F2F2',
-    alignItems: 'center',
+    backgroundColor: "#F2F2F2",
+    alignItems: "center",
     width: 110,
   },
 
   labelComentarioFeedback: {
-    color: '#636466',
+    color: "#636466",
     fontSize: 13,
-    fontFamily: 'Quicksand_300Light',
+    fontFamily: "Quicksand_300Light",
   },
 
   labelComentarioNota: {
-    color: '#636466',
+    color: "#636466",
     fontSize: 13,
-    fontFamily: 'Quicksand_300Light',
+    fontFamily: "Quicksand_300Light",
   },
 
-
   textInfGeralPerfil: {
-    fontFamily: 'Quicksand_400Regular',
+    fontFamily: "Quicksand_400Regular",
     fontSize: 20,
-    color: 'black',
+    color: "black",
     marginRight: 203,
-    marginBottom: 20
+    marginBottom: 20,
   },
 
   sectionDemocratizacaoInput: {
-    width: '90%',
+    width: "90%",
     height: 42,
     borderRadius: 5,
     borderWidth: 2,
-    borderColor: '#B3B3B3',
+    borderColor: "#B3B3B3",
     paddingLeft: 16,
-    marginBottom: 18
+    marginBottom: 18,
   },
 
-  labelComentarioConfirmar : {
-    color: '#636466',
+  labelComentarioConfirmar: {
+    color: "#636466",
     fontSize: 14,
     width: "100%",
-    fontFamily: 'Quicksand_300Light',
+    fontFamily: "Quicksand_300Light",
   },
   btnCadastro: {
-    width: '86%',
+    width: "86%",
     height: 43,
     borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 10,
-    backgroundColor: '#C20004',
+    backgroundColor: "#C20004",
   },
 
-  btnCadastroSenha : {
-    alignItems: 'center',
-    justifyContent: 'center',
+  btnCadastroSenha: {
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 10,
-    paddingBottom : 10
+    paddingBottom: 10,
   },
 
-  btnCadastroTextSenha : {
-    fontFamily: 'Montserrat_500Medium',
-    color: '#C20004'
+  btnCadastroTextSenha: {
+    fontFamily: "Montserrat_500Medium",
+    color: "#C20004",
   },
 
   btnCadastroText: {
-    fontFamily: 'Montserrat_500Medium',
-    color: '#F2F2F2'
+    fontFamily: "Montserrat_500Medium",
+    color: "#F2F2F2",
   },
 
   lineTextPerfil: {
-    fontFamily: 'Quicksand_400Regular',
+    fontFamily: "Quicksand_400Regular",
     fontSize: 20,
-    color: '#B3B3B3'
+    color: "#B3B3B3",
   },
 
   logoSenai: {
-    width: "100%",
-    height: 40,
     alignSelf: "center",
     marginTop: 40,
-    marginBottom: 40,
+    marginBottom: 24,
   },
 
   titulo: {
@@ -530,34 +529,33 @@ const styles = StyleSheet.create({
   },
 
   conteudo: {
-    alignItems: 'center',
-    paddingBottom: 20
+    alignItems: "center",
+    paddingBottom: 20,
   },
 
   boxPerfil: {
     backgroundColor: "#F2F2F2",
-    paddingHorizontal: '5%',
-    width: '100%'
-
+    paddingHorizontal: "5%",
+    width: "100%",
   },
 
   titulos: {
-    color: '#0A0A0A',
+    color: "#0A0A0A",
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
 
   line: {
-    width: '100%',
+    width: "100%",
     height: 50,
     borderRadius: 5,
-    paddingHorizontal: '3%',
+    paddingHorizontal: "3%",
     paddingVertical: 5,
-    borderColor: '#C2C2C2',
+    borderColor: "#C2C2C2",
     borderWidth: 3,
     marginBottom: 10,
-    justifyContent: 'center',
-    borderRadius: 10
+    justifyContent: "center",
+    borderRadius: 10,
   },
 
   sobreTrofeu: {
@@ -565,17 +563,17 @@ const styles = StyleSheet.create({
     height: 50,
     fontSize: 30,
     borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 10,
     elevation: 16,
-    backgroundColor: '#F2F2F2',
+    backgroundColor: "#F2F2F2",
     borderRadius: 5,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
 
   textTrofeu: {
-    color: 'black',
-    marginLeft: 10
-  }
+    color: "black",
+    marginLeft: 10,
+  },
 });

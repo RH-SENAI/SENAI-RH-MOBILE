@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%'
   },
+
   cardClicavel: {
     borderWidth: 2,
     borderColor: "gray",
@@ -217,33 +218,33 @@ const styles = StyleSheet.create({
     height: 40,
     alignSelf: "center",
     marginTop: 16,
-    marginBottom: 32,
+
   },
 
   imgLogo: {
-    width: "100%",
-    height: 40,
     alignSelf: "center",
     marginTop: 40,
-    marginBottom: 20,
+ 
+    
+   
   },
 
-  h1nonBold: {
-    fontSize: 30,
-    fontWeight: "500",
-    textTransform: "uppercase",
-    color: "#000000",
-    marginTop: 32,
-  },
+  // h1nonBold: {
+  //   fontSize: 30,
+  //   fontWeight: "500",
+  //   fontFamily: "Montserrat_600SemiBold",
+  //   textTransform: "uppercase",
+  //   color: "#000000",
+  // },
 
   h1Bold: {
-    fontSize: 30,
-    fontFamily: 'Montserrat_600SemiBold',
+    fontSize: 32,
+    width: "80%",
+    textAlign: "center",
+    fontFamily: "Montserrat_600SemiBold",
     textTransform: "uppercase",
-    color: "#000000",
-    marginBottom: 30,
-    color: '#2A2E32',
-    marginTop: 30
+    color: "#2A2E32",
+    marginTop: 24,
   },
 
   mainBodyContent: {

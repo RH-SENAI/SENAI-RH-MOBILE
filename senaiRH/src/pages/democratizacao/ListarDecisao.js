@@ -220,29 +220,17 @@ const styles = StyleSheet.create({
   },
 
   imgLogo: {
-    width: "100%",
-    height: 40,
     alignSelf: "center",
-    marginTop: 40,
-    marginBottom: 20,
+    // marginTop: 40,
+    marginBottom: 24,
   },
-
-  h1nonBold: {
-    fontSize: 30,
-    fontWeight: "500",
-    textTransform: "uppercase",
-    color: "#000000",
-    marginTop: 32,
-  },
-
   h1Bold: {
-    fontSize: 30,
-    fontFamily: 'Montserrat_600SemiBold',
+    fontSize: 32,
+    width: "80%",
+    textAlign: "center",
+    fontFamily: "Montserrat_600SemiBold",
     textTransform: "uppercase",
-    color: "#000000",
-    marginBottom: 30,
-    color: '#2A2E32',
-    marginTop: 30
+    color: "#2A2E32",
   },
 
   mainBodyContent: {

@@ -83,12 +83,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
+    
   },
   tituLogo: {
-    width: "100%",
     marginBottom: "10%",
     height: 35,
-    fontFamily: "Montserrat_600SemiBold",
+    alignSelf: "center",
   },
   tituloRH: {
     fontSize: 32,
