@@ -172,7 +172,7 @@ export default function Ranking() {
 
                 /> */}
 
-                {/* <FlatList
+                <FlatList
                     style={styles.FlatListGp1}
                     data={ListarRanking}
                     // data={ListarRanking.sort((a, b) => b.trofeus > a.trofeus)}
@@ -241,7 +241,7 @@ export default function Ranking() {
                         </View> */}
                 {/* </View>)} */}
 
-                {/* /> */}
+                />
 
 
                 {/* <View style={styles.RankingGp1}>
@@ -285,7 +285,7 @@ export default function Ranking() {
                         
 
                 </View> */}
-                 <View style={styles.RankingGp1}>
+                 {/* <View style={styles.RankingGp1}>
                       <Leaderboard
                     //style={styles.FlatListGp1}
                     style={{ backgroundColor: 'black' }}
@@ -294,7 +294,7 @@ export default function Ranking() {
                     //labelBy='nome'
                 // contentContainerStyle={styles.RankingGp1}
                 /> 
-                 </View>
+                 </View> */}
               
                 
 
@@ -496,5 +496,4 @@ const styles = StyleSheet.create({
 
 
 });
-
 
