@@ -251,10 +251,10 @@ export default class TabViewExample extends React.Component {
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
 
                     <Text style={styles.criador}> Responsável: {item.idGestorCadastroNavigation.nome} </Text>
-                    <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
+                    {/* <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
                         year: 'numeric', month: 'short', day: 'numeric',
                     }).format(new Date(item.dataCriacao))}
-                    </Text>
+                    </Text> */}
                 </View>
 
                 <View style={styles.ModaleBotao}>
@@ -345,9 +345,9 @@ export default class TabViewExample extends React.Component {
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
 
                     <Text style={styles.criador}> Responsável: {item.idGestorCadastroNavigation.nome} </Text>
-                    <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
+                    {/* <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
                         year: 'numeric', month: 'short', day: 'numeric',
-                    }).format(new Date(item.dataCriacao))} </Text>
+                    }).format(new Date(item.dataCriacao))} </Text> */}
                 </View>
 
                 <View style={styles.ModaleBotao}>

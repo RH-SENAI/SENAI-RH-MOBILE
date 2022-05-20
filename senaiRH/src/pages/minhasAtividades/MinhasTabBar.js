@@ -173,10 +173,9 @@ export default class TabViewExample extends React.Component {
 
     componentDidMount() {
         this._loadFontsAsync();
-        () => {
-            this.ListarMinhas();
-            this.ListarMinhasExtras();
-        }
+        
+        this.ListarMinhas();
+        this.ListarMinhasExtras();
     }
 
     componentWillUnmount = () => {
