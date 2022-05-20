@@ -56,7 +56,8 @@ import api from "../../services/apiGp1";
 export default function Ranking() {
 
     const [ListarRanking, setListarRanking] = useState([]);
-    const [count, setCount] = useState(0);
+    const [RankingUsuario, setRankingUsuario] = useState([]);
+    //const [count, setCount] = useState(0);
     // const [ partners, onPartnerDetails ] = props;
 
     let [customFonts] = useFonts({
@@ -103,25 +104,26 @@ export default function Ranking() {
         }
     };
 
-    const retornaRankingUsuario = async () => {
-        const token = await AsyncStorage.getItem("userToken");
-        // const xambers = base64.decode(token.split('.')[1])
-        // const user = JSON.parse(xambers)
+    // const retornaRankingUsuario = async () => {
+    //     const token = await AsyncStorage.getItem("userToken");
+    //     // const xambers = base64.decode(token.split('.')[1])
+    //     // const user = JSON.parse(xambers)
 
-        if (token != null) {
-            const resposta = await api.get("/Usuarios/Ranking/" + decodedData.jti, {
-                headers: {
-                    Authorization: "Bearer " + token,
-                },
-            });
+    //     if (token != null) {
+    //         const resposta = await api.get("/Usuarios/Ranking/" + user.jti, {
+    //             headers: {
+    //                 Authorization: "Bearer " + token,
+    //             },
+    //         });
 
-            const dadosDaApi = await resposta.data;
-            setListarRanking(dadosDaApi);
-        }
-    };
+    //         const dadosDaApi = await resposta.data;
+    //         setRankingUsuario(dadosDaApi);
+    //     }
+    // };
+
     useEffect(() => {
         retornaRanking();
-        retornaRankingUsuario();
+        //retornaRankingUsuario();
     }, []);
 
     // useEffect(() => {
@@ -141,28 +143,28 @@ export default function Ranking() {
     return (
         <SafeAreaView>
             <ScrollView>
-        <View style={styles.main}>
+                <View style={styles.main}>
 
 
-            <View>
-                <View style={styles.mainHeader}>
-                    <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
-                        style={styles.imgLogo}
-                    />
+                    <View>
+                        <View style={styles.mainHeader}>
+                            <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
+                                style={styles.imgLogo}
+                            />
 
-                </View>
+                        </View>
 
-                <View style={styles.titulo}>
+                        <View style={styles.titulo}>
 
-                    <Text style={styles.tituloEfects}>{'Ranking'.toUpperCase()} </Text>
+                            <Text style={styles.tituloEfects}>{'Ranking'.toUpperCase()} </Text>
 
-                </View>
+                        </View>
 
-                {/* <TouchableOpacity onPress={order}>
+                        {/* <TouchableOpacity onPress={order}>
                    <Text>cvhjklç~]</Text>
                 </TouchableOpacity> */}
 
-                {/* <FlatList
+                        {/* <FlatList
                     //ContentContainerStyle={styles.RankingGp1}
                     // style={styles.RankingGp1}
                     data={ListarRanking}
@@ -172,7 +174,7 @@ export default function Ranking() {
 
                 /> */}
 
-                {/* <FlatList
+                        {/* <FlatList
                     style={styles.FlatListGp1}
                     data={ListarRanking}
                     // data={ListarRanking.sort((a, b) => b.trofeus > a.trofeus)}
@@ -239,12 +241,12 @@ export default function Ranking() {
                             </View>
                 
                         </View> */}
-                {/* </View>)} */}
+                        {/* </View>)} */}
 
-                {/* /> */}
+                        {/* /> */}
 
 
-                {/* <View style={styles.RankingGp1}>
+                        {/* <View style={styles.RankingGp1}>
                     <Text style={styles.numero}> </Text>
                     <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
                         style={styles.fotoRankingGp1}
@@ -257,7 +259,7 @@ export default function Ranking() {
                         <Text style={styles.Ntrofeu} >{item.trofeus}</Text>
                     </View> */}
 
-{/* 
+                        {/* 
                 <View style={styles.RankingGp1}>
                     <Text style={styles.numero}>Rank</Text>
                     <Image source={require('../../../assets/img-gp1/bonecoRanking.png')}
@@ -273,7 +275,7 @@ export default function Ranking() {
 
                 </View> */}
 
-                {/* <View style={styles.RankingGp1} >
+                        {/* <View style={styles.RankingGp1} >
                 <Text style={styles.numero}>Rank</Text>
 
 
@@ -285,27 +287,31 @@ export default function Ranking() {
                         
 
                 </View> */}
-                 <View style={styles.RankingGp1}>
-                      <Leaderboard
-                    //style={styles.FlatListGp1}
-                    style={{ backgroundColor: 'black' }}
-                    data={ListarRanking}
-                    sortBy='trofeus'
-                    //labelBy='nome'
-                // contentContainerStyle={styles.RankingGp1}
-                /> 
-                 </View>
-              
-                
+                        <View style={styles.RankingGp1}>
 
+                            {/* <Leaderboard
+                                //style={styles.FlatListGp1}
+                                style={{ backgroundColor: 'black' }}
+                                data={RankingUsuario}
+                                sortBy='trofeus'
+                                labelBy='nome'
+                                // contentContainerStyle={styles.RankingGp1}
+                            /> */}
 
+                            <Leaderboard
+                                //style={styles.FlatListGp1}
+                                style={{ backgroundColor: 'black' }}
+                                data={ListarRanking}
+                                sortBy='trofeus'
+                                //labelBy='nome'
+                                // contentContainerStyle={styles.RankingGp1}
+                            />
+                        </View>
 
+                    </View>
 
-            </View>
-
-
-        </View>
-        </ScrollView>
+                </View>
+            </ScrollView>
         </SafeAreaView>
 
     )
