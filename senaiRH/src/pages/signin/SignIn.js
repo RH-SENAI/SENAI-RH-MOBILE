@@ -16,7 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import jwt_decode from "jwt-decode";
-import api from "../../services/apiGp1";
+import api from "../../services/api";
 import AwesomeAlert from "react-native-awesome-alerts";
 import AnimatedInput from "react-native-animated-input";
 import axios from "axios";

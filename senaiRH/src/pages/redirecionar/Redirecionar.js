@@ -80,7 +80,7 @@ export default function Redirecionar() {
       <View style={styles.containerLinks}>
         <Text style={styles.titulo}>REDIRECIONAR PARA:</Text>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MainAcompanhar")}>
           <MaterialIcons name="computer" size={50} color="black" />
           <Text style={styles.texto}>Acompanhamento</Text>
         </TouchableOpacity>
