@@ -103,7 +103,7 @@ export default function Ranking() {
         }
     };
 
-    const retornaRanking = async () => {
+    const retornaRankingUsuario = async () => {
         const token = await AsyncStorage.getItem("userToken");
         // const xambers = base64.decode(token.split('.')[1])
         // const user = JSON.parse(xambers)
@@ -121,6 +121,7 @@ export default function Ranking() {
     };
     useEffect(() => {
         retornaRanking();
+        retornaRankingUsuario();
     }, []);
 
     // useEffect(() => {

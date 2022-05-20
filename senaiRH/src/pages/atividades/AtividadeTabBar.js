@@ -231,11 +231,14 @@ export default class TabViewExample extends React.Component {
     };
 
     FirstRoute = () => (
-        <FlatList
-            data={this.state.listaAtividades}
-            keyExtractor={item => item.idAtividade}
-            renderItem={this.renderItem}
-        />
+        <View style={styles.container}>
+            <FlatList
+                //style={styles.FlatList}
+                data={this.state.listaAtividades}
+                keyExtractor={item => item.idAtividade}
+                renderItem={this.renderItem}
+            />
+        </View>
     );
 
     renderItem = ({ item }) => (
@@ -251,9 +254,8 @@ export default class TabViewExample extends React.Component {
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
 
                     <Text style={styles.criador}> Responsável: {item.idGestorCadastroNavigation.nome} </Text>
-                    <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
-                        year: 'numeric', month: 'short', day: 'numeric',
-                    }).format(new Date(item.dataCriacao))}
+                    <Text style={styles.data}> Item Postado: {item.dataCriacao}
+                    {/* {new Intl.DateTimeFormat("pt-BR", {year: 'numeric', month: 'short', day: 'numeric'}).format((item.dataCriacao))} */}
                     </Text>
                 </View>
 
@@ -325,11 +327,14 @@ export default class TabViewExample extends React.Component {
     );
 
     SecondRoute = () => (
-        <FlatList
-            data={this.state.listaAtividades}
-            keyExtractor={item => item.idAtividade}
-            renderItem={this.renderItem2}
-        />
+        <View style={styles.container}>
+            <FlatList
+                style={styles.FlatList}
+                data={this.state.listaAtividades}
+                keyExtractor={item => item.idAtividade}
+                renderItem={this.renderItem2}
+            />
+        </View>
     );
 
     renderItem2 = ({ item }) => (
@@ -345,9 +350,11 @@ export default class TabViewExample extends React.Component {
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
 
                     <Text style={styles.criador}> Responsável: {item.idGestorCadastroNavigation.nome} </Text>
-                    <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
+                    <Text style={styles.data}> Item Postado:  {item.dataCriacao}
+                    {/* {Intl.DateTimeFormat("pt-BR", {
                         year: 'numeric', month: 'short', day: 'numeric',
-                    }).format(new Date(item.dataCriacao))} </Text>
+                    }).format(new Date(item.dataCriacao))}  */}
+                    </Text>
                 </View>
 
                 <View style={styles.ModaleBotao}>
@@ -437,8 +444,16 @@ export default class TabViewExample extends React.Component {
 
 const styles = StyleSheet.create({
 
-    main: {
+    container: {
         flex: 1,
+    },
+
+    FlatList: {
+        width: '100%',
+    },
+
+    main: {
+        //flex: 1,
         backgroundColor: '#F2F2F2',
     },
 
