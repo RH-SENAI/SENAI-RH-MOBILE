@@ -303,7 +303,7 @@ export default function Ranking() {
                                 style={{ backgroundColor: 'black' }}
                                 data={ListarRanking}
                                 sortBy='trofeus'
-                                //labelBy='nome'
+                                labelBy='nome'
                                 // contentContainerStyle={styles.RankingGp1}
                             />
                         </View>

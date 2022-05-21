@@ -46,9 +46,39 @@ export default class AtividadesExtras extends Component {
 
 
     buscarAtividade = async () => {
-        const resposta = await api.get('/Atividades/ListarObrigatorias');
-        const dadosDaApi = resposta.data;
-        this.setState({ listaAtividades: dadosDaApi });
+        var Buffer = require('buffer/').Buffer
+        
+        
+        const token = (await AsyncStorage.getItem('userToken'));
+
+        let base64Url = token.split('.')[1]; // token you get
+        let base64 = base64Url.replace('-', '+').replace('_', '/');
+        let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+        //const xambers = JSON.parse(atob(token.split('.')[1]))
+        console.warn(token);
+
+        
+
+        if (token != null) {
+            await api.get("/Atividades/MinhasAtividade/" + decodedData.jti, {
+                headers: {
+                    "Authorization": "Bearer " + token,
+                },
+
+            })
+                .then(response => {
+                    if (response.status === 200) {
+                        // console.warn(response)
+                        // console.warn(this.state.modalVisible)
+                        const dadosMinhasAtividades =  response.data;
+                        console.warn(dadosMinhasAtividades);
+                        this.setState({ listaAtividades: dadosMinhasAtividades });
+                    }
+                })
+                .catch(response => {
+                    console.warn(response)
+                })
+            }
     };
 
 
@@ -199,10 +229,10 @@ export default class AtividadesExtras extends Component {
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
 
                     <Text style={styles.criador}> Responsável: {item.idGestorCadastroNavigation.nome} </Text>
-                    <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
+                    {/* <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
                     year: 'numeric', month: 'short', day: 'numeric',
                 }).format(new Date(item.dataCriacao))} 
-                    </Text>
+                    </Text> */}
                 </View>
 
                 <View style={styles.ModaleBotao}>

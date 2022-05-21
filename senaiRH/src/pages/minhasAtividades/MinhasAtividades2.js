@@ -51,11 +51,12 @@ export default class MinhasAtividades extends Component {
         
         
         const token = (await AsyncStorage.getItem('userToken'));
+
         let base64Url = token.split('.')[1]; // token you get
         let base64 = base64Url.replace('-', '+').replace('_', '/');
         let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
         //const xambers = JSON.parse(atob(token.split('.')[1]))
-        console.warn(decodedData);
+        console.warn(token);
 
         
 
@@ -193,7 +194,7 @@ export default class MinhasAtividades extends Component {
                     <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
 
                     <View style={styles.descricaoOlho}>
-                        <Text style={styles.descricao}> Data de Entrega: {Intl.DateTimeFormat("pt-BR", {year: 'numeric', month: 'short', day: 'numeric',}).format(new Date(item.dataConclusao))}</Text>
+                        {/* <Text style={styles.descricao}> Data de Entrega: {Intl.DateTimeFormat("pt-BR", {year: 'numeric', month: 'short', day: 'numeric',}).format(new Date(item.dataConclusao))}</Text> */}
                         
                         <Pressable style={styles.Modalbotao} onPress={() => this.openModal(item.idAtividade)}>
                             <AntDesign name="downcircleo" size={24} color="#636466" />
