@@ -80,7 +80,7 @@ export default function MainMotivar() {
       />
 
       <Tab.Screen
-        name="Minhas Atividades"
+        name="Extras"
         component={MinhasAtividades}
         options={{
           tabBarIcon: ({ size, color }) => (
