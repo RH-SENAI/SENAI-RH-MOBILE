@@ -49,6 +49,8 @@ export default class TabViewExample extends React.Component {
         minhaAtividade: {}
     }
 
+    
+
     ListarMinhas = async () => {
 
         var Buffer = require('buffer/').Buffer
@@ -64,6 +66,7 @@ export default class TabViewExample extends React.Component {
 
 
         if (token != null) {
+            console.warn('cachorro')
             await api.get("/Atividades/MinhasAtividade/" + decodedData.jti, {
                 headers: {
                     "Authorization": "Bearer " + token,
@@ -170,6 +173,7 @@ export default class TabViewExample extends React.Component {
         alert(result.uri)
         console.log(result)
     }
+
 
     componentDidMount() {
         this._loadFontsAsync();

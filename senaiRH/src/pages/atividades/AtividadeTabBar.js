@@ -233,7 +233,8 @@ export default class TabViewExample extends React.Component {
     FirstRoute = () => (
         <View style={styles.container}>
             <FlatList
-                //style={styles.FlatList}
+            
+                style={styles.FlatList}
                 data={this.state.listaAtividades}
                 keyExtractor={item => item.idAtividade}
                 renderItem={this.renderItem}
