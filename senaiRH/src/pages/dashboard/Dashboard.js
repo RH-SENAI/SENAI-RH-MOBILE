@@ -18,16 +18,12 @@ import AppLoading from "expo-app-loading";
 // Pacotes
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  VictoryLine,
-  VictoryPie,
-  VictoryChart,
-  VictoryAxis,
-  VictoryTheme,
-} from "victory";
+
 import jwtDecode from "jwt-decode";
 
 import { BarChart, XAxis, ProgressCircle, Grid } from "react-native-svg-charts";
+
+import Grafico from './Grafico.js'
 
 //Services
 import api from "../../services/api";
@@ -115,7 +111,7 @@ export default function Dashboard() {
     return (
       <ProgressCircle
         style={styles.grafico}
-        progress={u.nivelSatisfacao}
+        progress={u.medSatisfacaoGeral}
         progressColor={"#C20004"}
         backgroundColor={"rgba(194, 0, 4, 0.15)"}
         startAngle={0}
@@ -135,7 +131,7 @@ export default function Dashboard() {
           opacity={"1"}
           strokeWidth={0.4}
         >
-          {u.nivelSatisfacao * 100}%
+          {(u.medSatisfacaoGeral * 100).toPrecision(2)}%
         </SvgText>
       </ProgressCircle>
     );
@@ -146,7 +142,7 @@ export default function Dashboard() {
     return (
       <ProgressCircle
         style={styles.grafico}
-        progress={u.mediaAvaliacao / 10}
+        progress={u.mediaAvaliacao}
         progressColor={"#C20004"}
         backgroundColor={"rgba(194, 0, 4, 0.15)"}
         startAngle={0}
@@ -166,7 +162,7 @@ export default function Dashboard() {
           opacity={"1"}
           strokeWidth={0.4}
         >
-          {u.mediaAvaliacao * 10}%
+          {u.mediaAvaliacao * 100}%
         </SvgText>
       </ProgressCircle>
     );
@@ -177,7 +173,7 @@ export default function Dashboard() {
     return (
       <ProgressCircle
         style={styles.grafico}
-        progress={0.55}
+        progress={u.notaProdutividade}
         progressColor={"#C20004"}
         backgroundColor={"rgba(194, 0, 4, 0.15)"}
         startAngle={0}
@@ -197,7 +193,7 @@ export default function Dashboard() {
           opacity={"1"}
           strokeWidth={0.4}
         >
-          {55}%
+          {u.notaProdutividade}%
         </SvgText>
       </ProgressCircle>
     );
@@ -231,7 +227,7 @@ export default function Dashboard() {
 
   function GraficoBarras() {
     const dataFinalizacao = minhasAtividades
-      .filter((a) => a.idSituacaoAtividade === 3)
+      .filter((a) => a.idSituacaoAtividade === 1)
       .map((p) => {
         return parseInt(p.dataConclusao.split("-")[2]);
       });
@@ -322,14 +318,14 @@ export default function Dashboard() {
                     </View>
                   </View>
 
-                  <View style={styles.containerPieChart}>
+                  {/* <View style={styles.containerPieChart}>
                     <View style={styles.containerLegendas}>
                       <Text style={styles.tituloGrafico}>
                         Nivel de Satisfação:
                       </Text>
                     </View>
                     <GraficoSatisfacao />
-                  </View>
+                  </View> */}
                   <View style={styles.containerPieChart}>
                     <View style={styles.containerLegendas}>
                       <Text style={styles.tituloGrafico}>
@@ -348,6 +344,17 @@ export default function Dashboard() {
                     <Text style={styles.subtituloProdutividade}>
                       Entregas de atividade por semana:{" "}
                     </Text>
+                  </View>
+
+                  <View style={styles.containerProdutividade}>
+                    <View style={styles.containerProdutividadeSup}>
+                      <Text style={styles.tituloGrafico}>Satisfação:</Text>
+                      <GraficoSatisfacao />
+                    </View>
+                    <Grafico style={styles.interativo}/>
+                    {/* <Text style={styles.subtituloProdutividade}>
+                      Entregas de atividade por semana:{" "}
+                    </Text> */}
                   </View>
 
                   {/* <LineChartExample /> */}
@@ -484,4 +491,8 @@ const styles = StyleSheet.create({
     flex: 1,
     //backgroundColor: 'yellow'
   },
+  interativo: {
+    backgroundColor: 'green',
+    padding: 20
+  }
 });
