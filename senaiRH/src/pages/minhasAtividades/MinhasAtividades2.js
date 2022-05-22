@@ -24,6 +24,7 @@ import base64 from 'react-native-base64';
 import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker'
+import AwesomeAlert from 'react-native-awesome-alerts';
 import * as Permission from 'expo-permissions';
 import axios from 'axios';
 // import 'intl';
@@ -45,9 +46,24 @@ export default class AtividadesExtras extends Component {
             listaAtividades: [],
             AtividadeBuscada: {},
             modalVisible: false,
-            imagemEntrega: {}
+            imagemEntrega: {},
+            fontsLoaded: false,
+            setLoading: false,
+            showAlert: false,
+            mensagem: '',
         };
     }
+
+    showAlert = () => {
+        this.setState({ showAlert: true })
+    }
+
+    hideAlert = () => {
+        this.setState({
+            showAlert: false
+        });
+    };
+
 
     finalizarAtividade = async (item) => {
         console.warn(item)
@@ -83,7 +99,7 @@ export default class AtividadesExtras extends Component {
             }
         })
         console.warn(resposta)
-
+        this.showAlert();
 
 
     }
@@ -175,13 +191,13 @@ export default class AtividadesExtras extends Component {
     }
 
 
-    // async _loadFontsAsync() {
-    //     await Font.loadAsync(customFonts);
-    //     this.setState({ fontsLoaded: true });
-    // }
+    async _loadFontsAsync() {
+        await Font.loadAsync(customFonts);
+        this.setState({ fontsLoaded: true });
+    }
 
     componentDidMount() {
-        // this._loadFontsAsync();
+        this._loadFontsAsync();
         this.buscarAtividade();
     }
 
@@ -240,9 +256,9 @@ export default class AtividadesExtras extends Component {
     }
 
     render() {
-        // if (!customFonts) {
-        //     return <AppLoading />;
-        // }
+        if (!customFonts) {
+            return <AppLoading />;
+        }
         return (
 
             <View style={styles.main}>
@@ -256,7 +272,7 @@ export default class AtividadesExtras extends Component {
 
                     <View style={styles.titulo}>
 
-                        <Text style={styles.tituloEfects}>{'atividades Extras'.toUpperCase()} </Text>
+                        <Text style={styles.tituloEfects}>{'minhas atividades'.toUpperCase()} </Text>
 
                         {/* <View style={styles.escritaEscolha}>
                             <View style={styles.itemEquipe}>
@@ -307,22 +323,28 @@ export default class AtividadesExtras extends Component {
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
 
                     <Text style={styles.criador}> Responsável: {item.criador} </Text>
-                    {/* <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
-                    year: 'numeric', month: 'short', day: 'numeric',
-                }).format(new Date(item.dataCriacao))} 
-                    </Text> */}
+        
+                    <View style={styles.ModaleBotao}>
+
+                        <Text style={styles.dataEntrega}>Data de Entrega: {item.dataConclusao}</Text>
+
+                        <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
+                            <AntDesign name="downcircleo" size={24} color="#C20004" />
+                        </Pressable>
+
+                        <View style={styles.statusImagem}>
+
+                            {item.idSituacaoAtividade == 1 &&
+                                <AntDesign name="check" size={24} color="black" />
+                            }
+                            {item.idSituacaoAtividade == 2 &&
+                                <Feather name="alert-triangle" size={24} color="#C20004" />
+                            }
+                            <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({ mensagem: 'Validado' }) : item.idSituacaoAtividade == 2 ? this.setState({ mensagem: 'Pendente' }) : null} </Text>
+                        </View>
+                    </View>
                 </View>
 
-                <View style={styles.ModaleBotao}>
-
-                    <Text style={styles.dataEntrega}>Data de Entrega: 20/03 </Text>
-                    <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
-
-                        <AntDesign name="downcircleo" size={24} color="#C20004" />
-
-
-                    </Pressable>
-                </View>
 
             </View>
 
@@ -346,10 +368,12 @@ export default class AtividadesExtras extends Component {
                             <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
                             <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
                             <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
-                          
-                            <Text style={styles.entregaModal}> Recompensa em trofeu: {this.state.AtividadeBuscada.recompensaTrofeu} <EvilIcons name="trophy" size={25} color="#E7C037" /> </Text>
-                           
-        
+
+                            <Text style={styles.entregaModal}> Recompensa em trofeu: {this.state.AtividadeBuscada.recompensaTrofeu} 
+                                <EvilIcons name="trophy" size={25} color="#E7C037" /> 
+                            </Text>
+
+
                             <Text style={styles.criadorModal}> criador: {this.state.AtividadeBuscada.criador} </Text>
                             {/* <TouchableOpacity onPress={this.imagePickerCall}>
                                 <Text>Escolher foto</Text>
@@ -374,6 +398,48 @@ export default class AtividadesExtras extends Component {
                     </View>
 
                 </View>
+
+                <AwesomeAlert
+                    style={styles.bao}
+                    show={this.state.showAlert}
+                    showProgress={false}
+                    title="Sucesso"
+                    message="Sua Atividade foi Concluida!"
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={true}
+                    cancelText="Okay"
+                    cancelButtonColor="#C20004"
+                    cancelButtonStyle={this.alertView = StyleSheet.create({
+                        width: 150,
+                        paddingLeft: 62
+                    })}
+                    onCancelPressed={() => {
+                        this.hideAlert();
+                    }}
+                />
+
+                <AwesomeAlert
+                    show={this.state.showAlert}
+                    showProgress={false}
+                    title="Oops !"
+                    titleStyle={
+                        styles.tituloModalLogin
+                    }
+                    message="Falha ao concluir sua Atividade"
+                    messageStyle={styles.textoModalLogin}
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    confirmButtonStyle={styles.confirmButton}
+                    showCancelButton={false}
+                    showConfirmButton={true}
+                    confirmText="Voltar"
+                    confirmButtonColor="#C20004"
+                    onConfirmPressed={() => {
+                        this.hideAlert();
+                    }}
+                />
+
 
             </Modal>
         </View>
@@ -471,13 +537,13 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 40,
         width: '85%',
-        
+
     },
 
     espacoPontos: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        paddingTop: 10,
+        paddingTop: 16,
         paddingRight: 18,
     },
 
@@ -493,7 +559,9 @@ const styles = StyleSheet.create({
     },
 
     conteudoBox: {
-        paddingLeft: 15,
+        marginTop: 10,
+        paddingLeft: 16,
+        flexDirection: 'column'
     },
 
 
@@ -506,15 +574,14 @@ const styles = StyleSheet.create({
     criador: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
-
         paddingTop: 16,
     },
+
     dataEntrega: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
-
         paddingTop: 16,
-        paddingLeft: 20
+        //paddingLeft: 20
     },
 
 
@@ -523,9 +590,23 @@ const styles = StyleSheet.create({
         fontSize: 15,
         paddingTop: 8,
     },
+
     Modalbotao: {
         paddingRight: 18,
-        paddingTop: 15
+        paddingTop: 13,
+    },
+
+    statusImagem: {
+        flexDirection: 'row',
+        marginTop: 7,
+        height: 20
+
+    },
+
+    status: {
+        fontFamily: "Regular",
+        fontSize: 14,
+        color: "#636466",
     },
 
     botao: {
@@ -568,7 +649,9 @@ const styles = StyleSheet.create({
 
     ModaleBotao: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        //paddingRight:30,
+        //alignItems:'flex-end',
+        //justifyContent: 'space-between',
         //alignItems: 'center',
 
 
@@ -589,7 +672,7 @@ const styles = StyleSheet.create({
     },
 
     modalView: {
-        height: 380,
+        height: 410,
         borderWidth: 1,
         borderColor: '#B3B3B3',
         backgroundColor: '#F2F2F2',
@@ -607,48 +690,59 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 8
 
     },
+
+    conteudoBoxModal: {
+        flexDirection: 'column',
+    },
+
     nomeBoxModal: {
         fontFamily: 'Quicksand-SemiBold',
         textAlign: "center",
         paddingTop: 24,
-        fontSize: 20
-
+        fontSize: 20,
     },
 
     descricaoModal: {
         fontFamily: 'Quicksand-Regular',
         paddingTop: 24,
         fontSize: 15,
-        paddingBottom: 16,
+        //paddingBottom: 16,
         marginLeft: 16
     },
 
     itemPostadoModal: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
-        paddingBottom: 16,
+        paddingTop: 16,
+        //paddingBottom: 24,
         marginLeft: 16
     },
 
     entregaModal: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
-        paddingBottom: 16,
-        marginLeft: 16
+        paddingTop: 16,
+        marginLeft: 16,
+    },
+
+    trofeu: {
+        paddingTop: 13,
     },
 
     criadorModal: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
-        paddingBottom: 30,
-        marginLeft: 16
+        paddingTop: 16,
+        marginLeft: 16,
+        paddingBottom: 16,
     },
 
     botoesModal: {
         fontFamily: 'Montserrat-Medium',
         flexDirection: 'row',
         justifyContent: 'center',
-        justifyContent: 'space-evenly'
+        justifyContent: 'space-evenly',
+        paddingTop: 30
     },
 
     associarModal: {
@@ -674,7 +768,7 @@ const styles = StyleSheet.create({
     textoFechar: {
         fontFamily: 'Montserrat-Medium',
         color: '#C20004',
-        fontSize:12
+        fontSize: 12
     },
     descricao: {
         fontFamily: "Regular",
@@ -684,8 +778,39 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
 
+    anexo: {
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#B3B3B3',
+        width: 175,
+        marginLeft: 19,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row',
+        height: 30,
+        paddingLeft: 23,
+    },
 
+    txtanexo: {
+        fontFamily: 'Regular',
+    },
 
-
+    tituloModalLogin:
+    {
+      color: '#C20004',
+      fontFamily: 'Montserrat-Medium',
+      fontSize: 23,
+      fontWeight: 'bold'
+    },
+    textoModalLogin:
+    {
+      width: 200,
+      textAlign: 'center'
+    },
+    confirmButton:{
+      width: 100,
+     
+      paddingLeft: 32
+    },
 
 })
