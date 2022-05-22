@@ -10,6 +10,7 @@ import {
   Pressable,
 } from 'react-native';
 
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
@@ -88,7 +89,8 @@ export default class Login extends Component {
         // this.state({isLoading:false})
 
         var certo = jwt_decode(token).role
-        //console.warn('certo ' + certo)
+        // console.warn('certo ' + certo)
+        
 
         this.props.navigation.navigate('Redirecionar');
 

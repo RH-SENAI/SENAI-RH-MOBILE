@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import {
     StyleSheet,
     Text,
@@ -10,6 +12,7 @@ import {
     Alert,
 } from 'react-native';
 
+import AppLoading from 'expo-app-loading';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from "jwt-decode";
 import api from '../../services/apiGp1';
@@ -23,127 +26,129 @@ let customFonts = {
     'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf')
 }
 
-export default class RecuperaSenha extends Component {
+export default function Ranking() {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            email: '',
-            codigo: '',
-            error: "Código Incorreto!",
-            isActiveCodigo: false,
-            fontsLoaded: false,
-            setLoading: false,
-            showAlert: false
-        };
-    }
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         email: '',
+    //         codigo: '',
+    //         error: "Código Incorreto!",
+    //         isActiveCodigo: false,
+    //         fontsLoaded: false,
+    //         setLoading: false,
+    //         showAlert: false,
+    //         isRec:true
+    //     };
+    // }
 
+    // notify_Logar_Failed = () => toast.error("Código Incorreto!")
+    // showAlert = () => {
+    //     this.setState({ showAlert: true })
+    // }
 
-    showAlert = () => {
-        this.setState({ showAlert: true })
-    }
-
-    hideAlert = () => {
-        this.setState({
-            showAlert: false
-        });
-    };
-
-
-    EnviarEmail = async () => {
-        try {
-            const resposta = await api.post('/Usuarios/RecuperarSenhaEnviar/' + email, {
-            });
-        } catch (error) {
-            console.warn(error)
-            this.showAlert();
-        }
-
-    }
-
-    AlteraSenha = async () => {
-        api.post("/Usuarios/RecuperarSenhaVerifica/" + codigo, {}, {
-
-        });
-        console.warn(error)
-        this.showAlert();
-    }
+    // hideAlert = () => {
+    //     this.setState({
+    //         showAlert: false
+    //     });
+    // };
 
 
-
-    async _loadFontsAsync() {
-        await Font.loadAsync(customFonts);
-        this.setState({ fontsLoaded: true });
-    }
-
-    componentDidMount() {
-        this._loadFontsAsync();
-    }
-    // const [email, setEmail] = useState('');
-    // const [codigo, setCodigo] = useState('');
-    // const [isActiveCodigo, setIsActiveCodigo] = useState(false);
-    // const isRec = true;
-    // const notify_Logar_Failed = () => toast.error("Código Incorreto!")
-    // // const history = useHistory();
-
-
-
-
-    // const EnviarEmail = (event) => {
-    //     event.preventDefault();
-
-    //     api.post("/Usuarios/RecuperarSenhaEnviar/" + email, {
-    //     }, {
-    //         headers: {
-    //             'Content-Type': 'application/json',
-
-    //         }
-    //     })
-    //         .then(response => {
-    //             if (response.status === 200) {
-    //                 setIsActiveCodigo(true)
-    //                 console.warn(isActiveCodigo)
-    //             }
-    //         })
-    //         .catch(response => {
-    //             console.warn(response)
-    //             notify_Logar_Failed()
-    //         })
+    // EnviarEmail = async () => {
+    //     try {
+    //         const resposta = await api.post('/Usuarios/RecuperarSenhaEnviar/' + email, {
+    //         });
+    //     } catch (error) {
+    //         console.warn(error)
+    //         this.showAlert();
+    //     }
 
     // }
 
-    // const AlteraSenha = (event) => {
-    //     event.preventDefault();
-
+    // AlteraSenha = async () => {
     //     api.post("/Usuarios/RecuperarSenhaVerifica/" + codigo, {}, {
-    //         headers: {
-    //             'Content-Type': 'application/json',
 
-    //         }
-    //     })
-    //         .then(response => {
-    //             if (response.status === 200) {
-    //                 history.push({
-    //                     pathname: '/AlterarSenhaRec/'
-    //                 })
-    //             }
-    //         })
-    //         .catch(response => {
-    //             console.warn(response)
-    //             notify_Logar_Failed()
-    //         })
+    //     });
+    //     console.warn(error)
+    //     this.showAlert();
+    // }
+   
+    
+
+
+    // async _loadFontsAsync() {
+    //     await Font.loadAsync(customFonts);
+    //     this.setState({ fontsLoaded: true });
     // }
 
+    // componentDidMount() {
+    //     this._loadFontsAsync();
+    // }
+    const [email, setEmail] = useState('');
+    const [codigo, setCodigo] = useState('');
+    const [isActiveCodigo, setIsActiveCodigo] = useState(false);
+    const isRec = true;
+    const notify_Logar_Failed = () => toast.error("Código Incorreto!")
+    // const history = useHistory();
 
-    render() {
-        if (!this.state.fontsLoaded) {
-            return <AppLoading />;
-          }
+
+
+
+    const EnviarEmail = (event) => {
+        event.preventDefault();
+
+        api.post("/Usuarios/RecuperarSenhaEnviar/" + email, {
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+
+            }
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    setIsActiveCodigo(true)
+                    console.warn(isActiveCodigo)
+                }
+            })
+            .catch(response => {
+                console.warn(response)
+                notify_Logar_Failed()
+            })
+
+    }
+
+    const AlteraSenha = (event) => {
+        event.preventDefault();
+
+        api.post("/Usuarios/RecuperarSenhaVerifica/" + codigo, {}, {
+            headers: {
+                'Content-Type': 'application/json',
+
+            }
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    history.push({
+                        pathname: '/AlterarSenhaRec/'
+                    })
+                }
+            })
+            .catch(response => {
+                console.warn(response)
+                notify_Logar_Failed()
+            })
+    }
+
+
+    // render() {
+    //     // if (!this.state.fontsLoaded) {
+    //     //     return <AppLoading />;
+    //     //   }
 
         return (
             <View style={styles.body}>
 
-                <AwesomeAlert
+                {/* <AwesomeAlert
                     show={this.state.showAlert}
                     showProgress={false}
                     title="Oops !"
@@ -203,7 +208,7 @@ export default class RecuperaSenha extends Component {
                     onCancelPressed={() => {
                         this.hideAlert();
                     }}
-                />
+                /> */}
 
                 <View style={styles.mainHeader}>
                     <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
@@ -225,8 +230,8 @@ export default class RecuperaSenha extends Component {
                             placeholder="Email"
                             keyboardType="default"
                             placeholderTextColor="#B3B3B3"
-                            onChangeText={email => this.setState({ email })}
-                            value={this.state.value}
+                            onChangeText={email => setEmail({ email })}
+                            // value={evt}
                         />
                         <TouchableOpacity
                             style={styles.btnEmail}
@@ -243,7 +248,8 @@ export default class RecuperaSenha extends Component {
                             keyboardType="numeric"
                             secureTextEntry={true}
                             placeholderTextColor="#B3B3B3"
-                            value={this.state.value}
+                            onChangeText={codigo => setCodigo({ codigo })}
+                            // value={evt}
                         />
 
                         <TouchableOpacity
@@ -259,7 +265,7 @@ export default class RecuperaSenha extends Component {
             </View>
         )
     }
-}
+// }
 
 
 const styles = StyleSheet.create({

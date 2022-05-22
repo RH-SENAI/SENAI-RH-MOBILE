@@ -65,40 +65,50 @@ export default class AtividadesExtras extends Component {
     };
 
     finalizarAtividade = async (item) => {
-        console.warn(item)
+        try{
+            
+           
 
-        const token = await AsyncStorage.getItem('userToken');
-
-        const data = new FormData();
-
-        data.append('arquivo', {
-            uri: this.state.imagemEntrega.uri,
-            type: this.state.imagemEntrega.type
-        })
-        console.warn(data)
-
-
-        // axios({
-        //     method: 'patch',
-        //     url: 'http://192.168.3.84:5000/api/Atividades/FinalizarAtividade/'+ item,
-        //     data : data,
-        //     headers:{
-        //         "Content-Type": "multipart/form-data",
-        //     }
-        // })
-        // .then(resposta =>{
-        //     console.warn(resposta)
-        // })
-        const resposta = await axios.patch('http://192.168.3.84:5000/api/Atividades/FinalizarAtividade/' + item, {
-            arquivo: data
-        }, {
-            headers: {
-                "Content-Type": "multipart/form-data"
-
-            }
-        })
-        console.warn(resposta)
-        this.showAlert();
+    
+            const token = await AsyncStorage.getItem('userToken');
+    
+            const data = new FormData();
+    
+            data.append('arquivo', {
+                uri: this.state.imagemEntrega.uri,
+                type: this.state.imagemEntrega.type
+            })
+            console.warn(data)
+    
+    
+            // axios({
+            //     method: 'patch',
+            //     url: 'http://192.168.3.84:5000/api/Atividades/FinalizarAtividade/'+ item,
+            //     data : data,
+            //     headers:{
+            //         "Content-Type": "multipart/form-data",
+            //     }
+            // })
+            // .then(resposta =>{
+            //     console.warn(resposta)
+            // })
+            const resposta = await axios.patch('http://apirhsenaigp1.azurewebsites.net/api/Atividades/FinalizarAtividade/' + item, {
+                
+                arquivo: data
+            }, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+    
+                }
+            })
+            console.warn('aqui')
+            console.warn(resposta)
+        }catch (error) {
+            console.warn(error)
+            this.showAlert();
+          }
+      
+      
 
     }
 
@@ -321,6 +331,7 @@ export default class AtividadesExtras extends Component {
                 </View>
                 <View style={styles.conteudoBox}>
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
+                    <Text style={styles.nomeBox}> {item.idAtividade} </Text>
 
                     <Text style={styles.criador}> Responsável: {item.criador} </Text>
                     {/* <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
@@ -337,7 +348,7 @@ export default class AtividadesExtras extends Component {
                             <AntDesign name="downcircleo" size={24} color="#C20004" />
                         </Pressable>
 
-                        <View style={styles.statusImagem}>
+                        {/* <View style={styles.statusImagem}>
 
                             {item.idSituacaoAtividade == 1 &&
                                 <AntDesign name="check" size={24} color="black" />
@@ -346,7 +357,7 @@ export default class AtividadesExtras extends Component {
                                 <Feather name="alert-triangle" size={24} color="#C20004" />
                             }
                             <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({ mensagem: 'Validado' }) : item.idSituacaoAtividade == 2 ? this.setState({ mensagem: 'Pendente' }) : null} </Text>
-                        </View>
+                        </View> */}
                     </View>
                 </View>
 
@@ -404,7 +415,7 @@ export default class AtividadesExtras extends Component {
 
                 </View>
 
-                <AwesomeAlert
+                {/* <AwesomeAlert
                     style={styles.bao}
                     show={this.state.showAlert}
                     showProgress={false}
@@ -443,7 +454,7 @@ export default class AtividadesExtras extends Component {
                     onConfirmPressed={() => {
                         this.hideAlert();
                     }}
-                />
+                /> */}
 
             </Modal>
         </View>

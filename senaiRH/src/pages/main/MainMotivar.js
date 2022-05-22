@@ -84,7 +84,7 @@ export default function MainMotivar() {
         component={MinhasAtividades}
         options={{
           tabBarIcon: ({ size, color }) => (
-            <MaterialCommunityIcons name="text-box-plus-outline" size={30} color={color} />
+            <MaterialCommunityIcons name="text-box-plus-outline" size={size} color={color} />
           ),
           headerShown: false,
         }}
