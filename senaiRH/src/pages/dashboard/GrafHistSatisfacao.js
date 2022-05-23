@@ -18,12 +18,29 @@ import api from "../../services/api";
 
 
 
-export default InteractiveChart;
+ 
 
-function InteractiveChart() {
+ export default function InteractiveChart() {
+
+
+    const [listaDatas, setListaDatas] = useState([
+        //'20', '20', '21', '22', 
+        '01', '02', '03', '04','05','06', '07', '08', '09', '10',
+        '11', '12', '13', '14','15', '16', '17', '18', '19', '20',
+        '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'
+    ]);
+    const [mediasSatisfacao, setMediasSatisfacao] = useState([
+        //.78, .85, .66, .66, 
+        .97, .75, .9, .85, .4, .6, .4, .4, .3, .45,
+        .97, .75, .9, .85, .4, .6, .4, .73, .3, .45,
+        .68, .45, .7, .52, .4, .35, .4, .1, .3, .45, .66
+
+    ]);
 
 
     useEffect(() => BuscarHistorico(), []);
+
+    
 
 
 
@@ -40,8 +57,17 @@ function InteractiveChart() {
             }
           );
     
-          if (resposta.status === 200) {
-            setHistorico(resposta.data);
+         if (resposta.status === 200) {
+            // setListaDatas(resposta.data.map((p) => {
+            //     return (p.atualizadoEm.split("-")[2]).substring(0,2);
+            //   }
+            //   ));
+            //   setMediasSatisfacao(resposta.data.map((p) => {
+            //     return parseFloat(p.nivelSatisfacao);
+            //   }
+            //   ));
+              //console.warn('media satisfacao ' + mediasSatisfacao);
+              console.warn('lista datas ' + listaDatas);
           }
         } catch (error) {
           console.warn(error);
@@ -59,28 +85,23 @@ function InteractiveChart() {
         return (width / 750) * size;
     };
 
-    const [historico, setHistorico] = useState([]);
+    // const [historico, setHistorico] = useState([]);
 
-    const datas = historico
-    .map((p) => {
-      return parseInt(p.atualizadoEm.split("-")[2]);
-    }
-    );
-    const niveisSatisfacao = historico
-    .map((p) => {
-      return parseFloat(p.nivelSatisfacao);
-    }
-    );
-    //console.warn(niveisSatisfacao);
+    // const datas = historico
+    // .map((p) => {
+    //   return (p.atualizadoEm.split("-")[2]).substring(0,2);
+    // }
+    // );
+    // const niveisSatisfacao = historico
+    // .map((p) => {
+    //   return parseFloat(p.nivelSatisfacao);
+    // }
+    // );
+    
 
+//samuel
 
-
-    const [listaDatas, setListaDatas] = useState([
-        '01', '02', '03', '04', '06', '07', '08', '09', '10',
-    ]);
-    const [mediasSatisfacao, setMediasSatisfacao] = useState([
-        .97, .75, .9, .85, .4, .6, .4, .1, .3, 
-    ]);
+    
     const size = useRef(listaDatas.length);
 
     const [positionX, setPositionX] = useState(-1);// The currently selected X coordinate position
@@ -191,7 +212,7 @@ function InteractiveChart() {
         </Defs>
     );
 
-    const Tooltip = ({ x, y, ticks }) => {
+    function Tooltip ({ x, y, ticks }) {
         if (positionX < 0) {
             return null;
         }
@@ -201,7 +222,7 @@ function InteractiveChart() {
         return (
             <G x={x(positionX)} key="tooltip">
                 <G
-                    x={positionX > size.current / 2 ? -apx(300 + 10) : apx(10)}
+                    x={positionX > size.current / 2 ? -apx(250 + 10) : apx(10)}
                     y={y(mediasSatisfacao[positionX]) - apx(10)}>
                     <Rect
                         y={-apx(24 + 24 + 20) / 2}
@@ -209,7 +230,7 @@ function InteractiveChart() {
                         ry={apx(12)} // borderRadius
                         width={apx(300)}
                         height={apx(96)}
-                        stroke="rgba(254, 190, 24, 0.27)"
+                        stroke="rgba(50, 50, 50, 0.27)"
                         fill="rgba(255, 255, 255, 0.8)"
                     />
 
@@ -221,7 +242,7 @@ function InteractiveChart() {
                         y={apx(24 + 20)}
                         fontSize={apx(24)}
                         fontWeight="bold"
-                        fill="rgba(224, 188, 136, 1)">
+                        fill="rgba(20, 20, 20, 1)">
                         ${mediasSatisfacao[positionX]}
                     </SvgText>
                 </G>
@@ -240,7 +261,7 @@ function InteractiveChart() {
                         r={apx(20 / 2)}
                         stroke="#fff"
                         strokeWidth={apx(2)}
-                        fill="#C20004"
+                        fill="black"
                     />
                 </G>
             </G>
@@ -252,7 +273,7 @@ function InteractiveChart() {
     return (
         <View
             style={{
-                backgroundColor: '#fff',
+                backgroundColor: '#f1f1f1',
                 alignItems: 'stretch',
                 flex: 1,
                 justifyContent: 'center',
@@ -261,21 +282,21 @@ function InteractiveChart() {
             <View
                 style={{
                     flexDirection: 'row',
-                    width: apx(690),
+                    width: apx(700),
                     height: apx(350),
                     alignSelf: 'stretch',
-                    paddingHorizontal: '5%'
+                    paddingRight: '3%'
                 }}>
                 <View style={{ flex: 1 }} {...panResponder.current.panHandlers}>
                     <AreaChart
                         style={{ flex: 1 }}
                         data={mediasSatisfacao}
-                        // curve={shape.curveNatural}
-                        curve={shape.curveMonotoneX}
+                        curve={shape.curveNatural}
+                        //curve={shape.curveMonotoneX}
                         contentInset={{ ...verticalContentInset }}
                         svg={{ fill: 'url(#gradient)' }}>
                         <CustomLine />
-                        <CustomGrid />
+                        {/* <CustomGrid /> */}
                         <CustomGradient />
                         <Tooltip />
                     </AreaChart>
@@ -283,7 +304,7 @@ function InteractiveChart() {
 
                 <YAxis
                     style={{ width: apx(130) }}
-                    data={mediasSatisfacao}
+                    data={mediasSatisfacao} 
                     contentInset={verticalContentInset}
                     svg={{ fontSize: apx(20), fill: '#617485' }}
                 />

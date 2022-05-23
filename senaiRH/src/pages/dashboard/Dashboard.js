@@ -23,7 +23,7 @@ import jwtDecode from "jwt-decode";
 
 import { BarChart, XAxis, ProgressCircle, Grid } from "react-native-svg-charts";
 
-import Grafico from './Grafico.js'
+import GrafHistSatisfacao from './GrafHistSatisfacao.js'
 
 //Services
 import api from "../../services/api";
@@ -351,7 +351,7 @@ export default function Dashboard() {
                       <Text style={styles.tituloGrafico}>Satisfação:</Text>
                       <GraficoSatisfacao />
                     </View>
-                    <Grafico style={styles.interativo}/>
+                    <GrafHistSatisfacao />
                     {/* <Text style={styles.subtituloProdutividade}>
                       Entregas de atividade por semana:{" "}
                     </Text> */}
@@ -491,8 +491,5 @@ const styles = StyleSheet.create({
     flex: 1,
     //backgroundColor: 'yellow'
   },
-  interativo: {
-    backgroundColor: 'green',
-    padding: 20
-  }
+  
 });
