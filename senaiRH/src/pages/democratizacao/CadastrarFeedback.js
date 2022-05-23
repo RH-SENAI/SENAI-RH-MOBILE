@@ -310,21 +310,7 @@ export default function CadastroFeedback({ route }) {
             onPressIn={() => ChangeSizeDown()}
             blurOnSubmit
           />
-
-          <TextInput
-            keyboardType="decimal-pad"
-            onChangeText={campo => onChangeNota(campo)}
-            placeholder="Insira uma nota para o feedback"
-            value={notaDecisao}
-            style={styles.sectionDemocratizacaoInput}
-            editable={true}
-            onFocus={() => onFocusHandlerNota()}
-            onBlur={() => onBlurHandlerNota()}
-            onPressIn={() => ChangeSizeDown()}
-            blurOnSubmit
-          />
-
-        </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
 
         <TouchableOpacity style={styles.btnCadastro} onPress={() => CadastarFeedback()}>
           <Text style={styles.btnCadastroText}>Enviar Feedback</Text>

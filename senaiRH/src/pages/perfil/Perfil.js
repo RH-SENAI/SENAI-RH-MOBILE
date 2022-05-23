@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
     fontFamily: "Quicksand_400Regular",
     fontSize: 20,
     color: "black",
-    marginRight: 179,
+    marginRight: 185,
     marginBottom: 20,
   },
 
@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 10,
+    // marginTop: 10,
     backgroundColor: "#C20004",
   },
 
