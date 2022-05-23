@@ -43,7 +43,7 @@ export default class ListagemCurso extends Component {
             distanceUser: 0,
             switch: false,
             listaCurso: [],
-            cursoBuscado: [],
+            cursoBuscado: {},
             localizacaoCurso: [],
         };
     }
@@ -91,7 +91,7 @@ export default class ListagemCurso extends Component {
     Favoritar = async (favorite, id) => {
         try {
             if (favorite == true) {
-                // this.ProcurarCurso(id);
+                this.ProcurarCurso(id);
                 await delay(2000);
 
                 //Id usuário
@@ -103,14 +103,17 @@ export default class ListagemCurso extends Component {
 
                 //Tamanho do json do respostaFavoritos
                 var tamanhoJson = Object.keys(dadosFavoritos).length;
+                console.warn(tamanhoJson)
                 var p = 0;
 
                 do {
+                    console.warn(p)
                     let stringFavoritos = JSON.stringify(dadosFavoritos);
                     var objFavoritos = JSON.parse(stringFavoritos);
                     console.warn(objFavoritos);
 
                     if (objFavoritos != '') {
+                        
                         var cursoId = objFavoritos[p]['idCurso'];
                         let favoritoId = objFavoritos[p]['idCursoFavorito'];
                         console.warn(cursoId);
@@ -121,6 +124,7 @@ export default class ListagemCurso extends Component {
 
                             if (respostaExcluir.status == 204) {
                                 this.setState(!this.state.isFavorite);
+                                this.setState({ cursoFavoritoBuscado: [] });
                                 console.warn('Desfavoritado');
                             }
                         }
@@ -129,7 +133,7 @@ export default class ListagemCurso extends Component {
                     else {
                         console.warn("Está vazio!")
                     }
-                } while (p < tamanhoJson || objFavoritos != '');
+                } while (p < tamanhoJson);
                 if (verifyDelete != 204) {
                     // console.warn("CHEGOU")
                     if (cursoId != id) {
@@ -141,6 +145,7 @@ export default class ListagemCurso extends Component {
                         if (respostaCadastro.status == 201) {
                             this.setState({ isFavorite: favorite });
                             console.warn('Favorito adicionado');
+                            this.setState({ cursoFavoritoBuscado: [] });
                             console.warn(this.state.isFavorite);
                         }
                     }
@@ -333,7 +338,7 @@ export default class ListagemCurso extends Component {
                 var stringCursoBuscado = JSON.stringify(dadosCurso);
                 let objCursoBuscado = JSON.parse(stringCursoBuscado)
                 this.setState({ cursoBuscado: objCursoBuscado });
-                // console.warn(this.state.cursoBuscado)
+                console.warn(this.state.cursoBuscado)
             }
         }
         catch (erro) {
@@ -447,8 +452,8 @@ export default class ListagemCurso extends Component {
 
                             <View style={styles.boxFavorito}>
                                 <Pressable style={styles.boxTextFavorito} onPress={() => this.Favoritar(true, item.idCurso)}>
-                                    <Text style={styles.textFavoritos}>Favoritar</Text>
-                                    {/* <ExplodingHeart width={80} onChange={(ev) => console.log(ev)} /> */}
+                                    {/* <Text style={styles.textFavoritos}>Favoritar</Text> */}
+                                    <ExplodingHeart width={80}  onChange={() => this.Favoritar(true, item.idCurso)}/>
                                 </Pressable>
                             </View>
                         </View>
@@ -470,9 +475,9 @@ export default class ListagemCurso extends Component {
                                 <ScrollView>
                                     <View style={styles.boxTituloModal}>
                                         <View style={styles.boxImgCurso}>
-                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemCurso}` }} />
+                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${this.state.cursoBuscado.caminhoImagemCurso}` }} />
                                         </View>
-                                        <Text style={styles.textTituloModal}>{item.nomeCurso}</Text>
+                                        <Text style={styles.textTituloModal}>{this.state.cursoBuscado.nomeCurso}</Text>
                                     </View>
 
                                     <View style={styles.boxAvaliacaoPreco}>
@@ -482,28 +487,28 @@ export default class ListagemCurso extends Component {
                                                 //starImage={star}
                                                 showRating={false}
                                                 selectedColor={'#C20004'}
-                                                defaultRating={item.mediaAvaliacaoDesconto}
+                                                 defaultRating={this.state.cursoBuscado.mediaAvaliacaoDesconto}
                                                 isDisabled={true}
                                                 size={20}
                                             />
                                         </View>
                                         <View style={styles.boxPrecoModal}>
                                             <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                            <Text style={styles.textDados}>{item.valorDesconto}</Text>
+                                            <Text style={styles.textDados}>{this.state.cursoBuscado.valorCurso}</Text>
                                         </View>
                                     </View>
 
                                     <View style={styles.boxDadosModal}>
                                         <Image source={require('../../../assets/imgGP2/relogio.png')} />
-                                        <Text style={styles.textDadosModal}>{item.cargaHoraria}</Text>
+                                        <Text style={styles.textDadosModal}>{this.state.cursoBuscado.cargaHoraria}</Text>
 
                                         <Image source={require('../../../assets/imgGP2/mapa.png')} />
-                                        <Text style={styles.textDadosModal}>{item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado}</Text>
+                                        {/* <Text style={styles.textDadosModal}>{this.state.cursoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado}</Text> */}
                                     </View>
 
                                     <View style={styles.boxDadosModal}>
                                         <Image source={require('../../../assets/imgGP2/local.png')} />
-                                        <Text style={styles.textDadosModal}>{this.modalidade(item.modalidadeCurso)}</Text>
+                                        {/* <Text style={styles.textDadosModal}>{this.modalidade(this.state.cursoBuscado.modalidadeCurso)}</Text> */}
 
                                         <Image source={require('../../../assets/imgGP2/dataFinal.png')} />
                                         <Text style={styles.textDadosModal}>
@@ -528,7 +533,7 @@ export default class ListagemCurso extends Component {
 
                                         <View style={styles.boxEmpresa}>
                                             <Text style={styles.tituloEmpresa}>Empresa: </Text>
-                                            <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text>
+                                            {/* <Text style={styles.textEmpresa}>{this.state.cursoBuscado.idEmpresaNavigation.nomeEmpresa}</Text> */}
                                         </View>
 
                                         <View style={styles.boxValorInscrever}>
@@ -546,7 +551,6 @@ export default class ListagemCurso extends Component {
                                         </View>
 
                                         <AwesomeAlert
-                                            style={styles.bao}
                                             show={this.state.showAlert}
                                             showProgress={false}
                                             title="Sucesso"
