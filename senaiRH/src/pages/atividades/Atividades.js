@@ -26,6 +26,7 @@ import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker'
 import * as Permission from 'expo-permissions';
 import axios from 'axios';
+import AwesomeAlert from 'react-native-awesome-alerts';
 // import 'intl';
 
 let customFonts = {
@@ -44,10 +45,24 @@ export default class AtividadesExtras extends Component {
         this.state = {
             listaAtividades: [],
             AtividadeBuscada: {},
+            fontsLoaded: false,
             modalVisible: false,
-            imagemEntrega: null
+            imagemEntrega: {},
+            showAlert: false,
+            mensagem: '',
+            setLoading: false,
         };
     }
+
+    showAlert = () => {
+        this.setState({ showAlert: true })
+    }
+
+    hideAlert = () => {
+        this.setState({
+            showAlert: false
+        });
+    };
 
     finalizarAtividade = async (item) => {
         console.warn(item)
@@ -82,7 +97,50 @@ export default class AtividadesExtras extends Component {
             console.warn(error)
         }
 
+        try{
+            
+           
 
+    
+            const token = await AsyncStorage.getItem('userToken');
+    
+            const data = new FormData();
+    
+            data.append('arquivo', {
+                uri: this.state.imagemEntrega.uri,
+                type: this.state.imagemEntrega.type
+            })
+            console.warn(data)
+    
+    
+            // axios({
+            //     method: 'patch',
+            //     url: 'http://192.168.3.84:5000/api/Atividades/FinalizarAtividade/'+ item,
+            //     data : data,
+            //     headers:{
+            //         "Content-Type": "multipart/form-data",
+            //     }
+            // })
+            // .then(resposta =>{
+            //     console.warn(resposta)
+            // })
+            const resposta = await axios.patch('http://apirhsenaigp1.azurewebsites.net/api/Atividades/FinalizarAtividade/' + item, {
+                
+                arquivo: data
+            }, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+    
+                }
+            })
+            console.warn('aqui')
+            console.warn(resposta)
+        }catch (error) {
+            console.warn(error)
+            this.showAlert();
+          }
+      
+      
 
     }
 
@@ -173,54 +231,58 @@ export default class AtividadesExtras extends Component {
     }
 
 
-    // async _loadFontsAsync() {
-    //     await Font.loadAsync(customFonts);
-    //     this.setState({ fontsLoaded: true });
-    // }
+    async _loadFontsAsync() {
+        await Font.loadAsync(customFonts);
+        this.setState({ fontsLoaded: true });
+    }
 
     componentDidMount() {
-        // this._loadFontsAsync();
+        this._loadFontsAsync();
         this.buscarAtividade();
     }
 
-    associar = async (item) => {
-        var Buffer = require('buffer/').Buffer
-        try {
-            console.warn(item)
-            const token = (await AsyncStorage.getItem('userToken'));
-            let base64Url = token.split('.')[1]; // token you get
-            let base64 = base64Url.replace('-', '+').replace('_', '/');
-            let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
-            //const xambers = JSON.parse(atob(token.split('.')[1]))
-            console.warn(decodedData);
+    // componentWillUnmount() {
+    //     this._loadFontsAsync();
+    //     this.buscarAtividade();
+    // }
+    // associar = async (item) => {
+    //     var Buffer = require('buffer/').Buffer
+    //     try {
+    //         console.warn(item)
+    //         const token = (await AsyncStorage.getItem('userToken'));
+    //         let base64Url = token.split('.')[1]; // token you get
+    //         let base64 = base64Url.replace('-', '+').replace('_', '/');
+    //         let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+    //         //const xambers = JSON.parse(atob(token.split('.')[1]))
+    //         console.warn(decodedData);
 
 
 
 
-            const resposta = await api.post(
-                '/Atividades/Associar/' + decodedData.jti + '/' + item,
-                {
+    //         const resposta = await api.post(
+    //             '/Atividades/Associar/' + decodedData.jti + '/' + item,
+    //             {
 
-                },
-                {
-                    headers: {
-                        Authorization: 'Bearer ' + token,
-                    },
-                },
+    //             },
+    //             {
+    //                 headers: {
+    //                     Authorization: 'Bearer ' + token,
+    //                 },
+    //             },
 
-                // console.warn(resposta)
+    //             // console.warn(resposta)
 
 
-            );
-            if (resposta.status == 200) {
-                console.warn('Voce se associou a uma atividade');
-            } else {
-                console.warn('Falha ao se associar.');
-            }
-        } catch (error) {
-            console.warn(error);
-        }
-    }
+    //         );
+    //         if (resposta.status == 200) {
+    //             console.warn('Voce se associou a uma atividade');
+    //         } else {
+    //             console.warn('Falha ao se associar.');
+    //         }
+    //     } catch (error) {
+    //         console.warn(error);
+    //     }
+    // }
 
     imagePickerCall = async () => {
         if (Constants.platform.ios) {
@@ -238,9 +300,9 @@ export default class AtividadesExtras extends Component {
     }
 
     render() {
-        // if (!customFonts) {
-        //     return <AppLoading />;
-        // }
+        if (!customFonts) {
+            return <AppLoading />;
+        }
         return (
 
             <View style={styles.main}>
@@ -254,7 +316,7 @@ export default class AtividadesExtras extends Component {
 
                     <View style={styles.titulo}>
 
-                        <Text style={styles.tituloEfects}>{'atividades'.toUpperCase()} </Text>
+                        <Text style={styles.tituloEfects}>{'minhas atividades'.toUpperCase()} </Text>
 
                         {/* <View style={styles.escritaEscolha}>
                             <View style={styles.itemEquipe}>
@@ -278,8 +340,6 @@ export default class AtividadesExtras extends Component {
                 </View>
 
                 <FlatList
-                    // contentContainerStyle={styles.boxAtividade}
-                    // style={styles.boxAtividade}
                     data={this.state.listaAtividades}
                     keyExtractor={item => item.idAtividade}
                     renderItem={this.renderItem}
@@ -303,23 +363,34 @@ export default class AtividadesExtras extends Component {
                 </View>
                 <View style={styles.conteudoBox}>
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
+                    <Text style={styles.nomeBox}> {item.idAtividade} </Text>
 
                     <Text style={styles.criador}> Responsável: {item.criador} </Text>
                     {/* <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
                     year: 'numeric', month: 'short', day: 'numeric',
                 }).format(new Date(item.dataCriacao))} 
                     </Text> */}
-                </View>
-
-                <View style={styles.ModaleBotao}>
-
-                    <Text style={styles.dataEntrega}>Data de Entrega: {item.dataCriacao} </Text>
-                    <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
-
-                        <AntDesign name="downcircleo" size={24} color="#C20004" />
 
 
-                    </Pressable>
+                    <View style={styles.ModaleBotao}>
+
+                        <Text style={styles.dataEntrega}> Data de Entrega: {item.dataConclusao} </Text>
+
+                        <Pressable style={styles.Modalbotao} onPress={()=> this.setModalVisible(true, item.idAtividade)}  >
+                            <AntDesign name="downcircleo" size={24} color="#C20004" />
+                        </Pressable>
+
+                        {/* <View style={styles.statusImagem}>
+
+                            {item.idSituacaoAtividade == 1 &&
+                                <AntDesign name="check" size={24} color="black" />
+                            }
+                            {item.idSituacaoAtividade == 2 &&
+                                <Feather name="alert-triangle" size={24} color="#C20004" />
+                            }
+                            <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({ mensagem: 'Validado' }) : item.idSituacaoAtividade == 2 ? this.setState({ mensagem: 'Pendente' }) : null} </Text>
+                        </View> */}
+                    </View>
                 </View>
 
             </View>
@@ -345,24 +416,25 @@ export default class AtividadesExtras extends Component {
                             <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
                             <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
 
-                            <Text style={styles.entregaModal}> Recompensa em trofeu: {this.state.AtividadeBuscada.recompensaTrofeu} <EvilIcons name="trophy" size={25} color="#E7C037" /> </Text>
+                            <Text style={styles.entregaModal}> Recompensa em Troféu: {this.state.AtividadeBuscada.recompensaTrofeu}
+                                <EvilIcons style={styles.trofeu} name="trophy" size={25} color="#E7C037" />
+                            </Text>
 
 
-                            <Text style={styles.criadorModal}> criador: {this.state.AtividadeBuscada.criador} </Text>
+                            <Text style={styles.criadorModal}> Criador: {this.state.AtividadeBuscada.criador} </Text>
                             <TouchableOpacity style={styles.anexo} onPress={this.imagePickerCall}>
-                                <Text style={styles.mais}>   + </Text>
-                                <Text style={styles.txtanexo}> Adicionar Anexo</Text>
+                                <Text style={styles.txtanexo}> + Adicionar Anexo</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.botoesModal}  >
-                            <Pressable onPress={() => this.finalizarAtividade(this.state.AtividadeBuscada.idAtividade)} >
+                            <Pressable onPress={()=> this.finalizarAtividade(this.state.AtividadeBuscada.idAtividade)} >
                                 <View style={styles.associarModal}>
                                     <Text style={styles.texto}> Concluida </Text>
                                 </View>
                             </Pressable>
                             <Pressable
 
-                                onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                                onPress={()=> this.setModalVisible(!this.state.modalVisible)}
                             >
                                 <View style={styles.fecharModal}>
                                     <Text style={styles.textoFechar}>Fechar X</Text>
@@ -370,9 +442,51 @@ export default class AtividadesExtras extends Component {
 
                             </Pressable>
                         </View>
+
                     </View>
 
                 </View>
+
+                {/* <AwesomeAlert
+                    style={styles.bao}
+                    show={this.state.showAlert}
+                    showProgress={false}
+                    title="Sucesso"
+                    message="Sua Atividade foi Concluida!"
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={true}
+                    cancelText="Okay"
+                    cancelButtonColor="#C20004"
+                    cancelButtonStyle={this.alertView = StyleSheet.create({
+                        width: 150,
+                        paddingLeft: 62
+                    })}
+                    onCancelPressed={() => {
+                        this.hideAlert();
+                    }}
+                />
+
+                <AwesomeAlert
+                    show={this.state.showAlert}
+                    showProgress={false}
+                    title="Oops !"
+                    titleStyle={
+                        styles.tituloModalLogin
+                    }
+                    message="Falha ao enviar sua Atividade"
+                    messageStyle={styles.textoModalLogin}
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    confirmButtonStyle={styles.confirmButton}
+                    showCancelButton={false}
+                    showConfirmButton={true}
+                    confirmText="Voltar"
+                    confirmButtonColor="#C20004"
+                    onConfirmPressed={() => {
+                        this.hideAlert();
+                    }}
+                /> */}
 
             </Modal>
         </View>
@@ -476,7 +590,7 @@ const styles = StyleSheet.create({
     espacoPontos: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        paddingTop: 10,
+        paddingTop: 16,
         paddingRight: 18,
     },
 
@@ -492,7 +606,9 @@ const styles = StyleSheet.create({
     },
 
     conteudoBox: {
-        paddingLeft: 15,
+        marginTop: 10,
+        paddingLeft: 16,
+        flexDirection: 'column'
     },
 
 
@@ -505,15 +621,14 @@ const styles = StyleSheet.create({
     criador: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
-
         paddingTop: 16,
     },
+
     dataEntrega: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
-
         paddingTop: 16,
-        paddingLeft: 20
+        //paddingLeft: 20
     },
 
 
@@ -522,9 +637,23 @@ const styles = StyleSheet.create({
         fontSize: 15,
         paddingTop: 8,
     },
+
     Modalbotao: {
         paddingRight: 18,
-        paddingTop: 15
+        paddingTop: 13,
+    },
+
+    statusImagem: {
+        flexDirection: 'row',
+        marginTop: 7,
+        height: 20
+
+    },
+
+    status: {
+        fontFamily: "Regular",
+        fontSize: 14,
+        color: "#636466",
     },
 
     botao: {
@@ -567,7 +696,9 @@ const styles = StyleSheet.create({
 
     ModaleBotao: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        //paddingRight:30,
+        //alignItems:'flex-end',
+        //justifyContent: 'space-between',
         //alignItems: 'center',
 
 
@@ -606,41 +737,51 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 8
 
     },
+
+    conteudoBoxModal: {
+        flexDirection: 'column',
+    },
+
     nomeBoxModal: {
         fontFamily: 'Quicksand-SemiBold',
         textAlign: "center",
         paddingTop: 24,
-        fontSize: 20
-
+        fontSize: 20,
     },
 
     descricaoModal: {
         fontFamily: 'Quicksand-Regular',
         paddingTop: 24,
         fontSize: 15,
-        paddingBottom: 16,
+        //paddingBottom: 16,
         marginLeft: 16
     },
 
     itemPostadoModal: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
-        paddingBottom: 16,
+        paddingTop: 16,
+        //paddingBottom: 24,
         marginLeft: 16
     },
 
     entregaModal: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
-        paddingBottom: 16,
-        marginLeft: 16
+        paddingTop: 16,
+        marginLeft: 16,
+    },
+
+    trofeu: {
+        paddingTop: 13,
     },
 
     criadorModal: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
+        paddingTop: 16,
+        marginLeft: 16,
         paddingBottom: 16,
-        marginLeft: 16
     },
 
     botoesModal: {
@@ -648,7 +789,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         justifyContent: 'space-evenly',
-        paddingTop:30
+        paddingTop: 30
     },
 
     associarModal: {
@@ -694,19 +835,29 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         height: 30,
-       
+        paddingLeft: 23,
     },
 
     txtanexo: {
         fontFamily: 'Regular',
-        marginRight: 40
     },
 
-    mais: {
-        fontSize: 21,
-        textAlign: 'center'
+    tituloModalLogin:
+    {
+      color: '#C20004',
+      fontFamily: 'Montserrat-Medium',
+      fontSize: 23,
+      fontWeight: 'bold'
     },
-
-
+    textoModalLogin:
+    {
+      width: 200,
+      textAlign: 'center'
+    },
+    confirmButton:{
+      width: 100,
+     
+      paddingLeft: 32
+    },
 
 })

@@ -6,22 +6,23 @@ import {
   View,
   Image,
   TextInput,
-  Animated,
   Alert,
-  ColorPropType,
+  Pressable,
 } from 'react-native';
+
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import jwt_decode from "jwt-decode";
 //import api from '../../services/apiGp1';
+<<<<<<< HEAD
 import api from '../../services/apiGp1';
 import recuperar from "../alterarSenha/recuperarSenha.js"
+=======
+import api from '../../services/apiGp3';
+>>>>>>> 84ad40e06d1ca373fa12dd8ac4161f447c13e38c
 import AwesomeAlert from 'react-native-awesome-alerts';
-import AnimatedInput from 'react-native-animated-input';
-import axios from 'axios';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 
 let customFonts = {
@@ -93,7 +94,8 @@ export default class Login extends Component {
         // this.state({isLoading:false})
 
         var certo = jwt_decode(token).role
-        //console.warn('certo ' + certo)
+        // console.warn('certo ' + certo)
+        
 
         this.props.navigation.navigate('Redirecionar');
 
@@ -149,52 +151,6 @@ export default class Login extends Component {
 
           <Text style={styles.tituloPagina}>{'recursos humanos'.toUpperCase()}</Text>
 
-          {/* ANIMAÇÃO PRECISA FAZER OU NÃO */}
-          {/* <View >
-            <AnimatedInput 
-              placeholder="CPF"
-              keyboardType="numeric"
-              // valid={isValid}
-              //errorText="Error"
-              onChangeText={cpf => this.setState({ cpf })}
-              value={this.state.value}
-              styleLabel={{
-                fontFamily: 'Quicksand-Regular',
-                paddingLeft: 40,
-                paddingTop: 10,
-                fontSize: 12,
-                borderWidth: 1,
-                borderRadius: 10,
-                height:46,
-                width: 350,                
-                alignItems: 'center',
-                justifyContent: 'center',
-                
-
-              }}
-              styleBodyContent={styles.bodyContent}
-              
-
-            />
-      
-            <Animated.Text 
-             
-              //placeholder="CPF"
-              keyboardType="numeric" 
-              // valid={isValid}
-              //errorText="Error"
-              onChangeText={cpf => this.setState({ cpf })}
-            //value={this.state.value}
-            styleLabel={{ 
-              fontFamily: 'Quicksand-Regular', 
-              fontSize: 12,
-            }}
-            CPF
-            />
-
-          </View> */}
-
-
           <View style={styles.viewLoginCPF}>
             <TextInput style={styles.inputLogin}
               placeholder="CPF"
@@ -218,12 +174,10 @@ export default class Login extends Component {
 
 
           <View style={styles.erroMsg}>
-            
 
-            
-              <TouchableOpacity  onPress={() => this.props.navigation.navigate('recuperarSenha')}>
+              <Pressable  onPress={() => this.props.navigation.navigate('recuperarSenha')}>
                 <Text style={styles.textEsque}> Esqueci a Senha</Text>
-              </TouchableOpacity>
+              </Pressable>
            
           </View>
 
@@ -240,12 +194,10 @@ export default class Login extends Component {
             </Text>
 
           </TouchableOpacity>
-
-
-
+          
         </View>
         <View style={styles.imgLoginView} >
-          <Image source={require('../../../assets/img-gp1/imagemLogin.png')} />
+          <Image source={require('../../../assets/imgMobile/welcome.png')} />
         </View>
 
       </View>

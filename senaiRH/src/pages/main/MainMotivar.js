@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
 
-import { EvilIcons, Entypo, Feather, AntDesign } from "@expo/vector-icons";
+import { MaterialCommunityIcons, EvilIcons, Entypo, Feather, AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 import { useNavigation } from "@react-navigation/native";
 
@@ -69,7 +69,7 @@ export default function MainMotivar() {
       initialRouteName="Atividades"
     >
       <Tab.Screen
-        name="Atividades"
+        name="Obrigatórios"
         component={Atividades}
         options={{
           tabBarIcon: ({ size, color }) => (
@@ -84,7 +84,7 @@ export default function MainMotivar() {
         component={MinhasAtividades}
         options={{
           tabBarIcon: ({ size, color }) => (
-            <AntDesign name="solution1" size={size} color={color} />
+            <MaterialCommunityIcons name="text-box-plus-outline" size={size} color={color} />
           ),
           headerShown: false,
         }}
@@ -146,6 +146,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     fontFamily: 'Regular',
   },
-
 
 });
