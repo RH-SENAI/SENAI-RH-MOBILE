@@ -49,6 +49,7 @@ export default class AtividadesExtras extends Component {
             modalVisible: false,
             imagemEntrega: {},
             showAlert: false,
+            showAlertSuce: false,
             mensagem: '',
             setLoading: false,
         };
@@ -64,6 +65,16 @@ export default class AtividadesExtras extends Component {
         });
     };
 
+    showAlertSuce = () => {
+        this.setState({ showAlertSuce: true })
+    }
+
+    hideAlertSuce = () => {
+        this.setState({
+            showAlertSuce: false
+        });
+    };
+
     finalizarAtividade = async (item) => {
         console.warn(item)
 
@@ -76,43 +87,43 @@ export default class AtividadesExtras extends Component {
             type: this.state.imagemEntrega.type + "/jpg"
         }, 'desgraçera')
         form.append('FileName', 'finalAtividade.jpeg')
-        
+
         console.warn(this.state.imagemEntrega)
         try {
 
             // var request = new XMLHttpRequest();
             // request.open('PATCH', 'http://192.168.0.30:5000/api/Atividades/FinalizarAtividade/' + item);
             // request.send(form)
-          
-            fetch('http://192.168.0.30:5000/api/Atividades/FinalizarAtividade/' + item,{
+
+            fetch('http://192.168.0.30:5000/api/Atividades/FinalizarAtividade/' + item, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },
                 body: form
             })
-            .then
+                .then
             //console.warn(resposta)
         } catch (error) {
             console.warn(error)
         }
 
-        try{
-            
-           
+        try {
 
-    
+
+
+
             const token = await AsyncStorage.getItem('userToken');
-    
+
             const data = new FormData();
-    
+
             data.append('arquivo', {
                 uri: this.state.imagemEntrega.uri,
                 type: this.state.imagemEntrega.type
             })
             console.warn(data)
-    
-    
+
+
             // axios({
             //     method: 'patch',
             //     url: 'http://192.168.3.84:5000/api/Atividades/FinalizarAtividade/'+ item,
@@ -125,22 +136,24 @@ export default class AtividadesExtras extends Component {
             //     console.warn(resposta)
             // })
             const resposta = await axios.patch('http://apirhsenaigp1.azurewebsites.net/api/Atividades/FinalizarAtividade/' + item, {
-                
+
                 arquivo: data
             }, {
                 headers: {
                     "Content-Type": "multipart/form-data"
-    
+
                 }
             })
             console.warn('aqui')
             console.warn(resposta)
-        }catch (error) {
+            this.showAlertSuce();
+
+        } catch (error) {
             console.warn(error)
             this.showAlert();
-          }
-      
-      
+        }
+
+
 
     }
 
@@ -376,7 +389,7 @@ export default class AtividadesExtras extends Component {
 
                         <Text style={styles.dataEntrega}> Data de Entrega: {item.dataConclusao} </Text>
 
-                        <Pressable style={styles.Modalbotao} onPress={()=> this.setModalVisible(true, item.idAtividade)}  >
+                        <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
                             <AntDesign name="downcircleo" size={24} color="#C20004" />
                         </Pressable>
 
@@ -427,14 +440,14 @@ export default class AtividadesExtras extends Component {
                             </TouchableOpacity>
                         </View>
                         <View style={styles.botoesModal}  >
-                            <Pressable onPress={()=> this.finalizarAtividade(this.state.AtividadeBuscada.idAtividade)} >
+                            <Pressable onPress={() => this.finalizarAtividade(this.state.AtividadeBuscada.idAtividade)} >
                                 <View style={styles.associarModal}>
                                     <Text style={styles.texto}> Concluida </Text>
                                 </View>
                             </Pressable>
                             <Pressable
 
-                                onPress={()=> this.setModalVisible(!this.state.modalVisible)}
+                                onPress={() => this.setModalVisible(!this.state.modalVisible)}
                             >
                                 <View style={styles.fecharModal}>
                                     <Text style={styles.textoFechar}>Fechar X</Text>
@@ -447,11 +460,11 @@ export default class AtividadesExtras extends Component {
 
                 </View>
 
-                {/* <AwesomeAlert
-                    style={styles.bao}
+                <AwesomeAlert
                     show={this.state.showAlert}
                     showProgress={false}
                     title="Sucesso"
+                    titleStyle={styles.tituloAlert}
                     message="Sua Atividade foi Concluida!"
                     closeOnTouchOutside={true}
                     closeOnHardwareBackPress={false}
@@ -463,7 +476,7 @@ export default class AtividadesExtras extends Component {
                         paddingLeft: 62
                     })}
                     onCancelPressed={() => {
-                        this.hideAlert();
+                        this.hideAlertSuce();
                     }}
                 />
 
@@ -486,7 +499,7 @@ export default class AtividadesExtras extends Component {
                     onConfirmPressed={() => {
                         this.hideAlert();
                     }}
-                /> */}
+                /> 
 
             </Modal>
         </View>
@@ -844,20 +857,24 @@ const styles = StyleSheet.create({
 
     tituloModalLogin:
     {
-      color: '#C20004',
-      fontFamily: 'Montserrat-Medium',
-      fontSize: 23,
-      fontWeight: 'bold'
+        color: '#C20004',
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 23,
+        fontWeight: 'bold'
     },
     textoModalLogin:
     {
-      width: 200,
-      textAlign: 'center'
+        width: 200,
+        textAlign: 'center'
     },
-    confirmButton:{
-      width: 100,
-     
-      paddingLeft: 32
+    confirmButton: {
+        width: 100,
+
+        paddingLeft: 32
     },
+
+    tituloAlert: {
+        color: 'green'
+    }
 
 })
