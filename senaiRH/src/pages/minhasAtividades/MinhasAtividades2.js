@@ -1,288 +1,391 @@
-import { Component } from "react";
-import React, { useState, useEffect } from 'react';
-//import { SvgUri } from 'react-native-svg';
+import React, { Component } from 'react';
 import {
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
+    Image,
+    ImageBackground,
+    TextInput,
     Modal,
     AnimatableBlurView,
     FlatList,
-    Image,
-    Alert,
-    Pressable,
-    Button
+    SectionList,
+    SafeAreaView,
+    ScrollView,
+    Pressable
 } from 'react-native';
-import { BlurView } from 'expo-blur';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from "@react-navigation/native";
-import base64 from 'react-native-base64';
 import AppLoading from 'expo-app-loading';
-import api from "../../services/apiGp1";
 import * as Font from 'expo-font';
-import { Feather, EvilIcons, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '../../services/apiGp1'
+import base64 from 'react-native-base64';
+import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
+import Constants from 'expo-constants'
+import * as ImagePicker from 'expo-image-picker'
+import * as Permission from 'expo-permissions';
+import axios from 'axios';
+// import 'intl';
 
 let customFonts = {
     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
-    'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
     'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
     'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
+    'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
     'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
     'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
 }
 
-export default class MinhasAtividades extends Component {
+export default class AtividadesExtras extends Component {
+
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
-            modalVisible: false,
-            mensagem: '',
             listaAtividades: [],
-            minhaAtividade: {}
-        }
+            AtividadeBuscada: {},
+            modalVisible: false,
+            imagemEntrega: {}
+        };
+    }
+
+    finalizarAtividade = async (item) => {
+        console.warn(item)
+
+        const token = await AsyncStorage.getItem('userToken');
+
+        const data = new FormData();
+
+        data.append('arquivo', {
+            uri: this.state.imagemEntrega.uri,
+            type: this.state.imagemEntrega.type
+        })
+        console.warn(data)
+
+
+        // axios({
+        //     method: 'patch',
+        //     url: 'http://192.168.3.84:5000/api/Atividades/FinalizarAtividade/'+ item,
+        //     data : data,
+        //     headers:{
+        //         "Content-Type": "multipart/form-data",
+        //     }
+        // })
+        // .then(resposta =>{
+        //     console.warn(resposta)
+        // })
+        const resposta = await axios.patch('http://192.168.3.84:5000/api/Atividades/FinalizarAtividade/' + item, {
+            arquivo: data
+        }, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+
+            }
+        })
+        console.warn(resposta)
+
+
 
     }
 
-    ListarMinhas = async () => {
-        
+
+    buscarAtividade = async () => {
         var Buffer = require('buffer/').Buffer
-        
-        
+
         const token = (await AsyncStorage.getItem('userToken'));
         let base64Url = token.split('.')[1]; // token you get
         let base64 = base64Url.replace('-', '+').replace('_', '/');
         let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
-        //const xambers = JSON.parse(atob(token.split('.')[1]))
-        console.warn(decodedData);
+        console.warn(decodedData.jti);
 
-        
-
-        if (token != null) {
-            await api.get("/Atividades/MinhasAtividade/" + decodedData.jti, {
-                headers: {
-                    "Authorization": "Bearer " + token,
-                },
-
-            })
-                .then(response => {
-                    if (response.status === 200) {
-                        // console.warn(response)
-                        // console.warn(this.state.modalVisible)
-                        const dadosMinhasAtividades =  response.data;
-                        console.warn(dadosMinhasAtividades);
-                        this.setState({ listaAtividades: dadosMinhasAtividades });
-                    }
-                })
-                .catch(response => {
-                    console.warn(response)
-                })
-
-
-
-        }
+        const resposta = await api.get('/Atividades/MinhasAtividadeExtra/' + decodedData.jti);
+        const dadosDaApi = resposta.data;
+        //console.warn(resposta)
+        this.setState({ listaAtividades: dadosDaApi });
     };
 
+    // ListarMinhas = async () => {
+
+    //     var Buffer = require('buffer/').Buffer
 
 
-    openModal = async (id) => {
-        // console.warn(id)
-        await api.get("/Atividades/" + id, {})
+    //     const token = (await AsyncStorage.getItem('userToken'));
+    //     let base64Url = token.split('.')[1]; // token you get
+    //     let base64 = base64Url.replace('-', '+').replace('_', '/');
+    //     let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+    //     //const xambers = JSON.parse(atob(token.split('.')[1]))
+    //     console.warn(decodedData);
 
-            .then(response => {
-                let dadosApi = response.data.atividade
-                //console.warn(dadosApi)
-                this.setState(
-                    {
-                        minhaAtividade: dadosApi,
-                        modalVisible: true
-                    }
-                )
 
-                console.warn(dadosApi)
-            })
+
+    //     if (token != null) {
+    //         await api.get("/Atividades/MinhasAtividade/" + decodedData.jti, {
+    //             headers: {
+    //                 "Authorization": "Bearer " + token,
+    //             },
+
+    //         })
+    //             .then(response => {
+    //                 if (response.status === 200) {
+    //                     // console.warn(response)
+    //                     // console.warn(this.state.modalVisible)
+    //                     const dadosMinhasAtividades =  response.data;
+    //                     console.warn(dadosMinhasAtividades);
+    //                     this.setState({ listaAtividades: dadosMinhasAtividades });
+    //                 }
+    //             })
+    //             .catch(response => {
+    //                 console.warn(response)
+    //             })
+
+
+
+    //     }
+    // };
+
+
+    ProcurarAtividades = async (id) => {
+        //console.warn(id)
+        try {
+
+            const resposta = await api('/Atividades/' + id);
+            if (resposta.status == 200) {
+                const dadosAtividades = await resposta.data.atividade;
+                await this.setState({ AtividadeBuscada: dadosAtividades })
+                console.warn(dadosAtividades.idAtividade)
+            }
+        }
+        catch (erro) {
+            console.warn(erro);
+        }
+    }
+
+    setModalVisible = async (visible, id) => {
+        if (visible == true) {
+            // console.warn(id)
+            await this.ProcurarAtividades(id)
+            this.setState({ modalVisible: true });
+            // console.warn(this.state.AtividadeBuscada)
+        }
+        else if (visible == false) {
+            this.setState({ AtividadeBuscada: {} })
+            this.setState({ modalVisible: false })
+        }
 
     }
 
-    closeModal = () => {
-        this.setState({ modalVisible: false })
-    }
 
-    
-
-    async _loadFontsAsync() {
-        await Font.loadAsync(customFonts);
-        this.setState({ fontsLoaded: true });
-    }
+    // async _loadFontsAsync() {
+    //     await Font.loadAsync(customFonts);
+    //     this.setState({ fontsLoaded: true });
+    // }
 
     componentDidMount() {
-        this._loadFontsAsync();
-        () => {
-            this.ListarMinhas();
+        // this._loadFontsAsync();
+        this.buscarAtividade();
+    }
+
+    associar = async (item) => {
+        var Buffer = require('buffer/').Buffer
+        try {
+            console.warn(item)
+            const token = (await AsyncStorage.getItem('userToken'));
+            let base64Url = token.split('.')[1]; // token you get
+            let base64 = base64Url.replace('-', '+').replace('_', '/');
+            let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+            //const xambers = JSON.parse(atob(token.split('.')[1]))
+            console.warn(decodedData);
+
+
+
+
+            const resposta = await api.post(
+                '/Atividades/Associar/' + decodedData.jti + '/' + item,
+                {
+
+                },
+                {
+                    headers: {
+                        Authorization: 'Bearer ' + token,
+                    },
+                },
+
+                // console.warn(resposta)
+
+
+            );
+            if (resposta.status == 200) {
+                console.warn('Voce se associou a uma atividade');
+            } else {
+                console.warn('Falha ao se associar.');
+            }
+        } catch (error) {
+            console.warn(error);
         }
+    }
+
+    imagePickerCall = async () => {
+        if (Constants.platform.ios) {
+            const result = await Permission.askAsync(Permission.MEDIA_LIBRARY)
+            if (result.status !== 'granted') {
+                console.warn('permissão necessária')
+            }
+        }
+
+        const data = await ImagePicker.launchImageLibraryAsync({})
+
+        this.setState({ imagemEntrega: data })
+
+        console.warn(this.state.imagemEntrega)
     }
 
     render() {
-        if (!this.state.fontsLoaded) {
-            return <AppLoading />;
-        }
+        // if (!customFonts) {
+        //     return <AppLoading />;
+        // }
         return (
 
             <View style={styles.main}>
-                <View>
 
+                <View>
                     <View style={styles.mainHeader}>
                         <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
                             style={styles.imgLogo}
                         />
-
-                        {/* IMPORTACAO DE IMAGENS */}
-                        {/* <SvgUri
-                        uri= "http"
-                    /> */}
-
                     </View>
 
+                    <View style={styles.titulo}>
 
-                    <View>
+                        <Text style={styles.tituloEfects}>{'atividades Extras'.toUpperCase()} </Text>
 
-                        <Text style={styles.tituloEfects}>{'Minhas atividades'.toUpperCase()} </Text>
-
-                        <View style={styles.escritaEscolha}>
+                        {/* <View style={styles.escritaEscolha}>
                             <View style={styles.itemEquipe}>
-                                <TouchableOpacity>
+                                <Pressable >
                                     <Text style={styles.font}> Obrigatórios </Text>
 
-                                </TouchableOpacity>
-                                <View style={styles.line1}></View>
+                                </Pressable><View style={styles.line1}></View>
+
                             </View>
 
                             <View style={styles.itemIndividual}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate('MinhasExtras')}>
+                                <Pressable onPress={() => this.props.navigation.navigate('AtividadesExtras')}>
                                     <Text style={styles.font}> Extras </Text>
                                     <View style={styles.line2}></View>
-                                </TouchableOpacity>
-
+                                </Pressable>
+                               
                             </View>
 
-                        </View>
+                        </View> */}
                     </View>
                 </View>
 
-
                 <FlatList
-                    style={styles.FlatList}
+                    // contentContainerStyle={styles.boxAtividade}
+                    // style={styles.boxAtividade}
                     data={this.state.listaAtividades}
-                    keyExtractor={item => item.idMinhasAtividades}
+                    keyExtractor={item => item.idAtividade}
                     renderItem={this.renderItem}
                 />
 
-            </View >
 
-        );
-    }
-    renderItem = ({ item }) => (
-
-        <View style={styles.MinhaAtividadeCentro}>
-
-
-            <View style={styles.MinhaAtividade}>
-                <View style={styles.quadradoeTexto}>
-                    <View style={styles.quadrado}></View>
-                    <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
-
-                    <View style={styles.descricaoOlho}>
-                        <Text style={styles.descricao}> Data de Entrega: {Intl.DateTimeFormat("pt-BR", {
-                    year: 'numeric', month: 'short', day: 'numeric',
-                }).format(new Date(item.dataConclusao))}</Text>
-                    </View>
-
-                    <View style={styles.ModaleBotao}>
-
-                        <View style={styles.statusImagem}>
-
-                            {item.idSituacaoAtividade == 1 &&
-                               <AntDesign name="check" size={24} color="black" />                                
-                            }
-                            {item.idSituacaoAtividade == 2 &&
-                              <Feather name="alert-triangle" size={24} color="black" />                              
-                            }
-                            <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({ mensagem: 'Validado' }) : item.idSituacaoAtividade == 2 ? this.setState({ mensagem: 'Pendente' }) : null} </Text> 
-
-                        </View>
-
-                    </View>
-                </View>
-
-
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={this.state.modalVisible}
-                    key={item.idMinhasAtividades == this.state.minhaAtividade.idMinhasAtividades}
-                    onRequestClose={() => {
-                        // console.warn(item)
-                        //setModalVisible(!modalVisible)
-                        //Alert.alert("Modal has been closed.");
-                        //setModalVisible(!modalVisible);
-                    }}
-                >
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <View style={styles.quadradoModal}></View>
-                            <View style={styles.conteudoBoxModal}>
-                                <Text style={styles.nomeBoxModal}> {this.state.minhaAtividade.nomeAtividade} </Text>
-                                <Text style={styles.descricaoModal}> {this.state.minhaAtividade.descricaoAtividade} </Text>
-                                <Text style={styles.itemPostadoModal}>Item Postado: {this.state.minhaAtividade.dataInicio} </Text>
-                                <Text style={styles.entregaModal}> Data de Entrega: {this.state.minhaAtividade.dataConclusao} </Text>
-                                <Text style={styles.entregaModal}> Responsável: {this.state.minhaAtividade.criador} </Text>
-                               
-
-                                <TouchableOpacity style={styles.anexo}>
-                                    {/* <Text style={styles.mais}>   + </Text> */}
-                                    <Text style={styles.txtanexo}> +   Adicionar Anexo</Text>
-                                </TouchableOpacity>
-
-                            </View>
-
-                            <View style={styles.botoesModal} >
-                                <TouchableOpacity
-                                // onPress={() => setModalVisible(!modalVisibleVar)}
-                                // onPress={() => Concluir()}
-                                >
-                                    <View style={styles.associarModal}>
-                                        <Text style={styles.texto}> Concluida </Text>
-                                    </View>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-
-                                //onPress={() => setModalVisible(!modalVisible)}
-                                >
-                                    <View style={styles.fecharModal}>
-                                        <Text style={styles.textoFechar} onPress={() => this.closeModal()} >Fechar X</Text>
-                                    </View>
-
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-
-
-                </Modal>
             </View>
 
+        )
+    }
+
+    renderItem = ({ item }) => (
+
+
+        <View style={styles.boxAtividade}>
+            <View style={styles.box}>
+                <View style={styles.quadrado}></View>
+                <View style={styles.espacoPontos}>
+                    <Text style={styles.pontos}> {item.recompensaMoeda} Cashs </Text>
+                    <FontAwesome5 name="coins" size={24} color="black" />
+                </View>
+                <View style={styles.conteudoBox}>
+                    <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
+
+                    <Text style={styles.criador}> Responsável: {item.criador} </Text>
+                    {/* <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
+                    year: 'numeric', month: 'short', day: 'numeric',
+                }).format(new Date(item.dataCriacao))} 
+                    </Text> */}
+                </View>
+
+                <View style={styles.ModaleBotao}>
+
+                    <Text style={styles.dataEntrega}>Data de Entrega: 20/03 </Text>
+                    <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
+
+                        <AntDesign name="downcircleo" size={24} color="#C20004" />
+
+
+                    </Pressable>
+                </View>
+
+            </View>
+
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={this.state.modalVisible}
+                key={item.idAtividade == this.state.AtividadeBuscada.idAtividade}
+                onRequestClose={() => {
+                    console.warn(item)
+                    this.setModalVisible(!this.state.modalVisible)
+                }}
+            >
+
+
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <View style={styles.quadradoModal}></View>
+                        <View style={styles.conteudoBoxModal}>
+                            <Text style={styles.nomeBoxModal}>{this.state.AtividadeBuscada.nomeAtividade} </Text>
+                            <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
+                            <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
+                            <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
+                          
+                            <Text style={styles.entregaModal}> Recompensa em trofeu: {this.state.AtividadeBuscada.recompensaTrofeu} <EvilIcons name="trophy" size={25} color="#E7C037" /> </Text>
+                           
+        
+                            <Text style={styles.criadorModal}> criador: {this.state.AtividadeBuscada.criador} </Text>
+                            {/* <TouchableOpacity onPress={this.imagePickerCall}>
+                                <Text>Escolher foto</Text>
+                            </TouchableOpacity> */}
+                        </View>
+                        <View style={styles.botoesModal}  >
+                            <Pressable onPress={() => this.finalizarAtividade(this.state.AtividadeBuscada.idAtividade)} >
+                                <View style={styles.associarModal}>
+                                    <Text style={styles.texto}> Concluida </Text>
+                                </View>
+                            </Pressable>
+                            <Pressable
+
+                                onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                            >
+                                <View style={styles.fecharModal}>
+                                    <Text style={styles.textoFechar}>Fechar X</Text>
+                                </View>
+
+                            </Pressable>
+                        </View>
+                    </View>
+
+                </View>
+
+            </Modal>
         </View>
+
     )
-}
 
-
+};
 const styles = StyleSheet.create({
 
     main: {
         flex: 1,
         backgroundColor: '#F2F2F2',
-        alignItems: 'center'
     },
 
     mainHeader: {
@@ -292,22 +395,27 @@ const styles = StyleSheet.create({
 
     },
 
+    titulo: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 40,
+        paddingBottom: 64
+    },
+
     tituloEfects: {
         fontFamily: 'SemiBoldM',
-        // justifyContent: 'center',
-        // alignItems: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
         color: '#2A2E32',
-        fontSize: 30,
-        paddingTop: 40,
-        textAlign: 'center'
+        fontSize: 28,
     },
 
     escritaEscolha: {
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        paddingTop: 40,
-        paddingBottom: 48
+        paddingTop: 30,
+        // paddingBottom:20
     },
 
     itemEquipe: {
@@ -318,8 +426,7 @@ const styles = StyleSheet.create({
 
     font: {
         fontFamily: 'Quicksand-Regular',
-        color: "#636466",
-        fontSize: 23,
+        fontSize: 20,
         paddingBottom: 5,
     },
 
@@ -337,152 +444,101 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
     },
 
+    boxAtividade: {
 
-    boxTitulo: {
-        justifyContent: 'center',
+        // paddingTop: 40,
+
         alignItems: 'center',
-        paddingTop: 40,
-    },
-
-    titulo: {
-        color: '#B83F52',
-        fontSize: 18,
-        fontFamily: 'SemiBold',
-    },
-
-
-    MinhaAtividade: {
-        // paddingTop: 80,
-        // alignItems:'center',
-        // justifyContent:'center',
-        height: 120,
-        borderWidth: 1,
-        borderColor: '#B3B3B3',
-        backgroundColor: '#F2F2F2',
-        borderRadius: 10,
-        marginBottom: 20,
-        width: '85%',
-    },
-
-    quadradoeTexto: {
-        flexWrap: "wrap",
     },
 
     quadrado: {
         backgroundColor: '#2A2E32',
-        height: 119,
-        width: '7%',
-        // borderTopRightRadius: 8,
+        height: 28,
+        width: '100%',
+        borderTopRightRadius: 8,
         borderTopLeftRadius: 8,
-        borderBottomLeftRadius: 8,
-        marginRight: 16,
-
-    },
-
-    TituloAtividade: {
-        fontFamily: "Quicksand-SemiBold",
-        fontSize: 18,
-        color: "#0E0E0E",
-        marginTop: 16,
-        height: 36
-        // marginBottom: 13,
-
-    },
-
-    descricao: {
-        fontFamily: "Quicksand-Regular",
-        textAlign: 'center',
-        fontSize: 14,
-        color: "#636466",
-        marginBottom: 5,
-    },
-
-    status: {
-        fontFamily: "Quicksand-Regular",
-        fontSize: 14,
-        color: "#636466",
-    },
-
-    avaliando: {
-        marginRight: 9,
-        marginTop: 4,
-        height: 15,
-        width: 15,
-    },
-
-    statusImagem: {
-        flexDirection: 'row',
-        marginTop: 7,
-        height: 20
-
-    },
-
-    descricaoOlho: {
-        flexDirection: 'row',
-        // justifyContent: 'flex-end',
-        justifyContent: 'space-between',
 
     },
 
 
-    lineAtividade: {
-        width: 260,
-        paddingTop: 10,
-        borderBottomColor: '#D9D9D9',
-        borderBottomWidth: 3,
-    },
 
-    centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 22
-    },
 
-    modalView: {
-        margin: 20,
-        backgroundColor: "#F2F2F2",
-        borderRadius: 5,
-        padding: 35,
-        alignItems: "center",
-        width: 280
-    },
-
-    button: {
-        borderRadius: 10,
-        padding: 10,
-        elevation: 2,
-        height: 40,
-        width: 90,
+    box: {
+        height: 210,
+        borderWidth: 1,
+        borderColor: '#B3B3B3',
         backgroundColor: '#F2F2F2',
-        borderRadius: 5,
+        borderRadius: 10,
+        marginBottom: 40,
+        width: '85%',
+        
     },
 
-    boxTextos: {
-        marginBottom: 30,
-        marginTop: 20,
+    espacoPontos: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        paddingTop: 10,
+        paddingRight: 18,
     },
 
+    pontos: {
+        fontSize: 14,
+        paddingRight: 5,
+        fontFamily: 'Quicksand-SemiBold',
+    },
+
+    imgCoins: {
+        width: 18,
+        height: 18,
+    },
+
+    conteudoBox: {
+        paddingLeft: 15,
+    },
+
+
+    nomeBox: {
+        fontFamily: 'Quicksand-SemiBold',
+        color: '#000000',
+        fontSize: 18,
+    },
+
+    criador: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+
+        paddingTop: 16,
+    },
+    dataEntrega: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+
+        paddingTop: 16,
+        paddingLeft: 20
+    },
+
+
+    data: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 8,
+    },
     Modalbotao: {
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        // paddingRight: 18,
-        paddingTop: 6,
-        // marginLeft:130,
-        paddingLeft: 130
+        paddingRight: 18,
+        paddingTop: 15
     },
 
     botao: {
         // flexDirection: 'row',
-        // justifyContent: 'flex-start',
-        // paddingTop: 20,
-        // paddingLeft: 16
+        justifyContent: 'flex-start',
+        paddingTop: 20,
+        paddingLeft: 16
     },
 
     corBotão: {
         borderRadius: 15,
         height: 30,
-        width: 87,
+        width: 100,
         backgroundColor: '#C20004',
         alignItems: 'center',
         justifyContent: 'center',
@@ -492,11 +548,11 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Medium',
         color: '#E2E2E2',
         fontSize: 11,
-        alignItems: 'center',
+        //alignItems: 'center',
     },
 
     botaoIndisp: {
-        alignItems: 'center',
+        //alignItems: 'center',
         justifyContent: 'center',
         paddingTop: 19,
     },
@@ -506,38 +562,41 @@ const styles = StyleSheet.create({
         height: 40,
         width: 90,
         backgroundColor: '#B1B3B6',
-        alignItems: 'center',
+        //alignItems: 'center',
         justifyContent: 'center',
     },
 
     ModaleBotao: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        //alignItems: 'center',
+
+
     },
 
     textoIndisp: {
-        fontFamily: 'Montserrat-SemiBold',
+        // fontFamily: 'Montserrat-SemiBold',
         color: '#000000',
-        fontSize: 11,
+        fontSize: 10,
         alignItems: 'center',
     },
 
     centeredView: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: 'center',
         // marginTop: 22
     },
 
     modalView: {
-        height: 390,
+        height: 380,
         borderWidth: 1,
         borderColor: '#B3B3B3',
         backgroundColor: '#F2F2F2',
         borderRadius: 10,
         // marginBottom: 20,
         width: '78%',
+
     },
 
     quadradoModal: {
@@ -546,13 +605,14 @@ const styles = StyleSheet.create({
         width: '100%',
         borderTopRightRadius: 8,
         borderTopLeftRadius: 8
-    },
 
+    },
     nomeBoxModal: {
         fontFamily: 'Quicksand-SemiBold',
         textAlign: "center",
         paddingTop: 24,
         fontSize: 20
+
     },
 
     descricaoModal: {
@@ -580,7 +640,7 @@ const styles = StyleSheet.create({
     criadorModal: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
-        paddingBottom: 16,
+        paddingBottom: 30,
         marginLeft: 16
     },
 
@@ -588,8 +648,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Medium',
         flexDirection: 'row',
         justifyContent: 'center',
-        justifyContent: 'space-evenly',
-        paddingTop: 30
+        justifyContent: 'space-evenly'
     },
 
     associarModal: {
@@ -612,54 +671,21 @@ const styles = StyleSheet.create({
         color: '#C20004'
     },
 
-    anexo: {
-        borderWidth: 1,
-        borderRadius: 5,
-        borderColor: '#B3B3B3',
-        width: 175,
-        marginLeft: 19,
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexDirection: 'row',
-        height: 30
-    },
-
-    txtanexo: {
-        fontFamily: 'Quicksand-Regular',
-        marginRight: 40
-    },
-
-    mais: {
-        fontSize: 21,
-        textAlign: 'center'
-    },
-
     textoFechar: {
         fontFamily: 'Montserrat-Medium',
-        color: '#C20004'
+        color: '#C20004',
+        fontSize:12
+    },
+    descricao: {
+        fontFamily: "Regular",
+        textAlign: 'center',
+        fontSize: 14,
+        color: "#636466",
+        marginBottom: 5,
     },
 
-    FlatList: {
-        width: '100%',
-        // alignItems:'center'
-    },
 
-    MinhaAtividadeCentro: {
-        alignItems: 'center',
-        marginBottom: 40
-    },
 
-    MinhaAtividade: {
-        // paddingTop: 80,
-        // alignItems:'center',
-        // justifyContent:'center',
-        height: 120,
-        borderWidth: 1,
-        borderColor: '#B3B3B3',
-        backgroundColor: '#F2F2F2',
-        borderRadius: 10,
-        // marginBottom: 70,
-        width: '85%',
 
-    },
+
 })

@@ -19,7 +19,8 @@ import {
 
 const Tab = createBottomTabNavigator();
 
-import AtividadesTabBar from "../atividades/AtividadeTabBar.js";
+import Atividades from "../atividades/Atividades.js";
+import MinhasAtividades from "../minhasAtividades/MinhasAtividades2";
 import MinhasTabBar from "../minhasAtividades/MinhasTabBar.js";
 import RankingGp1 from "../rankingGp1/RankingGp1.js";
 import Perfil from "../perfil/Perfil.js";
@@ -69,7 +70,7 @@ export default function MainMotivar() {
     >
       <Tab.Screen
         name="Atividades"
-        component={AtividadesTabBar}
+        component={Atividades}
         options={{
           tabBarIcon: ({ size, color }) => (
             <Entypo name="news" size={size} color={color} />
@@ -79,8 +80,8 @@ export default function MainMotivar() {
       />
 
       <Tab.Screen
-        name="Minhas Atividades"
-        component={MinhasTabBar}
+        name="Extras"
+        component={MinhasAtividades}
         options={{
           tabBarIcon: ({ size, color }) => (
             <AntDesign name="solution1" size={size} color={color} />

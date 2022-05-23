@@ -22,6 +22,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../services/apiGp1'
 import base64 from 'react-native-base64';
 import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
+import Constants from 'expo-constants'
+import * as ImagePicker from 'expo-image-picker'
+import * as Permission from 'expo-permissions';
+import axios from 'axios';
 // import 'intl';
 
 let customFonts = {
@@ -41,17 +45,103 @@ export default class AtividadesExtras extends Component {
             listaAtividades: [],
             AtividadeBuscada: {},
             modalVisible: false,
+            imagemEntrega: null
         };
+    }
+
+    finalizarAtividade = async (item) => {
+        console.warn(item)
+
+        const token = await AsyncStorage.getItem('userToken');
+
+        const form = new FormData();
+
+        form.append('FormFile', {
+            uri: this.state.imagemEntrega.uri,
+            type: this.state.imagemEntrega.type + "/jpg"
+        }, 'desgraçera')
+        form.append('FileName', 'finalAtividade.jpeg')
+        
+        console.warn(this.state.imagemEntrega)
+        try {
+
+            // var request = new XMLHttpRequest();
+            // request.open('PATCH', 'http://192.168.0.30:5000/api/Atividades/FinalizarAtividade/' + item);
+            // request.send(form)
+          
+            fetch('http://192.168.0.30:5000/api/Atividades/FinalizarAtividade/' + item,{
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                body: form
+            })
+            .then
+            //console.warn(resposta)
+        } catch (error) {
+            console.warn(error)
+        }
+
+
+
     }
 
 
     buscarAtividade = async () => {
-        const resposta = await api.get('/Atividades/ListarObrigatorias');
+        var Buffer = require('buffer/').Buffer
+
+        const token = (await AsyncStorage.getItem('userToken'));
+        let base64Url = token.split('.')[1]; // token you get
+        let base64 = base64Url.replace('-', '+').replace('_', '/');
+        let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+        console.warn(decodedData.jti);
+
+        const resposta = await api.get('/Atividades/MinhasAtividade/' + decodedData.jti);
         const dadosDaApi = resposta.data;
+        //console.warn(resposta)
         this.setState({ listaAtividades: dadosDaApi });
     };
 
-    
+    // ListarMinhas = async () => {
+
+    //     var Buffer = require('buffer/').Buffer
+
+
+    //     const token = (await AsyncStorage.getItem('userToken'));
+    //     let base64Url = token.split('.')[1]; // token you get
+    //     let base64 = base64Url.replace('-', '+').replace('_', '/');
+    //     let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+    //     //const xambers = JSON.parse(atob(token.split('.')[1]))
+    //     console.warn(decodedData);
+
+
+
+    //     if (token != null) {
+    //         await api.get("/Atividades/MinhasAtividade/" + decodedData.jti, {
+    //             headers: {
+    //                 "Authorization": "Bearer " + token,
+    //             },
+
+    //         })
+    //             .then(response => {
+    //                 if (response.status === 200) {
+    //                     // console.warn(response)
+    //                     // console.warn(this.state.modalVisible)
+    //                     const dadosMinhasAtividades =  response.data;
+    //                     console.warn(dadosMinhasAtividades);
+    //                     this.setState({ listaAtividades: dadosMinhasAtividades });
+    //                 }
+    //             })
+    //             .catch(response => {
+    //                 console.warn(response)
+    //             })
+
+
+
+    //     }
+    // };
+
+
     ProcurarAtividades = async (id) => {
         //console.warn(id)
         try {
@@ -60,13 +150,13 @@ export default class AtividadesExtras extends Component {
             if (resposta.status == 200) {
                 const dadosAtividades = await resposta.data.atividade;
                 await this.setState({ AtividadeBuscada: dadosAtividades })
+                console.warn(dadosAtividades.idAtividade)
             }
         }
         catch (erro) {
             console.warn(erro);
         }
     }
-
 
     setModalVisible = async (visible, id) => {
         if (visible == true) {
@@ -103,9 +193,9 @@ export default class AtividadesExtras extends Component {
             let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
             //const xambers = JSON.parse(atob(token.split('.')[1]))
             console.warn(decodedData);
-            
-            
-            
+
+
+
 
             const resposta = await api.post(
                 '/Atividades/Associar/' + decodedData.jti + '/' + item,
@@ -118,18 +208,33 @@ export default class AtividadesExtras extends Component {
                     },
                 },
 
-               // console.warn(resposta)
+                // console.warn(resposta)
 
 
             );
             if (resposta.status == 200) {
-               console.warn('Voce se associou a uma atividade');
+                console.warn('Voce se associou a uma atividade');
             } else {
                 console.warn('Falha ao se associar.');
             }
         } catch (error) {
             console.warn(error);
         }
+    }
+
+    imagePickerCall = async () => {
+        if (Constants.platform.ios) {
+            const result = await Permission.askAsync(Permission.MEDIA_LIBRARY)
+            if (result.status !== 'granted') {
+                console.warn('permissão necessária')
+            }
+        }
+
+        const data = await ImagePicker.launchImageLibraryAsync({})
+
+        this.setState({ imagemEntrega: data })
+
+        console.warn(this.state.imagemEntrega)
     }
 
     render() {
@@ -151,7 +256,7 @@ export default class AtividadesExtras extends Component {
 
                         <Text style={styles.tituloEfects}>{'atividades'.toUpperCase()} </Text>
 
-                        <View style={styles.escritaEscolha}>
+                        {/* <View style={styles.escritaEscolha}>
                             <View style={styles.itemEquipe}>
                                 <Pressable >
                                     <Text style={styles.font}> Obrigatórios </Text>
@@ -168,7 +273,7 @@ export default class AtividadesExtras extends Component {
                                
                             </View>
 
-                        </View>
+                        </View> */}
                     </View>
                 </View>
 
@@ -199,28 +304,21 @@ export default class AtividadesExtras extends Component {
                 <View style={styles.conteudoBox}>
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
 
-                    <Text style={styles.criador}> Responsável: {item.idGestorCadastroNavigation.nome} </Text>
-                    <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
+                    <Text style={styles.criador}> Responsável: {item.criador} </Text>
+                    {/* <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
                     year: 'numeric', month: 'short', day: 'numeric',
                 }).format(new Date(item.dataCriacao))} 
-                    </Text>
+                    </Text> */}
                 </View>
 
                 <View style={styles.ModaleBotao}>
-                    <Pressable style={styles.botao}
-                        onPress={() => this.associar(item.idAtividade)}
-                    >
-                        <View style={styles.corBotão}>
 
-                            <Text style={styles.texto}>+ Minha Lista </Text>
-                        </View>
-                    </Pressable>
-
+                    <Text style={styles.dataEntrega}>Data de Entrega: {item.dataCriacao} </Text>
                     <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
 
-                        <AntDesign name="downcircleo" size={24} color="#636466" />
+                        <AntDesign name="downcircleo" size={24} color="#C20004" />
 
-                        
+
                     </Pressable>
                 </View>
 
@@ -246,13 +344,20 @@ export default class AtividadesExtras extends Component {
                             <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
                             <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
                             <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
-                            <Text style={styles.criadorModal}> Responsável: {this.state.AtividadeBuscada.criador} </Text>
-                            
+
+                            <Text style={styles.entregaModal}> Recompensa em trofeu: {this.state.AtividadeBuscada.recompensaTrofeu} <EvilIcons name="trophy" size={25} color="#E7C037" /> </Text>
+
+
+                            <Text style={styles.criadorModal}> criador: {this.state.AtividadeBuscada.criador} </Text>
+                            <TouchableOpacity style={styles.anexo} onPress={this.imagePickerCall}>
+                                <Text style={styles.mais}>   + </Text>
+                                <Text style={styles.txtanexo}> Adicionar Anexo</Text>
+                            </TouchableOpacity>
                         </View>
                         <View style={styles.botoesModal}  >
-                            <Pressable onPress={() => this.associar(this.state.AtividadeBuscada.idAtividade)} >
+                            <Pressable onPress={() => this.finalizarAtividade(this.state.AtividadeBuscada.idAtividade)} >
                                 <View style={styles.associarModal}>
-                                    <Text style={styles.texto}>+ Minha Lista </Text>
+                                    <Text style={styles.texto}> Concluida </Text>
                                 </View>
                             </Pressable>
                             <Pressable
@@ -293,14 +398,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: 40,
+        paddingBottom: 64
     },
 
     tituloEfects: {
-        fontFamily: 'Montserrat-SemiBold',
+        fontFamily: 'SemiBoldM',
         justifyContent: 'center',
         alignItems: 'center',
         color: '#2A2E32',
-        fontSize: 30,
+        fontSize: 28,
     },
 
     escritaEscolha: {
@@ -339,7 +445,7 @@ const styles = StyleSheet.create({
 
     boxAtividade: {
 
-        paddingTop: 40,
+        // paddingTop: 40,
 
         alignItems: 'center',
     },
@@ -364,6 +470,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 40,
         width: '85%',
+
     },
 
     espacoPontos: {
@@ -399,9 +506,16 @@ const styles = StyleSheet.create({
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
 
-        paddingTop: 8,
+        paddingTop: 16,
     },
-    
+    dataEntrega: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+
+        paddingTop: 16,
+        paddingLeft: 20
+    },
+
 
     data: {
         fontFamily: 'Quicksand-Regular',
@@ -462,7 +576,7 @@ const styles = StyleSheet.create({
     textoIndisp: {
         // fontFamily: 'Montserrat-SemiBold',
         color: '#000000',
-        fontSize: 11,
+        fontSize: 10,
         alignItems: 'center',
     },
 
@@ -474,7 +588,7 @@ const styles = StyleSheet.create({
     },
 
     modalView: {
-        height: 350,
+        height: 410,
         borderWidth: 1,
         borderColor: '#B3B3B3',
         backgroundColor: '#F2F2F2',
@@ -525,7 +639,7 @@ const styles = StyleSheet.create({
     criadorModal: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
-        paddingBottom: 30,
+        paddingBottom: 16,
         marginLeft: 16
     },
 
@@ -533,7 +647,8 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Medium',
         flexDirection: 'row',
         justifyContent: 'center',
-        justifyContent: 'space-evenly'
+        justifyContent: 'space-evenly',
+        paddingTop:30
     },
 
     associarModal: {
@@ -558,8 +673,39 @@ const styles = StyleSheet.create({
 
     textoFechar: {
         fontFamily: 'Montserrat-Medium',
-        color: '#C20004'
-    }
+        color: '#C20004',
+        fontSize: 12
+    },
+    descricao: {
+        fontFamily: "Regular",
+        textAlign: 'center',
+        fontSize: 14,
+        color: "#636466",
+        marginBottom: 5,
+    },
+
+    anexo: {
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#B3B3B3',
+        width: 175,
+        marginLeft: 19,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row',
+        height: 30,
+       
+    },
+
+    txtanexo: {
+        fontFamily: 'Regular',
+        marginRight: 40
+    },
+
+    mais: {
+        fontSize: 21,
+        textAlign: 'center'
+    },
 
 
 

@@ -44,8 +44,10 @@ export default class TabViewExample extends React.Component {
             { key: 'second', title: 'Extras' },
         ],
         modalVisible: false,
+        modalVisibleExtras: false,
         mensagem: '',
         listaAtividades: [],
+        listaAtividadesExtras: [],
         minhaAtividade: {}
     }
 
