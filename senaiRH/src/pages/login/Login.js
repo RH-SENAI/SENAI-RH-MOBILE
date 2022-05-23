@@ -21,7 +21,6 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import AnimatedInput from "react-native-animated-input";
 import axios from "axios";
 import { Colors } from "react-native/Libraries/NewAppScreen";
-// import { MaskedTextInput } from "react-native-mask-text";
 import { TextInputMask } from "react-native-masked-text";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -41,7 +40,6 @@ export default class Login extends Component {
       senha: "Sesisenai@2022",
       fontsLoaded: false,
       error: "Email ou Senha inválidos!",
-      //erroMensagem: '',
       setLoading: false,
       showAlert: false,
       hidePass: true,
@@ -84,12 +82,7 @@ export default class Login extends Component {
 
       if (resposta.status === 200) {
         console.warn("Login Realizado");
-        //console.warn(jwt_decode(token).role)
-
-        // this.state({isLoading:false})
-
         var certo = jwt_decode(token).role;
-        //console.warn('certo ' + certo)
 
         this.props.navigation.navigate("Redirecionar");
       }
@@ -136,48 +129,6 @@ export default class Login extends Component {
             {"recursos humanos".toUpperCase()}
           </Text>
 
-          {/* ANIMAÇÃO PRECISA FAZER OU NÃO */}
-          {/* <View >
-            <AnimatedInput 
-              placeholder="CPF"
-              keyboardType="numeric"
-              // valid={isValid}
-              //errorText="Error"
-              onChangeText={cpf => this.setState({ cpf })}
-              value={this.state.value}
-              styleLabel={{
-                fontFamily: 'Quicksand-Regular',
-                paddingLeft: 40,
-                paddingTop: 10,
-                fontSize: 12,
-                borderWidth: 1,
-                borderRadius: 10,
-                height:46,
-                width: 350,                
-                alignItems: 'center',
-                justifyContent: 'center',
-                
-              }}
-              styleBodyContent={styles.bodyContent}
-              
-            />
-      
-            <Animated.Text 
-             
-              //placeholder="CPF"
-              keyboardType="numeric" 
-              // valid={isValid}
-              //errorText="Error"
-              onChangeText={cpf => this.setState({ cpf })}
-            //value={this.state.value}
-            styleLabel={{ 
-              fontFamily: 'Quicksand-Regular', 
-              fontSize: 12,
-            }}
-            CPF
-            />
-          </View> */}
-
           <View style={styles.viewLoginCPF}>
             <TextInputMask
               style={styles.inputLogin}
@@ -204,13 +155,6 @@ export default class Login extends Component {
           </View>
 
           <View style={styles.erroMsg}>
-            {/* <Animated.Text 
-              onPress={this.realizarLogin} 
-              style={styles.erroText}
-              animation="flipInY">
-                Email ou Senha inválidos!
-            </Animated.Text> */}
-
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate("alterarSenha")}
             >
@@ -280,34 +224,6 @@ const styles = StyleSheet.create({
     paddingLeft: 32,
   },
 
-  // inputEmail:{
-  //   width: 350,
-  //   height: 46,
-  //   borderWidth: 1,
-  //   borderColor: '#B3B3B3',
-  // },
-
-  // inputSenha:{
-  //   borderWidth: 1,
-  //   borderColor: '#B3B3B3',
-  // },
-
-  // inputLogin: {
-  //   //backgroundColor: 'white',
-  //   //borderRadius: 10,
-  //   //padding: 30,
-  //   //alignItems: 'center',
-  //   //justifyContent: 'center',
-  //   shadowColor: '#c0c0c0',
-  //   shadowOpacity: 0.9,
-  //   shadowOffset: {
-  //     height: 2,
-  //     width: 2,
-  //   },
-  //   shadowRadius: 8,
-  //   //elevation: 6,
-  // },
-
   inputLogin: {
     width: 350,
     height: 46,
@@ -318,13 +234,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     fontSize: 14,
     flexDirection: "column",
-    //paddingTop: 8,
-    //paddingBottom:24,
     paddingLeft: 15,
   },
 
   viewLoginCPF: {
-    // padding: 3345678,
     marginBottom: 24,
   },
 
@@ -341,16 +254,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#C20004",
     paddingRight: 115,
-    //paddingTop: 24,
   },
 
   textEsque: {
     fontFamily: "Quicksand-Regular",
     fontSize: 12,
     color: "#C20004",
-    //position:'absolute',
-    //paddingTop: 1,
-    //paddingRight: 50,
   },
 
   btnLogin: {

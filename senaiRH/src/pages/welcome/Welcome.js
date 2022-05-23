@@ -63,7 +63,7 @@ export default function Welcome() {
           <Text style={styles.text}>Faça seu login para começar</Text>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate("SignIn")}
+            onPress={() => navigation.navigate("Login")}
           >
             <Text style={styles.buttonText}>Acessar</Text>
           </TouchableOpacity>
@@ -83,12 +83,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
-    
   },
   tituLogo: {
+    width: "100%",
     marginBottom: "10%",
     height: 35,
-    alignSelf: "center",
+    fontFamily: "Montserrat_600SemiBold",
   },
   tituloRH: {
     fontSize: 32,
@@ -115,11 +115,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     color: "white",
     alignSelf: "center",
-    fontFamily: "Quicksand_300Light",
+    fontFamily: " Quicksand_300Light",
     textAlign: "center",
   },
   text: {
-    fontFamily: "Quicksand_300Light",
+    fontFamily: " Quicksand_300Light",
     color: "white",
     alignSelf: "center",
     fontSize: 20,
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "white",
     fontWeight: "bold",
-    fontFamily: "Quicksand_300Light",
+    fontFamily: " Quicksand_300Light",
   },
 
   imagem: {
