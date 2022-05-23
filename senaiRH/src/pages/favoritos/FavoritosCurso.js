@@ -204,6 +204,16 @@ export default class TabViewExample extends React.Component {
         }
     }
 
+    RedirecionarComentarioCurso = () => {
+        this.setState({ modalVisivel: false })
+        // this.props.navigation.navigate('ComentarioDesconto')
+    }
+
+    RedirecionarComentarioDesconto = () => {
+        this.setState({ modalVisivel: false })
+        this.props.navigation.navigate('ComentarioDesconto')
+    }
+
     componentDidMount = () => {
         // this.SaldoUsuario();
         // await delay(3000);
@@ -250,7 +260,7 @@ export default class TabViewExample extends React.Component {
                                 style={styles.tabItem}
                                 onPress={() => this.setState({ index: i })}>
                                 <Animated.Text style={{ opacity }}>{route.title}</Animated.Text>
-                                <View style={styles.line} />
+                                <Animated.View style={{ opacity, width: '50%', borderBottomWidth: 1 }} />
                             </TouchableOpacity>
                         );
                     })}
@@ -276,7 +286,7 @@ export default class TabViewExample extends React.Component {
                 <Pressable onPress={() => this.setModalVisivelCurso(true, item.idCurso)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
-                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idCursoNavigation.caminhoImagemCurso}` }} resizeMode='stretch'  />
+                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idCursoNavigation.caminhoImagemCurso}` }} resizeMode='stretch' />
                         </View>
 
                         <View style={styles.boxTituloCurso}>
@@ -289,7 +299,7 @@ export default class TabViewExample extends React.Component {
                                 //starImage={star}
                                 showRating={false}
                                 selectedColor={'#C20004'}
-                                defaultRating={item.mediaAvaliacaoCurso}
+                                defaultRating={item.idCursoNavigation.mediaAvaliacaoCurso}
                                 isDisabled={true}
                                 size={20} />
                         </View>
@@ -338,21 +348,28 @@ export default class TabViewExample extends React.Component {
                                         </View>
                                         <Text style={styles.textTituloModal}>{item.idCursoNavigation.nomeCurso}</Text>
                                     </View>
-                                    <View style={styles.boxAvaliacaoModal}>
-                                        <AirbnbRating
-                                            count={5}
-                                            //starImage={star}
-                                            showRating={false}
-                                            selectedColor={'#C20004'}
-                                            defaultRating={item.mediaAvaliacaoCurso}
-                                            isDisabled={true}
-                                            size={20}
-                                        />
+
+                                    <View style={styles.boxAvaliacaoPreco}>
+                                        <View style={styles.boxAvaliacaoModal}>
+                                            <AirbnbRating
+                                                count={5}
+                                                //starImage={star}
+                                                showRating={false}
+                                                selectedColor={'#C20004'}
+                                                defaultRating={item.idCursoNavigation.mediaAvaliacaoCurso}
+                                                isDisabled={true}
+                                                size={20}
+                                            />
+                                        </View>
+                                        <View style={styles.boxPrecoModal}>
+                                            <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
+                                            <Text style={styles.textDados}>{item.valorCurso}</Text>
+                                        </View>
                                     </View>
 
                                     <View style={styles.boxDadosModal}>
                                         <Image source={require('../../../assets/imgGP2/relogio.png')} />
-                                        <Text style={styles.textDadosModal}>{item.cargaHoraria}</Text>
+                                        <Text style={styles.textDadosModal}>{item.idCursoNavigation.cargaHoraria}</Text>
 
                                         <Image source={require('../../../assets/imgGP2/mapa.png')} />
                                         {/* <Text style={styles.textDadosModal}>{item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado}</Text> */}
@@ -364,9 +381,9 @@ export default class TabViewExample extends React.Component {
 
                                         <Image source={require('../../../assets/imgGP2/dataFinal.png')} />
                                         <Text style={styles.textDadosModal}>
-                                            {/* {Intl.DateTimeFormat("pt-BR", {
+                                            {Intl.DateTimeFormat("pt-BR", {
                                                 year: 'numeric', month: 'numeric', day: 'numeric'
-                                            }).format(new Date(item.dataFinalizacao))} */}
+                                            }).format(new Date(item.idCursoNavigation.dataFinalizacao))}
                                         </Text>
                                     </View>
 
@@ -379,7 +396,7 @@ export default class TabViewExample extends React.Component {
                                             renderRevealedFooter={this._renderRevealedFooter}
                                             onReady={this._handleTextReady}
                                         >
-                                            <Text style={styles.textDescricaoModal}>{item.descricaoCurso}</Text>
+                                            <Text style={styles.textDescricaoModal}>{item.idCursoNavigation.descricaoCurso}</Text>
                                         </ReadMore>
 
                                         <View style={styles.boxEmpresa}>
@@ -388,9 +405,10 @@ export default class TabViewExample extends React.Component {
                                         </View>
 
                                         <View style={styles.boxValorInscrever}>
-                                            <View style={styles.boxPrecoModal}>
-                                                <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                                <Text style={styles.textDados}>{item.valorCurso}</Text>
+                                            <View style={styles.boxComentarioModal}>
+                                                <Pressable onPress={() => this.RedirecionarComentarioCurso()}>
+                                                    <Image source={require('../../../assets/imgGP2/comentario.png')} />
+                                                </Pressable>
                                             </View>
 
                                             <View style={styles.boxInscreverModal}>
@@ -446,7 +464,7 @@ export default class TabViewExample extends React.Component {
                 <Pressable onPress={() => this.setModalVisivelDesconto(true, item.idDescontoNavigation.idDesconto)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
-                            <Image style={styles.imgDesconto} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idDescontoNavigation.caminhoImagemDesconto}` }} resizeMode='stretch'  />
+                            <Image style={styles.imgDesconto} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idDescontoNavigation.caminhoImagemDesconto}` }} resizeMode='stretch' />
                         </View>
 
                         <View style={styles.boxTituloCurso}>
@@ -465,9 +483,9 @@ export default class TabViewExample extends React.Component {
                         </View>
 
                         <View style={styles.boxPrecoFavoritoDesconto}>
-                            <View style={styles.boxPreco}>
+                        <View style={styles.boxPreco}>
                                 <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                <Text style={styles.textDados}>{item.idDescontoNavigation.valorDesconto}</Text>
+                                <Text style={styles.textDados}>{item.valorDesconto}</Text>
                             </View>
 
                             <View style={styles.boxFavorito}>
@@ -496,29 +514,36 @@ export default class TabViewExample extends React.Component {
                                         </View>
                                         <Text style={styles.textTituloModal}>{item.idDescontoNavigation.nomeDesconto}</Text>
                                     </View>
-                                    <View style={styles.boxAvaliacaoModal}>
-                                        <AirbnbRating
-                                            count={5}
-                                            //starImage={star}
-                                            showRating={false}
-                                            selectedColor={'#C20004'}
-                                            defaultRating={item.mediaAvaliacaoDesconto}
-                                            isDisabled={true}
-                                            size={20}
-                                        />
+
+                                    <View style={styles.boxAvaliacaoPreco}>
+                                        <View style={styles.boxAvaliacaoModal}>
+                                            <AirbnbRating
+                                                count={5}
+                                                //starImage={star}
+                                                showRating={false}
+                                                selectedColor={'#C20004'}
+                                                defaultRating={item.idDescontoNavigation.mediaAvaliacaoDesconto}
+                                                isDisabled={true}
+                                                size={20}
+                                            />
+                                        </View>
+                                        <View style={styles.boxPrecoModal}>
+                                            <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
+                                            <Text style={styles.textDados}>{item.valorDesconto}</Text>
+                                        </View>
                                     </View>
 
                                     <View style={styles.boxDadosModal}>
                                         <Image source={require('../../../assets/imgGP2/relogio.png')} />
-                                        <Text style={styles.textDadosModal}>{item.cargaHoraria}</Text>
+                                        <Text style={styles.textDadosModal}>{item.idDescontoNavigation.cargaHoraria}</Text>
 
                                         <Image source={require('../../../assets/imgGP2/dataFinal.png')} />
                                         <Text style={styles.textDadosModal}>
-                                            {/* {Intl.DateTimeFormat("pt-BR", {
+                                            {Intl.DateTimeFormat("pt-BR", {
                                                 year: 'numeric', month: 'numeric', day: 'numeric'
-                                            }).format(new Date(item.dataFinalizacao))} */}
+                                            }).format(new Date(item.idDescontoNavigation.dataFinalizacao))}
                                         </Text>
-                                        
+
                                     </View>
 
                                     <View style={styles.boxDescricaoModal}>
@@ -530,7 +555,7 @@ export default class TabViewExample extends React.Component {
                                             renderRevealedFooter={this._renderRevealedFooter}
                                             onReady={this._handleTextReady}
                                         >
-                                            <Text style={styles.textDescricaoModal}>{item.descricaoCurso}</Text>
+                                            <Text style={styles.textDescricaoModal}>{item.idDescontoNavigation.descricaoCurso}</Text>
                                         </ReadMore>
 
                                         <View style={styles.boxEmpresa}>
@@ -539,9 +564,10 @@ export default class TabViewExample extends React.Component {
                                         </View>
 
                                         <View style={styles.boxValorInscrever}>
-                                            <View style={styles.boxPrecoModal}>
-                                                <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                                <Text style={styles.textDados}>{item.valorCurso}</Text>
+                                            <View style={styles.boxComentarioModal}>
+                                                <Pressable onPress={() => this.RedirecionarComentarioDesconto()}>
+                                                    <Image source={require('../../../assets/imgGP2/comentario.png')} />
+                                                </Pressable>
                                             </View>
 
                                             <View style={styles.boxInscreverModal}>
@@ -778,7 +804,7 @@ const styles = StyleSheet.create({
         height: '81%',
         backgroundColor: '#F2F2F2',
         borderWidth: 2,
-        borderTopWidth: 0,
+        borderTopWidth: 1,
         borderColor: '#B3B3B3',
         //borderStyle: 'dashed',
         marginLeft: 33,
@@ -789,12 +815,6 @@ const styles = StyleSheet.create({
         //alignItems: 'center',
     },
     imgModalCurso: {
-        width: '100%',
-        height: 100,
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-    },
-    imgModalDesconto: {
         width: '100%',
         height: 150,
         borderTopLeftRadius: 4,
@@ -807,17 +827,36 @@ const styles = StyleSheet.create({
         marginTop: 24,
         marginLeft: 16
     },
+    boxAvaliacaoPreco: {
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'row',
+    },
     boxAvaliacaoModal: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 8,
+        marginTop: 24,
         marginLeft: 16,
+    },
+    boxPrecoModal: {
+        width: 90,
+        height: 48,
+        borderWidth: 2,
+        borderColor: '#B3B3B3',
+        borderRadius: 15,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 24,
+        marginRight: 40,
+        marginLeft: 64
     },
     boxDadosModal: {
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: 16,
-        marginLeft: 16,
+        marginLeft: 24,
     },
     textDadosModal: {
         width: 120,
@@ -851,39 +890,33 @@ const styles = StyleSheet.create({
     boxEmpresa: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 32
+        marginTop: '38%'
     },
     tituloEmpresa: {
-        // fontFamily: 'Montserrat-Medium',
+        fontFamily: 'Montserrat-Medium',
         fontSize: 14,
         color: '#000',
     },
     textEmpresa: {
-        // fontFamily: 'Quicksand-Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 14,
         color: '#000',
         marginLeft: 10
     },
     boxValorInscrever: {
+        height: '10%',
         display: 'flex',
-        flexDirection: 'row',
-        marginBottom: 10
-    },
-    boxPrecoModal: {
-        width: 90,
-        height: 48,
-        borderWidth: 2,
-        borderColor: '#B3B3B3',
-        borderRadius: 15,
-        display: 'flex',
-        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 32,
-        marginRight: 40
+        flexDirection: 'row',
+        marginTop: '5%',
+    },
+    boxComentarioModal: {
+        marginTop: '8%',
+        alignItems: 'center'
     },
     boxInscreverModal: {
-        alignItems: 'center'
+        alignItems: 'center',
+        marginLeft: 80
     },
     inscreverModal: {
         width: 150,
@@ -892,7 +925,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 32,
+        marginTop: 24,
         marginLeft: 8
     },
     textDetalhes: {

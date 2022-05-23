@@ -91,24 +91,47 @@ export default class ListagemCurso extends Component {
     Favoritar = async (favorite, id) => {
         try {
             if (favorite == true) {
-                this.ProcurarCurso(id);
+                // this.ProcurarCurso(id);
                 await delay(2000);
 
                 //Id usuário
                 const idUser = await AsyncStorage.getItem('idUsuario');
 
                 //Requisição favoritos pelo id do usuário
-                const respostaFavoritos = await api('/FavoritosCursos/' + idUser)
+                const respostaFavoritos = await api('/FavoritosCursos/Favorito/' + idUser)
+                var dadosFavoritos = respostaFavoritos.data
 
                 //Tamanho do json do respostaFavoritos
-                var tamanhoJson = Object.keys(respostaFavoritos).length;
+                var tamanhoJson = Object.keys(dadosFavoritos).length;
                 var p = 0;
 
                 do {
-                    let stringFavoritos = JSON.stringify(respostaFavoritos);
-                    let objFavoritos = JSON.parse(stringFavoritos);
-                    let cursoId = objFavoritos['idCursoFavorito']['idCursoNavigation']['idCurso'][p];
+                    let stringFavoritos = JSON.stringify(dadosFavoritos);
+                    var objFavoritos = JSON.parse(stringFavoritos);
+                    console.warn(objFavoritos);
 
+                    if (objFavoritos != '') {
+                        var cursoId = objFavoritos[p]['idCurso'];
+                        let favoritoId = objFavoritos[p]['idCursoFavorito'];
+                        console.warn(cursoId);
+
+                        if (cursoId == id) {
+                            const respostaExcluir = await api.delete(`/FavoritosCursos/deletar/${favoritoId}`);
+                            var verifyDelete = respostaExcluir.status;
+
+                            if (respostaExcluir.status == 204) {
+                                this.setState(!this.state.isFavorite);
+                                console.warn('Desfavoritado');
+                            }
+                        }
+                        p++
+                    }
+                    else {
+                        console.warn("Está vazio!")
+                    }
+                } while (p < tamanhoJson || objFavoritos != '');
+                if (verifyDelete != 204) {
+                    // console.warn("CHEGOU")
                     if (cursoId != id) {
                         const respostaCadastro = await api.post('/FavoritosCursos', {
                             idCurso: this.state.cursoBuscado.idCurso,
@@ -118,22 +141,11 @@ export default class ListagemCurso extends Component {
                         if (respostaCadastro.status == 201) {
                             this.setState({ isFavorite: favorite });
                             console.warn('Favorito adicionado');
-                            console.warn(this.state.isFavorite)
+                            console.warn(this.state.isFavorite);
                         }
                     }
-
-                    p++
-                } while (p < tamanhoJson);
-            }
-            else if (this.state.isFavorite == false) {
-                const respostaExcluir = await api.delete(`/FavoritosCursos/deletar/${id}`);
-
-                if (respostaExcluir.status == 204) {
-                    this.setState(!this.state.isFavorite);
-                    console.warn('Desfavoritado');
                 }
             }
-
         } catch (error) {
             console.warn(error);
         }
@@ -141,9 +153,6 @@ export default class ListagemCurso extends Component {
 
     ListarCurso = async () => {
         try {
-            //const token = await AsyncStorage.getItem('userToken')
-            // console.warn(this.state.Userlongitude)
-            // console.warn(this.state.Userlatitude)
             var distanceBase = 150000;
             if (this.state.distanceUser != 0) {
                 distanceBase = this.state.distanceUser * 1000
@@ -208,7 +217,7 @@ export default class ListagemCurso extends Component {
 
                 // console.warn(this.state.listaCurso)
                 if (this.state.listaCurso == '') {
-                    this.setState({ switch: true})
+                    this.setState({ switch: true })
                 }
                 else {
                     this.setState({ switch: false })
@@ -222,9 +231,12 @@ export default class ListagemCurso extends Component {
             console.warn(erro);
         }
     }
-    setModalVisivel = (visible, id) => {
+    setModalVisivel = async (visible, id) => {
         if (visible == true) {
             this.ProcurarCurso(id)
+            await delay(300)
+            // let stringId = JSON.stringify(id);
+            // await AsyncStorage.setItem('cursoId', stringId);
         }
         else if (visible == false) {
             this.setState({ cursoBuscado: [] })
@@ -330,8 +342,7 @@ export default class ListagemCurso extends Component {
     }
 
     verifyList = () => {
-        if (this.state.switch == true)       
-        {
+        if (this.state.switch == true) {
             console.warn('Cheguei bao');
             return (
                 <View style={styles.containerRefresh}>
@@ -463,16 +474,23 @@ export default class ListagemCurso extends Component {
                                         </View>
                                         <Text style={styles.textTituloModal}>{item.nomeCurso}</Text>
                                     </View>
-                                    <View style={styles.boxAvaliacaoModal}>
-                                        <AirbnbRating
-                                            count={5}
-                                            //starImage={star}
-                                            showRating={false}
-                                            selectedColor={'#C20004'}
-                                            defaultRating={item.mediaAvaliacaoCurso}
-                                            isDisabled={true}
-                                            size={20}
-                                        />
+
+                                    <View style={styles.boxAvaliacaoPreco}>
+                                        <View style={styles.boxAvaliacaoModal}>
+                                            <AirbnbRating
+                                                count={5}
+                                                //starImage={star}
+                                                showRating={false}
+                                                selectedColor={'#C20004'}
+                                                defaultRating={item.mediaAvaliacaoDesconto}
+                                                isDisabled={true}
+                                                size={20}
+                                            />
+                                        </View>
+                                        <View style={styles.boxPrecoModal}>
+                                            <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
+                                            <Text style={styles.textDados}>{item.valorDesconto}</Text>
+                                        </View>
                                     </View>
 
                                     <View style={styles.boxDadosModal}>
@@ -514,9 +532,10 @@ export default class ListagemCurso extends Component {
                                         </View>
 
                                         <View style={styles.boxValorInscrever}>
-                                            <View style={styles.boxPrecoModal}>
-                                                <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                                <Text style={styles.textDados}>{item.valorCurso}</Text>
+                                            <View style={styles.boxComentarioModal}>
+                                                <Pressable onPress={() => this.RedirecionarComentario()}>
+                                                    <Image source={require('../../../assets/imgGP2/comentario.png')} />
+                                                </Pressable>
                                             </View>
 
                                             <View style={styles.boxInscreverModal}>
@@ -743,6 +762,11 @@ const styles = StyleSheet.create({
         marginTop: 24,
         marginLeft: 16
     },
+    boxAvaliacaoPreco: {
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'row',
+    },
     boxAvaliacaoModal: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -801,9 +825,11 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     boxValorInscrever: {
+        height: '10%',
         display: 'flex',
+        alignItems: 'center',
         flexDirection: 'row',
-        marginBottom: 10
+        marginTop: '5%',
     },
     boxPrecoModal: {
         width: 90,
@@ -818,8 +844,13 @@ const styles = StyleSheet.create({
         marginTop: 32,
         marginRight: 40
     },
-    boxInscreverModal: {
+    boxComentarioModal: {
+        marginTop: '8%',
         alignItems: 'center'
+    },
+    boxInscreverModal: {
+        alignItems: 'center',
+        marginLeft: 80
     },
     inscreverModal: {
         width: 150,

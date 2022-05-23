@@ -7,7 +7,9 @@ import {
     Pressable,
     Image,
     FlatList,
-    ScrollView
+    ScrollView,
+    TextInput,
+    RefreshControl
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -35,8 +37,11 @@ export default class ListagemDesconto extends Component {
             isFavorite: false,
             inscrito: '',
             showAlert: false,
+            refreshing: false,
             contadorDesconto: 0,
             saldoUsuario: 0,
+            distanceUser: 0,
+            switch: false,
             listaDesconto: [],
             descontoBuscado: [],
         };
@@ -116,9 +121,10 @@ export default class ListagemDesconto extends Component {
 
     ListarDescontos = async () => {
         try {
-            //const token = await AsyncStorage.getItem('userToken')
-            // console.warn(this.state.Userlongitude)
-            // console.warn(this.state.Userlatitude)
+            var distanceBase = 150000;
+            if (this.state.distanceUser != 0) {
+                distanceBase = this.state.distanceUser * 1000
+            }
 
             const resposta = await api('/Descontos');
 
@@ -150,7 +156,7 @@ export default class ListagemDesconto extends Component {
                     console.log(distance)
                     if (respostaLocal.status == 200) {
                         // console.warn('Localização encontrada!');
-                        if (distance <= 750000) {
+                        if (distance <= distanceBase) {
                             //this.setState({ localizacaoCurso: dadosLocalizacao })
                             // console.warn(distance);
                             // console.warn('Localização está no alcance');
@@ -166,7 +172,7 @@ export default class ListagemDesconto extends Component {
 
                             this.state.listaDesconto.push(desconto);
                         }
-                        else if (distance > 750000) {
+                        else if (distance > distanceBase) {
                             console.warn(distance);
                             console.warn('Localização fora do alcance');
                         }
@@ -177,6 +183,13 @@ export default class ListagemDesconto extends Component {
                 } while (i < tamanhoJson);
                 // console.warn(i)
 
+                if (this.state.listaCurso == '') {
+                    this.setState({ switch: true })
+                }
+                else {
+                    this.setState({ switch: false })
+                }
+
                 this.setState({ contadorDesconto: i })
                 // console.warn(this.state.contadorCurso)
             }
@@ -185,9 +198,12 @@ export default class ListagemDesconto extends Component {
             console.warn(erro);
         }
     }
-    setModalVisivel = (visible, id) => {
+    setModalVisivel = async (visible, id) => {
         if (visible == true) {
             this.ProcurarDescontos(id)
+            await delay(250)
+            let stringId = JSON.stringify(id);
+            await AsyncStorage.setItem('descontoId', stringId);
         }
         else if (visible == false) {
             this.setState({ descontoBuscado: [] })
@@ -244,6 +260,17 @@ export default class ListagemDesconto extends Component {
         // ...
     }
 
+    wait = (timeout) => {
+        return new Promise(resolve => setTimeout(resolve, timeout));
+    }
+
+    onRefresh = async () => {
+        this.setState({ refreshing: true });
+        this.wait(2000).then(() => this.setState({ refreshing: false }));
+        this.setState({ listaDesconto: [] })
+        this.ListarDescontos();
+    };
+
     ProcurarDescontos = async (id) => {
         try {
             const resposta = await api('/Descontos/' + id);
@@ -261,6 +288,25 @@ export default class ListagemDesconto extends Component {
         }
     }
 
+    RedirecionarComentario = () => {
+        this.setState({ modalVisivel: false })
+        this.props.navigation.navigate('ComentarioDesconto')
+    }
+
+    verifyList = () => {
+        if (this.state.switch == true) {
+            console.warn('Cheguei bao');
+            return (
+                <View style={styles.containerRefresh}>
+                    <Text style={styles.verify}>Sem cursos nesse raio de alcance!</Text>
+                    <Pressable style={styles.boxRefresh} onPress={() => this.onRefresh()}>
+                        <Text style={styles.textRefresh}>Refresh</Text>
+                    </Pressable>
+                </View>
+            )
+        }
+    }
+
     render() {
         return (
             <View style={styles.containerListagem}>
@@ -271,16 +317,34 @@ export default class ListagemDesconto extends Component {
                 <View style={styles.boxTituloPrincipal}>
                     <Text style={styles.textTituloPrincipal}>descontos</Text>
                 </View>
-                <View style={styles.boxSaldoUsuario}>
-                    <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                    <Text style={styles.textDados}>{this.state.saldoUsuario}</Text>
+                <View style={styles.boxInputSaldo}>
+                    <View style={styles.boxSaldoUsuario}>
+                        <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
+                        <Text style={styles.textDados}>{this.state.saldoUsuario}</Text>
+                    </View>
+                    <TextInput
+                        style={styles.inputDistance}
+                        onChangeText={distanceUser => this.setState({ distanceUser })}
+                        placeholder="150 km"
+                        placeholderTextColor="#B3B3B3"
+                        keyboardType="numeric"
+                        maxLength={3}
+                    />
                 </View>
+
+                {this.verifyList()}
 
                 <FlatList
                     style={styles.flatlist}
                     data={this.state.listaDesconto}
                     keyExtractor={item => item.idDesconto}
                     renderItem={this.renderItem}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.onRefresh}
+                        />
+                    }
                 />
             </View>
 
@@ -337,7 +401,7 @@ export default class ListagemDesconto extends Component {
                     }}
                 >
                     <View style={styles.totalModal}>
-                        <Pressable onPress={() => this.setModalVisivel(!this.state.modalVisivel)} >
+                        <Pressable onPress={() => this.setModalVisivel(!this.state.modalVisivel, item.idDesconto)} >
                             <View style={styles.containerModal}>
                                 <ScrollView>
                                     <View style={styles.boxTituloModal}>
@@ -346,16 +410,23 @@ export default class ListagemDesconto extends Component {
                                         </View>
                                         <Text style={styles.textTituloModal}>{item.nomeDesconto}</Text>
                                     </View>
-                                    <View style={styles.boxAvaliacaoModal}>
-                                        <AirbnbRating
-                                            count={5}
-                                            //starImage={star}
-                                            showRating={false}
-                                            selectedColor={'#C20004'}
-                                            defaultRating={item.mediaAvaliacaoDesconto}
-                                            isDisabled={true}
-                                            size={20}
-                                        />
+
+                                    <View style={styles.boxAvaliacaoPreco}>
+                                        <View style={styles.boxAvaliacaoModal}>
+                                            <AirbnbRating
+                                                count={5}
+                                                //starImage={star}
+                                                showRating={false}
+                                                selectedColor={'#C20004'}
+                                                defaultRating={item.mediaAvaliacaoDesconto}
+                                                isDisabled={true}
+                                                size={20}
+                                            />
+                                        </View>
+                                        <View style={styles.boxPrecoModal}>
+                                            <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
+                                            <Text style={styles.textDados}>{item.valorDesconto}</Text>
+                                        </View>
                                     </View>
 
                                     <View style={styles.boxDadosModal}>
@@ -388,9 +459,10 @@ export default class ListagemDesconto extends Component {
                                         </View>
 
                                         <View style={styles.boxValorInscrever}>
-                                            <View style={styles.boxPrecoModal}>
-                                                <Image style={styles.imgCoin} source={require('../../../assets/imgGP2/cash.png')} />
-                                                <Text style={styles.textDados}>{item.valorDesconto}</Text>
+                                            <View style={styles.boxComentarioModal}>
+                                                <Pressable onPress={() => this.RedirecionarComentario()}>
+                                                    <Image source={require('../../../assets/imgGP2/comentario.png')} />
+                                                </Pressable>
                                             </View>
 
                                             <View style={styles.boxInscreverModal}>
@@ -432,6 +504,12 @@ export default class ListagemDesconto extends Component {
     );
 }
 const styles = StyleSheet.create({
+    containerRefresh: {
+        alignItems: 'center'
+    },
+    verify: {
+        color: 'black'
+    },
     containerListagem: {
         flex: 1,
         alignItems: 'center'
@@ -448,6 +526,14 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Bold',
         fontSize: 30
     },
+    boxInputSaldo: {
+        width: 275,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 24
+    },
     boxSaldoUsuario: {
         width: 90,
         height: 42,
@@ -458,7 +544,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 24
+    },
+    inputDistance: {
+        width: 100,
+        height: 42,
+        borderColor: '#B3B3B3',
+        borderWidth: 2,
+        borderRadius: 15,
+        display: 'flex',
+        alignItems: 'center',
+        paddingLeft: 28
     },
     containerCurso: {
         marginBottom: 50,
@@ -583,17 +678,36 @@ const styles = StyleSheet.create({
         marginTop: 24,
         marginLeft: 16
     },
+    boxAvaliacaoPreco: {
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'row',
+    },
     boxAvaliacaoModal: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 8,
+        marginTop: 24,
         marginLeft: 16,
+    },
+    boxPrecoModal: {
+        width: 90,
+        height: 48,
+        borderWidth: 2,
+        borderColor: '#B3B3B3',
+        borderRadius: 15,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 24,
+        marginRight: 40,
+        marginLeft: 64
     },
     boxDadosModal: {
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: 16,
-        marginLeft: 16,
+        marginLeft: 24,
     },
     textDadosModal: {
         width: 120,
@@ -627,7 +741,7 @@ const styles = StyleSheet.create({
     boxEmpresa: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 165
+        marginTop: '38%'
     },
     tituloEmpresa: {
         fontFamily: 'Montserrat-Medium',
@@ -641,25 +755,19 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     boxValorInscrever: {
+        height: '10%',
         display: 'flex',
-        flexDirection: 'row',
-        marginBottom: 10
-    },
-    boxPrecoModal: {
-        width: 90,
-        height: 48,
-        borderWidth: 2,
-        borderColor: '#B3B3B3',
-        borderRadius: 15,
-        display: 'flex',
-        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 24,
-        marginRight: 40
+        flexDirection: 'row',
+        marginTop: '5%',
+    },
+    boxComentarioModal: {
+        marginTop: '8%',
+        alignItems: 'center'
     },
     boxInscreverModal: {
-        alignItems: 'center'
+        alignItems: 'center',
+        marginLeft: 80
     },
     inscreverModal: {
         width: 150,

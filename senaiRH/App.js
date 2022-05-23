@@ -18,6 +18,7 @@ import MinhasExtras from './src/pages/minhasAtividades/MinhasExtras.js';
 import RankingGp1 from './src/pages/rankingGp1/RankingGp1.js';
 import FavoritosCurso from './src/pages/favoritos/FavoritosCurso.js';
 import FavoritosDesconto from './src/pages/favoritos/FavoritosDesconto.js';
+import ComentarioDesconto from './src/pages/listagemDesconto/ComentarioDesconto';
 
 import 'intl';
 import 'intl/locale-data/jsonp/pt-BR';
@@ -45,6 +46,7 @@ function App() {
         <Stack.Screen name="MinhasExtras" component={MinhasExtras} options={{ headerShown: false }} />
         <Stack.Screen name="RankingGp1" component={RankingGp1} options={{ headerShown: false }} /> */}
         <Stack.Screen name="Favoritos" component={FavoritosCurso} options={{ headerShown: false }} />
+        <Stack.Screen name="ComentarioDesconto" component={ComentarioDesconto} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

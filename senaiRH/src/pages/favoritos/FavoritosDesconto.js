@@ -503,17 +503,36 @@ const styles = StyleSheet.create({
         marginTop: 24,
         marginLeft: 16
     },
+    boxAvaliacaoPreco: {
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'row',
+    },
     boxAvaliacaoModal: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 8,
+        marginTop: 24,
         marginLeft: 16,
+    },
+    boxPrecoModal: {
+        width: 90,
+        height: 48,
+        borderWidth: 2,
+        borderColor: '#B3B3B3',
+        borderRadius: 15,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 24,
+        marginRight: 40,
+        marginLeft: 64
     },
     boxDadosModal: {
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: 16,
-        marginLeft: 16,
+        marginLeft: 24,
     },
     textDadosModal: {
         width: 120,
@@ -547,7 +566,7 @@ const styles = StyleSheet.create({
     boxEmpresa: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 165
+        marginTop: '38%'
     },
     tituloEmpresa: {
         fontFamily: 'Montserrat-Medium',
@@ -561,25 +580,19 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     boxValorInscrever: {
+        height: '10%',
         display: 'flex',
-        flexDirection: 'row',
-        marginBottom: 10
-    },
-    boxPrecoModal: {
-        width: 90,
-        height: 48,
-        borderWidth: 2,
-        borderColor: '#B3B3B3',
-        borderRadius: 15,
-        display: 'flex',
-        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 24,
-        marginRight: 40
+        flexDirection: 'row',
+        marginTop: '5%',
+    },
+    boxComentarioModal: {
+        marginTop: '8%',
+        alignItems: 'center'
     },
     boxInscreverModal: {
-        alignItems: 'center'
+        alignItems: 'center',
+        marginLeft: 80
     },
     inscreverModal: {
         width: 150,
