@@ -34,7 +34,7 @@ export default class ListagemCurso extends Component {
             Userlongitude: null,
             errorMessage: '',
             modalVisivel: false,
-            isFavorite: false,
+            isFavorite: true,
             inscrito: '',
             showAlert: false,
             refreshing: false,
@@ -45,6 +45,7 @@ export default class ListagemCurso extends Component {
             listaCurso: [],
             cursoBuscado: {},
             localizacaoCurso: [],
+            listaFavoritosCoracao: []
         };
     }
     SaldoUsuario = async () => {
@@ -100,6 +101,7 @@ export default class ListagemCurso extends Component {
                 //Requisição favoritos pelo id do usuário
                 const respostaFavoritos = await api('/FavoritosCursos/Favorito/' + idUser)
                 var dadosFavoritos = respostaFavoritos.data
+                this.setState({ listaFavoritosCoracao: dadosFavoritos })
 
                 //Tamanho do json do respostaFavoritos
                 var tamanhoJson = Object.keys(dadosFavoritos).length;
@@ -125,6 +127,7 @@ export default class ListagemCurso extends Component {
                             if (respostaExcluir.status == 204) {
                                 this.setState(!this.state.isFavorite);
                                 this.setState({ cursoFavoritoBuscado: [] });
+                                this.setState({ isFavorite: false})
                                 console.warn('Desfavoritado');
                             }
                         }
@@ -451,9 +454,10 @@ export default class ListagemCurso extends Component {
                             </View>
 
                             <View style={styles.boxFavorito}>
-                                <Pressable style={styles.boxTextFavorito} onPress={() => this.Favoritar(true, item.idCurso)}>
+                                <Pressable onPress={() => this.Favoritar(true, item.idCurso)}>
                                     {/* <Text style={styles.textFavoritos}>Favoritar</Text> */}
-                                    <ExplodingHeart width={80}  onChange={() => this.Favoritar(true, item.idCurso)}/>
+                                    {/* <Heart isActive={listaFavoritosDescontos.some(l => { if (l.idDesconto == beneficio.idDesconto) { return true } return false })} onClick={() => { favoritar(!favorito, beneficio.idDesconto) }} /> */}
+                                    <ExplodingHeart width={80} status={this.state.listaFavoritosCoracao.some(l => { if (l.idCurso == item.idCurso) { return true } return false })} onChange={() => this.Favoritar(true, item.idCurso)}/>
                                 </Pressable>
                             </View>
                         </View>
@@ -713,15 +717,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: 105,
-    },
-    boxTextFavorito: {
-        width: 100,
-        height: 48,
-        backgroundColor: '#C20004',
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginRight: 64
     },
     textFavoritos: {
         color: 'white'
