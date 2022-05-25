@@ -14,7 +14,11 @@
       "supportsTablet": true
     },
     "android": {
+<<<<<<< HEAD
       "package": "host.exp.exponent"
+=======
+      "package": "com.android"
+>>>>>>> mobile-gp-2
     }
   }
 }

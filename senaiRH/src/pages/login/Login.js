@@ -6,8 +6,14 @@ import {
   View,
   Image,
   TextInput,
+<<<<<<< HEAD
   Alert,
   Pressable,
+=======
+  Animated,
+  Alert,
+  ColorPropType,
+>>>>>>> mobile-gp-2
 } from 'react-native';
 
 
@@ -15,15 +21,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import jwt_decode from "jwt-decode";
+<<<<<<< HEAD
 //import api from '../../services/apiGp1';
 import api from '../../services/apiGp1';
 import recuperar from "../alterarSenha/recuperarSenha.js"
 import AwesomeAlert from 'react-native-awesome-alerts';
+=======
+import api from '../../services/apiGp3';
+import AwesomeAlert from 'react-native-awesome-alerts';
+import AnimatedInput from 'react-native-animated-input';
+import axios from 'axios';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+>>>>>>> mobile-gp-2
 
 
 let customFonts = {
   'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
+<<<<<<< HEAD
   'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
+=======
+  'Montserrat-Medium' : require('../../../assets/fonts/Montserrat-Medium.ttf'),
+>>>>>>> mobile-gp-2
   'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
   'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf')
 }
@@ -33,12 +51,17 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
+<<<<<<< HEAD
       cpf: '11111111176',
+=======
+      cpf: '71696553067',
+>>>>>>> mobile-gp-2
       senha: 'Sesisenai@2022',
       fontsLoaded: false,
       error: 'Email ou Senha inválidos!',
       //erroMensagem: '',
       setLoading: false,
+<<<<<<< HEAD
       showAlert: false,
     }
   }
@@ -54,6 +77,23 @@ export default class Login extends Component {
   };
 
 
+=======
+      showAlert: false
+    }
+  }
+
+  showAlert = () => {
+    this.setState({showAlert: true})
+  }
+  
+  hideAlert = () => {
+    this.setState({
+      showAlert: false
+    });
+  };
+
+
+>>>>>>> mobile-gp-2
   async _loadFontsAsync() {
     await Font.loadAsync(customFonts);
     this.setState({ fontsLoaded: true });
@@ -64,6 +104,7 @@ export default class Login extends Component {
   }
 
   realizarLogin = async () => {
+<<<<<<< HEAD
 
 
     try {
@@ -104,15 +145,59 @@ export default class Login extends Component {
 
   }
 
+=======
+    
 
+    try {
+
+      
+      const resposta = await api.post('/Login', {
+        cpf: this.state.cpf,
+        senha: this.state.senha,
+      });
+
+      // console.warn(resposta);
+      const token = resposta.data.token;
+
+      // console.warn(token);
+
+      await AsyncStorage.setItem('userToken', token);
+      await AsyncStorage.setItem('idUsuario', jwt_decode(token).jti)
+      // console.warn(resposta.data);
+
+      if (resposta.status === 200) {
+
+        // console.warn('Login Realizado')
+        //console.warn(jwt_decode(token).role)
+
+        // this.state({isLoading:false})
+
+        var certo = jwt_decode(token).role
+        //console.warn('certo ' + certo)
+
+        this.props.navigation.navigate('Redirecionar');
+
+      }
+>>>>>>> mobile-gp-2
+
+    } catch (error) {
+      console.warn(error)
+      this.showAlert();
+    }
+
+  }
+
+  
 
   render() {
     if (!this.state.fontsLoaded) {
       return <AppLoading />;
     }
+    
 
 
     return (
+<<<<<<< HEAD
 
 
       <View style={styles.body}>
@@ -121,6 +206,16 @@ export default class Login extends Component {
           show={this.state.showAlert}
           showProgress={false}
           title="Oops !"
+=======
+      
+      
+      <View style={styles.body}>
+        
+        <AwesomeAlert
+          show={this.state.showAlert}
+          showProgress={false}
+          title="Login Inválido!"
+>>>>>>> mobile-gp-2
           titleStyle={
             styles.tituloModalLogin
           }
@@ -137,10 +232,15 @@ export default class Login extends Component {
             this.hideAlert();
           }}
         />
+<<<<<<< HEAD
 
 
         <View style={styles.mainHeader}>
           <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
+=======
+        <View style={styles.mainHeader}>
+          <Image source={require("../../../assets/imgMobile/logo_2S.png")}
+>>>>>>> mobile-gp-2
             style={styles.imgLogo}
           />
         </View>
@@ -149,6 +249,52 @@ export default class Login extends Component {
 
           <Text style={styles.tituloPagina}>{'recursos humanos'.toUpperCase()}</Text>
 
+<<<<<<< HEAD
+=======
+          {/* ANIMAÇÃO PRECISA FAZER OU NÃO */}
+          {/* <View >
+            <AnimatedInput 
+              placeholder="CPF"
+              keyboardType="numeric"
+              // valid={isValid}
+              //errorText="Error"
+              onChangeText={cpf => this.setState({ cpf })}
+              value={this.state.value}
+              styleLabel={{
+                fontFamily: 'Quicksand-Regular',
+                paddingLeft: 40,
+                paddingTop: 10,
+                fontSize: 12,
+                borderWidth: 1,
+                borderRadius: 10,
+                height:46,
+                width: 350,                
+                alignItems: 'center',
+                justifyContent: 'center',
+                
+              }}
+              styleBodyContent={styles.bodyContent}
+              
+            />
+      
+            <Animated.Text 
+             
+              //placeholder="CPF"
+              keyboardType="numeric" 
+              // valid={isValid}
+              //errorText="Error"
+              onChangeText={cpf => this.setState({ cpf })}
+            //value={this.state.value}
+            styleLabel={{ 
+              fontFamily: 'Quicksand-Regular', 
+              fontSize: 12,
+            }}
+            CPF
+            />
+          </View> */}
+
+
+>>>>>>> mobile-gp-2
           <View style={styles.viewLoginCPF}>
             <TextInput style={styles.inputLogin}
               placeholder="CPF"
@@ -172,6 +318,7 @@ export default class Login extends Component {
 
 
           <View style={styles.erroMsg}>
+<<<<<<< HEAD
 
             <Pressable onPress={() => this.props.navigation.navigate('primeiroAcesso')}>
               <Text style={styles.textEsque}> Esqueci a Senha</Text>
@@ -196,6 +343,41 @@ export default class Login extends Component {
         </View>
         <View style={styles.imgLoginView} >
           <Image source={require('../../../assets/imgMobile/welcome.png')} />
+=======
+            {/* <Animated.Text 
+              onPress={this.realizarLogin} 
+              style={styles.erroText}
+              animation="flipInY">
+                Email ou Senha inválidos!
+            </Animated.Text> */}
+
+            
+              <TouchableOpacity  onPress={() => this.props.navigation.navigate('alterarSenha')}>
+                <Text style={styles.textEsque}> Esqueci a Senha</Text>
+              </TouchableOpacity>
+           
+          </View>
+
+         
+
+
+
+          <TouchableOpacity
+            style={styles.btnLogin}
+            onPress={this.realizarLogin}
+          >
+            <Text style={styles.btnText}>
+              Entrar
+            </Text>
+
+          </TouchableOpacity>
+
+
+
+        </View>
+        <View style={styles.imgLoginView} >
+          <Image source={require('../../../assets/imgMobile/imagemLogin.png')} />
+>>>>>>> mobile-gp-2
         </View>
 
       </View>
@@ -235,6 +417,7 @@ const styles = StyleSheet.create({
     paddingTop: 64,
     paddingBottom: 50,
     alignItems: 'center',
+<<<<<<< HEAD
   },
   tituloModalLogin:
   {
@@ -243,16 +426,64 @@ const styles = StyleSheet.create({
     fontSize: 23,
     fontWeight: 'bold'
   },
+=======
+  },
+  tituloModalLogin:
+  {
+    color: '#C20004',
+    fontFamily: 'Montserrat-Medium',
+    fontSize: 23,
+    fontWeight: 'bold'
+  },
+>>>>>>> mobile-gp-2
   textoModalLogin:
   {
     width: 200,
     textAlign: 'center'
   },
+<<<<<<< HEAD
   confirmButton: {
     width: 100,
 
     paddingLeft: 32
   },
+=======
+  confirmButton:{
+    width: 100,
+   
+    paddingLeft: 32
+  },
+  
+
+  // inputEmail:{
+  //   width: 350,
+  //   height: 46,
+  //   borderWidth: 1,
+  //   borderColor: '#B3B3B3',
+  // },
+
+  // inputSenha:{
+  //   borderWidth: 1,
+  //   borderColor: '#B3B3B3',
+  // },
+>>>>>>> mobile-gp-2
+
+
+  // inputLogin: {
+  //   //backgroundColor: 'white',
+  //   //borderRadius: 10,
+  //   //padding: 30,
+  //   //alignItems: 'center',
+  //   //justifyContent: 'center',
+  //   shadowColor: '#c0c0c0',
+  //   shadowOpacity: 0.9,
+  //   shadowOffset: {
+  //     height: 2,
+  //     width: 2,
+  //   },
+  //   shadowRadius: 8,
+  //   //elevation: 6,
+  // },
 
   inputLogin: {
     width: 350,
@@ -322,6 +553,10 @@ const styles = StyleSheet.create({
 
 
   imgLoginView: {
+<<<<<<< HEAD
+=======
+    //justifyContent:'flex-start',
+>>>>>>> mobile-gp-2
     marginTop: 92,
     //width: 180,
     //height: 165,
@@ -329,6 +564,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     flexDirection: 'column',
   },
+<<<<<<< HEAD
 });
 
 
+=======
+});
+>>>>>>> mobile-gp-2

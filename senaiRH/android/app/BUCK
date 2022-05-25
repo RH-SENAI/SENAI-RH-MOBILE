@@ -35,12 +35,28 @@ android_library(
 
 android_build_config(
     name = "build_config",
+<<<<<<< HEAD
+<<<<<<< HEAD:senaiRH/android/app/BUCK
     package = "host.exp.exponent",
+=======
+    package = "com.helloworld",
+>>>>>>> mobile-gp-2:senaiRH/node_modules/react-native/template/android/app/_BUCK
+=======
+    package = "com.android",
+>>>>>>> mobile-gp-2
 )
 
 android_resource(
     name = "res",
+<<<<<<< HEAD
+<<<<<<< HEAD:senaiRH/android/app/BUCK
     package = "host.exp.exponent",
+=======
+    package = "com.helloworld",
+>>>>>>> mobile-gp-2:senaiRH/node_modules/react-native/template/android/app/_BUCK
+=======
+    package = "com.android",
+>>>>>>> mobile-gp-2
     res = "src/main/res",
 )
 
