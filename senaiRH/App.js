@@ -64,9 +64,7 @@ function App() {
 
         <Stack.Screen name="recuperarSenha" component={recuperarSenha} options={{ headerShown: false }} />
         <Stack.Screen name="primeiroAcesso" component={primeiroAcesso} options={{ headerShown: false }} />
-        <Stack.Screen name="Atividades" component={Atividades} options={{ headerShown: false }} />
-        <Stack.Screen name="MinhasAtividades" component={MinhasAtividades} options={{ headerShown: false }} />
-        
+ 
       {/* gp2 */}
         <Stack.Screen name="FavoritosDesconto" component={FavoritosDesconto} options={{ headerShown: false }} />
         <Stack.Screen name="RankingGp1" component={RankingGp1} options={{ headerShown: false }} /> 

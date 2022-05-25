@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import axios from 'axios';
 
 const api = axios.create({
@@ -10,3 +11,13 @@ const api = axios.create({
 });
 
 export default api;
+=======
+
+import axios from 'axios'
+
+const apiGp1 = axios.create({
+    baseURL: 'http://apirhsenaigp1.azurewebsites.net/api/'
+})
+
+export default apiGp1;
+>>>>>>> mobile-gp-3
