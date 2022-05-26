@@ -140,7 +140,7 @@ export default class MinhasAtividades extends Component {
                         {/* IMPORTACAO DE IMAGENS */}
                         {/* <SvgUri
                         uri= "http"
-                    /> */}
+                        /> */}
 
                     </View>
 
@@ -149,7 +149,7 @@ export default class MinhasAtividades extends Component {
 
                         <Text style={styles.tituloEfects}>{'Minhas atividades'.toUpperCase()} </Text>
 
-                        <View style={styles.escritaEscolha}>
+                        {/* <View style={styles.escritaEscolha}>
                             <View style={styles.itemEquipe}>
                                 <TouchableOpacity>
                                     <Text style={styles.font}> Obrigatórios </Text>
@@ -166,7 +166,7 @@ export default class MinhasAtividades extends Component {
 
                             </View>
 
-                        </View>
+                        </View> */}
                     </View>
                 </View>
 
@@ -193,9 +193,11 @@ export default class MinhasAtividades extends Component {
                     <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
 
                     <View style={styles.descricaoOlho}>
-                        <Text style={styles.descricao}> Data de Entrega: {Intl.DateTimeFormat("pt-BR", {
-                    year: 'numeric', month: 'short', day: 'numeric',
-                }).format(new Date(item.dataConclusao))}</Text>
+                        <Text style={styles.descricao}> Data de Entrega: {Intl.DateTimeFormat("pt-BR", {year: 'numeric', month: 'short', day: 'numeric',}).format(new Date(item.dataConclusao))}</Text>
+                        
+                        <Pressable style={styles.Modalbotao} onPress={() => this.openModal(item.idAtividade)}>
+                            <AntDesign name="downcircleo" size={24} color="#636466" />
+                        </Pressable>
                     </View>
 
                     <View style={styles.ModaleBotao}>

@@ -33,8 +33,11 @@ export default class TabViewExample extends React.Component {
             { key: 'second', title: 'Extras' },
         ],
         listaAtividades: [],
+        listaAtividadesExtras: [],
         AtividadeBuscada: {},
-        modalVisible: false,
+        AtividadeBuscadaExtras: {},
+        modalVisibleAtividade: false,
+        modalVisibleExtras: false,
     };
 
     buscarAtividade = async () => {
@@ -46,7 +49,7 @@ export default class TabViewExample extends React.Component {
     buscarExtras = async () => {
         const resposta = await api.get('/Atividades/ListarExtras');
         const dadosDaApi = resposta.data;
-        this.setState({ listaAtividades: dadosDaApi });
+        this.setState({ listaAtividadesExtras: dadosDaApi });
     };
 
     ProcurarAtividades = async (id) => {
@@ -71,7 +74,7 @@ export default class TabViewExample extends React.Component {
             const resposta = await api('/Atividades/' + id);
             if (resposta.status == 200) {
                 const dadosAtividades = await resposta.data.atividade;
-                await this.setState({ AtividadeBuscada: dadosAtividades })
+                await this.setState({ AtividadeBuscadaExtras: dadosAtividades })
             }
         }
         catch (erro) {
@@ -84,12 +87,12 @@ export default class TabViewExample extends React.Component {
         if (visible == true) {
             // console.warn(id)
             await this.ProcurarAtividades(id)
-            this.setState({ modalVisible: true });
+            this.setState({ modalVisibleAtividade: true });
             // console.warn(this.state.AtividadeBuscada)
         }
         else if (visible == false) {
             this.setState({ AtividadeBuscada: {} })
-            this.setState({ modalVisible: false })
+            this.setState({ modalVisibleAtividade: false })
         }
 
     }
@@ -98,12 +101,12 @@ export default class TabViewExample extends React.Component {
         if (visible == true) {
             //console.warn(id)
             await this.ProcurarExtras(id)
-            this.setState({ modalVisible: true });
+            this.setState({ modalVisibleExtras: true });
             //console.warn(this.state.AtividadeBuscada)
         }
         else if (visible == false) {
-            this.setState({ AtividadeBuscada: {} })
-            this.setState({ modalVisible: false })
+            this.setState({ AtividadeBuscadaExtras: {} })
+            this.setState({ modalVisibleExtras: false })
         }
 
     }
@@ -231,11 +234,14 @@ export default class TabViewExample extends React.Component {
     };
 
     FirstRoute = () => (
-        <FlatList
-            data={this.state.listaAtividades}
-            keyExtractor={item => item.idAtividade}
-            renderItem={this.renderItem}
-        />
+        <View style={styles.container}>
+            <FlatList
+                style={styles.FlatList}
+                data={this.state.listaAtividades}
+                keyExtractor={item => item.idAtividade}
+                renderItem={this.renderItem}
+            />
+        </View>
     );
 
     renderItem = ({ item }) => (
@@ -266,7 +272,7 @@ export default class TabViewExample extends React.Component {
                         </View>
                     </Pressable>
 
-                    <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
+                    <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisibleAtividade(true, item.idAtividade)}  >
 
                         <AntDesign name="downcircleo" size={24} color="#636466" />
 
@@ -279,11 +285,11 @@ export default class TabViewExample extends React.Component {
             <Modal
                 animationType="fade"
                 transparent={true}
-                visible={this.state.modalVisible}
+                visible={this.state.modalVisibleAtividade}
                 key={item.idAtividade == this.state.AtividadeBuscada.idAtividade}
                 onRequestClose={() => {
                     console.warn(item)
-                    this.setModalVisibleAtividade(!this.state.modalVisible)
+                    this.setModalVisibleAtividade(!this.state.modalVisibleAtividade)
                 }}
             >
 
@@ -307,7 +313,7 @@ export default class TabViewExample extends React.Component {
                             </Pressable>
                             <Pressable
 
-                                onPress={() => this.setModalVisibleAtividade(!this.state.modalVisible)}
+                                onPress={() => this.setModalVisibleAtividade(!this.state.modalVisibleAtividade)}
                             >
                                 <View style={styles.fecharModal}>
                                     <Text style={styles.textoFechar}>Fechar X</Text>
@@ -325,11 +331,14 @@ export default class TabViewExample extends React.Component {
     );
 
     SecondRoute = () => (
-        <FlatList
-            data={this.state.listaAtividades}
-            keyExtractor={item => item.idAtividade}
-            renderItem={this.renderItem2}
-        />
+        <View style={styles.container}>
+            <FlatList
+                style={styles.FlatList}
+                data={this.state.listaAtividadesExtras}
+                keyExtractor={item => item.idAtividade}
+                renderItem={this.renderItem2}
+            />
+        </View>
     );
 
     renderItem2 = ({ item }) => (
@@ -373,11 +382,11 @@ export default class TabViewExample extends React.Component {
             <Modal
                 animationType="fade"
                 transparent={true}
-                visible={this.state.modalVisible}
-                key={item.idAtividade == this.state.AtividadeBuscada.idAtividade}
+                visible={this.state.modalVisibleExtras}
+                key={item.idAtividade == this.state.AtividadeBuscadaExtras.idAtividade}
                 onRequestClose={() => {
                     console.warn(item)
-                    this.setModalVisibleExtras(!this.state.modalVisible)
+                    this.setModalVisibleExtras(!this.state.modalVisibleExtras)
                 }}
             >
 
@@ -386,22 +395,22 @@ export default class TabViewExample extends React.Component {
                     <View style={styles.modalView}>
                         <View style={styles.quadradoModal}></View>
                         <View style={styles.conteudoBoxModal}>
-                            <Text style={styles.nomeBoxModal}>{this.state.AtividadeBuscada.nomeAtividade} </Text>
-                            <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
-                            <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
-                            <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
-                            <Text style={styles.pessoasModal}> Em {this.state.AtividadeBuscada.equipe} </Text>
-                            <Text style={styles.criadorModal}> Responsável: {this.state.AtividadeBuscada.criador} </Text>
+                            <Text style={styles.nomeBoxModal}>{this.state.AtividadeBuscadaExtras.nomeAtividade} </Text>
+                            <Text style={styles.descricaoModal}> {this.state.AtividadeBuscadaExtras.descricaoAtividade}</Text>
+                            <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscadaExtras.dataCriacao} </Text>
+                            <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscadaExtras.dataConclusao} </Text>
+                            <Text style={styles.pessoasModal}> Em {this.state.AtividadeBuscadaExtras.equipe} </Text>
+                            <Text style={styles.criadorModal}> Responsável: {this.state.AtividadeBuscadaExtras.criador} </Text>
                         </View>
                         <View style={styles.botoesModal}  >
-                            <Pressable onPress={() => this.associarExtras(this.state.AtividadeBuscada.idAtividade)} >
+                            <Pressable onPress={() => this.associarExtras(this.state.AtividadeBuscadaExtras.idAtividade)} >
                                 <View style={styles.associarModal}>
                                     <Text style={styles.texto}> Me Associar </Text>
                                 </View>
                             </Pressable>
                             <Pressable
 
-                                onPress={() => this.setModalVisibleExtras(!this.state.modalVisible)}
+                                onPress={() => this.setModalVisibleExtras(!this.state.modalVisibleExtras)}
                             >
                                 <View style={styles.fecharModal}>
                                     <Text style={styles.textoFechar}>Fechar X</Text>
@@ -437,8 +446,16 @@ export default class TabViewExample extends React.Component {
 
 const styles = StyleSheet.create({
 
-    main: {
+    container: {
         flex: 1,
+    },
+
+    FlatList: {
+        width: '100%',
+    },
+
+    main: {
+        //flex: 1,
         backgroundColor: '#F2F2F2',
     },
 

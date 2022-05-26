@@ -44,8 +44,10 @@ export default class TabViewExample extends React.Component {
             { key: 'second', title: 'Extras' },
         ],
         modalVisible: false,
+        modalVisibleExtras: false,
         mensagem: '',
         listaAtividades: [],
+        listaAtividadesExtras: [],
         minhaAtividade: {}
     }
 
@@ -228,12 +230,14 @@ export default class TabViewExample extends React.Component {
     };
 
     FirstRoute = () => (
-        <FlatList
-            style={styles.FlatList}
-            data={this.state.listaAtividades}
-            keyExtractor={item => item.idMinhasAtividades}
-            renderItem={this.renderItem}
-        />
+        <View style={styles.container}>
+            <FlatList
+                style={styles.FlatList}
+                data={this.state.listaAtividades}
+                keyExtractor={item => item.idMinhasAtividades}
+                renderItem={this.renderItem}
+            />
+        </View>
     );
 
     renderItem = ({ item }) => (
@@ -330,12 +334,14 @@ export default class TabViewExample extends React.Component {
     );
 
     SecondRoute = () => (
-        <FlatList
-            style={styles.FlatList}
-            data={this.state.listaAtividades}
-            keyExtractor={item => item.idMinhasAtividades}
-            renderItem={this.renderItem2}
-        />
+        <View style={styles.container}>
+            <FlatList
+                style={styles.FlatList}
+                data={this.state.listaAtividades}
+                keyExtractor={item => item.idMinhasAtividades}
+                renderItem={this.renderItem2}
+            />
+        </View>
     );
 
     renderItem2 = ({ item }) => (
@@ -456,8 +462,16 @@ export default class TabViewExample extends React.Component {
 
 const styles = StyleSheet.create({
 
-    main: {
+    container: {
         flex: 1,
+    },
+
+    FlatList: {
+        width: '100%',
+    },
+
+    main: {
+        //flex: 1,
         backgroundColor: '#F2F2F2',
         alignItems: 'center'
     },

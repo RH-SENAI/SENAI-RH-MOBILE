@@ -51,7 +51,7 @@ export default class AtividadesExtras extends Component {
         this.setState({ listaAtividades: dadosDaApi });
     };
 
-    
+
     ProcurarAtividades = async (id) => {
         //console.warn(id)
         try {
@@ -66,7 +66,6 @@ export default class AtividadesExtras extends Component {
             console.warn(erro);
         }
     }
-
 
     setModalVisible = async (visible, id) => {
         if (visible == true) {
@@ -151,7 +150,7 @@ export default class AtividadesExtras extends Component {
 
                         <Text style={styles.tituloEfects}>{'atividades'.toUpperCase()} </Text>
 
-                        <View style={styles.escritaEscolha}>
+                        {/* <View style={styles.escritaEscolha}>
                             <View style={styles.itemEquipe}>
                                 <Pressable >
                                     <Text style={styles.font}> Obrigatórios </Text>
@@ -168,7 +167,7 @@ export default class AtividadesExtras extends Component {
                                
                             </View>
 
-                        </View>
+                        </View> */}
                     </View>
                 </View>
 
