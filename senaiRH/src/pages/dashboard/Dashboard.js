@@ -115,8 +115,8 @@ export default function Dashboard() {
         progressColor={"#C20004"}
         backgroundColor={"rgba(194, 0, 4, 0.15)"}
         startAngle={0}
-        cornerRadius={5}
-        strokeWidth={15}
+        cornerRadius={2}
+        strokeWidth={10}
         endAngle={360}
       >
         <SvgText
@@ -241,8 +241,8 @@ export default function Dashboard() {
 
     //console.warn(d6_10);
 
-    //const data = [d1_5, d6_10, d11_15, d16_20, d21_25, d26_31]
-    const data = [4, 2, 4, 5, 3];
+    const data = [d1_5, d6_10, d11_15, d16_20, d21_25, d26_31]
+    //const data = [4, 2, 4, 5, 3];
 
     const CUT_OFF = 20;
     const Labels = ({ x, y, bandwidth, data }) =>
@@ -348,7 +348,7 @@ export default function Dashboard() {
 
                   <View style={styles.containerProdutividade}>
                     <View style={styles.containerProdutividadeSup}>
-                      <Text style={styles.tituloGrafico}>Satisfação:</Text>
+                      <Text style={styles.tituloGrafico}>Nível de Satisfação atual:</Text>
                       <GraficoSatisfacao />
                     </View>
                     <GrafHistSatisfacao />
@@ -444,6 +444,7 @@ const styles = StyleSheet.create({
   containerProdutividade: {
     flex: 1,
     borderRadius: 5,
+    //borderTopWidth: 3,
     borderWidth: 3,
     borderColor: "gray",
     //flexDirection: 'row',
@@ -467,14 +468,15 @@ const styles = StyleSheet.create({
   containerProdutividadeSup: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    //backgroundColor: 'green'
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    //backgroundColor: 'green',
+    padding: 3.5
   },
   grafico: {
     //flex: 1,
-    width: 75,
-    height: 75,
+    width: 70,
+    height: 70,
     //backgroundColor: 'blue',
   },
   tituloGrafico: {
