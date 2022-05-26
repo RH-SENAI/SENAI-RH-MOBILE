@@ -6,26 +6,24 @@ import {
   View,
   Image,
   TextInput,
-  Animated,
   Alert,
-  ColorPropType,
+  Pressable,
 } from 'react-native';
+
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import jwt_decode from "jwt-decode";
+//import api from '../../services/apiGp1';
 import api from '../../services/apiGp1';
-//import api from '../../services/apiGp3';
+import recuperar from "../alterarSenha/recuperarSenha.js"
 import AwesomeAlert from 'react-native-awesome-alerts';
-import AnimatedInput from 'react-native-animated-input';
-import axios from 'axios';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 
 let customFonts = {
   'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
-  'Montserrat-Medium' : require('../../../assets/fonts/Montserrat-Medium.ttf'),
+  'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
   'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
   'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf')
 }
@@ -41,14 +39,14 @@ export default class Login extends Component {
       error: 'Email ou Senha inválidos!',
       //erroMensagem: '',
       setLoading: false,
-      showAlert: false
+      showAlert: false,
     }
   }
 
   showAlert = () => {
-    this.setState({showAlert: true})
+    this.setState({ showAlert: true })
   }
-  
+
   hideAlert = () => {
     this.setState({
       showAlert: false
@@ -66,11 +64,11 @@ export default class Login extends Component {
   }
 
   realizarLogin = async () => {
-    
+
 
     try {
 
-      
+
       const resposta = await api.post('/Login', {
         cpf: this.state.cpf,
         senha: this.state.senha,
@@ -92,36 +90,37 @@ export default class Login extends Component {
         // this.state({isLoading:false})
 
         var certo = jwt_decode(token).role
-        //console.warn('certo ' + certo)
+        // console.warn('certo ' + certo)
 
+        //this.showAlertSuce();
         this.props.navigation.navigate('Redirecionar');
 
       }
 
     } catch (error) {
       console.warn(error)
-      this.showAlert();
+      this.showAlertSuce();
     }
 
   }
 
-  
+
 
   render() {
     if (!this.state.fontsLoaded) {
       return <AppLoading />;
     }
-    
+
 
     return (
-      
-      
+
+
       <View style={styles.body}>
-        
+
         <AwesomeAlert
           show={this.state.showAlert}
           showProgress={false}
-          title="Login Inválido!"
+          title="Oops !"
           titleStyle={
             styles.tituloModalLogin
           }
@@ -138,6 +137,8 @@ export default class Login extends Component {
             this.hideAlert();
           }}
         />
+
+
         <View style={styles.mainHeader}>
           <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
             style={styles.imgLogo}
@@ -147,52 +148,6 @@ export default class Login extends Component {
         <View style={styles.container}>
 
           <Text style={styles.tituloPagina}>{'recursos humanos'.toUpperCase()}</Text>
-
-          {/* ANIMAÇÃO PRECISA FAZER OU NÃO */}
-          {/* <View >
-            <AnimatedInput 
-              placeholder="CPF"
-              keyboardType="numeric"
-              // valid={isValid}
-              //errorText="Error"
-              onChangeText={cpf => this.setState({ cpf })}
-              value={this.state.value}
-              styleLabel={{
-                fontFamily: 'Quicksand-Regular',
-                paddingLeft: 40,
-                paddingTop: 10,
-                fontSize: 12,
-                borderWidth: 1,
-                borderRadius: 10,
-                height:46,
-                width: 350,                
-                alignItems: 'center',
-                justifyContent: 'center',
-                
-
-              }}
-              styleBodyContent={styles.bodyContent}
-              
-
-            />
-      
-            <Animated.Text 
-             
-              //placeholder="CPF"
-              keyboardType="numeric" 
-              // valid={isValid}
-              //errorText="Error"
-              onChangeText={cpf => this.setState({ cpf })}
-            //value={this.state.value}
-            styleLabel={{ 
-              fontFamily: 'Quicksand-Regular', 
-              fontSize: 12,
-            }}
-            CPF
-            />
-
-          </View> */}
-
 
           <View style={styles.viewLoginCPF}>
             <TextInput style={styles.inputLogin}
@@ -217,16 +172,14 @@ export default class Login extends Component {
 
 
           <View style={styles.erroMsg}>
-            
 
-            
-              <TouchableOpacity  onPress={() => this.props.navigation.navigate('alterarSenha')}>
-                <Text style={styles.textEsque}> Esqueci a Senha</Text>
-              </TouchableOpacity>
-           
+            <Pressable onPress={() => this.props.navigation.navigate('primeiroAcesso')}>
+              <Text style={styles.textEsque}> Esqueci a Senha</Text>
+            </Pressable>
+
           </View>
 
-         
+
 
 
 
@@ -240,11 +193,9 @@ export default class Login extends Component {
 
           </TouchableOpacity>
 
-
-
         </View>
         <View style={styles.imgLoginView} >
-          <Image source={require('../../../assets/img-gp1/imagemLogin.png')} />
+          <Image source={require('../../../assets/imgMobile/welcome.png')} />
         </View>
 
       </View>
@@ -297,12 +248,12 @@ const styles = StyleSheet.create({
     width: 200,
     textAlign: 'center'
   },
-  confirmButton:{
+  confirmButton: {
     width: 100,
-   
+
     paddingLeft: 32
   },
-  
+
   inputLogin: {
     width: 350,
     height: 46,
