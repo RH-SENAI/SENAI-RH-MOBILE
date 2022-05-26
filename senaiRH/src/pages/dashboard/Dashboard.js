@@ -11,6 +11,12 @@ import {
   ScrollView,
   SafeAreaView,
 } from "react-native";
+import { Dimensions } from "react-native";
+const screenWidth = Dimensions.get("window").width;
+
+import {
+  ContributionGraph,
+} from "react-native-chart-kit";
 
 // Expo
 import AppLoading from "expo-app-loading";
@@ -49,6 +55,34 @@ export default function Dashboard() {
   const [notaProdutividade, setNotaProdutividade] = useState(0);
   const [usuario, setUsuario] = useState([]);
   const [minhasAtividades, setMinhasAtividades] = useState([]);
+
+
+  const commitsData = [
+    { date: "2022-04-02", count: 1 },
+    { date: "2022-04-03", count: 2 },
+    { date: "2022-04-04", count: 3 },
+    { date: "2022-04-05", count: 4 },
+    { date: "2022-04-06", count: 5 },
+    { date: "2022-04-30", count: 2 },
+    { date: "2022-04-31", count: 3 },
+    { date: "2022-04-01", count: 2 },
+    { date: "2022-04-02", count: 4 },
+    { date: "2022-04-05", count: 2 },
+    { date: "2022-05-25", count: 4 }
+  ];
+
+  const chartConfig = {
+    backgroundGradientFrom: "#f1f1f1",
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientTo: "#f1f1f1",
+    backgroundGradientToOpacity: 1,
+    color: (opacity = 1) => `rgba(194, 0, 4, ${opacity})`,
+    strokeWidth: 2, // optional, default 3
+    barPercentage: 0.5,
+    useShadowColorFromDataset: false // optional
+  };
+
+
 
   // Fontes utilizada
   let [fontsLoaded] = useFonts({
@@ -301,10 +335,10 @@ export default function Dashboard() {
                       source={
                         usuario.caminhoFotoPerfil == undefined
                           ? {
-                              uri:
-                                "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
-                                usuario.caminhoFotoPerfil,
-                            }
+                            uri:
+                              "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
+                              usuario.caminhoFotoPerfil,
+                          }
                           : require("../../../assets/imgMobile/Perfil.png")
                       }
                       resizeMod="cover"
@@ -340,6 +374,14 @@ export default function Dashboard() {
                       <Text style={styles.tituloGrafico}>Produtividade:</Text>
                       <GraficoProdutividade />
                     </View>
+                    <ContributionGraph
+                      values={commitsData}
+                      endDate={new Date("2022-05-31")}
+                      numDays={90}
+                      width={320}
+                      height={220}
+                      chartConfig={chartConfig}
+                    />
                     <GraficoBarras />
                     <Text style={styles.subtituloProdutividade}>
                       Entregas de atividade por semana:{" "}
@@ -352,6 +394,7 @@ export default function Dashboard() {
                       <GraficoSatisfacao />
                     </View>
                     <GrafHistSatisfacao />
+                    
                     {/* <Text style={styles.subtituloProdutividade}>
                       Entregas de atividade por semana:{" "}
                     </Text> */}
@@ -366,6 +409,8 @@ export default function Dashboard() {
       </ScrollView>
     );
   }
+
+  
 }
 const styles = StyleSheet.create({
   container: {
@@ -493,5 +538,7 @@ const styles = StyleSheet.create({
     flex: 1,
     //backgroundColor: 'yellow'
   },
-  
+
+
+
 });
