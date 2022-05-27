@@ -27,6 +27,7 @@ import * as ImagePicker from 'expo-image-picker'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import * as Permission from 'expo-permissions';
 import axios from 'axios';
+import moment from 'moment';
 // import 'intl';
 
 let customFonts = {
@@ -340,7 +341,7 @@ export default class AtividadesExtras extends Component {
         
                     <View style={styles.ModaleBotao}>
 
-                        <Text style={styles.dataEntrega}>Data de Entrega: {item.dataConclusao}</Text>
+                        <Text style={styles.dataEntrega}>Data de Entrega: {moment(item.dataConclusao).format('LL')}</Text>
 
                         <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
                             <AntDesign name="downcircleo" size={24} color="#C20004" />
@@ -605,7 +606,7 @@ const styles = StyleSheet.create({
     },
 
     Modalbotao: {
-        paddingRight: 18,
+        paddingLeft: '10%',
         paddingTop: 13,
     },
 

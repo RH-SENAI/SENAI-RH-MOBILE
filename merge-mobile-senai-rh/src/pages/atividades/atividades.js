@@ -28,6 +28,7 @@ import * as Permission from 'expo-permissions';
 import axios from 'axios';
 import AwesomeAlert from 'react-native-awesome-alerts';
 // import 'intl';
+import moment from 'moment';
 
 let customFonts = {
     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
@@ -372,7 +373,7 @@ export default class AtividadesExtras extends Component {
                 </View>
                 <View style={styles.conteudoBox}>
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
-                    <Text style={styles.nomeBox}> {item.idAtividade} </Text>
+                    {/* <Text style={styles.nomeBox}> {item.idAtividade} </Text> */}
 
                     <Text style={styles.criador}> Responsável: {item.criador} </Text>
                     {/* <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
@@ -383,10 +384,10 @@ export default class AtividadesExtras extends Component {
 
                     <View style={styles.ModaleBotao}>
 
-                        <Text style={styles.dataEntrega}> Data de Entrega: {item.dataConclusao} </Text>
+                        <Text style={styles.dataEntrega}> Data de Entrega: {moment(item.dataConclusao).format('DD-MM-YYYY')} </Text>
 
                         <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
-                            <AntDesign name="downcircleo" size={24} color="#C20004" />
+                            <AntDesign name="downcircleo" size={24} color="#7B0AFF" />
                         </Pressable>
 
                         {/* <View style={styles.statusImagem}>
@@ -415,14 +416,15 @@ export default class AtividadesExtras extends Component {
             >
 
 
+
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <View style={styles.quadradoModal}></View>
                         <View style={styles.conteudoBoxModal}>
                             <Text style={styles.nomeBoxModal}>{this.state.AtividadeBuscada.nomeAtividade} </Text>
                             <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
-                            <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
-                            <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
+                            <Text style={styles.itemPostadoModal}> Item Postado: {moment(this.state.AtividadeBuscada.dataCriacao).format('DD-MM-YYYY')} </Text>
+                            <Text style={styles.entregaModal}> Data de Entrega: {moment(this.state.AtividadeBuscada.dataConclusao).format('DD-MM-YYYY')} </Text>
 
                             <Text style={styles.entregaModal}> Recompensa em Troféu: {this.state.AtividadeBuscada.recompensaTrofeu}
                                 <EvilIcons style={styles.trofeu} name="trophy" size={25} color="#E7C037" />
@@ -647,7 +649,8 @@ const styles = StyleSheet.create({
     },
 
     Modalbotao: {
-        paddingRight: 18,
+        paddingLeft: '55%',
+        // marginRight:20,
         paddingTop: 13,
     },
 
@@ -723,11 +726,12 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.1)'
         // marginTop: 22
     },
 
     modalView: {
-        height: 410,
+        height: "40%",
         borderWidth: 1,
         borderColor: '#B3B3B3',
         backgroundColor: '#F2F2F2',
@@ -804,7 +808,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         height: 30,
         width: 108,
-        backgroundColor: '#C20004',
+        backgroundColor: '#7B0AFF',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -816,13 +820,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
-        borderColor: '#C20004',
-        color: '#C20004'
+        borderColor: '#7B0AFF',
+        color: '#7B0AFF'
     },
 
     textoFechar: {
         fontFamily: 'Montserrat-Medium',
-        color: '#C20004',
+        color: '#7B0AFF',
         fontSize: 12
     },
     descricao: {

@@ -79,7 +79,7 @@ export default class Login extends Component {
 
       //console.warn(token);
 
-      await AsyncStorage.setItem('idUsuario', token.jti);
+      await AsyncStorage.setItem('idUsuario',jwt_decode(token).jti);
       await AsyncStorage.setItem('userToken', token);
       //console.warn(resposta.data);
 
@@ -100,7 +100,7 @@ export default class Login extends Component {
 
     } catch (error) {
       console.warn(error)
-      this.showAlertSuce();
+      this.hideAlert();
     }
 
   }
@@ -220,8 +220,8 @@ const styles = StyleSheet.create({
   },
 
   imgLogo: {
-    width: 224,
-    height: 31,
+    height: 30,
+    width: 220,
   },
 
   container: {
@@ -230,12 +230,13 @@ const styles = StyleSheet.create({
 
   tituloPagina: {
     fontFamily: 'Montserrat-Bold',
-    fontSize: 30,
+    fontSize: 40,
     color: '#2A2E32',
-    width: 175,
+    // width:"60%" ,
     paddingTop: 64,
     paddingBottom: 50,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   tituloModalLogin:
   {
@@ -256,15 +257,15 @@ const styles = StyleSheet.create({
   },
 
   inputLogin: {
-    width: 350,
-    height: 46,
+    // width: "40%",
+    // height: "20%",
     borderWidth: 1,
     borderColor: '#B3B3B3',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
     fontSize: 14,
-    flexDirection: 'column',
+    // flexDirection: 'column',
     //paddingTop: 8,
     //paddingBottom:24,
     paddingLeft: 15,
@@ -272,6 +273,8 @@ const styles = StyleSheet.create({
 
   viewLoginCPF: {
     // padding: 3345678,
+    width: "65%",
+    height: "20%",
     marginBottom: 24,
   },
 
@@ -297,11 +300,11 @@ const styles = StyleSheet.create({
     color: '#C20004',
     //position:'absolute',
     //paddingTop: 1,
-    //paddingRight: 50,
+    paddingLeft: "25%",
   },
 
   btnLogin: {
-    width: 350,
+    width: "62%",
     height: 46,
     fontSize: 20,
     borderRadius: 5,
@@ -326,6 +329,8 @@ const styles = StyleSheet.create({
     marginTop: 92,
     //width: 180,
     //height: 165,
+    // height:"100%",
+    width: "100%",
     paddingLeft: 40,
     alignItems: 'flex-start',
     flexDirection: 'column',

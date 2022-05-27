@@ -87,22 +87,24 @@ const styles = StyleSheet.create({
     
   },
   tituLogo: {
-    marginBottom: "10%",
-    height: 35,
+    marginBottom: "3%",
+    height: '20%',
+    width: '50%',
     alignSelf: "center",
   },
   tituloRH: {
-    fontSize: 32,
+    fontSize: 45,
     width: "80%",
     textAlign: "center",
     fontFamily: "Montserrat_600SemiBold",
     textTransform: "uppercase",
     color: "#2A2E32",
-    marginBottom: 40,
+    marginBottom: "10%",
     fontWeight: "500",
   },
   containerForm: {
     flex: 1,
+    textAlign: "center",
     backgroundColor: "#636466",
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
@@ -112,8 +114,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginTop: 28,
-    marginBottom: 12,
+    marginTop: '15%',
+    marginBottom: "7%",
     color: "white",
     alignSelf: "center",
     fontFamily: "Quicksand_300Light",
@@ -124,6 +126,7 @@ const styles = StyleSheet.create({
     color: "white",
     alignSelf: "center",
     fontSize: 20,
+    // marginBottom: "1%",
   },
   button: {
     position: "absolute",
@@ -135,8 +138,8 @@ const styles = StyleSheet.create({
     bottom: "15%",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 20,
-    height: 40,
+    marginBottom: "3%",
+  //   height: 50,
   },
   buttonText: {
     fontSize: 18,
@@ -146,6 +149,6 @@ const styles = StyleSheet.create({
   },
 
   imagem: {
-    height: 200,
+    height: '50%',
   },
 });

@@ -53,7 +53,7 @@ export default function MainMotivar() {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: "#C20004",
+        tabBarActiveTintColor: "#7B0AFF",
         tabBarInactiveTintColor: "gray",
         tabBarShowLabel: true,
         tabBarStyle: {
@@ -110,7 +110,7 @@ export default function MainMotivar() {
         component={RankingGp1}
         options={{
           tabBarIcon: ({ size, color }) => (
-            <EvilIcons name="trophy" size={35} color={color} />
+            <EvilIcons name="trophy" size={30} color={color} />
           ),
           headerShown: false,
         }}
@@ -132,7 +132,7 @@ export default function MainMotivar() {
 
 const styles = StyleSheet.create({
 
-  container: {
+   container: {
     width: 55,
     height: 55,
     borderRadius: 27.5,
@@ -141,10 +141,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 15,
     borderWidth: 4,
-    borderColor: "#C20004",
-    marginLeft: 9,
-    flexDirection: 'row',
-    fontFamily: 'Regular',
+    borderColor: "#7B0AFF",
   },
+  
 
 });
