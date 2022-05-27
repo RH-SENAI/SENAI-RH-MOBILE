@@ -117,7 +117,7 @@ export default class ListagemCurso extends Component {
                     console.warn(objFavoritos);
 
                     if (objFavoritos != '') {
-                        
+
                         var cursoId = objFavoritos[p]['idCurso'];
                         let favoritoId = objFavoritos[p]['idCursoFavorito'];
                         console.warn(cursoId);
@@ -129,7 +129,7 @@ export default class ListagemCurso extends Component {
                             if (respostaExcluir.status == 204) {
                                 this.setState(!this.state.isFavorite);
                                 this.setState({ cursoFavoritoBuscado: [] });
-                                this.setState({ isFavorite: false})
+                                this.setState({ isFavorite: false })
                                 console.warn('Desfavoritado');
                             }
                         }
@@ -244,14 +244,15 @@ export default class ListagemCurso extends Component {
     setModalVisivel = async (visible, id) => {
         if (visible == true) {
             this.ProcurarCurso(id)
-            // await delay(1)
-            // this.setState({ empresaBuscada: this.state.cursoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado})
+            await delay(210)
+            this.setState({ modalVisivel: visible })
         }
         else if (visible == false) {
+            this.setState({ modalVisivel: visible })
             this.setState({ cursoBuscado: [] })
         }
-
-        this.setState({ modalVisivel: visible })
+        // await delay(200)
+        // this.setState({ modalVisivel: visible })
     }
     componentDidMount = async () => {
         this.GetLocation();
@@ -336,6 +337,7 @@ export default class ListagemCurso extends Component {
             // console.warn(resposta)
             if (resposta.status == 200) {
                 this.setState({ cursoBuscado: resposta.data });
+                this.setState({ empresaBuscada: this.state.cursoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado})
                 // console.log(this.state.cursoBuscado)
             }
         }
@@ -452,7 +454,7 @@ export default class ListagemCurso extends Component {
                                 <Pressable onPress={() => this.Favoritar(true, item.idCurso)}>
                                     {/* <Text style={styles.textFavoritos}>Favoritar</Text> */}
                                     {/* <Heart isActive={listaFavoritosDescontos.some(l => { if (l.idDesconto == beneficio.idDesconto) { return true } return false })} onClick={() => { favoritar(!favorito, beneficio.idDesconto) }} /> */}
-                                    <ExplodingHeart width={80} status={this.state.listaFavoritosCoracao.some(l => { if (l.idCurso == item.idCurso) { return true } return false })} onChange={() => this.Favoritar(true, item.idCurso)}/>
+                                    <ExplodingHeart width={80} status={this.state.listaFavoritosCoracao.some(l => { if (l.idCurso == item.idCurso) { return true } return false })} onChange={() => this.Favoritar(true, item.idCurso)} />
                                 </Pressable>
                             </View>
                         </View>
@@ -463,7 +465,7 @@ export default class ListagemCurso extends Component {
                     animationType="slide"
                     transparent={true}
                     visible={this.state.modalVisivel}
-                    key={item.idCurso == this.state.cursoBuscado.idCurso}
+                    // key={item.idCurso == this.state.cursoBuscado.idCurso}
                     onRequestClose={() => {
                         this.setModalVisivel(!this.state.modalVisivel)
                     }}
@@ -486,7 +488,7 @@ export default class ListagemCurso extends Component {
                                                 //starImage={star}
                                                 showRating={false}
                                                 selectedColor={'#C20004'}
-                                                 defaultRating={this.state.cursoBuscado.mediaAvaliacaoDesconto}
+                                                defaultRating={this.state.cursoBuscado.mediaAvaliacaoDesconto}
                                                 isDisabled={true}
                                                 size={20}
                                             />
@@ -502,7 +504,7 @@ export default class ListagemCurso extends Component {
                                         <Text style={styles.textDadosModal}>{this.state.cursoBuscado.cargaHoraria}</Text>
 
                                         <Image source={require('../../../assets/img-gp2/mapa.png')} />
-                                        {/* <Text style={styles.textDadosModal}>{this.state.empresaBuscada}</Text> */}
+                                        <Text style={styles.textDadosModal}>{this.state.empresaBuscada}</Text>
                                     </View>
 
                                     <View style={styles.boxDadosModal}>
@@ -524,7 +526,7 @@ export default class ListagemCurso extends Component {
                                                 renderRevealedFooter={this._renderRevealedFooter}
                                                 onReady={this._handleTextReady}
                                             >
-                                                <Text style={styles.textDescricaoModal}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</Text>
+                                                <Text style={styles.textDescricaoModal}>{this.state.cursoBuscado.descricaoCurso}</Text>
                                             </ReadMore>
                                         </View>
 

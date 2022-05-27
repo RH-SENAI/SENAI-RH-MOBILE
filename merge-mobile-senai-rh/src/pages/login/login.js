@@ -79,6 +79,7 @@ export default class Login extends Component {
 
       //console.warn(token);
 
+      await AsyncStorage.setItem('idUsuario', token.jti);
       await AsyncStorage.setItem('userToken', token);
       //console.warn(resposta.data);
 

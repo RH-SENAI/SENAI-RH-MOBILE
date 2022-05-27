@@ -67,7 +67,7 @@ export default class ListagemDesconto extends Component {
                 avaliacaoDesconto: this.state.notaDesconto,
                 comentarioDesconto1: this.state.comentario,
             });
-            
+
             if (resposta.status == 201) {
                 this.ListaComentarios();
                 this.setState({ notaDesconto: 0 })
@@ -95,12 +95,21 @@ export default class ListagemDesconto extends Component {
         return (
             <View style={styles.comentarios}>
                 <View style={styles.boxComentarioSair}>
-                    <Pressable onPress={() => this.props.navigation.navigate('MainVantagem')}>
+                    <View style={styles.boxTituloComentario}>
+                        <Text style={styles.tituloComentario}>Comentarios:</Text>
+                    </View>
+
+                    <Pressable style={styles.boxVoltar} onPress={() => this.props.navigation.navigate('mainVantagem')}>
                         <Text>Voltar</Text>
                     </Pressable>
-
-                    <Text>Comentarios:</Text>
                 </View>
+
+                <FlatList
+                    style={styles.flatlist}
+                    data={this.state.listaComentarioBuscado}
+                    keyExtractor={item => item.idComentarioDesconto}
+                    renderItem={this.renderItem}
+                />
 
                 <View style={styles.boxComentar}>
                     <TextInput
@@ -119,18 +128,11 @@ export default class ListagemDesconto extends Component {
                         size={20}
                     />
                     <View>
-                        <Pressable onPress={() => this.CadastrarComentario()} style={styles.btnComentar}>
+                        <Pressable style={styles.btnComentar} onPress={() => this.CadastrarComentario()}>
                             <Text>Enviar</Text>
                         </Pressable>
                     </View>
                 </View>
-
-                <FlatList
-                    style={styles.flatlist}
-                    data={this.state.listaComentarioBuscado}
-                    keyExtractor={item => item.idComentarioDesconto}
-                    renderItem={this.renderItem}
-                />
             </View>
         );
     }
@@ -140,6 +142,7 @@ export default class ListagemDesconto extends Component {
                 {/* {this.test()} */}
                 <View style={styles.boxComentario}>
                     <Text style={styles.textComentario}>{item.idUsuarioNavigation.nome}: {item.comentarioDesconto1}</Text>
+                    <View style={styles.boxAvaliado}>
                     <AirbnbRating
                         count={5}
                         showRating={false}
@@ -148,61 +151,42 @@ export default class ListagemDesconto extends Component {
                         isDisabled={true}
                         size={20}
                     />
+                    </View>
                 </View>
             </View>
         </View>
     );
 }
 const styles = StyleSheet.create({
-    containerListagem: {
-        flex: 1,
-        alignItems: 'center'
-    },
-    textComentario: {
-        fontSize: 4,
-    },
-    boxLogoHeader: {
-        marginTop: 50
-    },
     comentarios: {
-        width: '100%',
-        height: 70,
-    },
-    boxTituloPrincipal: {
-        marginTop: 24,
-        marginBottom: 24
-    },
-    textTituloPrincipal: {
-        textTransform: 'uppercase',
-        fontFamily: 'Montserrat-Bold',
-        fontSize: 30
+        flex: 1,
     },
     boxComentarioSair: {
         display: 'flex',
-        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 50
     },
-    comentarios: {
-        flex: 1,
+    boxTituloComentario: {
+        marginBottom: 30,
+        justifyContent: 'flex-start'
+    },
+    tituloComentario: {
+        width: '100%',
+        backgroundColor: 'pink',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    boxVoltar: {
+        marginRight: '70%',
+        marginBottom: '15%'
     },
     flatlist: {
         flex: 1,
         height: '100%',
-    },
-    boxComentarioEstrela: {
-        flex: 1,
-        height: '100%',
-        marginBottom: 10,
-    },
-    textComentario: {
-        fontSize: 14,
-        fontWeight: '400',
-        marginRight: 2,
-        color: 'black',
-        marginLeft: 110
+        backgroundColor: 'pink'
     },
     boxComentar: {
-        width: 500,
-        display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         marginLeft: 100,
@@ -210,5 +194,29 @@ const styles = StyleSheet.create({
     },
     btnComentar: {
         marginLeft: 50
-    }
+    },
+    containerComentarios: {
+        alignItems: 'center'
+    },
+    boxComentarioEstrela: {
+        flex: 1,
+        width: 300,
+        marginBottom: 30,
+        borderWidth: 1,
+        borderColor: 'black',
+        borderRadius: 10
+    },
+    textComentario: {
+        width: 200,
+        fontSize: 14,
+        fontWeight: '400',
+        marginRight: 2,
+        color: 'black',
+        marginLeft: 50,
+        marginTop: 10
+    },
+    boxAvaliado: {
+        marginBottom: 10,
+        marginRight: '25%'
+    },
 })
