@@ -57,19 +57,24 @@ export default function Dashboard() {
   const [minhasAtividades, setMinhasAtividades] = useState([]);
 
 
+
   const commitsData = [
-    { date: "2022-04-02", count: 1 },
+    { date: "2022-04-02", count: 4 },
     { date: "2022-04-03", count: 2 },
     { date: "2022-04-04", count: 3 },
     { date: "2022-04-05", count: 4 },
     { date: "2022-04-06", count: 5 },
     { date: "2022-04-30", count: 2 },
-    { date: "2022-04-31", count: 3 },
+    { date: "2022-04-31", count: 2 },
     { date: "2022-04-01", count: 2 },
-    { date: "2022-04-02", count: 4 },
-    { date: "2022-04-05", count: 2 },
-    { date: "2022-05-25", count: 4 }
+    { date: "2022-05-05", count: 2 },
+    { date: "2022-05-26", count: 4 },
+    { date: "2022-05-25", count: 4 },
   ];
+
+
+
+
 
   const chartConfig = {
     backgroundGradientFrom: "#f1f1f1",
@@ -131,6 +136,36 @@ export default function Dashboard() {
 
       if (resposta.status === 200) {
         setMinhasAtividades(resposta.data);
+
+        const datasDeFinalizacao = minhasAtividades
+        //const datasDeFinalizacao = commitsData
+          .filter(a => a.idSituacaoAtividade === 1)
+          .map(p => { return { date: p.dataConclusao, count: 1 } });
+
+        const datasFiltradas = [];
+        var flag = false;
+        for (let i = 0; i < datasDeFinalizacao.length; i++) {
+
+          for (let j = i + 1; j < datasDeFinalizacao.length; j++) {
+
+            if (datasDeFinalizacao[i].date === datasDeFinalizacao[j].date) {
+              datasDeFinalizacao[i].count++;
+              datasFiltradas.push(datasDeFinalizacao[i]);
+
+            }
+            else if (datasDeFinalizacao[i].date !== datasDeFinalizacao[j].date && flag === false) {
+              datasFiltradas.push(datasDeFinalizacao[i])
+              flag = true;
+            }
+            if (j === datasDeFinalizacao.length - 1) flag = false
+          }
+
+        }
+
+
+        console.warn(datasFiltradas);
+
+
       }
     } catch (error) {
       console.warn(error);
@@ -233,84 +268,9 @@ export default function Dashboard() {
     );
   };
 
-  // function LineChartExample() {
 
-  //     const atividadesFinalizadas = minhasAtividades
-  //         .filter(a => a.idSituacaoAtividade === 3)
-  //         .map((p) => {
 
-  //            return parseInt(p.dataConclusao.split('-')[1]);
 
-  //         });
-
-  //     console.warn(atividadesFinalizadas);
-
-  //     return (
-
-  //         <LineChart
-  //             style={{ height: 200 }}
-  //             data={atividadesFinalizadas}
-  //             svg={{ stroke: 'rgb(134, 65, 244)' }}
-  //             contentInset={{ top: 20, bottom: 20 }}
-  //         >
-  //             <Grid />
-  //         </LineChart>
-
-  //     )
-  // }
-
-  function GraficoBarras() {
-    const dataFinalizacao = minhasAtividades
-      .filter((a) => a.idSituacaoAtividade === 1)
-      .map((p) => {
-        return parseInt(p.dataConclusao.split("-")[2]);
-      });
-
-    const d1_5 = dataFinalizacao.filter((d) => d <= 5).length;
-    const d6_10 = dataFinalizacao.filter((d) => d > 5 && d <= 10).length;
-    const d11_15 = dataFinalizacao.filter((d) => d > 10 && d <= 15).length;
-    const d16_20 = dataFinalizacao.filter((d) => d > 15 && d <= 20).length;
-    const d21_25 = dataFinalizacao.filter((d) => d > 20 && d <= 25).length;
-    const d26_31 = dataFinalizacao.filter((d) => d > 25 && d <= 31).length;
-
-    //console.warn(d6_10);
-
-    const data = [d1_5, d6_10, d11_15, d16_20, d21_25, d26_31]
-    //const data = [4, 2, 4, 5, 3];
-
-    const CUT_OFF = 20;
-    const Labels = ({ x, y, bandwidth, data }) =>
-      data.map((value, index) => (
-        <SvgText
-          key={index}
-          x={x(index) + bandwidth / 2}
-          y={value < CUT_OFF ? y(value) - 10 : y(value) + 15}
-          fontSize={14}
-          fill={value >= CUT_OFF ? "white" : "black"}
-          alignmentBaseline={"middle"}
-          textAnchor={"middle"}
-        >
-          {value}
-        </SvgText>
-      ));
-
-    return (
-      <View style={styles.graficoBarrasContainer}>
-        <BarChart
-          //style={{ flex: 1 }}
-          style={styles.graficoBarras}
-          data={data}
-          svg={{ fill: "rgba(194, 0, 4, 0.8)" }}
-          contentInset={{ top: 20, bottom: 10 }}
-          spacing={0.2}
-          gridMin={0}
-        >
-          <Grid direction={Grid.Direction.HORIZONTAL} />
-          <Labels />
-        </BarChart>
-      </View>
-    );
-  }
 
   if (!fontsLoaded) {
     return <AppLoading />;
@@ -382,7 +342,7 @@ export default function Dashboard() {
                       height={220}
                       chartConfig={chartConfig}
                     />
-                    <GraficoBarras />
+                    {/* <GraficoBarras /> */}
                     <Text style={styles.subtituloProdutividade}>
                       Entregas de atividade por semana:{" "}
                     </Text>
@@ -394,7 +354,7 @@ export default function Dashboard() {
                       <GraficoSatisfacao />
                     </View>
                     <GrafHistSatisfacao />
-                    
+
                     {/* <Text style={styles.subtituloProdutividade}>
                       Entregas de atividade por semana:{" "}
                     </Text> */}
@@ -410,7 +370,7 @@ export default function Dashboard() {
     );
   }
 
-  
+
 }
 const styles = StyleSheet.create({
   container: {
