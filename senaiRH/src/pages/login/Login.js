@@ -16,12 +16,8 @@ import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import jwt_decode from "jwt-decode";
 //import api from '../../services/apiGp1';
-<<<<<<< HEAD
 import api from '../../services/apiGp1';
 import recuperar from "../alterarSenha/recuperarSenha.js"
-=======
-import api from '../../services/apiGp3';
->>>>>>> 84ad40e06d1ca373fa12dd8ac4161f447c13e38c
 import AwesomeAlert from 'react-native-awesome-alerts';
 
 

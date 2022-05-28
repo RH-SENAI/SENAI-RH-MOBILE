@@ -24,6 +24,8 @@ import base64 from 'react-native-base64';
 import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker'
+import * as DocumentPicker from 'expo-document-picker'
+import * as FileSystem from 'expo-file-system'
 import * as Permission from 'expo-permissions';
 import axios from 'axios';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -47,7 +49,7 @@ export default class AtividadesExtras extends Component {
             AtividadeBuscada: {},
             fontsLoaded: false,
             modalVisible: false,
-            imagemEntrega: {},
+            imagemEntrega: null,
             showAlert: false,
             mensagem: '',
             setLoading: false,
@@ -64,84 +66,76 @@ export default class AtividadesExtras extends Component {
         });
     };
 
+    imagePickerCall = async () => {
+        // const options ={
+        //     title: 'Selecione uma imagem',
+        //     type: 'library',
+        //     options: {
+        //         selectionLimit: 1,
+        //         mediaType: 'photo',
+        //         includeBase64: false
+        //     }
+        // }
+        // if (Constants.platform.ios) {
+        //     const result = await Permission.askAsync(Permission.MEDIA_LIBRARY)
+        //     if (result.status !== 'granted') {
+        //         console.warn('permissão necessária')
+        //     }
+        // }
+
+        // const data = await ImagePicker.launchImageLibrary(options)
+
+        // console.warn(data)
+        //this.setState({ imagemEntrega: data })
+
+
+
+
+        const result = await DocumentPicker.getDocumentAsync({
+            type: 'image/*',
+            multiple: false,
+            copyToCacheDirectory: true
+        })
+        console.warn(result)
+        this.setState({ imagemEntrega: result})
+    }
+
     finalizarAtividade = async (item) => {
-        console.warn(item)
+        let arquivo = this.state.imagemEntrega;
 
-        const token = await AsyncStorage.getItem('userToken');
+        const token = (await AsyncStorage.getItem('userToken'));
+        var Buffer = require('buffer/').Buffer
+        let base64Url = token.split('.')[1]; // token you get
+        let base64 = base64Url.replace('-', '+').replace('_', '/');
+        let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+        console.warn(decodedData.jti)
 
-        const form = new FormData();
-
-        form.append('FormFile', {
-            uri: this.state.imagemEntrega.uri,
-            type: this.state.imagemEntrega.type + "/jpg"
-        }, 'desgraçera')
-        form.append('FileName', 'finalAtividade.jpeg')
-        
-        console.warn(this.state.imagemEntrega)
         try {
-
-            // var request = new XMLHttpRequest();
-            // request.open('PATCH', 'http://192.168.0.30:5000/api/Atividades/FinalizarAtividade/' + item);
-            // request.send(form)
-          
-            fetch('http://192.168.0.30:5000/api/Atividades/FinalizarAtividade/' + item,{
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
-                body: form
-            })
-            .then
-            //console.warn(resposta)
-        } catch (error) {
-            console.warn(error)
-        }
-
-        try{
-            
-           
-
-    
-            const token = await AsyncStorage.getItem('userToken');
-    
             const data = new FormData();
-    
-            data.append('arquivo', {
-                uri: this.state.imagemEntrega.uri,
-                type: this.state.imagemEntrega.type
+
+            data.append('file', {
+                uri: arquivo.uri,
+                type: arquivo.mimeType,
+                name: arquivo.name
             })
-            console.warn(data)
-    
-    
-            // axios({
-            //     method: 'patch',
-            //     url: 'http://192.168.3.84:5000/api/Atividades/FinalizarAtividade/'+ item,
-            //     data : data,
-            //     headers:{
-            //         "Content-Type": "multipart/form-data",
-            //     }
-            // })
-            // .then(resposta =>{
-            //     console.warn(resposta)
-            // })
-            const resposta = await axios.patch('http://apirhsenaigp1.azurewebsites.net/api/Atividades/FinalizarAtividade/' + item, {
-                
-                arquivo: data
-            }, {
+
+
+            axios({
+                method: 'post',
+                url: 'http://apirhsenaigp1.azurewebsites.net/api/Atividades/FinalizarAtividade/' + item + '/' + decodedData.jti,
+                data: data,
                 headers: {
-                    "Content-Type": "multipart/form-data"
-    
+                    "Content-Type": "multipart/form-data",
                 }
             })
-            console.warn('aqui')
-            console.warn(resposta)
-        }catch (error) {
+                .then(resposta => {
+                    console.warn(resposta)
+                })
+
+        } catch (error) {
             console.warn(error)
             this.showAlert();
-          }
-      
-      
-
+        }
     }
 
 
@@ -284,20 +278,7 @@ export default class AtividadesExtras extends Component {
     //     }
     // }
 
-    imagePickerCall = async () => {
-        if (Constants.platform.ios) {
-            const result = await Permission.askAsync(Permission.MEDIA_LIBRARY)
-            if (result.status !== 'granted') {
-                console.warn('permissão necessária')
-            }
-        }
-
-        const data = await ImagePicker.launchImageLibraryAsync({})
-
-        this.setState({ imagemEntrega: data })
-
-        console.warn(this.state.imagemEntrega)
-    }
+    
 
     render() {
         if (!customFonts) {
@@ -376,7 +357,7 @@ export default class AtividadesExtras extends Component {
 
                         <Text style={styles.dataEntrega}> Data de Entrega: {item.dataConclusao} </Text>
 
-                        <Pressable style={styles.Modalbotao} onPress={()=> this.setModalVisible(true, item.idAtividade)}  >
+                        <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
                             <AntDesign name="downcircleo" size={24} color="#C20004" />
                         </Pressable>
 
@@ -427,14 +408,14 @@ export default class AtividadesExtras extends Component {
                             </TouchableOpacity>
                         </View>
                         <View style={styles.botoesModal}  >
-                            <Pressable onPress={()=> this.finalizarAtividade(this.state.AtividadeBuscada.idAtividade)} >
+                            <Pressable onPress={() => this.finalizarAtividade(this.state.AtividadeBuscada.idAtividade)} >
                                 <View style={styles.associarModal}>
                                     <Text style={styles.texto}> Concluida </Text>
                                 </View>
                             </Pressable>
                             <Pressable
 
-                                onPress={()=> this.setModalVisible(!this.state.modalVisible)}
+                                onPress={() => this.setModalVisible(!this.state.modalVisible)}
                             >
                                 <View style={styles.fecharModal}>
                                     <Text style={styles.textoFechar}>Fechar X</Text>
@@ -844,20 +825,20 @@ const styles = StyleSheet.create({
 
     tituloModalLogin:
     {
-      color: '#C20004',
-      fontFamily: 'Montserrat-Medium',
-      fontSize: 23,
-      fontWeight: 'bold'
+        color: '#C20004',
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 23,
+        fontWeight: 'bold'
     },
     textoModalLogin:
     {
-      width: 200,
-      textAlign: 'center'
+        width: 200,
+        textAlign: 'center'
     },
-    confirmButton:{
-      width: 100,
-     
-      paddingLeft: 32
+    confirmButton: {
+        width: 100,
+
+        paddingLeft: 32
     },
 
 })
