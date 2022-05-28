@@ -8,7 +8,10 @@ import Welcome from './src/pages/welcome/Welcome.js';
 import Redirecionar from './src/pages/redirecionar/Redirecionar.js';
 import MainMotivar from './src/pages/main/MainMotivar.js';
 import Login from './src/pages/login/Login.js';
+import MinhasExtras from './src/pages/minhasAtividades/MinhasExtras'
+import AtividadesExtras from './src/pages/atividades/AtividadesExtras.js';
 import recuperarSenha from "./src/pages/alterarSenha/recuperarSenha";
+import primeiroAcesso from './src/pages/alterarSenha/primeiroAcesso.js';
 
 
 const Stack = createNativeStackNavigator();
@@ -23,7 +26,11 @@ function App() {
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Redirecionar" component={Redirecionar} options={{ headerShown: false }}/>
         <Stack.Screen name="MainMotivar" component={MainMotivar} options={{ headerShown: false }} />
+        <Stack.Screen name="AtividadesExtras" component={AtividadesExtras}  options={{ headerShown: false }}/> 
+       <Stack.Screen name="MinhasExtras" component={MinhasExtras} options={{ headerShown: false }}/> 
+
         <Stack.Screen name="recuperarSenha" component={recuperarSenha} options={{ headerShown: false }} />
+        <Stack.Screen name="primeiroAcesso" component={primeiroAcesso} options={{ headerShown: false }} />
         {/* <Stack.Screen name="RankingGp1" component={RankingGp1} options={{ headerShown: false }} /> */}
 
       </Stack.Navigator>

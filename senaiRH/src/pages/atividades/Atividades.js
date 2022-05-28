@@ -51,6 +51,7 @@ export default class AtividadesExtras extends Component {
             modalVisible: false,
             imagemEntrega: null,
             showAlert: false,
+            showAlertSuce: false,
             mensagem: '',
             setLoading: false,
         };
@@ -428,11 +429,11 @@ export default class AtividadesExtras extends Component {
 
                 </View>
 
-                {/* <AwesomeAlert
-                    style={styles.bao}
+                <AwesomeAlert
                     show={this.state.showAlert}
                     showProgress={false}
                     title="Sucesso"
+                    titleStyle={styles.tituloAlert}
                     message="Sua Atividade foi Concluida!"
                     closeOnTouchOutside={true}
                     closeOnHardwareBackPress={false}
@@ -444,7 +445,7 @@ export default class AtividadesExtras extends Component {
                         paddingLeft: 62
                     })}
                     onCancelPressed={() => {
-                        this.hideAlert();
+                        this.hideAlertSuce();
                     }}
                 />
 
@@ -467,7 +468,7 @@ export default class AtividadesExtras extends Component {
                     onConfirmPressed={() => {
                         this.hideAlert();
                     }}
-                /> */}
+                /> 
 
             </Modal>
         </View>
@@ -840,5 +841,9 @@ const styles = StyleSheet.create({
 
         paddingLeft: 32
     },
+
+    tituloAlert: {
+        color: 'green'
+    }
 
 })

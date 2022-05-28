@@ -30,29 +30,33 @@ export default function SenhaAcesso() {
 
                 <View style={styles.container}>
 
-                    <Text style={styles.tituloPagina}>{'alterar senha'.toUpperCase()}</Text>
-                    <Text style={styles.textoPagina}> Altera aqui sua senha de acesso!</Text>
+                    <Text style={styles.tituloPagina}>{'primeiro acesso'.toUpperCase()}</Text>
+                    <Text style={styles.textoPagina}> Altera aqui sua senha primeiro acesso!</Text>
 
                     <View style={styles.text1}>
                         <TextInput style={styles.inputs}
                             placeholder="Senha Atual"
                             keyboardType="default"
+                            secureTextEntry={true}
+                            placeholderTextColor="#B3B3B3"
                         />
                     </View>
 
-                    <View>
+                    <View style={styles.text2}>
                         <TextInput style={styles.inputs}
                             placeholder="Nova Senha"
                             keyboardType="default"
                             secureTextEntry={true}
+                            placeholderTextColor="#B3B3B3"
                         />
                     </View>
 
-                    <View>
+                    <View style={styles.text3}>
                         <TextInput style={styles.inputs}
                             placeholder="Confirme a nova senha"
                             keyboardType="default"
                             secureTextEntry={true}
+                            placeholderTextColor="#B3B3B3"
                         />
                     </View>
 
@@ -62,7 +66,7 @@ export default function SenhaAcesso() {
                             //onPress={this.realizarLogin}
                         >
                             <Text style={styles.btnText}>
-                                Digite sua senha novamente
+                                Confirmar nova senha 
                             </Text>
 
                         </TouchableOpacity>
@@ -119,6 +123,14 @@ const styles = StyleSheet.create({
         //paddingTop: 8,
         //paddingBottom:24,
         paddingLeft: 15,
+    },
+
+    text2: {
+        paddingTop: 56,
+    },
+
+    text3:{
+        paddingTop: 56,
     },
 
     btnAlterar: {

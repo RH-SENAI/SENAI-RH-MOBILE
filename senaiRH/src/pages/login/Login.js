@@ -23,7 +23,7 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 
 let customFonts = {
   'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
-  'Montserrat-Medium' : require('../../../assets/fonts/Montserrat-Medium.ttf'),
+  'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
   'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
   'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf')
 }
@@ -39,14 +39,14 @@ export default class Login extends Component {
       error: 'Email ou Senha inválidos!',
       //erroMensagem: '',
       setLoading: false,
-      showAlert: false
+      showAlert: false,
     }
   }
 
   showAlert = () => {
-    this.setState({showAlert: true})
+    this.setState({ showAlert: true })
   }
-  
+
   hideAlert = () => {
     this.setState({
       showAlert: false
@@ -64,11 +64,11 @@ export default class Login extends Component {
   }
 
   realizarLogin = async () => {
-    
+
 
     try {
 
-      
+
       const resposta = await api.post('/Login', {
         cpf: this.state.cpf,
         senha: this.state.senha,
@@ -91,36 +91,36 @@ export default class Login extends Component {
 
         var certo = jwt_decode(token).role
         // console.warn('certo ' + certo)
-        
 
+        //this.showAlertSuce();
         this.props.navigation.navigate('Redirecionar');
 
       }
 
     } catch (error) {
       console.warn(error)
-      this.showAlert();
+      this.showAlertSuce();
     }
 
   }
 
-  
+
 
   render() {
     if (!this.state.fontsLoaded) {
       return <AppLoading />;
     }
-    
+
 
     return (
-      
-      
+
+
       <View style={styles.body}>
-        
+
         <AwesomeAlert
           show={this.state.showAlert}
           showProgress={false}
-          title="Login Inválido!"
+          title="Oops !"
           titleStyle={
             styles.tituloModalLogin
           }
@@ -137,6 +137,8 @@ export default class Login extends Component {
             this.hideAlert();
           }}
         />
+
+
         <View style={styles.mainHeader}>
           <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
             style={styles.imgLogo}
@@ -171,13 +173,13 @@ export default class Login extends Component {
 
           <View style={styles.erroMsg}>
 
-              <Pressable  onPress={() => this.props.navigation.navigate('recuperarSenha')}>
-                <Text style={styles.textEsque}> Esqueci a Senha</Text>
-              </Pressable>
-           
+            <Pressable onPress={() => this.props.navigation.navigate('primeiroAcesso')}>
+              <Text style={styles.textEsque}> Esqueci a Senha</Text>
+            </Pressable>
+
           </View>
 
-         
+
 
 
 
@@ -190,7 +192,7 @@ export default class Login extends Component {
             </Text>
 
           </TouchableOpacity>
-          
+
         </View>
         <View style={styles.imgLoginView} >
           <Image source={require('../../../assets/imgMobile/welcome.png')} />
@@ -246,12 +248,12 @@ const styles = StyleSheet.create({
     width: 200,
     textAlign: 'center'
   },
-  confirmButton:{
+  confirmButton: {
     width: 100,
-   
+
     paddingLeft: 32
   },
-  
+
   inputLogin: {
     width: 350,
     height: 46,

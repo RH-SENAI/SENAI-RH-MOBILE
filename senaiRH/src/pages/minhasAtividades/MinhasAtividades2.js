@@ -50,6 +50,7 @@ export default class AtividadesExtras extends Component {
             fontsLoaded: false,
             setLoading: false,
             showAlert: false,
+            showAlertSuce: false,
             mensagem: '',
         };
     }
@@ -64,6 +65,15 @@ export default class AtividadesExtras extends Component {
         });
     };
 
+    showAlertSuce = () => {
+        this.setState({ showAlertSuce: true })
+    }
+
+    hideAlertSuce = () => {
+        this.setState({
+            showAlertSuce: false
+        });
+    };
 
     finalizarAtividade = async (item) => {
         try{
@@ -407,11 +417,11 @@ export default class AtividadesExtras extends Component {
 
                 </View>
 
-                {/* <AwesomeAlert
-                    style={styles.bao}
+                <AwesomeAlert
                     show={this.state.showAlert}
                     showProgress={false}
                     title="Sucesso"
+                    titleStyle={styles.tituloAlert}
                     message="Sua Atividade foi Concluida!"
                     closeOnTouchOutside={true}
                     closeOnHardwareBackPress={false}
@@ -423,10 +433,10 @@ export default class AtividadesExtras extends Component {
                         paddingLeft: 62
                     })}
                     onCancelPressed={() => {
-                        this.hideAlert();
+                        this.hideAlertSuce();
                     }}
-                />*/}
-{/* 
+                />
+
                 <AwesomeAlert
                     show={this.state.showAlert}
                     showProgress={false}
@@ -446,7 +456,7 @@ export default class AtividadesExtras extends Component {
                     onConfirmPressed={() => {
                         this.hideAlert();
                     }}
-                />  */}
+                /> 
 
 
             </Modal>
@@ -821,4 +831,7 @@ const styles = StyleSheet.create({
       paddingLeft: 32
     },
 
+    tituloAlert: {
+        color: 'green'
+    }
 })

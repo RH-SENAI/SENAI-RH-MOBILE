@@ -44,14 +44,14 @@ export default class TabViewExample extends React.Component {
             { key: 'second', title: 'Extras' },
         ],
         modalVisible: false,
-        modalVisibleExtras: false,
         mensagem: '',
         listaAtividades: [],
-        listaAtividadesExtras: [],
         minhaAtividade: {}
     }
 
-    
+    EnviarAtividade = () => {
+        
+    }
 
     ListarMinhas = async () => {
 
@@ -68,7 +68,6 @@ export default class TabViewExample extends React.Component {
 
 
         if (token != null) {
-            console.warn('cachorro')
             await api.get("/Atividades/MinhasAtividade/" + decodedData.jti, {
                 headers: {
                     "Authorization": "Bearer " + token,
@@ -176,13 +175,11 @@ export default class TabViewExample extends React.Component {
         console.log(result)
     }
 
-
     componentDidMount() {
         this._loadFontsAsync();
-        () => {
-            this.ListarMinhas();
-            this.ListarMinhasExtras();
-        }
+        
+        this.ListarMinhas();
+        this.ListarMinhasExtras();
     }
 
     componentWillUnmount = () => {
@@ -235,14 +232,12 @@ export default class TabViewExample extends React.Component {
     };
 
     FirstRoute = () => (
-        <View style={styles.container}>
-            <FlatList
-                style={styles.FlatList}
-                data={this.state.listaAtividades}
-                keyExtractor={item => item.idMinhasAtividades}
-                renderItem={this.renderItem}
-            />
-        </View>
+        <FlatList
+            style={styles.FlatList}
+            data={this.state.listaAtividades}
+            keyExtractor={item => item.idMinhasAtividades}
+            renderItem={this.renderItem}
+        />
     );
 
     renderItem = ({ item }) => (
@@ -339,14 +334,12 @@ export default class TabViewExample extends React.Component {
     );
 
     SecondRoute = () => (
-        <View style={styles.container}>
-            <FlatList
-                style={styles.FlatList}
-                data={this.state.listaAtividades}
-                keyExtractor={item => item.idMinhasAtividades}
-                renderItem={this.renderItem2}
-            />
-        </View>
+        <FlatList
+            style={styles.FlatList}
+            data={this.state.listaAtividades}
+            keyExtractor={item => item.idMinhasAtividades}
+            renderItem={this.renderItem2}
+        />
     );
 
     renderItem2 = ({ item }) => (
@@ -467,16 +460,8 @@ export default class TabViewExample extends React.Component {
 
 const styles = StyleSheet.create({
 
-    container: {
-        flex: 1,
-    },
-
-    FlatList: {
-        width: '100%',
-    },
-
     main: {
-        //flex: 1,
+        flex: 1,
         backgroundColor: '#F2F2F2',
         alignItems: 'center'
     },
