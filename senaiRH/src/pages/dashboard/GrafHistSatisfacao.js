@@ -254,8 +254,9 @@ export default function InteractiveChart() {
                 y1={ticks[0]}
                 y2={ticks[Number(ticks.length)]}
                 stroke="black"
-                strokeWidth={apx(2)}
+                strokeWidth={apx(4)}
                 strokeDasharray={[4, 3]}
+                
               />
     
               <Circle

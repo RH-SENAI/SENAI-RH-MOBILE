@@ -55,22 +55,48 @@ export default function Dashboard() {
   const [notaProdutividade, setNotaProdutividade] = useState(0);
   const [usuario, setUsuario] = useState([]);
   const [minhasAtividades, setMinhasAtividades] = useState([]);
+  const [contibutionDates, setContibutionDates] = useState([]);
 
 
 
-  const commitsData = [
-    { date: "2022-04-02", count: 4 },
-    { date: "2022-04-03", count: 2 },
-    { date: "2022-04-04", count: 3 },
-    { date: "2022-04-05", count: 4 },
-    { date: "2022-04-06", count: 5 },
-    { date: "2022-04-30", count: 2 },
-    { date: "2022-04-31", count: 2 },
-    { date: "2022-04-01", count: 2 },
-    { date: "2022-05-05", count: 2 },
-    { date: "2022-05-26", count: 4 },
-    { date: "2022-05-25", count: 4 },
-  ];
+  // const commitsData = [
+  //   { date: "2022-04-02", count: 4 },
+  //   { date: "2022-04-03", count: 2 },
+  //   { date: "2022-04-04", count: 3 },
+  //   { date: "2022-04-05", count: 4 },
+  //   { date: "2022-04-06", count: 5 },
+  //   { date: "2022-04-30", count: 2 },
+  //   { date: "2022-04-31", count: 2 },
+  //   { date: "2022-04-01", count: 2 },
+  //   { date: "2022-05-05", count: 2 },
+  //   { date: "2022-05-26", count: 4 },
+  //   { date: "2022-05-25", count: 4 },
+  // ];
+
+  // const mock = [
+  //   { date: "2022-04-02", count: 1 },
+  //   { date: "2022-04-02", count: 1 },
+  //   { date: "2022-04-02", count: 1 },
+  //   { date: "2022-04-05", count: 1 },
+  //   { date: "2022-04-06", count: 1 },
+  //   { date: "2022-04-30", count: 1 },
+  //   { date: "2022-04-31", count: 1 },
+  //   { date: "2022-04-01", count: 1 },
+  //   { date: "2022-05-05", count: 1 },
+  //   { date: "2022-05-05", count: 1 },
+  //   { date: "2022-05-25", count: 1 },
+  // ];
+
+  // const dePara = [
+  //   { date: "2022-04-02", count: 3 },
+  //   { date: "2022-04-05", count: 1 },
+  //   { date: "2022-04-06", count: 1 },
+  //   { date: "2022-04-30", count: 1 },
+  //   { date: "2022-04-31", count: 1 },
+  //   { date: "2022-04-01", count: 1 },
+  //   { date: "2022-05-05", count: 2 },
+  //   { date: "2022-05-25", count: 1 },
+  // ];
 
 
 
@@ -138,33 +164,37 @@ export default function Dashboard() {
         setMinhasAtividades(resposta.data);
 
         const datasDeFinalizacao = minhasAtividades
-        //const datasDeFinalizacao = commitsData
+        //const datasDeFinalizacao = mock
           .filter(a => a.idSituacaoAtividade === 1)
           .map(p => { return { date: p.dataConclusao, count: 1 } });
 
         const datasFiltradas = [];
-        var flag = false;
-        for (let i = 0; i < datasDeFinalizacao.length; i++) {
+        
+        for (var i = 0; i < datasDeFinalizacao.length; i++) {
 
-          for (let j = i + 1; j < datasDeFinalizacao.length; j++) {
+          for (var j = i + 1; j < datasDeFinalizacao.length; j++) {
 
             if (datasDeFinalizacao[i].date === datasDeFinalizacao[j].date) {
               datasDeFinalizacao[i].count++;
+              datasDeFinalizacao[j].date = null;
+            }
+            if (j === datasDeFinalizacao.length - 1 && datasDeFinalizacao[i].date !== null) {
               datasFiltradas.push(datasDeFinalizacao[i]);
-
             }
-            else if (datasDeFinalizacao[i].date !== datasDeFinalizacao[j].date && flag === false) {
-              datasFiltradas.push(datasDeFinalizacao[i])
-              flag = true;
-            }
-            if (j === datasDeFinalizacao.length - 1) flag = false
+            
+            
           }
+          if (i === datasDeFinalizacao.length - 1 &&
+            datasDeFinalizacao[datasDeFinalizacao.length - 1].date !== datasDeFinalizacao[datasDeFinalizacao.length] ) {
+              datasFiltradas.push(datasDeFinalizacao[i]);
+          }
+          
 
         }
 
 
         console.warn(datasFiltradas);
-
+        setContibutionDates(datasFiltradas)
 
       }
     } catch (error) {
@@ -335,8 +365,9 @@ export default function Dashboard() {
                       <GraficoProdutividade />
                     </View>
                     <ContributionGraph
-                      values={commitsData}
-                      endDate={new Date("2022-05-31")}
+                      values={contibutionDates}
+                      //endDate={new Date("2022-05-31")}
+                      endDate={new Date()}
                       numDays={90}
                       width={320}
                       height={220}
