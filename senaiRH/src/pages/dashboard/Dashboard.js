@@ -10,8 +10,10 @@ import {
   View,
   ScrollView,
   SafeAreaView,
+  Dimensions,
+  Alert,
+  Button
 } from "react-native";
-import { Dimensions } from "react-native";
 const screenWidth = Dimensions.get("window").width;
 
 import {
@@ -30,6 +32,7 @@ import jwtDecode from "jwt-decode";
 import { BarChart, XAxis, ProgressCircle, Grid } from "react-native-svg-charts";
 
 import GrafHistSatisfacao from './GrafHistSatisfacao.js'
+import GrafHistAvaliacao from './GrafHistAvaliacao.js'
 
 //Services
 import api from "../../services/api";
@@ -87,16 +90,16 @@ export default function Dashboard() {
   //   { date: "2022-05-25", count: 1 },
   // ];
 
-  // const dePara = [
-  //   { date: "2022-04-02", count: 3 },
-  //   { date: "2022-04-05", count: 1 },
-  //   { date: "2022-04-06", count: 1 },
-  //   { date: "2022-04-30", count: 1 },
-  //   { date: "2022-04-31", count: 1 },
-  //   { date: "2022-04-01", count: 1 },
-  //   { date: "2022-05-05", count: 2 },
-  //   { date: "2022-05-25", count: 1 },
-  // ];
+  const dePara = [
+    { date: "2022-04-21", count: 4 },
+    { date: "2022-05-22", count: 2 },
+    { date: "2022-05-23", count: 1 },
+    { date: "2022-05-24", count: 3 },
+    { date: "2022-05-25", count: 5 },
+    { date: "2022-05-26", count: 3 },
+    { date: "2022-05-27", count: 1 },
+    { date: "2022-05-28", count: 2 },
+  ];
 
 
 
@@ -104,7 +107,7 @@ export default function Dashboard() {
 
   const chartConfig = {
     backgroundGradientFrom: "#f1f1f1",
-    backgroundGradientFromOpacity: 0,
+    backgroundGradientFromOpacity: .5,
     backgroundGradientTo: "#f1f1f1",
     backgroundGradientToOpacity: 1,
     color: (opacity = 1) => `rgba(194, 0, 4, ${opacity})`,
@@ -125,6 +128,35 @@ export default function Dashboard() {
     Quicksand_300Light,
     Quicksand_600SemiBold,
   });
+
+
+
+  const showAlert = (data, qtde) =>
+    Alert.alert(
+      "Detalhes: ",
+      `Em ${data}, você entregou ${qtde} atividade(s).`,
+      [
+        // {
+        //   text: "OK",
+        //   // onPress: () => Alert.alert("Cancel Pressed"),
+        //   // style: "cancel",
+        // },
+      ],
+      {
+        cancelable: true,
+        // onDismiss: () =>
+        //   Alert.alert(
+        //     "This alert was dismissed by tapping outside of the alert dialog."
+        //   ),
+      },
+      {
+        styles: {
+          backgroundColor: 'transparent',
+        }
+      }
+    );
+
+
 
   async function BuscarUsuario() {
     try {
@@ -164,12 +196,12 @@ export default function Dashboard() {
         setMinhasAtividades(resposta.data);
 
         const datasDeFinalizacao = minhasAtividades
-        //const datasDeFinalizacao = mock
+          //const datasDeFinalizacao = mock
           .filter(a => a.idSituacaoAtividade === 1)
           .map(p => { return { date: p.dataConclusao, count: 1 } });
 
         const datasFiltradas = [];
-        
+
         for (var i = 0; i < datasDeFinalizacao.length; i++) {
 
           for (var j = i + 1; j < datasDeFinalizacao.length; j++) {
@@ -181,20 +213,22 @@ export default function Dashboard() {
             if (j === datasDeFinalizacao.length - 1 && datasDeFinalizacao[i].date !== null) {
               datasFiltradas.push(datasDeFinalizacao[i]);
             }
-            
-            
+
+
           }
           if (i === datasDeFinalizacao.length - 1 &&
-            datasDeFinalizacao[datasDeFinalizacao.length - 1].date !== datasDeFinalizacao[datasDeFinalizacao.length] ) {
-              datasFiltradas.push(datasDeFinalizacao[i]);
+            datasDeFinalizacao[datasDeFinalizacao.length - 1].date !== datasDeFinalizacao[datasDeFinalizacao.length]) {
+            datasFiltradas.push(datasDeFinalizacao[i]);
           }
-          
+
 
         }
 
 
-        console.warn(datasFiltradas);
-        setContibutionDates(datasFiltradas)
+        // console.warn(datasFiltradas);
+        // setContibutionDates(datasFiltradas)
+        console.warn(dePara);
+        setContibutionDates(dePara)
 
       }
     } catch (error) {
@@ -350,14 +384,19 @@ export default function Dashboard() {
                     </View>
                     <GraficoSatisfacao />
                   </View> */}
-                  <View style={styles.containerPieChart}>
-                    <View style={styles.containerLegendas}>
-                      <Text style={styles.tituloGrafico}>
-                        Média de Avaliação:
-                      </Text>
+
+                  <View style={styles.containerProdutividade}>
+                    <View style={styles.containerProdutividadeSup}>
+                      <Text style={styles.tituloGrafico}>Nível de Satisfação atual:</Text>
+                      <GraficoSatisfacao />
                     </View>
-                    <GraficoAvaliacao />
+                    <GrafHistSatisfacao />
+
+                    {/* <Text style={styles.subtituloProdutividade}>
+                      Entregas de atividade por semana:{" "}
+                    </Text> */}
                   </View>
+
 
                   <View style={styles.containerProdutividade}>
                     <View style={styles.containerProdutividadeSup}>
@@ -372,6 +411,8 @@ export default function Dashboard() {
                       width={320}
                       height={220}
                       chartConfig={chartConfig}
+                      showMonthLabels={true}
+                      onDayPress={(d = contibutionDates) => showAlert(d.date, d.count)}
                     />
                     {/* <GraficoBarras /> */}
                     <Text style={styles.subtituloProdutividade}>
@@ -379,16 +420,14 @@ export default function Dashboard() {
                     </Text>
                   </View>
 
+
+
                   <View style={styles.containerProdutividade}>
                     <View style={styles.containerProdutividadeSup}>
-                      <Text style={styles.tituloGrafico}>Nível de Satisfação atual:</Text>
-                      <GraficoSatisfacao />
+                      <Text style={styles.tituloGrafico}>Média de Avaliação:</Text>
+                      <GraficoAvaliacao />
                     </View>
-                    <GrafHistSatisfacao />
-
-                    {/* <Text style={styles.subtituloProdutividade}>
-                      Entregas de atividade por semana:{" "}
-                    </Text> */}
+                    <GrafHistAvaliacao />
                   </View>
 
                   {/* <LineChartExample /> */}
