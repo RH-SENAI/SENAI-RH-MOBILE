@@ -113,7 +113,7 @@ export default function InteractiveChart() {
 
     const panResponder = useRef(
         PanResponder.create({
-            // 要求成为响应者：
+            
             onStartShouldSetPanResponder: (evt, gestureState) => true,
             onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
             onMoveShouldSetPanResponder: (evt, gestureState) => true,
@@ -203,12 +203,14 @@ export default function InteractiveChart() {
 
       const CustomGradient = () => (
         <Defs key="gradient">
-          <LinearGradient id="gradient" x1="0" y="0%" x2="0%" y2="100%">
-            {/* <Stop offset="0%" stopColor="rgb(134, 65, 244)" /> */}
-            {/* <Stop offset="100%" stopColor="rgb(66, 194, 244)" /> */}
+          <LinearGradient id="gradient" x1="0" y="60%" x2="0%" y2="40%">
+            {/* <Stop offset="20%" stopColor="black" />
+            <Stop offset="100%" stopColor="#C20004" />
     
             <Stop offset="75%" stopColor="black" stopOpacity={0.75} />
-            <Stop offset="25%" stopColor="white" stopOpacity={.55} />
+            <Stop offset="25%" stopColor="#C20004" stopOpacity={.25} /> */}
+            <Stop offset="20%" stopColor="red" />
+            <Stop offset="80%" stopColor="#C20004" />
           </LinearGradient>
         </Defs>
       );
@@ -253,7 +255,7 @@ export default function InteractiveChart() {
               <Line
                 y1={ticks[0]}
                 y2={ticks[Number(ticks.length)]}
-                stroke="black"
+                stroke="#C20004"
                 strokeWidth={apx(4)}
                 strokeDasharray={[4, 3]}
                 
@@ -262,9 +264,9 @@ export default function InteractiveChart() {
               <Circle
                 cy={y(mediasSatisfacao[positionX])}
                 r={apx(20 / 2)}
-                stroke="black"
+                stroke="#C20004"
                 strokeWidth={apx(2)}
-                fill="lime"
+                fill="#f1f1f1"
               />
             </G>
           </G>

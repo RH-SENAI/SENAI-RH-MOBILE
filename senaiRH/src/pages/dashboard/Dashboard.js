@@ -1,7 +1,7 @@
 // React Imports
 import { useState, useEffect } from "react";
 import React from "react";
-import { Text as SvgText } from "react-native-svg";
+import { Text as SvgText, LinearGradient } from "react-native-svg";
 import * as scale from "d3-scale";
 import {
   Image,
@@ -12,7 +12,7 @@ import {
   SafeAreaView,
   Dimensions,
   Alert,
-  Button
+  RefreshControl
 } from "react-native";
 const screenWidth = Dimensions.get("window").width;
 
@@ -50,6 +50,16 @@ import {
   Quicksand_600SemiBold,
 } from "@expo-google-fonts/quicksand";
 
+import moment from 'moment';
+import 'moment/locale/pt-br'
+
+
+const wait = (timeout) => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
+
+
 export default function Dashboard() {
   //States
   const [idUsuario, setIdUsuario] = useState(1);
@@ -60,7 +70,17 @@ export default function Dashboard() {
   const [minhasAtividades, setMinhasAtividades] = useState([]);
   const [contibutionDates, setContibutionDates] = useState([]);
 
+  const [refreshing, setRefreshing] = React.useState(false);
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    BuscarUsuario();
+    BuscarMinhasAtividades();
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
+
+  moment.locale('pt-br');
+  const now = moment();
 
   // const commitsData = [
   //   { date: "2022-04-02", count: 4 },
@@ -98,7 +118,7 @@ export default function Dashboard() {
     { date: "2022-05-25", count: 5 },
     { date: "2022-05-26", count: 3 },
     { date: "2022-05-27", count: 1 },
-    { date: "2022-05-28", count: 2 },
+    { date: "2022-05-28", count: 5 },
   ];
 
 
@@ -106,13 +126,14 @@ export default function Dashboard() {
 
 
   const chartConfig = {
-    backgroundGradientFrom: "#f1f1f1",
-    backgroundGradientFromOpacity: .5,
-    backgroundGradientTo: "#f1f1f1",
-    backgroundGradientToOpacity: 1,
-    color: (opacity = 1) => `rgba(194, 0, 4, ${opacity})`,
+    backgroundGradientFrom: "black",
+    backgroundGradientFromOpacity: .8,
+    backgroundGradientTo: "black",
+    backgroundGradientToOpacity: .8,
+    gutterSize: 30,
+    color: (opacity = 1) => `rgba(255, 0, 4, ${opacity})`,
     strokeWidth: 2, // optional, default 3
-    barPercentage: 0.5,
+    barPercentage: 1,
     useShadowColorFromDataset: false // optional
   };
 
@@ -133,8 +154,9 @@ export default function Dashboard() {
 
   const showAlert = (data, qtde) =>
     Alert.alert(
-      "Detalhes: ",
-      `Em ${data}, você entregou ${qtde} atividade(s).`,
+
+      "",
+      `${qtde} atividade(s) entregue(s) em: \n${moment(data).locale('pt-BR').format('LLLL')};`,
       [
         // {
         //   text: "OK",
@@ -227,7 +249,7 @@ export default function Dashboard() {
 
         // console.warn(datasFiltradas);
         // setContibutionDates(datasFiltradas)
-        console.warn(dePara);
+        //console.warn(dePara);
         setContibutionDates(dePara)
 
       }
@@ -340,7 +362,12 @@ export default function Dashboard() {
     return <AppLoading />;
   } else {
     return (
-      <ScrollView>
+      <ScrollView refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      }>
         <View style={styles.container}>
           <View style={styles.header}>
             <Image
@@ -404,11 +431,12 @@ export default function Dashboard() {
                       <GraficoProdutividade />
                     </View>
                     <ContributionGraph
+                      style={styles.ContributionContainer}
                       values={contibutionDates}
                       //endDate={new Date("2022-05-31")}
-                      endDate={new Date()}
+                      //endDate={moment(now)}
                       numDays={90}
-                      width={320}
+                      width={'100%'}
                       height={220}
                       chartConfig={chartConfig}
                       showMonthLabels={true}
@@ -416,7 +444,7 @@ export default function Dashboard() {
                     />
                     {/* <GraficoBarras /> */}
                     <Text style={styles.subtituloProdutividade}>
-                      Entregas de atividade por semana:{" "}
+                      Entregas de atividades nos últimos 90 dias.
                     </Text>
                   </View>
 
@@ -442,6 +470,7 @@ export default function Dashboard() {
 
 
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -523,18 +552,20 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: "gray",
     //flexDirection: 'row',
-    //backgroundColor: 'purple',
-    //justifyContent: 'space-between',
+    backgroundColor: "rgba(241, 241, 241, 0.85)",
+    justifyContent: 'center',
     marginTop: 20,
     //paddingRight: '5%',
     //alignItems: 'center',
     padding: 10,
     //flexWrap: 'wrap',
     //height: 500,
+
   },
   subtituloProdutividade: {
     fontSize: 16,
-    marginTop: -20,
+    marginTop: 0,
+    textAlign: 'left',
   },
   containerLegendas: {
     flex: 1,
@@ -568,6 +599,13 @@ const styles = StyleSheet.create({
     flex: 1,
     //backgroundColor: 'yellow'
   },
+  ContributionContainer: {
+    borderRadius: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: 'red',
+  }
 
 
 
