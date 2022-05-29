@@ -1,7 +1,7 @@
 // React Imports
 import { useState, useEffect } from "react";
 import React from "react";
-import { Text as SvgText, LinearGradient } from "react-native-svg";
+import { Text as SvgText, LinearGradient, Defs, Stop } from "react-native-svg";
 import * as scale from "d3-scale";
 import {
   Image,
@@ -69,6 +69,7 @@ export default function Dashboard() {
   const [usuario, setUsuario] = useState([]);
   const [minhasAtividades, setMinhasAtividades] = useState([]);
   const [contibutionDates, setContibutionDates] = useState([]);
+  const [historicos, setHistoricos] = useState([]);
 
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -76,6 +77,7 @@ export default function Dashboard() {
     setRefreshing(true);
     BuscarUsuario();
     BuscarMinhasAtividades();
+    BuscarHistorico();
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
@@ -258,8 +260,32 @@ export default function Dashboard() {
     }
   }
 
+
+  async function BuscarHistorico() {
+    try {
+      const token = await AsyncStorage.getItem("userToken");
+
+      const resposta = await api.get(
+        "HistoricoA/Listar/" + jwtDecode(token).jti,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+
+      if (resposta.status === 200) {
+        setHistoricos(resposta.data);
+        console.log('Historico carregado com sucesso')
+      }
+    } catch (error) {
+      console.warn(error);
+    }
+  }
+
   useEffect(() => BuscarUsuario(), []);
   useEffect(() => BuscarMinhasAtividades(), []);
+  useEffect(() => BuscarHistorico(), []);
 
   const GraficoSatisfacao = () => {
     const u = usuario[0];
@@ -317,7 +343,7 @@ export default function Dashboard() {
           opacity={"1"}
           strokeWidth={0.4}
         >
-          {u.mediaAvaliacao * 100}%
+          {(u.mediaAvaliacao * 100).toPrecision(2)}%
         </SvgText>
       </ProgressCircle>
     );
@@ -353,6 +379,139 @@ export default function Dashboard() {
       </ProgressCircle>
     );
   };
+
+  // function GraficoBarras() {
+  //   const u = usuario[0];
+  
+
+
+  //   const data = [u.medSatisfacaoGeral, u.notaProdutividade, u.mediaAvaliacao]
+
+  //   const CUT_OFF = 20
+  //   const Labels = ({ x, y, bandwidth, data }) => (
+  //     data.map((value, index) => (
+  //       <SvgText
+  //         key={index}
+  //         x={x(index) + (bandwidth / 2)}
+  //         y={value < CUT_OFF ? y(value) - 10 : y(value) + 15}
+  //         fontSize={14}
+  //         fill={value >= CUT_OFF ? 'white' : 'white'}
+  //         alignmentBaseline={'middle'}
+  //         textAnchor={'middle'}
+  //       >
+  //         {value}
+  //       </SvgText>
+  //     ))
+  //   )
+
+  //   const GradientB = () => (
+  //     <Defs key={'gradient'}>
+  //       <LinearGradient id={'gradient'} x1={'0'} y={'0%'} x2={'100%'} y2={'0%'}>
+  //         <Stop offset={'0%'} stopColor={'#C20004'} />
+  //         <Stop offset={'100%'} stopColor={'red'} />
+  //       </LinearGradient>
+  //     </Defs>
+  //   )
+
+  //   return (
+  //     <View style={{ flexDirection: 'row', height: 200, paddingTop: 16, backgroundColor: "rgba(0, 0, 0, 0.8)",
+  //     paddingHorizontal: 10, borderRadius: 10 }}>
+  //       <BarChart
+  //         style={{ flex: 1 }}
+  //         data={data}
+  //         svg={{ fill: 'url(#gradient)' }}
+  //         contentInset={{ top: 20, bottom: 10 }}
+  //         spacing={0.2}
+  //         gridMin={0}
+
+  //       >
+  //         <Grid direction={Grid.Direction.HORIZONTAL} />
+  //         <GradientB />
+  //         <Labels />
+  //       </BarChart>
+  //     </View>
+  //   )
+
+
+  // }
+
+
+  // function GraficoBarras() {
+
+  //   const u = usuario[0];
+
+  //   const data = [
+  //     // {
+  //     //     value: 50,
+  //     // },
+  //     // {
+  //     //     value: 10,
+  //     //     svg: {
+  //     //         fill: 'rgba(134, 65, 244, 0.5)',
+  //     //     },
+  //     // },
+  //     // {
+  //     //     value: 40,
+  //     //     svg: {
+  //     //         stroke: 'purple',
+  //     //         strokeWidth: 2,
+  //     //         fill: 'white',
+  //     //         strokeDasharray: [ 4, 2 ],
+  //     //     },
+  //     // },
+  //     {
+  //       value: u.medSatisfacaoGeral,
+  //       svg: {
+  //         fill: 'url(#gradient)',
+  //       },
+  //     },
+  //     {
+  //       value: u.notaProdutividade,
+  //       svg: {
+  //         fill: 'url(#gradient)',
+  //       },
+  //     },
+  //     {
+  //       value: u.mediaAvaliacao,
+  //       svg: {
+  //         fill: 'url(#gradient)',
+  //       },
+  //     },
+  //     // {
+  //     //     value: 85,
+  //     //     svg: {
+  //     //         fill: 'green',
+  //     //     },
+  //     // },
+  //   ]
+
+
+  //   const GradientB = () => (
+  //     <Defs key={'gradient'}>
+  //       <LinearGradient id={'gradient'} x1={'0'} y={'0%'} x2={'100%'} y2={'0%'}>
+  //         <Stop offset={'0%'} stopColor={'#C20004'} />
+  //         <Stop offset={'100%'} stopColor={'red'} />
+  //       </LinearGradient>
+  //     </Defs>
+  //   )
+
+  //   return (
+  //     <BarChart
+  //       style={{ height: 200 }}
+  //       data={data}
+  //       gridMin={0}
+  //       svg={{ fill: 'rgba(134, 65, 244, 0.8)' }}
+  //       yAccessor={({ item }) => item.value}
+  //       contentInset={{ top: 20, bottom: 20 }}
+  //       lab
+  //     >
+  //       <Grid />
+  //       <GradientB />
+  //     </BarChart>
+  //   )
+
+
+  // }
 
 
 
@@ -417,7 +576,7 @@ export default function Dashboard() {
                       <Text style={styles.tituloGrafico}>Nível de Satisfação atual:</Text>
                       <GraficoSatisfacao />
                     </View>
-                    <GrafHistSatisfacao />
+                    <GrafHistSatisfacao historicos={historicos} />
 
                     {/* <Text style={styles.subtituloProdutividade}>
                       Entregas de atividade por semana:{" "}
@@ -442,7 +601,7 @@ export default function Dashboard() {
                       showMonthLabels={true}
                       onDayPress={(d = contibutionDates) => showAlert(d.date, d.count)}
                     />
-                    {/* <GraficoBarras /> */}
+
                     <Text style={styles.subtituloProdutividade}>
                       Entregas de atividades nos últimos 90 dias.
                     </Text>
@@ -455,10 +614,12 @@ export default function Dashboard() {
                       <Text style={styles.tituloGrafico}>Média de Avaliação:</Text>
                       <GraficoAvaliacao />
                     </View>
-                    <GrafHistAvaliacao />
+                    <GrafHistAvaliacao historicos={historicos} />
                   </View>
 
-                  {/* <LineChartExample /> */}
+
+
+                  
                 </View>
               </View>
             );

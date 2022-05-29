@@ -32,12 +32,14 @@ import api from "../../services/api";
 
 
 
-export default function InteractiveChart() {
+export default function InteractiveChart(historicos) {
 
 
-  const teste =[.97, .75, .9, .85, .4, .6, .4, .4, .3, .45,
-     .97, .75, .9, .85, .4, .6, .4, .73, .3, .45,
-     .68, .45, .7, .52, .4, .35, .4, .1, .3, .45, .66]
+  const [listaHistoricos, setListaHistoricos] = useState([]);
+
+  const teste = [.97, .75, .9, .85, .4, .6, .4, .4, .3, .45,
+    .97, .75, .9, .85, .4, .6, .4, .73, .3, .45,
+    .68, .45, .7, .52, .4, .35, .4, .1, .3, .45, .66]
 
   const [listaDatas, setListaDatas] = useState([
     //'20', '20', '21', '22', 
@@ -53,43 +55,47 @@ export default function InteractiveChart() {
 
   ]);
 
-
-  useEffect(() => BuscarHistorico(), []);
-
+  
 
 
-
-  async function BuscarHistorico() {
-    try {
-      const token = await AsyncStorage.getItem("userToken");
-
-      const resposta = await api.get(
-        "HistoricoA/Listar/" + jwtDecode(token).jti,
-        {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        }
+  //useEffect(() => setListaHistoricos(historicos.historicos), []);
+  if (historicos.historicos !== undefined ) {
+    useEffect(() => {
+      //setListaHistoricos(historicos.historicos)
+      //console.warn(historicos.historicos[0])
+  
+      setListaDatas(historicos.historicos.map(p => p.atualizadoEm));
+  
+      // setListaDatas(resposta.data.map((p) => {
+      //     return (p.atualizadoEm.split("-")[2]).substring(0, 2);
+      // }
+      // ));
+  
+      setMediasAvaliacao(
+        historicos.historicos.map(
+          (p) => { return (parseFloat(p.mediaAvaliacao) * 100); }
+        )
       );
-
-      if (resposta.status === 200) {
-        setListaDatas(resposta.data.map(p => p.atualizadoEm));
-        // setListaDatas(resposta.data.map((p) => {
-        //     return (p.atualizadoEm.split("-")[2]).substring(0, 2);
-        // }
-        // ));
-        setMediasAvaliacao(resposta.data.map((p) => {
-          return (parseFloat(p.mediaAvaliacao) * 100);
-        }
-        ));
-        //console.warn(listaDatas.length)
-        //console.warn('media satisfacao ' + mediasAvaliacao);
-        //console.warn('lista datas ' + listaDatas);
-      }
-    } catch (error) {
-      console.warn(error);
-    }
+    }, []);
   }
+  //SetarHistorico();
+
+
+
+
+  async function SetarHistorico() {
+
+    //console.log(historicos.historicos)
+    
+
+    //console.warn(listaDatas)
+    //console.warn('media satisfacao ' + mediasAvaliacao);
+    //console.warn('lista datas ' + listaDatas);
+
+
+  }
+
+
 
 
 
