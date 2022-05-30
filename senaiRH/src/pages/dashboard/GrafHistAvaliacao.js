@@ -59,7 +59,7 @@ export default function InteractiveChart(historicos) {
 
 
   //useEffect(() => setListaHistoricos(historicos.historicos), []);
-  if (historicos.historicos !== undefined ) {
+  
     useEffect(() => {
       //setListaHistoricos(historicos.historicos)
       //console.warn(historicos.historicos[0])
@@ -77,7 +77,7 @@ export default function InteractiveChart(historicos) {
         )
       );
     }, []);
-  }
+  
   //SetarHistorico();
 
 
@@ -316,7 +316,7 @@ export default function InteractiveChart(historicos) {
           style={{ width: apx(200) }}
           data={mediasAvaliacao}
           contentInset={verticalContentInset}
-          svg={{ fontSize: apx(20), fill: '#617485' }}
+          svg={{ fontSize: apx(20), fill: '#f1f1f1' }}
           numberOfTicks={4}
         />
       </View>
@@ -327,7 +327,7 @@ export default function InteractiveChart(historicos) {
           width: apx(600),
           height: apx(60),
         }}
-        numberOfTicks={4}
+        numberOfTicks={3}
         data={mediasAvaliacao}
         //formatLabel={(value, index) => moment(listaDatas[value]).startOf('day').fromNow()}
         formatLabel={(value, index) => moment(listaDatas[value]).format('DD/MM')}
@@ -337,7 +337,7 @@ export default function InteractiveChart(historicos) {
         }}
         svg={{
           fontSize: apx(20),
-          fill: '#617485',
+          fill: '#f1f1f1',
           y: apx(20),
           // originY: 30,
         }}
@@ -355,6 +355,6 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     marginTop: 10,
     borderWidth: 1,
-    borderColor: 'red'
+    //borderColor: 'red'
   }
 })

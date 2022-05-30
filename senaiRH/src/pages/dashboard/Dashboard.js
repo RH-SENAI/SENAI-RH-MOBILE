@@ -14,7 +14,7 @@ import {
   Alert,
   RefreshControl
 } from "react-native";
-const screenWidth = Dimensions.get("window").width;
+
 
 import {
   ContributionGraph,
@@ -33,6 +33,7 @@ import { BarChart, XAxis, ProgressCircle, Grid } from "react-native-svg-charts";
 
 import GrafHistSatisfacao from './GrafHistSatisfacao.js'
 import GrafHistAvaliacao from './GrafHistAvaliacao.js'
+import GraficoBarras from "./GraficoBarras.js";
 
 //Services
 import api from "../../services/api";
@@ -61,6 +62,9 @@ const wait = (timeout) => {
 
 
 export default function Dashboard() {
+
+  const screenWidth = Dimensions.get("window").width;
+
   //States
   const [idUsuario, setIdUsuario] = useState(1);
   const [nivelSatisfacao, setNivelSatisfacao] = useState(0);
@@ -296,21 +300,21 @@ export default function Dashboard() {
         progressColor={"#C20004"}
         backgroundColor={"rgba(194, 0, 4, 0.15)"}
         startAngle={0}
-        cornerRadius={2}
-        strokeWidth={10}
+        cornerRadius={1}
+        strokeWidth={3}
         endAngle={360}
       >
         <SvgText
-          x={-7.5}
+          x={-8.5}
           y={1.5}
           fill={"black"}
           textAnchor={"middle"}
           alignmentBaseline={"middle"}
-          fontSize={16}
-          fontWeight={"normal"}
+          fontSize={22}
+          fontWeight={"bold"}
           //stroke={'white'}
-          opacity={"1"}
-          strokeWidth={0.4}
+          opacity={".8"}
+        //strokeWidth={0.4}
         >
           {(u.medSatisfacaoGeral * 100).toPrecision(2)}%
         </SvgText>
@@ -327,21 +331,21 @@ export default function Dashboard() {
         progressColor={"#C20004"}
         backgroundColor={"rgba(194, 0, 4, 0.15)"}
         startAngle={0}
-        cornerRadius={5}
-        strokeWidth={15}
+        cornerRadius={1}
+        strokeWidth={3}
         endAngle={360}
       >
         <SvgText
-          x={-7.5}
+          x={-8.5}
           y={1.5}
           fill={"black"}
           textAnchor={"middle"}
           alignmentBaseline={"middle"}
-          fontSize={16}
-          fontWeight={"normal"}
+          fontSize={22}
+          fontWeight={"bold"}
           //stroke={'white'}
-          opacity={"1"}
-          strokeWidth={0.4}
+          opacity={"0.8"}
+        //strokeWidth={0.4}
         >
           {(u.mediaAvaliacao * 100).toPrecision(2)}%
         </SvgText>
@@ -358,21 +362,21 @@ export default function Dashboard() {
         progressColor={"#C20004"}
         backgroundColor={"rgba(194, 0, 4, 0.15)"}
         startAngle={0}
-        cornerRadius={5}
-        strokeWidth={15}
+        cornerRadius={1}
+        strokeWidth={3}
         endAngle={360}
       >
         <SvgText
-          x={-7.5}
+          x={-8.5}
           y={1.5}
           fill={"black"}
           textAnchor={"middle"}
           alignmentBaseline={"middle"}
-          fontSize={16}
-          fontWeight={"normal"}
+          fontSize={22}
+          fontWeight={"bold"}
           //stroke={'white'}
-          opacity={"1"}
-          strokeWidth={0.4}
+          opacity={"0.8"}
+        //strokeWidth={0.4}
         >
           {u.notaProdutividade}%
         </SvgText>
@@ -380,138 +384,10 @@ export default function Dashboard() {
     );
   };
 
-  // function GraficoBarras() {
-  //   const u = usuario[0];
-  
 
 
-  //   const data = [u.medSatisfacaoGeral, u.notaProdutividade, u.mediaAvaliacao]
-
-  //   const CUT_OFF = 20
-  //   const Labels = ({ x, y, bandwidth, data }) => (
-  //     data.map((value, index) => (
-  //       <SvgText
-  //         key={index}
-  //         x={x(index) + (bandwidth / 2)}
-  //         y={value < CUT_OFF ? y(value) - 10 : y(value) + 15}
-  //         fontSize={14}
-  //         fill={value >= CUT_OFF ? 'white' : 'white'}
-  //         alignmentBaseline={'middle'}
-  //         textAnchor={'middle'}
-  //       >
-  //         {value}
-  //       </SvgText>
-  //     ))
-  //   )
-
-  //   const GradientB = () => (
-  //     <Defs key={'gradient'}>
-  //       <LinearGradient id={'gradient'} x1={'0'} y={'0%'} x2={'100%'} y2={'0%'}>
-  //         <Stop offset={'0%'} stopColor={'#C20004'} />
-  //         <Stop offset={'100%'} stopColor={'red'} />
-  //       </LinearGradient>
-  //     </Defs>
-  //   )
-
-  //   return (
-  //     <View style={{ flexDirection: 'row', height: 200, paddingTop: 16, backgroundColor: "rgba(0, 0, 0, 0.8)",
-  //     paddingHorizontal: 10, borderRadius: 10 }}>
-  //       <BarChart
-  //         style={{ flex: 1 }}
-  //         data={data}
-  //         svg={{ fill: 'url(#gradient)' }}
-  //         contentInset={{ top: 20, bottom: 10 }}
-  //         spacing={0.2}
-  //         gridMin={0}
-
-  //       >
-  //         <Grid direction={Grid.Direction.HORIZONTAL} />
-  //         <GradientB />
-  //         <Labels />
-  //       </BarChart>
-  //     </View>
-  //   )
 
 
-  // }
-
-
-  // function GraficoBarras() {
-
-  //   const u = usuario[0];
-
-  //   const data = [
-  //     // {
-  //     //     value: 50,
-  //     // },
-  //     // {
-  //     //     value: 10,
-  //     //     svg: {
-  //     //         fill: 'rgba(134, 65, 244, 0.5)',
-  //     //     },
-  //     // },
-  //     // {
-  //     //     value: 40,
-  //     //     svg: {
-  //     //         stroke: 'purple',
-  //     //         strokeWidth: 2,
-  //     //         fill: 'white',
-  //     //         strokeDasharray: [ 4, 2 ],
-  //     //     },
-  //     // },
-  //     {
-  //       value: u.medSatisfacaoGeral,
-  //       svg: {
-  //         fill: 'url(#gradient)',
-  //       },
-  //     },
-  //     {
-  //       value: u.notaProdutividade,
-  //       svg: {
-  //         fill: 'url(#gradient)',
-  //       },
-  //     },
-  //     {
-  //       value: u.mediaAvaliacao,
-  //       svg: {
-  //         fill: 'url(#gradient)',
-  //       },
-  //     },
-  //     // {
-  //     //     value: 85,
-  //     //     svg: {
-  //     //         fill: 'green',
-  //     //     },
-  //     // },
-  //   ]
-
-
-  //   const GradientB = () => (
-  //     <Defs key={'gradient'}>
-  //       <LinearGradient id={'gradient'} x1={'0'} y={'0%'} x2={'100%'} y2={'0%'}>
-  //         <Stop offset={'0%'} stopColor={'#C20004'} />
-  //         <Stop offset={'100%'} stopColor={'red'} />
-  //       </LinearGradient>
-  //     </Defs>
-  //   )
-
-  //   return (
-  //     <BarChart
-  //       style={{ height: 200 }}
-  //       data={data}
-  //       gridMin={0}
-  //       svg={{ fill: 'rgba(134, 65, 244, 0.8)' }}
-  //       yAccessor={({ item }) => item.value}
-  //       contentInset={{ top: 20, bottom: 20 }}
-  //       lab
-  //     >
-  //       <Grid />
-  //       <GradientB />
-  //     </BarChart>
-  //   )
-
-
-  // }
 
 
 
@@ -573,7 +449,7 @@ export default function Dashboard() {
 
                   <View style={styles.containerProdutividade}>
                     <View style={styles.containerProdutividadeSup}>
-                      <Text style={styles.tituloGrafico}>Nível de Satisfação atual:</Text>
+                      <Text style={styles.tituloGrafico}>Nível de Satisfação:</Text>
                       <GraficoSatisfacao />
                     </View>
                     <GrafHistSatisfacao historicos={historicos} />
@@ -589,10 +465,13 @@ export default function Dashboard() {
                       <Text style={styles.tituloGrafico}>Produtividade:</Text>
                       <GraficoProdutividade />
                     </View>
+                    <Text style={styles.subtituloProdutividade}>
+                      Entregas de atividades, realizadas nos últimos 90 dias:
+                    </Text>
                     <ContributionGraph
                       style={styles.ContributionContainer}
                       values={contibutionDates}
-                      //endDate={new Date("2022-05-31")}
+                      //endDate={new Date("2022-05-29")}
                       //endDate={moment(now)}
                       numDays={90}
                       width={'100%'}
@@ -600,11 +479,11 @@ export default function Dashboard() {
                       chartConfig={chartConfig}
                       showMonthLabels={true}
                       onDayPress={(d = contibutionDates) => showAlert(d.date, d.count)}
+                      gutterSize={2}
+                      squareSize={18}
                     />
+                    
 
-                    <Text style={styles.subtituloProdutividade}>
-                      Entregas de atividades nos últimos 90 dias.
-                    </Text>
                   </View>
 
 
@@ -618,8 +497,22 @@ export default function Dashboard() {
                   </View>
 
 
+                  <View style={styles.containerProdutividade}>
+                    <View style={styles.containerProdutividadeSup}>
+                      <Text style={styles.tituloComparativo}>Comparativo entre seus indíces:</Text>
 
-                  
+                    </View>
+                    <GraficoBarras usuarioLogado={usuario} />
+                    <View style={styles.containerLabels}>
+                      <Text style={styles.nvsLabels}>Satisfação</Text>
+                      <Text style={styles.nvsLabels}>Produtividade</Text>
+                      <Text style={styles.nvsLabels}>Avaliação</Text>
+                    </View>
+                  </View>
+
+
+
+
                 </View>
               </View>
             );
@@ -660,11 +553,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: "5%",
   },
   containerDados: {
-    //backgroundColor: 'cyan',
+    backgroundColor: 'gray',
     //height: 200,
     flex: 1,
     marginTop: 20,
     //alignItems: 'flex-start'
+    borderRadius: 5,
+    marginBottom: 10
   },
   containerLine: {
     width: "100%",
@@ -725,8 +620,8 @@ const styles = StyleSheet.create({
   },
   subtituloProdutividade: {
     fontSize: 16,
-    marginTop: 0,
-    textAlign: 'left',
+    marginTop: 10,
+    textAlign: 'right',
   },
   containerLegendas: {
     flex: 1,
@@ -735,19 +630,22 @@ const styles = StyleSheet.create({
   containerProdutividadeSup: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
     //backgroundColor: 'green',
     padding: 3.5
   },
   grafico: {
     //flex: 1,
-    width: 70,
-    height: 70,
+    width: 60,
+    height: 60,
     //backgroundColor: 'blue',
+    margin: -0,
+    paddingRight: 2
   },
   tituloGrafico: {
-    fontSize: 20,
+    fontSize: 22,
+    marginRight: 10,
     //marginLeft: 15,
     //backgroundColor: 'green'
   },
@@ -763,9 +661,25 @@ const styles = StyleSheet.create({
   ContributionContainer: {
     borderRadius: 10,
     marginTop: 10,
-    marginBottom: 10,
+    //marginBottom: 0,
     borderWidth: 1,
-    borderColor: 'red',
+    //borderColor: 'red',
+  },
+  tituloComparativo: {
+    textAlign: 'right',
+    fontSize: 22,
+    marginRight: 10,
+    marginBottom: 10
+  },
+  containerLabels: {
+    flex: 1,
+    width: '100%',
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    paddingHorizontal: '8.5%'
+  },
+  nvsLabels: {
+
   }
 
 

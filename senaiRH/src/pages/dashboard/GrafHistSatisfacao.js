@@ -316,7 +316,7 @@ export default function InteractiveChart(historicos) {
           style={{ width: apx(200) }}
           data={mediasSatisfacao}
           contentInset={verticalContentInset}
-          svg={{ fontSize: apx(20), fill: '#617485' }}
+          svg={{ fontSize: apx(20), fill: '#f1f1f1' }}
           numberOfTicks={4}
         />
       </View>
@@ -337,7 +337,7 @@ export default function InteractiveChart(historicos) {
         }}
         svg={{
           fontSize: apx(20),
-          fill: '#617485',
+          fill: '#f1f1f1',
           y: apx(20),
           // originY: 30,
         }}
@@ -355,6 +355,6 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     marginTop: 10,
     borderWidth: 1,
-    borderColor: 'red'
+    //borderColor: 'red'
   }
 })
