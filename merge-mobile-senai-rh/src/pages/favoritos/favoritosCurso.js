@@ -6,7 +6,7 @@ import {
     Pressable,
     Image,
     FlatList,
-    ScrollView
+    ScrollView,
 } from 'react-native';
 import { Animated, TouchableOpacity, StyleSheet } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
@@ -20,6 +20,7 @@ import ReadMore from 'react-native-read-more-text';
 import api from '../../services/apiGp2.js';
 import apiGp1 from '../../services/apiGp1.js';
 import Constants from 'expo-constants';
+import moment from 'moment';
 
 export default class TabViewExample extends React.Component {
     state = {
@@ -34,8 +35,11 @@ export default class TabViewExample extends React.Component {
         isFavorite: false,
         inscrito: '',
         showAlert: false,
+        desabilitado: false,
+        verifyRegistro: false,
         contadorCurso: 0,
         saldoUsuario: 0,
+        empresaBuscada: '',
         listaCurso: [],
         cursoBuscado: [],
         localizacaoCurso: [],
@@ -44,6 +48,40 @@ export default class TabViewExample extends React.Component {
         descontoBuscado: [],
         localizacaoCurso: [],
     };
+
+    //LISTAGEM POR IDFAVORITO - TROCAR ICURSO/FAVORITO 
+    
+    //PROCURAR CURSO E DESCONTO MUDAR PARA FAVORITO
+
+    ProcurarCurso = async (id) => {
+        try {
+            const resposta = await api('/Cursos/' + id);
+            // console.warn(resposta)
+            if (resposta.status == 200) {
+                const dadosCurso = await resposta.data;
+                this.setState({ cursoBuscado: dadosCurso })
+                this.setState({ empresaBuscada: this.state.cursoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado })
+            }
+        }
+        catch (erro) {
+            console.warn(erro);
+        }
+    }
+
+    ProcurarDesconto = async (id) => {
+        try {
+            const resposta = await api('/Descontos/' + id);
+            // console.warn(resposta)
+            if (resposta.status == 200) {
+                const dadosDesconto = await resposta.data;
+                this.setState({ descontoBuscado: dadosDesconto })
+                this.setState({ empresaBuscada: this.state.descontoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado })
+            }
+        }
+        catch (erro) {
+            console.warn(erro);
+        }
+    }
 
     SaldoUsuario = async () => {
         const idUser = await AsyncStorage.getItem('idUsuario');
@@ -112,33 +150,145 @@ export default class TabViewExample extends React.Component {
             console.warn(erro);
         }
     }
+    verifySaldo = (valor) => {
+        if (this.state.saldoUsuario >= valor) {
+            this.setState({ desabilitado: false });
+        }
+        else {
+            this.setState({ desabilitado: true });
+        }
+    }
 
-    setModalVisivelCurso = (visible, id) => {
+    setModalVisivelCurso = async (visible, id) => {
         if (visible == true) {
-            this.ProcurarCurso(id)
+            this.ProcurarCurso(id);
+            await delay(750);
+            this.verifySaldo(this.state.cursoBuscado.valorCurso);
+            this.verifySituacaoCurso(id);
+            console.warn(this.state.saldoUsuario)
+            // await delay(500);
+            // console.warn(this.state.desabilitado)
+            this.setState({ modalVisivel: visible })
         }
         else if (visible == false) {
+            this.setState({ modalVisivel: visible })
+            this.setState({ verifyRegistro: false })
             this.setState({ cursoBuscado: [] })
         }
 
         this.setState({ modalVisivelCurso: visible })
     }
 
-    setModalVisivelDesconto = (visible, id) => {
+    setModalVisivelDesconto = async (visible, id) => {
         if (visible == true) {
-            this.ProcurarDesconto(id)
+            this.ProcurarDescontos(id);
+            await delay(750);
+            this.verifySaldo(this.state.descontoBuscado.valorDesconto);
+            this.verifySituacao(id);
+            console.warn(this.state.saldoUsuario)
+            // await delay(500);
+            // console.warn(this.state.desabilitado)
+            this.setState({ modalVisivel: visible })
         }
         else if (visible == false) {
-            this.setState({ cursoBuscado: [] })
+            this.setState({ modalVisivel: visible })
+            this.setState({ verifyRegistro: false })
+            this.setState({ descontoBuscado: [] })
         }
 
         this.setState({ modalVisivelDesconto: visible })
     }
 
-    showAlert = () => {
-        this.setState({
-            showAlert: true
-        });
+    verifySituacaoCurso = async (id) => {
+        try {
+            const idUser = await AsyncStorage.getItem('idUsuario');
+            console.warn(idUser)
+            console.warn(id)
+
+            const respostaBuscar = await api(`/Registroscursos/RegistroCursos/IdUsuario/${idUser}`);
+
+            var tamanhoJsonRegistro = Object.keys(respostaBuscar.data).length;
+
+            let stringRegistros = JSON.stringify(respostaBuscar.data);
+            var objRegistros = JSON.parse(stringRegistros);
+
+            var k = 0;
+            do {
+                if (objRegistros != '') {
+                    var registroId = objRegistros[k]['idCurso'];
+
+                    if (registroId == id) {
+                        this.setState({ verifyRegistro: true })
+                        this.setState({ desabilitado: true });
+                        console.warn("Curso já comprado!");
+                    }
+                }
+                else {
+                    this.setState({ verifyRegistro: false })
+                    console.warn("Está vazio!")
+                }
+                k++
+            } while (k < tamanhoJsonRegistro);
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    setSituacaoCurso = () => {
+        if (this.state.verifyRegistro == true) {
+            return 'Inscrito'
+        }
+        else {
+            return 'Inscreva-se'
+        }
+    }
+
+    showAlert = async () => {
+        try {
+            const idUser = await AsyncStorage.getItem('idUsuario');
+            console.warn(idUser)
+            console.warn(id)
+
+            const respostaBuscar = await api(`/Registroscursos/RegistroCursos/IdUsuario/${idUser}`);
+
+            var tamanhoJsonRegistro = Object.keys(respostaBuscar.data).length;
+
+            let stringRegistros = JSON.stringify(respostaBuscar.data);
+            var objRegistros = JSON.parse(stringRegistros);
+
+            var k = 0;
+            do {
+                if (objRegistros != '') {
+                    var registroId = objRegistros[k]['idCurso'];
+
+                    if (registroId == id) {
+                        // this.setState({ verifyRegistro: true })
+                        console.warn("Curso já comprado!")
+                        // this.setSituacao();
+                    }
+                }
+                else {
+                    console.warn("Está vazio!")
+                }
+                k++
+            } while (k < tamanhoJsonRegistro);
+
+            if (this.state.verifyRegistro != true) {
+                const resposta = await api.post('/Registroscursos/Cadastrar', {
+                    idCurso: id,
+                    idUsuario: idUser,
+                    idSituacaoAtividade: 2,
+                });
+
+                if (resposta.status == 201) {
+                    this.setState({ showAlert: true });
+                }
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     hideAlert = () => {
@@ -174,34 +324,6 @@ export default class TabViewExample extends React.Component {
 
     _handleTextReady = () => {
         // ...
-    }
-
-    ProcurarCurso = async (id) => {
-        try {
-            const resposta = await api('/Cursos/' + id);
-            // console.warn(resposta)
-            if (resposta.status == 200) {
-                const dadosCurso = await resposta.data;
-                this.setState({ cursoBuscado: dadosCurso })
-            }
-        }
-        catch (erro) {
-            console.warn(erro);
-        }
-    }
-
-    ProcurarDesconto = async (id) => {
-        try {
-            const resposta = await api('/Descontos/' + id);
-            // console.warn(resposta)
-            if (resposta.status == 200) {
-                const dadosDesconto = await resposta.data;
-                this.setState({ descontoBuscado: dadosDesconto })
-            }
-        }
-        catch (erro) {
-            console.warn(erro);
-        }
     }
 
     RedirecionarComentarioCurso = () => {
@@ -363,7 +485,7 @@ export default class TabViewExample extends React.Component {
                                         </View>
                                         <View style={styles.boxPrecoModal}>
                                             <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
-                                            <Text style={styles.textDados}>{item.valorCurso}</Text>
+                                            <Text style={styles.textDados}>{item.idCursoNavigation.valorCurso}</Text>
                                         </View>
                                     </View>
 
@@ -381,9 +503,7 @@ export default class TabViewExample extends React.Component {
 
                                         <Image source={require('../../../assets/img-gp2/dataFinal.png')} />
                                         <Text style={styles.textDadosModal}>
-                                            {Intl.DateTimeFormat("pt-BR", {
-                                                year: 'numeric', month: 'numeric', day: 'numeric'
-                                            }).format(new Date(item.idCursoNavigation.dataFinalizacao))}
+                                            {moment(item.dataFinalizacao).format('LL')}
                                         </Text>
                                     </View>
 
@@ -412,9 +532,9 @@ export default class TabViewExample extends React.Component {
                                             </View>
 
                                             <View style={styles.boxInscreverModal}>
-                                                <Pressable style={styles.inscreverModal} onPress={() => { this.showAlert() }}  >
-                                                    <Text style={styles.textDetalhes}>Inscreva-se</Text>
-                                                </Pressable>
+                                                <TouchableOpacity style={this.state.desabilitado ? styles.inscreverModalDisable : styles.inscreverModal} activeOpacity={this.state.desabilitado ? 1 : 0.1} disabled={this.state.desabilitado} onPress={() => { this.showAlert(this.state.cursoBuscado.idCurso) }} >
+                                                    <Text style={styles.textDetalhes}>{this.setSituacaoCurso()}</Text>
+                                                </TouchableOpacity>
                                             </View>
                                         </View>
 
@@ -483,7 +603,7 @@ export default class TabViewExample extends React.Component {
                         </View>
 
                         <View style={styles.boxPrecoFavoritoDesconto}>
-                        <View style={styles.boxPreco}>
+                            <View style={styles.boxPreco}>
                                 <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
                                 <Text style={styles.textDados}>{item.valorDesconto}</Text>
                             </View>
@@ -529,7 +649,7 @@ export default class TabViewExample extends React.Component {
                                         </View>
                                         <View style={styles.boxPrecoModal}>
                                             <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
-                                            <Text style={styles.textDados}>{item.valorDesconto}</Text>
+                                            <Text style={styles.textDados}>{item.idDescontoNavigation.valorDesconto}</Text>
                                         </View>
                                     </View>
 
@@ -539,9 +659,7 @@ export default class TabViewExample extends React.Component {
 
                                         <Image source={require('../../../assets/img-gp2/dataFinal.png')} />
                                         <Text style={styles.textDadosModal}>
-                                            {Intl.DateTimeFormat("pt-BR", {
-                                                year: 'numeric', month: 'numeric', day: 'numeric'
-                                            }).format(new Date(item.idDescontoNavigation.dataFinalizacao))}
+                                            {moment(item.validadeDesconto).format('LL')}
                                         </Text>
 
                                     </View>
@@ -921,12 +1039,23 @@ const styles = StyleSheet.create({
     inscreverModal: {
         width: 150,
         height: 48,
-        backgroundColor: '#C20004',
+        backgroundColor: '#1D438A',
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 24,
-        marginLeft: 8
+        marginTop: 32,
+        marginLeft: 8,
+    },
+    inscreverModalDisable: {
+        width: 150,
+        height: 48,
+        backgroundColor: '#1D438A',
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 32,
+        marginLeft: 8,
+        opacity: 0.5
     },
     textDetalhes: {
         color: 'white',

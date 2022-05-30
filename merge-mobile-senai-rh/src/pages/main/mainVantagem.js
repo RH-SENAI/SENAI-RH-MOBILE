@@ -32,12 +32,12 @@ export default function MainAcompanhar() {
     return (
         <Tab.Navigator
             screenOptions={{
-                tabBarActiveTintColor: "#000000",
-                tabBarInactiveTintColor: "#FFFFFF",
+                tabBarActiveTintColor: "#1D438A",
+                tabBarInactiveTintColor: "gray",
                 tabBarShowLabel: true,
                 headerShown: false,
                 tabBarStyle: {
-                    backgroundColor: "#ffa500",
+                    backgroundColor: "#f1f1f1",
                     borderTopColor: "gray",
                     paddingBottom: 5,
                     paddingTop: 5,
@@ -123,12 +123,12 @@ const styles = StyleSheet.create({
         width: 55,
         height: 55,
         borderRadius: 27.5,
-        backgroundColor: "#ffa500",
+        backgroundColor: "#f1f1f1",
         alignItems: "center",
         justifyContent: "center",
         marginBottom: 15,
         borderWidth: 4,
-        borderColor: "#FFFFFF",
+        borderColor: "#1D438A",
     },
 
     modalView: {

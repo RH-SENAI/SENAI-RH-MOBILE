@@ -9,7 +9,8 @@ import {
     FlatList,
     ScrollView,
     TextInput,
-    RefreshControl
+    RefreshControl,
+    TouchableOpacity
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -39,6 +40,8 @@ export default class ListagemCurso extends Component {
             inscrito: '',
             showAlert: false,
             refreshing: false,
+            desabilitado: false,
+            verifyRegistro: false,
             contadorCurso: 0,
             saldoUsuario: 0,
             distanceUser: 0,
@@ -50,6 +53,34 @@ export default class ListagemCurso extends Component {
             listaFavoritosCoracao: []
         };
     }
+    ProcurarFavorito = async (id) => {
+        try {
+            const resposta = await api('/FavoritosCursos/' + id);
+            // console.warn(resposta)
+            if (resposta.status == 200) {
+                this.setState({ cursoFavoritoBuscado: resposta.data });
+                // console.warn(this.state.cursoBuscado)
+            }
+        } catch (erro) {
+            console.warn(erro);
+        }
+    }
+
+    ProcurarCurso = async (id) => {
+        try {
+            const resposta = await api('/Cursos/' + id);
+            // console.warn(resposta)
+            if (resposta.status == 200) {
+                this.setState({ cursoBuscado: resposta.data });
+                this.setState({ empresaBuscada: this.state.cursoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado })
+                // console.log(this.state.cursoBuscado)
+            }
+        }
+        catch (erro) {
+            console.warn(erro);
+        }
+    }
+
     SaldoUsuario = async () => {
         const idUser = await AsyncStorage.getItem('idUsuario');
         console.log(idUser)
@@ -241,35 +272,126 @@ export default class ListagemCurso extends Component {
             console.warn(erro);
         }
     }
+
+    verifySaldo = (valor) => {
+        if (this.state.saldoUsuario >= valor) {
+            this.setState({ desabilitado: false });
+        }
+        else {
+            this.setState({ desabilitado: true });
+        }
+    }
+
     setModalVisivel = async (visible, id) => {
         if (visible == true) {
-            this.ProcurarCurso(id)
-            await delay(210)
+            this.ProcurarCurso(id);
+            await delay(750);
+            this.verifySaldo(this.state.cursoBuscado.valorCurso);
+            this.verifySituacao(id);
+            console.warn(this.state.saldoUsuario)
+            // await delay(500);
+            // console.warn(this.state.desabilitado)
             this.setState({ modalVisivel: visible })
         }
         else if (visible == false) {
             this.setState({ modalVisivel: visible })
+            this.setState({ verifyRegistro: false })
             this.setState({ cursoBuscado: [] })
         }
         // await delay(200)
         // this.setState({ modalVisivel: visible })
     }
-    componentDidMount = async () => {
-        this.GetLocation();
-        await delay(2000);
-        this.SaldoUsuario();
-        await delay(3000);
-        this.ListarCurso();
+
+    verifySituacao = async (id) => {
+        try {
+            const idUser = await AsyncStorage.getItem('idUsuario');
+            console.warn(idUser)
+            console.warn(id)
+
+            const respostaBuscar = await api(`/Registroscursos/RegistroCursos/IdUsuario/${idUser}`);
+
+            var tamanhoJsonRegistro = Object.keys(respostaBuscar.data).length;
+
+            let stringRegistros = JSON.stringify(respostaBuscar.data);
+            var objRegistros = JSON.parse(stringRegistros);
+
+            var k = 0;
+            do {
+                if (objRegistros != '') {
+                    var registroId = objRegistros[k]['idCurso'];
+
+                    if (registroId == id) {
+                        this.setState({ verifyRegistro: true })
+                        this.setState({ desabilitado: true });
+                        console.warn("Curso já comprado!");
+                    }
+                }
+                else {
+                    this.setState({ verifyRegistro: false })
+                    console.warn("Está vazio!")
+                }
+                k++
+            } while (k < tamanhoJsonRegistro);
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    // componentWillUnmount = () => {
-    //     this.ListarCurso();
-    // }
+    setSituacao = () => {
+        if (this.state.verifyRegistro == true) {
+            return 'Inscrito'
+        }
+        else {
+            return 'Inscreva-se'
+        }
+    }
 
-    showAlert = () => {
-        this.setState({
-            showAlert: true
-        });
+    showAlert = async (id) => {
+        try {
+            const idUser = await AsyncStorage.getItem('idUsuario');
+            console.warn(idUser)
+            console.warn(id)
+
+            const respostaBuscar = await api(`/Registroscursos/RegistroCursos/IdUsuario/${idUser}`);
+
+            var tamanhoJsonRegistro = Object.keys(respostaBuscar.data).length;
+
+            let stringRegistros = JSON.stringify(respostaBuscar.data);
+            var objRegistros = JSON.parse(stringRegistros);
+
+            var k = 0;
+            do {
+                if (objRegistros != '') {
+                    var registroId = objRegistros[k]['idCurso'];
+
+                    if (registroId == id) {
+                        // this.setState({ verifyRegistro: true })
+                        console.warn("Curso já comprado!")
+                        // this.setSituacao();
+                    }
+                }
+                else {
+                    console.warn("Está vazio!")
+                }
+                k++
+            } while (k < tamanhoJsonRegistro);
+
+            if (this.state.verifyRegistro != true) {
+                const resposta = await api.post('/Registroscursos/Cadastrar', {
+                    idCurso: id,
+                    idUsuario: idUser,
+                    idSituacaoAtividade: 2,
+                });
+
+                if (resposta.status == 201) {
+                    this.setState({ showAlert: true });
+                }
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     hideAlert = () => {
@@ -318,34 +440,6 @@ export default class ListagemCurso extends Component {
         this.ListarCurso();
     };
 
-    ProcurarFavorito = async (id) => {
-        try {
-            const resposta = await api('/FavoritosCursos/' + id);
-            // console.warn(resposta)
-            if (resposta.status == 200) {
-                this.setState({ cursoFavoritoBuscado: resposta.data });
-                // console.warn(this.state.cursoBuscado)
-            }
-        } catch (erro) {
-            console.warn(erro);
-        }
-    }
-
-    ProcurarCurso = async (id) => {
-        try {
-            const resposta = await api('/Cursos/' + id);
-            // console.warn(resposta)
-            if (resposta.status == 200) {
-                this.setState({ cursoBuscado: resposta.data });
-                this.setState({ empresaBuscada: this.state.cursoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado})
-                // console.log(this.state.cursoBuscado)
-            }
-        }
-        catch (erro) {
-            console.warn(erro);
-        }
-    }
-
     verifyList = () => {
         if (this.state.switch == true) {
             console.warn('Cheguei bao');
@@ -358,6 +452,14 @@ export default class ListagemCurso extends Component {
                 </View>
             )
         }
+    }
+
+    componentDidMount = async () => {
+        this.GetLocation();
+        await delay(2000);
+        this.SaldoUsuario();
+        await delay(3000);
+        this.ListarCurso();
     }
 
     render() {
@@ -462,7 +564,7 @@ export default class ListagemCurso extends Component {
                 </Pressable>
 
                 <Modal
-                    animationType="slide"
+                    animationType="fade"
                     transparent={true}
                     visible={this.state.modalVisivel}
                     // key={item.idCurso == this.state.cursoBuscado.idCurso}
@@ -513,7 +615,7 @@ export default class ListagemCurso extends Component {
 
                                         <Image source={require('../../../assets/img-gp2/dataFinal.png')} />
                                         <Text style={styles.textDadosModal}>
-                                            {moment(item.dataFinalizacao).format('LL')}
+                                            {moment(this.state.cursoBuscado.dataFinalizacao).format('LL')}
                                         </Text>
                                     </View>
 
@@ -543,9 +645,9 @@ export default class ListagemCurso extends Component {
                                             </View>
 
                                             <View style={styles.boxInscreverModal}>
-                                                <Pressable style={styles.inscreverModal} onPress={() => { this.showAlert() }}  >
-                                                    <Text style={styles.textDetalhes}>Inscreva-se</Text>
-                                                </Pressable>
+                                                <TouchableOpacity style={this.state.desabilitado ? styles.inscreverModalDisable : styles.inscreverModal} activeOpacity={this.state.desabilitado ? 1 : 0.1} disabled={this.state.desabilitado} onPress={() => { this.showAlert(this.state.cursoBuscado.idCurso) }} >
+                                                    <Text style={styles.textDetalhes}>{this.setSituacao()}</Text>
+                                                </TouchableOpacity>
                                             </View>
                                         </View>
 
@@ -764,8 +866,22 @@ const styles = StyleSheet.create({
     boxAvaliacaoModal: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 8,
+        marginTop: 24,
         marginLeft: 16,
+    },
+    boxPrecoModal: {
+        width: 90,
+        height: 48,
+        borderWidth: 2,
+        borderColor: '#B3B3B3',
+        borderRadius: 15,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 24,
+        marginRight: 40,
+        marginLeft: 64
     },
     boxDadosModal: {
         flexDirection: 'row',
@@ -779,7 +895,7 @@ const styles = StyleSheet.create({
         marginLeft: 16
     },
     boxDescricaoModal: {
-        width: 300,
+        width: '75%',
         marginLeft: 16,
         marginTop: 24
     },
@@ -789,7 +905,7 @@ const styles = StyleSheet.create({
         color: '#000',
     },
     boxVerMais: {
-        height: 150
+        height: '20%'
     },
     textDescricaoModal: {
         fontFamily: 'Quicksand-Regular',
@@ -805,7 +921,7 @@ const styles = StyleSheet.create({
     boxEmpresa: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 32
+        marginTop: '30%'
     },
     tituloEmpresa: {
         fontFamily: 'Montserrat-Medium',
@@ -819,11 +935,11 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     boxValorInscrever: {
-        height: '10%',
+        height: '5%',
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'row',
-        marginTop: '5%',
+        marginTop: '3%',
     },
     boxPrecoModal: {
         width: 90,
@@ -839,22 +955,34 @@ const styles = StyleSheet.create({
         marginRight: 40
     },
     boxComentarioModal: {
-        marginTop: '8%',
+        marginTop: '10%',
         alignItems: 'center'
     },
     boxInscreverModal: {
         alignItems: 'center',
+        marginTop: 40,
         marginLeft: 80
     },
     inscreverModal: {
         width: 150,
         height: 48,
-        backgroundColor: '#C20004',
+        backgroundColor: '#1D438A',
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 32,
-        marginLeft: 8
+        marginLeft: 8,
+    },
+    inscreverModalDisable: {
+        width: 150,
+        height: 48,
+        backgroundColor: '#1D438A',
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 32,
+        marginLeft: 8,
+        opacity: 0.5
     },
     textDetalhes: {
         color: 'white',
