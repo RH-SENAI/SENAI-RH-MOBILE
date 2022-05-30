@@ -9,7 +9,8 @@ import {
     FlatList,
     ScrollView,
     TextInput,
-    RefreshControl
+    RefreshControl,
+    TouchableOpacity
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -39,14 +40,35 @@ export default class ListagemDesconto extends Component {
             inscrito: '',
             showAlert: false,
             refreshing: false,
+            desabilitado: false,
+            verifyRegistro: false,
             contadorDesconto: 0,
             saldoUsuario: 0,
             distanceUser: 0,
             switch: false,
+            empresaBuscada: '',
             listaDesconto: [],
-            descontoBuscado: [],
+            descontoBuscado: {},
         };
     }
+
+    ProcurarDescontos = async (id) => {
+        try {
+            const resposta = await api('/Descontos/' + id);
+            // console.warn(resposta)
+            if (resposta.status == 200) {
+                this.setState({ descontoBuscado: resposta.data });
+                console.warn(this.state.descontoBuscado)
+                this.setState({ empresaBuscada: this.state.descontoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado })
+                
+                // console.warn(this.state.cursoBuscado)
+            }
+        }
+        catch (erro) {
+            console.warn(erro);
+        }
+    }
+
     SaldoUsuario = async () => {
         const idUser = await AsyncStorage.getItem('idUsuario');
         console.log(idUser)
@@ -87,38 +109,6 @@ export default class ListagemDesconto extends Component {
         // var text = JSON.stringify(this.state.location)
         // console.warn(text) 
     }
-
-    // Favoritar = async (id) => {
-    //     try {
-    //         if (this.state.isFavorite == true) {
-    //             this.ProcurarCurso(id);
-
-    //             const jtiUser = base64.decode(token.split('.')[1])
-    //             const user = JSON.parse(jtiUser)
-    //             console.warn(user)
-
-    //             const respostaCadastro = await api.post('/FavoritosCursos', {
-    //                 idCurso: this.state.cursoBuscado,
-    //                 idUsuario: user.jti,
-    //             });
-
-    //             if (respostaCadastro.status == 200) {
-    //                 console.warn('Favorito adicionado');
-    //             }
-    //         }
-    //         else if (this.state.isFavorite == false) {
-    //             const respostaExcluir = await api.delete(`/FavoritosCursos/${id}`);
-
-    //             if (respostaExcluir.status == 200) {
-    //                 this.setState(!this.state.isFavorite)
-    //                 console.warn('Desfavoritado')
-    //             }
-    //         }
-
-    //     } catch (error) {
-    //         console.warn(error);
-    //     }
-    // }
 
     ListarDescontos = async () => {
         try {
@@ -199,31 +189,128 @@ export default class ListagemDesconto extends Component {
             console.warn(erro);
         }
     }
+    verifySaldo = (valor) => {
+        if (this.state.saldoUsuario >= valor) {
+            this.setState({ desabilitado: false });
+        }
+        else {
+            this.setState({ desabilitado: true });
+        }
+    }
+
     setModalVisivel = async (visible, id) => {
         if (visible == true) {
-            this.ProcurarDescontos(id)
-            await delay(250)
-            let stringId = JSON.stringify(id);
-            await AsyncStorage.setItem('descontoId', stringId);
+            this.ProcurarDescontos(id);
+            await delay(750);
+            this.verifySaldo(this.state.descontoBuscado.valorDesconto);
+            this.verifySituacao(id);
+            console.warn(this.state.saldoUsuario)
+            // await delay(500);
+            // console.warn(this.state.desabilitado)
+            this.setState({ modalVisivel: visible })
         }
         else if (visible == false) {
+            this.setState({ modalVisivel: visible })
+            this.setState({ verifyRegistro: false })
             this.setState({ descontoBuscado: [] })
         }
-
-        this.setState({ modalVisivel: visible })
-    }
-    componentDidMount = async () => {
-        this.GetLocation();
-        this.SaldoUsuario();
-        await delay(3000);
-        // setTimeout(function(){this.setState({ timeGeolocation: true})}, 1000);
-        this.ListarDescontos();
+        // await delay(200)
+        // this.setState({ modalVisivel: visible })
     }
 
-    showAlert = () => {
-        this.setState({
-            showAlert: true
-        });
+    // componentWillUnmount = () => {
+    //     this.ListarCurso();
+    // }
+
+    setSituacao = () => {
+        if (this.state.verifyRegistro == true) {
+            return this.state.descontoBuscado.numeroCupom
+        }
+        else {
+            return 'Pegue'
+        }
+    }
+
+    verifySituacao = async (id) => {
+        try {
+            const idUser = await AsyncStorage.getItem('idUsuario');
+            console.warn(idUser)
+            console.warn(id)
+
+            const respostaBuscar = await api(`/Registrodescontos/RegistroDescontos/IdUsuario/${idUser}`);
+
+            var tamanhoJsonRegistro = Object.keys(respostaBuscar.data).length;
+
+            let stringRegistros = JSON.stringify(respostaBuscar.data);
+            var objRegistros = JSON.parse(stringRegistros);
+
+            var k = 0;
+            do {
+                if (objRegistros != '') {
+                    var registroId = objRegistros[k]['idDesconto'];
+
+                    if (registroId == id) {
+                        this.setState({ verifyRegistro: true })
+                        this.setState({ desabilitado: true });
+                        console.warn("Curso já comprado!");
+                    }
+                }
+                else {
+                    console.warn("Está vazio!")
+                }
+                k++
+            } while (k < tamanhoJsonRegistro);
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    showAlert = async (id) => {
+        try {
+            const idUser = await AsyncStorage.getItem('idUsuario');
+            console.warn(idUser)
+            console.warn(id)
+
+            const respostaBuscar = await api(`/Registrodescontos/RegistroDescontos/IdUsuario/${idUser}`);
+
+            var tamanhoJsonRegistro = Object.keys(respostaBuscar.data).length;
+
+            let stringRegistros = JSON.stringify(respostaBuscar.data);
+            var objRegistros = JSON.parse(stringRegistros);
+
+            var k = 0;
+            do {
+                if (objRegistros != '') {
+                    var registroId = objRegistros[k]['idDesconto'];
+
+                    if (registroId == id) {
+                        // this.setState({ verifyRegistro: true })
+                        console.warn("Desconto já pego!")
+                        // this.setSituacao();
+                    }
+                }
+                else {
+                    console.warn("Está vazio!")
+                }
+                k++
+            } while (k < tamanhoJsonRegistro);
+
+            if (this.state.verifyRegistro != true) {
+                const resposta = await api.post('/Registrodescontos/Cadastrar', {
+                    idDesconto: id,
+                    idUsuario: idUser,
+                    idSituacaoAtividade: 1,
+                });
+
+                if (resposta.status == 201) {
+                    this.setState({ showAlert: true });
+                }
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     hideAlert = () => {
@@ -231,15 +318,6 @@ export default class ListagemDesconto extends Component {
             showAlert: false
         });
     };
-
-    modalidade = (item) => {
-        if (item.modalidadeCurso == true) {
-            return 'Presencial'
-        }
-        else {
-            return 'EAD'
-        }
-    }
 
     _renderTruncatedFooter = (handlePress) => {
         return (
@@ -272,23 +350,6 @@ export default class ListagemDesconto extends Component {
         this.ListarDescontos();
     };
 
-    ProcurarDescontos = async (id) => {
-        try {
-            const resposta = await api('/Descontos/' + id);
-            // console.warn(resposta)
-            if (resposta.status == 200) {
-                const dadosDesconto = await resposta.data;
-                var stringDescontoBuscado = JSON.stringify(dadosDesconto);
-                let objDescontoBuscado = JSON.parse(stringDescontoBuscado)
-                this.setState({ descontoBuscado: objDescontoBuscado });
-                // console.warn(this.state.cursoBuscado)
-            }
-        }
-        catch (erro) {
-            console.warn(erro);
-        }
-    }
-
     RedirecionarComentario = () => {
         this.setState({ modalVisivel: false })
         this.props.navigation.navigate('ComentarioDesconto')
@@ -306,6 +367,14 @@ export default class ListagemDesconto extends Component {
                 </View>
             )
         }
+    }
+
+    componentDidMount = async () => {
+        this.GetLocation();
+        this.SaldoUsuario();
+        await delay(3000);
+        // setTimeout(function(){this.setState({ timeGeolocation: true})}, 1000);
+        this.ListarDescontos();
     }
 
     render() {
@@ -396,20 +465,20 @@ export default class ListagemDesconto extends Component {
                     animationType="fade"
                     transparent={true}
                     visible={this.state.modalVisivel}
-                    key={item.idDesconto == this.state.descontoBuscado.idDesconto}
+                    // key={item.idDesconto == this.state.descontoBuscado.idDesconto}
                     onRequestClose={() => {
                         this.setModalVisivel(!this.state.modalVisivel)
                     }}
                 >
                     <View style={styles.totalModal}>
-                        <Pressable onPress={() => this.setModalVisivel(!this.state.modalVisivel, item.idDesconto)} >
+                        <Pressable onPress={() => this.setModalVisivel(!this.state.modalVisivel)} >
                             <View style={styles.containerModal}>
                                 <ScrollView>
                                     <View style={styles.boxTituloModal}>
                                         <View style={styles.boxImgCurso}>
-                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemDesconto}` }} resizeMode="stretch" />
+                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${this.state.descontoBuscado.caminhoImagemDesconto}` }} resizeMode="stretch" />
                                         </View>
-                                        <Text style={styles.textTituloModal}>{item.nomeDesconto}</Text>
+                                        <Text style={styles.textTituloModal}>{this.state.descontoBuscado.nomeDesconto}</Text>
                                     </View>
 
                                     <View style={styles.boxAvaliacaoPreco}>
@@ -419,14 +488,14 @@ export default class ListagemDesconto extends Component {
                                                 //starImage={star}
                                                 showRating={false}
                                                 selectedColor={'#C20004'}
-                                                defaultRating={item.mediaAvaliacaoDesconto}
+                                                defaultRating={this.state.descontoBuscado.mediaAvaliacaoDesconto}
                                                 isDisabled={true}
                                                 size={20}
                                             />
                                         </View>
                                         <View style={styles.boxPrecoModal}>
                                             <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
-                                            <Text style={styles.textDados}>{item.valorDesconto}</Text>
+                                            <Text style={styles.textDados}>{this.state.descontoBuscado.valorDesconto}</Text>
                                         </View>
                                     </View>
 
@@ -437,7 +506,7 @@ export default class ListagemDesconto extends Component {
                                         </Text>
 
                                         <Image source={require('../../../assets/img-gp2/mapa.png')} />
-                                        <Text style={styles.textDadosModal}>{item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado}</Text>
+                                        <Text style={styles.textDadosModal}>{this.state.empresaBuscada}</Text>
                                     </View>
 
                                     <View style={styles.boxDescricaoModal}>
@@ -449,7 +518,7 @@ export default class ListagemDesconto extends Component {
                                             renderRevealedFooter={this._renderRevealedFooter}
                                             onReady={this._handleTextReady}
                                         >
-                                            <Text style={styles.textDescricaoModal}>{item.descricaoDesconto}</Text>
+                                            <Text style={styles.textDescricaoModal}>{this.state.descontoBuscado.descricaoDesconto}</Text>
                                         </ReadMore>
 
                                         <View style={styles.boxEmpresa}>
@@ -465,9 +534,9 @@ export default class ListagemDesconto extends Component {
                                             </View>
 
                                             <View style={styles.boxInscreverModal}>
-                                                <Pressable style={styles.inscreverModal} onPress={() => { this.showAlert() }}  >
-                                                    <Text style={styles.textDetalhes}>Pegue</Text>
-                                                </Pressable>
+                                                <TouchableOpacity style={this.state.desabilitado ? styles.inscreverModalDisable : styles.inscreverModal} activeOpacity={this.state.desabilitado ? 1 : 0.1} disabled={this.state.desabilitado} onPress={() => { this.showAlert(this.state.descontoBuscado.idDesconto) }} >
+                                                    <Text style={styles.textDetalhes}>{this.setSituacao()}</Text>
+                                                </TouchableOpacity>
                                             </View>
                                         </View>
 
@@ -477,7 +546,7 @@ export default class ListagemDesconto extends Component {
                                             showProgress={false}
                                             title="Sucesso"
                                             titleStyle={styles.tituloAlert}
-                                            message="Você resgatou o desconto!"
+                                            message="Você resgatou o desconto! O código é "
                                             messageStyle={styles.textAlert}
                                             closeOnTouchOutside={true}
                                             closeOnHardwareBackPress={false}
@@ -714,7 +783,8 @@ const styles = StyleSheet.create({
         marginLeft: 16
     },
     boxDescricaoModal: {
-        width: 300,
+        width: '75%',
+        height: '70%',
         marginLeft: 16,
         marginTop: 24
     },
@@ -724,7 +794,7 @@ const styles = StyleSheet.create({
         color: '#000',
     },
     boxVerMais: {
-        height: 150
+        // height: '10%'
     },
     textDescricaoModal: {
         fontFamily: 'Quicksand-Regular',
@@ -761,7 +831,7 @@ const styles = StyleSheet.create({
         marginTop: '5%',
     },
     boxComentarioModal: {
-        marginTop: '8%',
+        marginTop: '13%',
         alignItems: 'center'
     },
     boxInscreverModal: {
@@ -771,12 +841,23 @@ const styles = StyleSheet.create({
     inscreverModal: {
         width: 150,
         height: 48,
-        backgroundColor: '#C20004',
+        backgroundColor: '#1D438A',
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 24,
-        marginLeft: 8
+        marginTop: 32,
+        marginLeft: 8,
+    },
+    inscreverModalDisable: {
+        width: 150,
+        height: 48,
+        backgroundColor: '#1D438A',
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 32,
+        marginLeft: 8,
+        opacity: 0.5
     },
     textDetalhes: {
         color: 'white',
