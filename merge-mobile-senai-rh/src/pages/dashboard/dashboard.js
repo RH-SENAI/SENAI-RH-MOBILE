@@ -55,9 +55,6 @@ import moment from 'moment';
 import 'moment/locale/pt-br'
 
 
-const wait = (timeout) => {
-  return new Promise(resolve => setTimeout(resolve, timeout));
-}
 
 
 
@@ -77,13 +74,24 @@ export default function Dashboard() {
 
   const [refreshing, setRefreshing] = React.useState(false);
 
+
+  const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  }
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    BuscarUsuario();
+    setUsuario([]);
+    setMinhasAtividades([]);
+    setHistoricos([]);
+    wait(2000).then(() => setRefreshing(false));
+    BuscarUsuario() ;
     BuscarMinhasAtividades();
     BuscarHistorico();
-    wait(2000).then(() => setRefreshing(false));
   }, []);
+
+
+
 
   moment.locale('pt-br');
   const now = moment();
@@ -298,9 +306,26 @@ export default function Dashboard() {
     }
   }
 
-  useEffect(() => BuscarUsuario(), []);
-  useEffect(() => BuscarMinhasAtividades(), []);
-  useEffect(() => BuscarHistorico(), []);
+  useEffect(() => {
+    BuscarUsuario()
+    return (
+      setUsuario([])
+    )
+  }, []);
+  useEffect(() => {
+    BuscarMinhasAtividades()
+    return (
+      setMinhasAtividades([])
+    )
+  }, []);
+  useEffect(() => {
+    BuscarHistorico()
+    return (
+      setHistoricos([])
+    )
+  }, []);
+
+
 
   const GraficoSatisfacao = () => {
     const u = usuario[0];
@@ -400,10 +425,6 @@ export default function Dashboard() {
 
 
 
-
-
-
-
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {
@@ -411,8 +432,7 @@ export default function Dashboard() {
       <ScrollView refreshControl={
         <RefreshControl
           refreshing={refreshing}
-          onRefresh={onRefresh}
-        />
+          onRefresh={onRefresh} />
       }>
         <View style={styles.container}>
           <View style={styles.header}>
@@ -493,8 +513,6 @@ export default function Dashboard() {
                       gutterSize={2}
                       squareSize={18}
                     />
-                    
-
                   </View>
 
 
@@ -691,10 +709,13 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: "row",
     justifyContent: 'space-between',
-    paddingHorizontal: '10%'
+    paddingHorizontal: '10.5%'
   },
   nvsLabels: {
-
+    fontSize: 12,
+    marginTop: -25,
+    color: '#f1f1f1',
+    textAlign: 'center'
   }
 
 

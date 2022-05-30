@@ -63,7 +63,7 @@ export default function GraficoBarras(usuarioLogado) {
 
     return (
         <View style={{
-            flexDirection: 'row', height: 200, paddingTop: 16, backgroundColor: "rgba(0, 0, 0, 0.8)",
+            flexDirection: 'row', height: 200, paddingTop: 16, paddingBottom: 20, backgroundColor: "rgba(0, 0, 0, 0.8)",
             paddingHorizontal: 10, borderRadius: 10 }}>
             <BarChart
                 style={{ flex: 1 }}
