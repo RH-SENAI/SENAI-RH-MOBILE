@@ -150,8 +150,8 @@ export default class Login extends Component {
 
           <Text style={styles.tituloPagina}>{'recursos humanos'.toUpperCase()}</Text>
 
-          <View style={styles.viewLoginCPF}>
-            <TextInput style={styles.inputLogin}
+          <View style={styles.inputLogin}>
+            <TextInput style={styles.viewLoginCPF}
               placeholder="CPF"
               keyboardType="numeric"
               placeholderTextColor="#B3B3B3"
@@ -160,8 +160,8 @@ export default class Login extends Component {
             />
           </View>
 
-          <View style={styles.TextEmail}>
-            <TextInput style={styles.inputLogin}
+          <View style={styles.inputLogin}>
+            <TextInput style={styles.TextEmail}
               placeholder="Senha"
               placeholderTextColor="#B3B3B3"
               keyboardType="default"
@@ -195,9 +195,9 @@ export default class Login extends Component {
           </TouchableOpacity>
 
         </View>
-        <View style={styles.imgLoginView} >
-          <Image source={require('../../../assets/img-geral/imagemLogin.png')} />
-        </View>
+        {/* <View style={styles.imgLoginView} >
+          <Image style={styles.img} source={require('../../../assets/img-geral/imagemLogin.png')} />
+        </View> */}
 
       </View>
 
@@ -214,18 +214,20 @@ const styles = StyleSheet.create({
   },
 
   mainHeader: {
-    paddingTop: 40,
+    paddingTop: "10%",
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   imgLogo: {
-    height: 30,
-    width: 220,
+    height:"20%",
+    // width: 360,
+    width:"47%",
   },
 
   container: {
     alignItems: 'center',
+    justifyContent:'center'
   },
 
   tituloPagina: {
@@ -233,8 +235,8 @@ const styles = StyleSheet.create({
     fontSize: 40,
     color: '#2A2E32',
     // width:"60%" ,
-    paddingTop: 64,
-    paddingBottom: 50,
+    paddingTop:"10%" ,
+    paddingBottom: "15%",
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -257,25 +259,36 @@ const styles = StyleSheet.create({
   },
 
   inputLogin: {
-    // width: "40%",
-    // height: "20%",
+     width: "75%",
+    // backgroundColor: '#C20004',
+     height: "10%",
     borderWidth: 1,
     borderColor: '#B3B3B3',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
     fontSize: 14,
+    marginBottom: 40
     // flexDirection: 'column',
     //paddingTop: 8,
     //paddingBottom:24,
-    paddingLeft: 15,
+    // paddingLeft: 15,
   },
 
   viewLoginCPF: {
-    // padding: 3345678,
-    width: "65%",
-    height: "20%",
-    marginBottom: 24,
+    // backgroundColor: 'blue',
+    height: "50%",
+    width: "80%",
+    // height: "23%",
+    // marginBottom: 24,
+  },
+  
+  TextEmail: {
+    // backgroundColor: 'pink',
+    height: "50%",
+    width: "80%",
+    // height: "20%",
+    // marginBottom: 24,
   },
 
   erroMsg: {
@@ -304,7 +317,7 @@ const styles = StyleSheet.create({
   },
 
   btnLogin: {
-    width: "62%",
+    width: "75%",
     height: 46,
     fontSize: 20,
     borderRadius: 5,
@@ -326,13 +339,17 @@ const styles = StyleSheet.create({
 
 
   imgLoginView: {
-    marginTop: 92,
+    // marginTop: 92,
     //width: 180,
-    //height: 165,
-    // height:"100%",
+    // height,
+    height:"100%" ,
     width: "100%",
     paddingLeft: 40,
     alignItems: 'flex-start',
     flexDirection: 'column',
   },
+  img: {
+    height:"20%" ,
+    width: "60%",
+  }
 });

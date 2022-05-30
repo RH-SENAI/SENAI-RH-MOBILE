@@ -24,11 +24,13 @@ import base64 from 'react-native-base64';
 import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker'
+import * as DocumentPicker from 'expo-document-picker'
+import * as FileSystem from 'expo-file-system'
 import * as Permission from 'expo-permissions';
 import axios from 'axios';
 import AwesomeAlert from 'react-native-awesome-alerts';
-// import 'intl';
 import moment from 'moment';
+// import 'intl';
 
 let customFonts = {
     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
@@ -48,7 +50,7 @@ export default class AtividadesExtras extends Component {
             AtividadeBuscada: {},
             fontsLoaded: false,
             modalVisible: false,
-            imagemEntrega: {},
+            imagemEntrega: null,
             showAlert: false,
             showAlertSuce: false,
             mensagem: '',
@@ -66,96 +68,60 @@ export default class AtividadesExtras extends Component {
         });
     };
 
-    showAlertSuce = () => {
-        this.setState({ showAlertSuce: true })
+    imagePickerCall = async () => {
+        const result = await DocumentPicker.getDocumentAsync({
+            type: 'image/*',
+            multiple: false,
+            copyToCacheDirectory: true
+        })
+        console.warn(result)
+        this.setState({ imagemEntrega: result})
     }
 
-    hideAlertSuce = () => {
-        this.setState({
-            showAlertSuce: false
-        });
-    };
-
     finalizarAtividade = async (item) => {
+        let arquivo = this.state.imagemEntrega;
+
+        const token = (await AsyncStorage.getItem('userToken'));
+        var Buffer = require('buffer/').Buffer
+        let base64Url = token.split('.')[1]; // token you get
+        let base64 = base64Url.replace('-', '+').replace('_', '/');
+        let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
         console.warn(item)
+        //console.warn(decodedData.jti)
 
-        const token = await AsyncStorage.getItem('userToken');
-
-        const form = new FormData();
-
-        form.append('FormFile', {
-            uri: this.state.imagemEntrega.uri,
-            type: this.state.imagemEntrega.type + "/jpg"
-        }, 'desgraçera')
-        form.append('FileName', 'finalAtividade.jpeg')
-
-        console.warn(this.state.imagemEntrega)
-        try {
-
-            // var request = new XMLHttpRequest();
-            // request.open('PATCH', 'http://192.168.0.30:5000/api/Atividades/FinalizarAtividade/' + item);
-            // request.send(form)
-
-            fetch('http://192.168.0.30:5000/api/Atividades/FinalizarAtividade/' + item, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
-                body: form
-            })
-                .then
-            //console.warn(resposta)
-        } catch (error) {
-            console.warn(error)
-        }
-
-        try {
-
-
-
-
-            const token = await AsyncStorage.getItem('userToken');
-
+        
             const data = new FormData();
 
-            data.append('arquivo', {
-                uri: this.state.imagemEntrega.uri,
-                type: this.state.imagemEntrega.type
+            data.append('file', {
+                uri: arquivo.uri,
+                type: arquivo.mimeType,
+                name: arquivo.name
             })
-            console.warn(data)
 
+            console.warn(item)
+            
+            try {
+                
+                axios({
+                    method: 'post',
+                    url: 'http://192.168.3.110:5000/api/Atividades/FinalizarAtividade/' + item + '/' + decodedData.jti,
+                    data: data,
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                })
 
-            // axios({
-            //     method: 'patch',
-            //     url: 'http://192.168.3.84:5000/api/Atividades/FinalizarAtividade/'+ item,
-            //     data : data,
-            //     headers:{
-            //         "Content-Type": "multipart/form-data",
-            //     }
-            // })
-            // .then(resposta =>{
-            //     console.warn(resposta)
-            // })
-            const resposta = await axios.patch('http://apirhsenaigp1.azurewebsites.net/api/Atividades/FinalizarAtividade/' + item, {
+                // api.post('http://apirhsenaigp1.azurewebsites.net/api/Atividades/FinalizarAtividade/12/2', , {
+                //     headers:{
+                //         'Content-Type': 'multipart/form-data'
+                //     }
+                // })
 
-                arquivo: data
-            }, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-
-                }
-            })
-            console.warn('aqui')
-            console.warn(resposta)
-            this.showAlertSuce();
-
-        } catch (error) {
-            console.warn(error)
-            this.showAlert();
-        }
-
-
-
+            } catch (error) {
+                
+                console.warn(error)
+            }
+      
     }
 
 
@@ -298,20 +264,7 @@ export default class AtividadesExtras extends Component {
     //     }
     // }
 
-    imagePickerCall = async () => {
-        if (Constants.platform.ios) {
-            const result = await Permission.askAsync(Permission.MEDIA_LIBRARY)
-            if (result.status !== 'granted') {
-                console.warn('permissão necessária')
-            }
-        }
-
-        const data = await ImagePicker.launchImageLibraryAsync({})
-
-        this.setState({ imagemEntrega: data })
-
-        console.warn(this.state.imagemEntrega)
-    }
+    
 
     render() {
         if (!customFonts) {
@@ -374,7 +327,6 @@ export default class AtividadesExtras extends Component {
                 <View style={styles.conteudoBox}>
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
                     {/* <Text style={styles.nomeBox}> {item.idAtividade} </Text> */}
-
                     <Text style={styles.criador}> Responsável: {item.criador} </Text>
                     {/* <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
                     year: 'numeric', month: 'short', day: 'numeric',
@@ -387,7 +339,7 @@ export default class AtividadesExtras extends Component {
                         <Text style={styles.dataEntrega}> Data de Entrega: {moment(item.dataConclusao).format('DD-MM-YYYY')} </Text>
 
                         <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
-                            <AntDesign name="downcircleo" size={24} color="#7B0AFF" />
+                            <AntDesign name="downcircleo" size={24} color="#9A0AFF" />
                         </Pressable>
 
                         {/* <View style={styles.statusImagem}>
@@ -416,7 +368,6 @@ export default class AtividadesExtras extends Component {
             >
 
 
-
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <View style={styles.quadradoModal}></View>
@@ -424,7 +375,7 @@ export default class AtividadesExtras extends Component {
                             <Text style={styles.nomeBoxModal}>{this.state.AtividadeBuscada.nomeAtividade} </Text>
                             <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
                             <Text style={styles.itemPostadoModal}> Item Postado: {moment(this.state.AtividadeBuscada.dataCriacao).format('DD-MM-YYYY')} </Text>
-                            <Text style={styles.entregaModal}> Data de Entrega: {moment(this.state.AtividadeBuscada.dataConclusao).format('DD-MM-YYYY')} </Text>
+                            <Text style={styles.entregaModal}> Data de Entrega: {moment(this.state.AtividadeBuscada.dataConclusao).format('DD-MM-YYYY')}</Text>
 
                             <Text style={styles.entregaModal}> Recompensa em Troféu: {this.state.AtividadeBuscada.recompensaTrofeu}
                                 <EvilIcons style={styles.trofeu} name="trophy" size={25} color="#E7C037" />
@@ -649,8 +600,7 @@ const styles = StyleSheet.create({
     },
 
     Modalbotao: {
-        paddingLeft: '55%',
-        // marginRight:20,
+        paddingLeft: "10%",
         paddingTop: 13,
     },
 
@@ -731,7 +681,7 @@ const styles = StyleSheet.create({
     },
 
     modalView: {
-        height: "40%",
+        height: 450,
         borderWidth: 1,
         borderColor: '#B3B3B3',
         backgroundColor: '#F2F2F2',
@@ -801,14 +751,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         justifyContent: 'space-evenly',
-        paddingTop: 30
+        paddingTop: "10%"
     },
 
     associarModal: {
         borderRadius: 15,
         height: 30,
         width: 108,
-        backgroundColor: '#7B0AFF',
+        backgroundColor: '#9A0AFF',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -820,13 +770,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
-        borderColor: '#7B0AFF',
-        color: '#7B0AFF'
+        borderColor: '#9A0AFF',
+        color: '#9A0AFF'
     },
 
     textoFechar: {
         fontFamily: 'Montserrat-Medium',
-        color: '#7B0AFF',
+        color: '#9A0AFF',
         fontSize: 12
     },
     descricao: {
@@ -856,7 +806,7 @@ const styles = StyleSheet.create({
 
     tituloModalLogin:
     {
-        color: '#C20004',
+        color: '#9A0AF',
         fontFamily: 'Montserrat-Medium',
         fontSize: 23,
         fontWeight: 'bold'

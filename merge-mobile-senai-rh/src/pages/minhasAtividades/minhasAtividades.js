@@ -380,8 +380,8 @@ export default class AtividadesExtras extends Component {
                         <View style={styles.conteudoBoxModal}>
                             <Text style={styles.nomeBoxModal}>{this.state.AtividadeBuscada.nomeAtividade} </Text>
                             <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
-                            <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
-                            <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
+                            <Text style={styles.itemPostadoModal}> Item Postado: {moment(this.state.AtividadeBuscada.dataCriacao).format('DD-MM-YYYY')} </Text>
+                            <Text style={styles.entregaModal}> Data de Entrega: {moment(this.state.AtividadeBuscada.dataConclusao).format('DD-MM-YYYY')}</Text>
 
                             <Text style={styles.entregaModal}> Recompensa em trofeu: {this.state.AtividadeBuscada.recompensaTrofeu} 
                                 <EvilIcons name="trophy" size={25} color="#E7C037" /> 

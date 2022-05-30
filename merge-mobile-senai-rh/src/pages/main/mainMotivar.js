@@ -37,6 +37,8 @@ function ButtonNew({ size, color }) {
 
 
 export default function MainMotivar() {
+
+  const navigation = useNavigation();
   
   let [fontsLoaded] = useFonts({
     Regular: Quicksand_400Regular,
@@ -92,15 +94,19 @@ export default function MainMotivar() {
 
 
       <Tab.Screen
-        name="Redirecionar"
-        component={Redirecionar}
-        options={{
-          tabBarIcon: ({ size, color }) => (
-            <ButtonNew size={size} color={color} />
-          ),
-          tabBarLabel: "",
-          //headerShown: false,
-        }}
+      name="Redirecionar"
+      component={Redirecionar}
+      options={{
+        tabBarIcon: ({ color }) => <ButtonNew size={40} color={color} />,
+        tabBarLabel: "",
+        headerShown: false,
+      }}
+      listeners={{
+        tabPress: (e) => {
+          // Prevent default action
+          navigation.goBack();
+        },
+      }}
       />
 
 
