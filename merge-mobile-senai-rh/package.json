@@ -44,6 +44,7 @@
     "react-native-exploding-heart": "^1.0.0",
     "react-native-gesture-handler": "~2.2.1",
     "react-native-leaderboard": "^1.0.6",
+    "react-native-masked-text": "^1.13.0",
     "react-native-modalize": "^2.0.13",
     "react-native-pager-view": "5.4.15",
     "react-native-ratings": "^8.1.0",
@@ -54,8 +55,8 @@
     "react-native-svg": "^12.3.0",
     "react-native-svg-charts": "^5.4.0",
     "react-native-tab-view": "^3.1.1",
-    "react-responsive": "^9.0.0-beta.8",
     "react-native-web": "0.17.7",
+    "react-responsive": "^9.0.0-beta.8",
     "victory": "^36.3.2"
   },
   "devDependencies": {

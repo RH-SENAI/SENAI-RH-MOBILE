@@ -6,7 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  FlatList
+  FlatList,
 } from "react-native";
 
 // Pacotes
@@ -14,25 +14,24 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Expo
-import AppLoading from 'expo-app-loading';
+import AppLoading from "expo-app-loading";
 
 // Fonts
 import {
   useFonts,
   Montserrat_500Medium,
   Montserrat_600SemiBold,
-} from '@expo-google-fonts/montserrat';
+} from "@expo-google-fonts/montserrat";
 
 import {
   Quicksand_300Light,
   Quicksand_600SemiBold,
-} from '@expo-google-fonts/quicksand';
+} from "@expo-google-fonts/quicksand";
 
 // Services
 import api from "../../services/apiGp3";
 
 export default function ListaFeedback() {
-
   const navigation = useNavigation();
 
   // States
@@ -40,7 +39,6 @@ export default function ListaFeedback() {
 
   // Fontes utilizada
   let [fontsLoaded] = useFonts({
-
     //Montserrat
     Montserrat_500Medium,
     Montserrat_600SemiBold,
@@ -48,8 +46,7 @@ export default function ListaFeedback() {
     // Quicksand
     Quicksand_300Light,
     Quicksand_600SemiBold,
-  })
-
+  });
 
   const BuscarFeedbacks = async () => {
     const token = await AsyncStorage.getItem("userToken");
@@ -66,56 +63,49 @@ export default function ListaFeedback() {
     }
   };
 
-
   useEffect(() => {
     BuscarFeedbacks();
   }, []);
 
   const renderItem = ({ item }) => (
     <View style={styles.containerRenderItem}>
-
-      <View style={styles.imgPerfilCardWrapper}>
-
-        <Image
-          source={{
-            uri:
-              "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
-              item.idUsuarioNavigation.caminhoFotoPerfil,
-          }}
-          style={styles.img_perfil}
-          resizeMode="cover"
-        />
-
-      </View>
-
+      {/* <View style={styles.Nayara} >
+        
+      </View> */}
       <View style={styles.cardClicavel}>
+        <View style={styles.imgPerfilCardWrapper}>
+          <Image
+            source={{
+              uri:
+                "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
+                item.idUsuarioNavigation.caminhoFotoPerfil,
+            }}
+            style={styles.img_perfil}
+            resizeMode="cover"
+          />
+        </View>
 
         <TouchableOpacity
+          style={styles.containerCardClicavel}
           onPress={() =>
             navigation.navigate("ListarDecisao", {
               idDecisao: item.idDecisao,
             })
           }
         >
+           {/* <View style={styles.quadrado}></View> */}
           <View style={styles.containerCard}>
-
             <View style={styles.tituloCardWrapper}>
-
               <Text style={styles.tituloCard}>
                 O que {item.idUsuarioNavigation.nome} disse sobre: "
                 {item.idDecisaoNavigation.descricaoDecisao}"
               </Text>
 
               <Text style={styles.mensagem}>{item.comentarioFeedBack}</Text>
-
             </View>
-
           </View>
-
         </TouchableOpacity>
-
       </View>
-
     </View>
   );
 
@@ -124,14 +114,11 @@ export default function ListaFeedback() {
   } else {
     return (
       <View style={styles.container}>
-
         <View style={styles.header}>
-
           <Image
             source={require("../../../assets/img-geral/logo_2S.png")}
             style={styles.imgLogo}
           />
-
         </View>
 
         <Text style={styles.h1Bold}>Feedbacks</Text>
@@ -142,7 +129,6 @@ export default function ListaFeedback() {
           keyExtractor={(item) => item.idFeedBack}
           renderItem={renderItem}
         />
-
       </View>
     );
   }
@@ -150,67 +136,87 @@ export default function ListaFeedback() {
 
 const styles = StyleSheet.create({
   containerRenderItem: {
-    width: 370,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
+    // width: 370,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    backgroundColor:'purple'
   },
 
   imgPerfilCardWrapper: {
     width: 70,
     height: 70,
-    borderColor: '#B3B3B3',
+    borderColor: "#B3B3B3",
     borderWidth: 3,
     borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 32,
   },
 
   img_perfil: {
-    width: '100%',
-    height: '100%'
+    width: "100%",
+    height: "100%",
+    backgroundColor:"pink"
   },
 
+  // Nayara:{
+  //   justifyContent: 'flex-start',
+  // },
+
   cardClicavel: {
-    borderWidth: 2,
-    borderColor: "gray",
+    height: 210,
+    borderWidth: 1,
+    borderColor: '#B3B3B3',
+    backgroundColor: 'blue',
+    // backgroundColor: '#F2F2F2',
+    borderTopWidth:30,
+    borderTopColor:'#451531',
     borderRadius: 10,
-    padding: 10,
-    marginTop: 16,
-    width: 230,
-    height: 130,
-    marginRight:40
+    marginBottom: 40,
+    width: '95%',
+    // textAlign:"center",
+   // justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
 
   containerCard: {
-    width: 207,
-    height: 105
+    width: "80%",
+    height: 105,
+    backgroundColor:"green",
+    alignItems: "center",
+    // justifyContent:"center",
+    marginLeft:120
   },
 
   tituloCardWrapper: {
     width: 200,
-    height: 38,
+    height: 30
   },
 
   tituloCard: {
     textAlign: "auto",
     marginBottom: 8,
     height: 60,
-    fontFamily: 'Quicksand_600SemiBold',
-    color: 'black',
-    marginLeft: 14
+    fontFamily: "Quicksand_600SemiBold",
+    // color: "black",
+    color: "yellow",
+    marginLeft: 14,
+    
   },
 
   mensagem: {
     textAlign: "center",
-    color: 'black',
-    fontFamily: 'Quicksand_300Light'
+    color: "red",
+    // color: "black",
+    fontFamily: "Quicksand_300Light",
   },
 
   container: {
     flex: 1,
-    alignItems: 'center',
-    marginHorizontal: '5%',
+    alignItems: "center",
+    marginHorizontal: "5%",
   },
 
   header: {
@@ -218,15 +224,11 @@ const styles = StyleSheet.create({
     height: 40,
     alignSelf: "center",
     marginTop: 16,
-
   },
 
   imgLogo: {
     alignSelf: "center",
-    marginTop: 40,
- 
-    
-   
+    marginTop: 40
   },
 
   // h1nonBold: {
@@ -248,6 +250,15 @@ const styles = StyleSheet.create({
   },
 
   mainBodyContent: {
-    paddingBottom: 20
-  }
+    paddingBottom: 20,
+  },
+
+//   quadrado: {
+//     backgroundColor: '#451531',
+//     height: 28,
+//     width: '100%',
+//     borderTopRightRadius: 8,
+//     borderTopLeftRadius: 8,
+
+// },
 });

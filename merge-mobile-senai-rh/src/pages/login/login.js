@@ -8,6 +8,7 @@ import {
   TextInput,
   Alert,
   Pressable,
+  Sty
 } from 'react-native';
 
 
@@ -19,7 +20,6 @@ import jwt_decode from "jwt-decode";
 import apiGp1 from '../../services/apiGp1';
 import recuperar from "../alterarSenha/recuperarSenha.js"
 import AwesomeAlert from 'react-native-awesome-alerts';
-
 import { TextInputMask } from "react-native-masked-text";
 
 
@@ -123,11 +123,11 @@ export default class Login extends Component {
         <AwesomeAlert
           show={this.state.showAlert}
           showProgress={false}
-          title="Oops !"
+          title="Oops!"
           titleStyle={
             styles.tituloModalLogin
           }
-          message="O CPF ou a senha inserídos são inválidos!"
+          message="O CPF ou a senha inseridos são inválidos!"
           messageStyle={styles.textoModalLogin}
           closeOnTouchOutside={true}
           closeOnHardwareBackPress={false}
@@ -152,9 +152,9 @@ export default class Login extends Component {
 
           <Text style={styles.tituloPagina}>{'recursos humanos'.toUpperCase()}</Text>
 
-          <View style={styles.viewLoginCPF}>
+          <View style={styles.inputLogin}>
           <TextInputMask
-              style={styles.inputLogin}
+              style={styles.viewLoginCPF}
               placeholder="CPF"
               type={"cpf"}
               value={this.state.value}

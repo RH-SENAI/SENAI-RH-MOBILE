@@ -540,9 +540,6 @@ const styles = StyleSheet.create({
 
     },
 
-
-
-
     box: {
         height: 210,
         borderWidth: 1,
