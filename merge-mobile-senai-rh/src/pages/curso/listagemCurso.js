@@ -134,7 +134,7 @@ export default class ListagemCurso extends Component {
                 //Requisição favoritos pelo id do usuário
                 const respostaFavoritos = await api('/FavoritosCursos/Favorito/' + idUser)
                 var dadosFavoritos = respostaFavoritos.data
-                this.setState({ listaFavoritosCoracao: dadosFavoritos })
+                // this.setState({ listaFavoritosCoracao: dadosFavoritos })
 
                 //Tamanho do json do respostaFavoritos
                 var tamanhoJson = Object.keys(dadosFavoritos).length;
@@ -265,6 +265,7 @@ export default class ListagemCurso extends Component {
                 }
 
                 this.setState({ contadorCurso: i })
+                this.verifyCoracao();
                 // console.warn(this.state.contadorCurso)
             }
         }
@@ -435,8 +436,9 @@ export default class ListagemCurso extends Component {
 
     onRefresh = async () => {
         this.setState({ refreshing: true });
-        this.wait(2000).then(() => this.setState({ refreshing: false }));
         this.setState({ listaCurso: [] })
+        this.setState({ verifyCoracao: [] })
+        this.wait(2000).then(() => this.setState({ refreshing: false }));
         this.ListarCurso();
     };
 
@@ -454,12 +456,23 @@ export default class ListagemCurso extends Component {
         }
     }
 
+    verifyCoracao = async () => {
+        const idUser = await AsyncStorage.getItem('idUsuario');
+
+        const respostaFavoritos = await api('/FavoritosCursos/Favorito/' + idUser)
+        var dadosVerifyFavoritos = respostaFavoritos.data
+        this.setState({ listaFavoritosCoracao: dadosVerifyFavoritos })
+        console.warn(this.state.listaFavoritosCoracao)
+    }
+
     componentDidMount = async () => {
         this.GetLocation();
         await delay(2000);
         this.SaldoUsuario();
         await delay(3000);
+        
         this.ListarCurso();
+        // await delay(2000);
     }
 
     render() {
@@ -506,7 +519,7 @@ export default class ListagemCurso extends Component {
     }
     renderItem = ({ item }) => (
         <View>
-            <View style={styles.containerCurso}>
+            {/* <View style={styles.containerCurso}> */}
                 {/* item.idEmpresaNavigation.idLocalizacaoNavigation.idLogradouroNavigation.nomeLogradouro */}
                 {/* Localizacao(this.state.Userlatitude, this.state.Userlongitude, item.idEmpresaNavigation.idLocalizacaoNavigation.idCepNavigation.cep1 */}
                 <Pressable onPress={() => this.setModalVisivel(true, item.idCurso)}>
@@ -676,7 +689,7 @@ export default class ListagemCurso extends Component {
                         </Pressable>
                     </View>
                 </Modal>
-            </View>
+            {/* </View> */}
         </View>
     );
 }
@@ -709,7 +722,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: 24
+        marginBottom: 24,
+        // backgroundColor: 'yellow'
     },
     boxSaldoUsuario: {
         width: 90,
@@ -732,25 +746,40 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingLeft: 28
     },
+    flatlist: {
+        flex: 1,
+        width: '75%',
+        height: '100%'
+        // backgroundColor: 'blue'
+    },
     containerCurso: {
-        marginBottom: 50,
+        width: '100%',
+        height: 500,
+        // backgroundColor: 'blue',
+        // marginBottom: '1%',
+        marginBottom: 20
     },
     boxCurso: {
-        width: 275,
-        height: 285,
+        // backgroundColor: 'pink',
         borderWidth: 2,
         borderColor: '#B3B3B3',
         borderTopWidth: 0,
         borderRadius: 10,
+        marginBottom: 20
     },
     boxImgCurso: {
         alignItems: 'center',
     },
     imgCurso: {
-        width: 275,
-        height: 83,
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8,
+        width: '100%',
+        height: 100,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        // backgroundColor: 'red',
+    },
+    containerCard: {
+        // backgroundColor: 'green',
+        marginBottom: 24
     },
     boxTituloCurso: {
         marginLeft: 16
@@ -790,7 +819,8 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         marginTop: 16,
-        marginLeft: 16
+        marginLeft: 16,
+        marginBottom: 10
     },
     boxPreco: {
         width: 90,
@@ -801,7 +831,8 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        // backgroundColor: 'pink'
     },
     imgCoin: {
         width: 22.1,
@@ -813,7 +844,7 @@ const styles = StyleSheet.create({
         //backgroundColor: 'black',
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft: 105,
+        marginLeft: '45%',
     },
     textFavoritos: {
         color: 'white'
@@ -866,22 +897,8 @@ const styles = StyleSheet.create({
     boxAvaliacaoModal: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 24,
+        marginTop: 8,
         marginLeft: 16,
-    },
-    boxPrecoModal: {
-        width: 90,
-        height: 48,
-        borderWidth: 2,
-        borderColor: '#B3B3B3',
-        borderRadius: 15,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 24,
-        marginRight: 40,
-        marginLeft: 64
     },
     boxDadosModal: {
         flexDirection: 'row',
@@ -895,7 +912,7 @@ const styles = StyleSheet.create({
         marginLeft: 16
     },
     boxDescricaoModal: {
-        width: '75%',
+        width: 300,
         marginLeft: 16,
         marginTop: 24
     },
@@ -905,7 +922,7 @@ const styles = StyleSheet.create({
         color: '#000',
     },
     boxVerMais: {
-        height: '20%'
+        height: 150
     },
     textDescricaoModal: {
         fontFamily: 'Quicksand-Regular',
@@ -921,7 +938,7 @@ const styles = StyleSheet.create({
     boxEmpresa: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: '30%'
+        marginTop: 32
     },
     tituloEmpresa: {
         fontFamily: 'Montserrat-Medium',
@@ -935,11 +952,11 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     boxValorInscrever: {
-        height: '5%',
+        height: '10%',
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'row',
-        marginTop: '3%',
+        marginTop: '5%',
     },
     boxPrecoModal: {
         width: 90,
@@ -955,34 +972,22 @@ const styles = StyleSheet.create({
         marginRight: 40
     },
     boxComentarioModal: {
-        marginTop: '10%',
+        marginTop: '8%',
         alignItems: 'center'
     },
     boxInscreverModal: {
         alignItems: 'center',
-        marginTop: 40,
         marginLeft: 80
     },
     inscreverModal: {
         width: 150,
         height: 48,
-        backgroundColor: '#1D438A',
+        backgroundColor: '#C20004',
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 32,
-        marginLeft: 8,
-    },
-    inscreverModalDisable: {
-        width: 150,
-        height: 48,
-        backgroundColor: '#1D438A',
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 32,
-        marginLeft: 8,
-        opacity: 0.5
+        marginLeft: 8
     },
     textDetalhes: {
         color: 'white',
