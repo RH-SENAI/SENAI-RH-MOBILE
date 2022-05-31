@@ -3,7 +3,6 @@ import {
     StyleSheet,
     Text,
     View,
-    Modal,
     Pressable,
     Image,
     FlatList,
@@ -13,17 +12,8 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Component } from 'react/cjs/react.production.min';
-import { AppRegistry } from 'react-native-web';
-import ExplodingHeart from 'react-native-exploding-heart';
 import { Rating, AirbnbRating } from 'react-native-ratings';
-import AwesomeAlert from 'react-native-awesome-alerts';
-import ReadMore from 'react-native-read-more-text';
-import api from "../../services/apiGp2"
-import apiGp1 from '../../services/apiGp1';
-import apiMaps from '../../services/apiMaps.js';
-import * as Location from 'expo-location';
-const delay = require('delay');
-// import { Location, Permissions } from 'expo';
+import api from '../../services/apiGp2';
 
 export default class ListagemDesconto extends Component {
     constructor(props) {
@@ -77,12 +67,7 @@ export default class ListagemDesconto extends Component {
         }
     }
 
-    test() {
-        console.warn("CHEGOU")
-    }
-
     avaliacaoDesconto = (rating) => {
-        console.warn("Nota é: " + rating)
         this.setState({ notaDesconto: rating })
     }
 
@@ -113,6 +98,7 @@ export default class ListagemDesconto extends Component {
 
                 <View style={styles.boxComentar}>
                     <TextInput
+                        style={styles.inputBox}
                         placeholder="Comente"
                         keyboardType="default"
                         placeholderTextColor="#B3B3B3"
@@ -143,14 +129,14 @@ export default class ListagemDesconto extends Component {
                 <View style={styles.boxComentario}>
                     <Text style={styles.textComentario}>{item.idUsuarioNavigation.nome}: {item.comentarioDesconto1}</Text>
                     <View style={styles.boxAvaliado}>
-                    <AirbnbRating
-                        count={5}
-                        showRating={false}
-                        selectedColor={'#C20004'}
-                        defaultRating={item.avaliacaoDesconto}
-                        isDisabled={true}
-                        size={20}
-                    />
+                        <AirbnbRating
+                            count={5}
+                            showRating={false}
+                            selectedColor={'#C20004'}
+                            defaultRating={item.avaliacaoDesconto}
+                            isDisabled={true}
+                            size={20}
+                        />
                     </View>
                 </View>
             </View>
@@ -191,6 +177,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft: 100,
         marginBottom: 50
+    },
+    inputBox: {
+        width: 100
     },
     btnComentar: {
         marginLeft: 50

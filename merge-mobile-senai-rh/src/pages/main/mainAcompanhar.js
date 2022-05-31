@@ -40,7 +40,8 @@ export default function MainAcompanhar() {
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: "#f1f1f1",
-          borderTopColor: "gray",
+          borderTopColor: "#C20004",
+          borderTopWidth: 1,
           paddingBottom: 5,
           paddingTop: 5,
         },
@@ -119,6 +120,14 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderWidth: 4,
     borderColor: "#C20004",
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.75,
+    shadowRadius: 4,
+    elevation: 7,
   },
 
   modalView: {

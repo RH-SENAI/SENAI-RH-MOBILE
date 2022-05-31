@@ -82,7 +82,6 @@ export default class Login extends Component {
       //console.warn(token);
 
       await AsyncStorage.setItem('idUsuario',jwt_decode(token).jti);
-      
       await AsyncStorage.setItem('userToken', token);
       //console.warn(resposta.data);
 
@@ -103,7 +102,7 @@ export default class Login extends Component {
 
     } catch (error) {
       console.warn(error)
-      this.showAlertSuce();
+      this.hideAlert();
     }
 
   }
@@ -154,7 +153,7 @@ export default class Login extends Component {
           <Text style={styles.tituloPagina}>{'recursos humanos'.toUpperCase()}</Text>
 
           <View style={styles.viewLoginCPF}>
-            <TextInputMask
+          <TextInputMask
               style={styles.inputLogin}
               placeholder="CPF"
               type={"cpf"}
@@ -165,8 +164,8 @@ export default class Login extends Component {
             />
           </View>
 
-          <View style={styles.TextEmail}>
-            <TextInput style={styles.inputLogin}
+          <View style={styles.inputLogin}>
+            <TextInput style={styles.TextEmail}
               placeholder="Senha"
               placeholderTextColor="#B3B3B3"
               keyboardType="default"
@@ -200,9 +199,9 @@ export default class Login extends Component {
           </TouchableOpacity>
 
         </View>
-        <View style={styles.imgLoginView} >
-          <Image source={require('../../../assets/img-geral/imagemLogin.png')} />
-        </View>
+        {/* <View style={styles.imgLoginView} >
+          <Image style={styles.img} source={require('../../../assets/img-geral/imagemLogin.png')} />
+        </View> */}
 
       </View>
 
@@ -219,28 +218,31 @@ const styles = StyleSheet.create({
   },
 
   mainHeader: {
-    paddingTop: 40,
+    paddingTop: "10%",
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   imgLogo: {
-    width: 224,
-    height: 31,
+    height:"20%",
+    // width: 360,
+    width:"47%",
   },
 
   container: {
     alignItems: 'center',
+    justifyContent:'center'
   },
 
   tituloPagina: {
     fontFamily: 'Montserrat-Bold',
-    fontSize: 30,
+    fontSize: 40,
     color: '#2A2E32',
-    width: 175,
-    paddingTop: 64,
-    paddingBottom: 50,
+    // width:"60%" ,
+    paddingTop:"10%" ,
+    paddingBottom: "15%",
     alignItems: 'center',
+    justifyContent: 'center',
   },
   tituloModalLogin:
   {
@@ -261,23 +263,36 @@ const styles = StyleSheet.create({
   },
 
   inputLogin: {
-    width: 350,
-    height: 46,
+     width: "75%",
+    // backgroundColor: '#C20004',
+     height: "10%",
     borderWidth: 1,
     borderColor: '#B3B3B3',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
     fontSize: 14,
-    flexDirection: 'column',
+    marginBottom: 40
+    // flexDirection: 'column',
     //paddingTop: 8,
     //paddingBottom:24,
-    paddingLeft: 15,
+    // paddingLeft: 15,
   },
 
   viewLoginCPF: {
-    // padding: 3345678,
-    marginBottom: 24,
+    // backgroundColor: 'blue',
+    height: "50%",
+    width: "80%",
+    // height: "23%",
+    // marginBottom: 24,
+  },
+  
+  TextEmail: {
+    // backgroundColor: 'pink',
+    height: "50%",
+    width: "80%",
+    // height: "20%",
+    // marginBottom: 24,
   },
 
   erroMsg: {
@@ -302,11 +317,11 @@ const styles = StyleSheet.create({
     color: '#C20004',
     //position:'absolute',
     //paddingTop: 1,
-    //paddingRight: 50,
+    paddingLeft: "25%",
   },
 
   btnLogin: {
-    width: 350,
+    width: "75%",
     height: 46,
     fontSize: 20,
     borderRadius: 5,
@@ -328,11 +343,17 @@ const styles = StyleSheet.create({
 
 
   imgLoginView: {
-    marginTop: 92,
+    // marginTop: 92,
     //width: 180,
-    //height: 165,
+    // height,
+    height:"100%" ,
+    width: "100%",
     paddingLeft: 40,
     alignItems: 'flex-start',
     flexDirection: 'column',
   },
+  img: {
+    height:"20%" ,
+    width: "60%",
+  }
 });

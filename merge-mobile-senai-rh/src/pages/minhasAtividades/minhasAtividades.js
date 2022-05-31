@@ -27,6 +27,7 @@ import * as ImagePicker from 'expo-image-picker'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import * as Permission from 'expo-permissions';
 import axios from 'axios';
+import moment from 'moment';
 // import 'intl';
 
 let customFonts = {
@@ -340,7 +341,7 @@ export default class AtividadesExtras extends Component {
         
                     <View style={styles.ModaleBotao}>
 
-                        <Text style={styles.dataEntrega}>Data de Entrega: {item.dataConclusao}</Text>
+                        <Text style={styles.dataEntrega}>Data de Entrega: {moment(item.dataConclusao).format('LL')}</Text>
 
                         <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
                             <AntDesign name="downcircleo" size={24} color="#C20004" />
@@ -379,8 +380,8 @@ export default class AtividadesExtras extends Component {
                         <View style={styles.conteudoBoxModal}>
                             <Text style={styles.nomeBoxModal}>{this.state.AtividadeBuscada.nomeAtividade} </Text>
                             <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
-                            <Text style={styles.itemPostadoModal}> Item Postado: {this.state.AtividadeBuscada.dataCriacao} </Text>
-                            <Text style={styles.entregaModal}> Data de Entrega: {this.state.AtividadeBuscada.dataConclusao} </Text>
+                            <Text style={styles.itemPostadoModal}> Item Postado: {moment(this.state.AtividadeBuscada.dataCriacao).format('DD-MM-YYYY')} </Text>
+                            <Text style={styles.entregaModal}> Data de Entrega: {moment(this.state.AtividadeBuscada.dataConclusao).format('DD-MM-YYYY')}</Text>
 
                             <Text style={styles.entregaModal}> Recompensa em trofeu: {this.state.AtividadeBuscada.recompensaTrofeu} 
                                 <EvilIcons name="trophy" size={25} color="#E7C037" /> 
@@ -605,7 +606,7 @@ const styles = StyleSheet.create({
     },
 
     Modalbotao: {
-        paddingRight: 18,
+        paddingLeft: '10%',
         paddingTop: 13,
     },
 

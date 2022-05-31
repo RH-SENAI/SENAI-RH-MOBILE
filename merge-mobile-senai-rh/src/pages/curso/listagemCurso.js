@@ -9,7 +9,8 @@ import {
     FlatList,
     ScrollView,
     TextInput,
-    RefreshControl
+    RefreshControl,
+    TouchableOpacity
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -39,6 +40,8 @@ export default class ListagemCurso extends Component {
             inscrito: '',
             showAlert: false,
             refreshing: false,
+            desabilitado: false,
+            verifyRegistro: false,
             contadorCurso: 0,
             saldoUsuario: 0,
             distanceUser: 0,
@@ -50,6 +53,34 @@ export default class ListagemCurso extends Component {
             listaFavoritosCoracao: []
         };
     }
+    ProcurarFavorito = async (id) => {
+        try {
+            const resposta = await api('/FavoritosCursos/' + id);
+            // console.warn(resposta)
+            if (resposta.status == 200) {
+                this.setState({ cursoFavoritoBuscado: resposta.data });
+                // console.warn(this.state.cursoBuscado)
+            }
+        } catch (erro) {
+            console.warn(erro);
+        }
+    }
+
+    ProcurarCurso = async (id) => {
+        try {
+            const resposta = await api('/Cursos/' + id);
+            // console.warn(resposta)
+            if (resposta.status == 200) {
+                this.setState({ cursoBuscado: resposta.data });
+                this.setState({ empresaBuscada: this.state.cursoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado })
+                // console.log(this.state.cursoBuscado)
+            }
+        }
+        catch (erro) {
+            console.warn(erro);
+        }
+    }
+
     SaldoUsuario = async () => {
         const idUser = await AsyncStorage.getItem('idUsuario');
         console.log(idUser)
@@ -103,7 +134,7 @@ export default class ListagemCurso extends Component {
                 //Requisição favoritos pelo id do usuário
                 const respostaFavoritos = await api('/FavoritosCursos/Favorito/' + idUser)
                 var dadosFavoritos = respostaFavoritos.data
-                this.setState({ listaFavoritosCoracao: dadosFavoritos })
+                // this.setState({ listaFavoritosCoracao: dadosFavoritos })
 
                 //Tamanho do json do respostaFavoritos
                 var tamanhoJson = Object.keys(dadosFavoritos).length;
@@ -234,6 +265,7 @@ export default class ListagemCurso extends Component {
                 }
 
                 this.setState({ contadorCurso: i })
+                this.verifyCoracao();
                 // console.warn(this.state.contadorCurso)
             }
         }
@@ -241,35 +273,126 @@ export default class ListagemCurso extends Component {
             console.warn(erro);
         }
     }
+
+    verifySaldo = (valor) => {
+        if (this.state.saldoUsuario >= valor) {
+            this.setState({ desabilitado: false });
+        }
+        else {
+            this.setState({ desabilitado: true });
+        }
+    }
+
     setModalVisivel = async (visible, id) => {
         if (visible == true) {
-            this.ProcurarCurso(id)
-            await delay(210)
+            this.ProcurarCurso(id);
+            await delay(750);
+            this.verifySaldo(this.state.cursoBuscado.valorCurso);
+            this.verifySituacao(id);
+            console.warn(this.state.saldoUsuario)
+            // await delay(500);
+            // console.warn(this.state.desabilitado)
             this.setState({ modalVisivel: visible })
         }
         else if (visible == false) {
             this.setState({ modalVisivel: visible })
+            this.setState({ verifyRegistro: false })
             this.setState({ cursoBuscado: [] })
         }
         // await delay(200)
         // this.setState({ modalVisivel: visible })
     }
-    componentDidMount = async () => {
-        this.GetLocation();
-        await delay(2000);
-        this.SaldoUsuario();
-        await delay(3000);
-        this.ListarCurso();
+
+    verifySituacao = async (id) => {
+        try {
+            const idUser = await AsyncStorage.getItem('idUsuario');
+            console.warn(idUser)
+            console.warn(id)
+
+            const respostaBuscar = await api(`/Registroscursos/RegistroCursos/IdUsuario/${idUser}`);
+
+            var tamanhoJsonRegistro = Object.keys(respostaBuscar.data).length;
+
+            let stringRegistros = JSON.stringify(respostaBuscar.data);
+            var objRegistros = JSON.parse(stringRegistros);
+
+            var k = 0;
+            do {
+                if (objRegistros != '') {
+                    var registroId = objRegistros[k]['idCurso'];
+
+                    if (registroId == id) {
+                        this.setState({ verifyRegistro: true })
+                        this.setState({ desabilitado: true });
+                        console.warn("Curso já comprado!");
+                    }
+                }
+                else {
+                    this.setState({ verifyRegistro: false })
+                    console.warn("Está vazio!")
+                }
+                k++
+            } while (k < tamanhoJsonRegistro);
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    // componentWillUnmount = () => {
-    //     this.ListarCurso();
-    // }
+    setSituacao = () => {
+        if (this.state.verifyRegistro == true) {
+            return 'Inscrito'
+        }
+        else {
+            return 'Inscreva-se'
+        }
+    }
 
-    showAlert = () => {
-        this.setState({
-            showAlert: true
-        });
+    showAlert = async (id) => {
+        try {
+            const idUser = await AsyncStorage.getItem('idUsuario');
+            console.warn(idUser)
+            console.warn(id)
+
+            const respostaBuscar = await api(`/Registroscursos/RegistroCursos/IdUsuario/${idUser}`);
+
+            var tamanhoJsonRegistro = Object.keys(respostaBuscar.data).length;
+
+            let stringRegistros = JSON.stringify(respostaBuscar.data);
+            var objRegistros = JSON.parse(stringRegistros);
+
+            var k = 0;
+            do {
+                if (objRegistros != '') {
+                    var registroId = objRegistros[k]['idCurso'];
+
+                    if (registroId == id) {
+                        // this.setState({ verifyRegistro: true })
+                        console.warn("Curso já comprado!")
+                        // this.setSituacao();
+                    }
+                }
+                else {
+                    console.warn("Está vazio!")
+                }
+                k++
+            } while (k < tamanhoJsonRegistro);
+
+            if (this.state.verifyRegistro != true) {
+                const resposta = await api.post('/Registroscursos/Cadastrar', {
+                    idCurso: id,
+                    idUsuario: idUser,
+                    idSituacaoAtividade: 2,
+                });
+
+                if (resposta.status == 201) {
+                    this.setState({ showAlert: true });
+                }
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     hideAlert = () => {
@@ -313,38 +436,11 @@ export default class ListagemCurso extends Component {
 
     onRefresh = async () => {
         this.setState({ refreshing: true });
-        this.wait(2000).then(() => this.setState({ refreshing: false }));
         this.setState({ listaCurso: [] })
+        this.setState({ verifyCoracao: [] })
+        this.wait(2000).then(() => this.setState({ refreshing: false }));
         this.ListarCurso();
     };
-
-    ProcurarFavorito = async (id) => {
-        try {
-            const resposta = await api('/FavoritosCursos/' + id);
-            // console.warn(resposta)
-            if (resposta.status == 200) {
-                this.setState({ cursoFavoritoBuscado: resposta.data });
-                // console.warn(this.state.cursoBuscado)
-            }
-        } catch (erro) {
-            console.warn(erro);
-        }
-    }
-
-    ProcurarCurso = async (id) => {
-        try {
-            const resposta = await api('/Cursos/' + id);
-            // console.warn(resposta)
-            if (resposta.status == 200) {
-                this.setState({ cursoBuscado: resposta.data });
-                this.setState({ empresaBuscada: this.state.cursoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado})
-                // console.log(this.state.cursoBuscado)
-            }
-        }
-        catch (erro) {
-            console.warn(erro);
-        }
-    }
 
     verifyList = () => {
         if (this.state.switch == true) {
@@ -358,6 +454,25 @@ export default class ListagemCurso extends Component {
                 </View>
             )
         }
+    }
+
+    verifyCoracao = async () => {
+        const idUser = await AsyncStorage.getItem('idUsuario');
+
+        const respostaFavoritos = await api('/FavoritosCursos/Favorito/' + idUser)
+        var dadosVerifyFavoritos = respostaFavoritos.data
+        this.setState({ listaFavoritosCoracao: dadosVerifyFavoritos })
+        console.warn(this.state.listaFavoritosCoracao)
+    }
+
+    componentDidMount = async () => {
+        this.GetLocation();
+        await delay(2000);
+        this.SaldoUsuario();
+        await delay(3000);
+        
+        this.ListarCurso();
+        // await delay(2000);
     }
 
     render() {
@@ -404,7 +519,7 @@ export default class ListagemCurso extends Component {
     }
     renderItem = ({ item }) => (
         <View>
-            <View style={styles.containerCurso}>
+            {/* <View style={styles.containerCurso}> */}
                 {/* item.idEmpresaNavigation.idLocalizacaoNavigation.idLogradouroNavigation.nomeLogradouro */}
                 {/* Localizacao(this.state.Userlatitude, this.state.Userlongitude, item.idEmpresaNavigation.idLocalizacaoNavigation.idCepNavigation.cep1 */}
                 <Pressable onPress={() => this.setModalVisivel(true, item.idCurso)}>
@@ -462,7 +577,7 @@ export default class ListagemCurso extends Component {
                 </Pressable>
 
                 <Modal
-                    animationType="slide"
+                    animationType="fade"
                     transparent={true}
                     visible={this.state.modalVisivel}
                     // key={item.idCurso == this.state.cursoBuscado.idCurso}
@@ -513,7 +628,7 @@ export default class ListagemCurso extends Component {
 
                                         <Image source={require('../../../assets/img-gp2/dataFinal.png')} />
                                         <Text style={styles.textDadosModal}>
-                                            {moment(item.dataFinalizacao).format('LL')}
+                                            {moment(this.state.cursoBuscado.dataFinalizacao).format('LL')}
                                         </Text>
                                     </View>
 
@@ -543,9 +658,9 @@ export default class ListagemCurso extends Component {
                                             </View>
 
                                             <View style={styles.boxInscreverModal}>
-                                                <Pressable style={styles.inscreverModal} onPress={() => { this.showAlert() }}  >
-                                                    <Text style={styles.textDetalhes}>Inscreva-se</Text>
-                                                </Pressable>
+                                                <TouchableOpacity style={this.state.desabilitado ? styles.inscreverModalDisable : styles.inscreverModal} activeOpacity={this.state.desabilitado ? 1 : 0.1} disabled={this.state.desabilitado} onPress={() => { this.showAlert(this.state.cursoBuscado.idCurso) }} >
+                                                    <Text style={styles.textDetalhes}>{this.setSituacao()}</Text>
+                                                </TouchableOpacity>
                                             </View>
                                         </View>
 
@@ -574,7 +689,7 @@ export default class ListagemCurso extends Component {
                         </Pressable>
                     </View>
                 </Modal>
-            </View>
+            {/* </View> */}
         </View>
     );
 }
@@ -607,7 +722,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: 24
+        marginBottom: 24,
+        // backgroundColor: 'yellow'
     },
     boxSaldoUsuario: {
         width: 90,
@@ -630,25 +746,40 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingLeft: 28
     },
+    flatlist: {
+        flex: 1,
+        width: '75%',
+        height: '100%'
+        // backgroundColor: 'blue'
+    },
     containerCurso: {
-        marginBottom: 50,
+        width: '100%',
+        height: 500,
+        // backgroundColor: 'blue',
+        // marginBottom: '1%',
+        marginBottom: 20
     },
     boxCurso: {
-        width: 275,
-        height: 285,
+        // backgroundColor: 'pink',
         borderWidth: 2,
         borderColor: '#B3B3B3',
         borderTopWidth: 0,
         borderRadius: 10,
+        marginBottom: 20
     },
     boxImgCurso: {
         alignItems: 'center',
     },
     imgCurso: {
-        width: 275,
-        height: 83,
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8,
+        width: '100%',
+        height: 100,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        // backgroundColor: 'red',
+    },
+    containerCard: {
+        // backgroundColor: 'green',
+        marginBottom: 24
     },
     boxTituloCurso: {
         marginLeft: 16
@@ -688,7 +819,8 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         marginTop: 16,
-        marginLeft: 16
+        marginLeft: 16,
+        marginBottom: 10
     },
     boxPreco: {
         width: 90,
@@ -699,7 +831,8 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        // backgroundColor: 'pink'
     },
     imgCoin: {
         width: 22.1,
@@ -711,7 +844,7 @@ const styles = StyleSheet.create({
         //backgroundColor: 'black',
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft: 105,
+        marginLeft: '45%',
     },
     textFavoritos: {
         color: 'white'

@@ -1,7 +1,7 @@
 // React Imports
 import { useState, useEffect } from "react";
 import React from "react";
-import { Text as SvgText } from "react-native-svg";
+import { Text as SvgText, LinearGradient, Defs, Stop } from "react-native-svg";
 import * as scale from "d3-scale";
 import {
   Image,
@@ -10,7 +10,15 @@ import {
   View,
   ScrollView,
   SafeAreaView,
+  Dimensions,
+  Alert,
+  RefreshControl
 } from "react-native";
+
+
+import {
+  ContributionGraph,
+} from "react-native-chart-kit";
 
 // Expo
 import AppLoading from "expo-app-loading";
@@ -23,7 +31,9 @@ import jwtDecode from "jwt-decode";
 
 import { BarChart, XAxis, ProgressCircle, Grid } from "react-native-svg-charts";
 
-import GrafHistSatisfacao from './grafHistStisfacao.js'
+import GrafHistSatisfacao from './GrafHistSatisfacao.js'
+import GrafHistAvaliacao from './GrafHistAvaliacao.js'
+import GraficoBarras from "./GraficoBarras.js";
 
 //Services
 import api from "../../services/apiGp3";
@@ -41,7 +51,17 @@ import {
   Quicksand_600SemiBold,
 } from "@expo-google-fonts/quicksand";
 
+import moment from 'moment';
+import 'moment/locale/pt-br'
+
+
+
+
+
 export default function Dashboard() {
+
+  const screenWidth = Dimensions.get("window").width;
+
   //States
   const [idUsuario, setIdUsuario] = useState(1);
   const [nivelSatisfacao, setNivelSatisfacao] = useState(0);
@@ -49,6 +69,99 @@ export default function Dashboard() {
   const [notaProdutividade, setNotaProdutividade] = useState(0);
   const [usuario, setUsuario] = useState([]);
   const [minhasAtividades, setMinhasAtividades] = useState([]);
+  const [contibutionDates, setContibutionDates] = useState([]);
+  const [historicos, setHistoricos] = useState([]);
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+
+  const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  }
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setUsuario([]);
+    setMinhasAtividades([]);
+    setHistoricos([]);
+    wait(2000).then(() => setRefreshing(false));
+    BuscarUsuario();
+    BuscarMinhasAtividades();
+    BuscarHistorico();
+  }, []);
+
+
+
+
+  moment.locale('pt-br');
+  const now = moment();
+
+  // const dePara = [
+  //   { date: "2022-04-02", count: 4 },
+  //   { date: "2022-04-03", count: 2 },
+  //   { date: "2022-04-04", count: 3 },
+  //   { date: "2022-04-05", count: 4 },
+  //   { date: "2022-04-06", count: 5 },
+  //   { date: "2022-04-30", count: 2 },
+  //   { date: "2022-04-31", count: 2 },
+  //   { date: "2022-04-01", count: 2 },
+  //   { date: "2022-05-05", count: 2 },
+  //   { date: "2022-05-26", count: 4 },
+  //   { date: "2022-05-25", count: 4 },
+  // ];
+
+  // const dePara = [
+
+  //   { date: "2022-05-01T00:00:0.000Z", count: 1 },
+  //   { date: "2022-05-20T00:00:0.000Z", count: 1 },
+  //   { date: "2022-05-26T00:00:0.000Z", count: 1 },
+  //   { date: "2022-05-28T00:00:0.000Z", count: 1 },
+  //   { date: "2022-05-29T00:00:0.000Z", count: 1 },
+  //   { date: "2022-05-30T00:00:0.000Z", count: 1 },
+  //   { date: "2022-05-31T00:00:0.000Z", count: 1 },
+  // ];;
+
+  const dePara = [
+    { date: "2022-04-30", count: 3 },
+    { date: "2022-05-04", count: 3 },
+    { date: "2022-05-05", count: 1 },
+    { date: "2022-05-06", count: 2 },
+    { date: "2022-05-07", count: 4 },
+    { date: "2022-05-08", count: 1 },
+    { date: "2022-05-09", count: 2 },
+    { date: "2022-05-10", count: 3 },
+    { date: "2022-05-20", count: 2 },
+    { date: "2022-05-21", count: 5 },
+    { date: "2022-05-22", count: 4 },
+    { date: "2022-05-23", count: 1 },
+    { date: "2022-05-24", count: 2 },
+    { date: "2022-05-25", count: 2 },
+    { date: "2022-05-26", count: 1 },
+    { date: "2022-05-27", count: 3 },
+    { date: "2022-05-28", count: 5 },
+    { date: "2022-05-29", count: 3 },
+    { date: "2022-05-30", count: 1 },
+    ,
+  ];
+
+
+
+
+
+  const chartConfig = {
+    backgroundGradientFrom: "blue",
+    backgroundGradientFromOpacity: .0,
+    backgroundGradientTo: "cyan",
+    backgroundGradientToOpacity: .0,
+    gutterSize: 50,
+    color: (opacity = 1) => `rgba(255, 0, 4, ${opacity})`,
+    strokeWidth: 2, // optional, default 3
+    barPercentage: 1,
+    useShadowColorFromDataset: false,
+    //paddingRight: 20
+  };
+
+
 
   // Fontes utilizada
   let [fontsLoaded] = useFonts({
@@ -60,6 +173,36 @@ export default function Dashboard() {
     Quicksand_300Light,
     Quicksand_600SemiBold,
   });
+
+
+
+  const showAlert = (data, qtde) =>
+    Alert.alert(
+
+      "",
+      `${qtde} atividade(s) entregue(s) em: \n${moment(data).locale('pt-BR').format('LLLL')};`,
+      [
+        // {
+        //   text: "OK",
+        //   // onPress: () => Alert.alert("Cancel Pressed"),
+        //   // style: "cancel",
+        // },
+      ],
+      {
+        cancelable: true,
+        // onDismiss: () =>
+        //   Alert.alert(
+        //     "This alert was dismissed by tapping outside of the alert dialog."
+        //   ),
+      },
+      {
+        styles: {
+          backgroundColor: 'transparent',
+        }
+      }
+    );
+
+
 
   async function BuscarUsuario() {
     try {
@@ -97,14 +240,119 @@ export default function Dashboard() {
 
       if (resposta.status === 200) {
         setMinhasAtividades(resposta.data);
+
+        const datasDeFinalizacao = minhasAtividades
+          //const datasDeFinalizacao = mock
+          .filter(a => a.idSituacaoAtividade === 1)
+          .map(p => { return { date: p.dataConclusao, count: 1 } });
+
+        const datasFiltradas = [];
+
+        for (var i = 0; i < datasDeFinalizacao.length; i++) {
+          for (var j = i + 1; j < datasDeFinalizacao.length; j++) {
+            if (datasDeFinalizacao[i].date === datasDeFinalizacao[j].date) {
+              datasDeFinalizacao[i].count++;
+              datasDeFinalizacao[j].date = null;
+            }
+            if (j === datasDeFinalizacao.length - 1 && datasDeFinalizacao[i].date !== null) {
+              datasFiltradas.push(datasDeFinalizacao[i]);
+            }
+          }
+          if (i === datasDeFinalizacao.length - 1 &&
+            datasDeFinalizacao[datasDeFinalizacao.length - 1].date !== datasDeFinalizacao[datasDeFinalizacao.length]) {
+            datasFiltradas.push(datasDeFinalizacao[i]);
+          }
+        }
+
+        // console.warn(datasFiltradas);
+        // setContibutionDates(datasFiltradas)
+        //console.warn(dePara);
+        setContibutionDates(dePara)
+
       }
     } catch (error) {
       console.warn(error);
     }
   }
 
-  useEffect(() => BuscarUsuario(), []);
-  useEffect(() => BuscarMinhasAtividades(), []);
+
+  async function BuscarHistorico() {
+    try {
+      const token = await AsyncStorage.getItem("userToken");
+
+      const resposta = await api.get(
+        "HistoricoA/Listar/" + jwtDecode(token).jti,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+
+      if (resposta.status === 200) {
+        setHistoricos(resposta.data);
+        //console.log('Historico carregado com sucesso')
+      }
+    } catch (error) {
+      console.warn(error);
+    }
+  }
+
+  useEffect(() => {
+    BuscarUsuario()
+    return (
+      setUsuario([])
+    )
+  }, []);
+  useEffect(() => {
+    BuscarMinhasAtividades()
+    return (
+      setMinhasAtividades([])
+    )
+  }, []);
+  useEffect(() => {
+    BuscarHistorico()
+    return (
+      setHistoricos([])
+    )
+  }, []);
+
+
+
+
+
+
+  const Cores = (nota) => {
+    if (nota >= 0 && nota <= 0.33)
+      return 'url(#gradienRed)';
+
+    else if (nota > 0.33 && nota <= 0.66)
+      //return "#162fba";
+      return 'url(#gradienBlue)';
+
+    else return 'url(#gradienGreen)'
+  }
+
+
+  const CustomGradient = () => (
+    <Defs key="gradient">
+      <LinearGradient id="gradienRed" x1="0" y="0%" x2="100%" y2="100%">
+        <Stop offset="0%" stopColor="red" />
+        <Stop offset="100%" stopColor="#C20004" />
+      </LinearGradient>
+      <LinearGradient id="gradienBlue" x1="0" y="0%" x2="100%" y2="100%">
+        <Stop offset="0%" stopColor="blue" />
+        <Stop offset="100%" stopColor="cyan" />
+      </LinearGradient>
+      <LinearGradient id="gradienGreen" x1="0" y="0%" x2="100%" y2="100%">
+        <Stop offset="0%" stopColor="green" />
+        <Stop offset="100%" stopColor="lime" />
+      </LinearGradient>
+    </Defs>
+  );
+
+
+
 
   const GraficoSatisfacao = () => {
     const u = usuario[0];
@@ -112,27 +360,28 @@ export default function Dashboard() {
       <ProgressCircle
         style={styles.grafico}
         progress={u.medSatisfacaoGeral}
-        progressColor={"#C20004"}
-        backgroundColor={"rgba(194, 0, 4, 0.15)"}
+        progressColor={Cores(u.medSatisfacaoGeral)}
+        backgroundColor={"rgba(0, 0, 0, 0.15)"}
         startAngle={0}
-        cornerRadius={5}
-        strokeWidth={15}
+        cornerRadius={1}
+        strokeWidth={3}
         endAngle={360}
       >
         <SvgText
-          x={-7.5}
+          x={-8.5}
           y={1.5}
-          fill={"black"}
+          fill={u.medSatisfacaoGeral > 0 ? 'black' : "red"}
           textAnchor={"middle"}
           alignmentBaseline={"middle"}
-          fontSize={16}
-          fontWeight={"normal"}
+          fontSize={22}
+          fontWeight={"bold"}
           //stroke={'white'}
-          opacity={"1"}
-          strokeWidth={0.4}
+          opacity={".8"}
+        //strokeWidth={0.4}
         >
           {(u.medSatisfacaoGeral * 100).toPrecision(2)}%
         </SvgText>
+        <CustomGradient />
       </ProgressCircle>
     );
   };
@@ -143,27 +392,28 @@ export default function Dashboard() {
       <ProgressCircle
         style={styles.grafico}
         progress={u.mediaAvaliacao}
-        progressColor={"#C20004"}
-        backgroundColor={"rgba(194, 0, 4, 0.15)"}
+        progressColor={Cores(u.mediaAvaliacao)}
+        backgroundColor={"rgba(0, 0, 0, 0.15)"}
         startAngle={0}
-        cornerRadius={5}
-        strokeWidth={15}
+        cornerRadius={1}
+        strokeWidth={3}
         endAngle={360}
       >
         <SvgText
-          x={-7.5}
+          x={-8.5}
           y={1.5}
-          fill={"black"}
+          fill={u.mediaAvaliacao > 0 ? 'black' : "red"}
           textAnchor={"middle"}
           alignmentBaseline={"middle"}
-          fontSize={16}
-          fontWeight={"normal"}
+          fontSize={22}
+          fontWeight={"bold"}
           //stroke={'white'}
-          opacity={"1"}
-          strokeWidth={0.4}
+          opacity={"0.8"}
+        //strokeWidth={0.4}
         >
-          {u.mediaAvaliacao * 100}%
+          {(u.mediaAvaliacao * 100).toPrecision(2)}%
         </SvgText>
+        <CustomGradient />
       </ProgressCircle>
     );
   };
@@ -174,115 +424,46 @@ export default function Dashboard() {
       <ProgressCircle
         style={styles.grafico}
         progress={u.notaProdutividade}
-        progressColor={"#C20004"}
-        backgroundColor={"rgba(194, 0, 4, 0.15)"}
+        progressColor={Cores(u.notaProdutividade)}
+        backgroundColor={"rgba(0, 0, 0, 0.15)"}
         startAngle={0}
-        cornerRadius={5}
-        strokeWidth={15}
+        cornerRadius={1}
+        strokeWidth={3}
         endAngle={360}
       >
         <SvgText
-          x={-7.5}
+          x={-8.5}
           y={1.5}
-          fill={"black"}
+          fill={u.notaProdutividade > 0 ? 'black' : "red"}
           textAnchor={"middle"}
           alignmentBaseline={"middle"}
-          fontSize={16}
-          fontWeight={"normal"}
+          fontSize={22}
+          fontWeight={"bold"}
           //stroke={'white'}
-          opacity={"1"}
-          strokeWidth={0.4}
+          opacity={"0.8"}
+        //strokeWidth={0.4}
         >
           {u.notaProdutividade}%
         </SvgText>
+        <CustomGradient />
       </ProgressCircle>
     );
   };
 
-  // function LineChartExample() {
 
-  //     const atividadesFinalizadas = minhasAtividades
-  //         .filter(a => a.idSituacaoAtividade === 3)
-  //         .map((p) => {
 
-  //            return parseInt(p.dataConclusao.split('-')[1]);
 
-  //         });
 
-  //     console.warn(atividadesFinalizadas);
-
-  //     return (
-
-  //         <LineChart
-  //             style={{ height: 200 }}
-  //             data={atividadesFinalizadas}
-  //             svg={{ stroke: 'rgb(134, 65, 244)' }}
-  //             contentInset={{ top: 20, bottom: 20 }}
-  //         >
-  //             <Grid />
-  //         </LineChart>
-
-  //     )
-  // }
-
-  function GraficoBarras() {
-    const dataFinalizacao = minhasAtividades
-      .filter((a) => a.idSituacaoAtividade === 1)
-      .map((p) => {
-        return parseInt(p.dataConclusao.split("-")[2]);
-      });
-
-    const d1_5 = dataFinalizacao.filter((d) => d <= 5).length;
-    const d6_10 = dataFinalizacao.filter((d) => d > 5 && d <= 10).length;
-    const d11_15 = dataFinalizacao.filter((d) => d > 10 && d <= 15).length;
-    const d16_20 = dataFinalizacao.filter((d) => d > 15 && d <= 20).length;
-    const d21_25 = dataFinalizacao.filter((d) => d > 20 && d <= 25).length;
-    const d26_31 = dataFinalizacao.filter((d) => d > 25 && d <= 31).length;
-
-    //console.warn(d6_10);
-
-    //const data = [d1_5, d6_10, d11_15, d16_20, d21_25, d26_31]
-    const data = [4, 2, 4, 5, 3];
-
-    const CUT_OFF = 20;
-    const Labels = ({ x, y, bandwidth, data }) =>
-      data.map((value, index) => (
-        <SvgText
-          key={index}
-          x={x(index) + bandwidth / 2}
-          y={value < CUT_OFF ? y(value) - 10 : y(value) + 15}
-          fontSize={14}
-          fill={value >= CUT_OFF ? "white" : "black"}
-          alignmentBaseline={"middle"}
-          textAnchor={"middle"}
-        >
-          {value}
-        </SvgText>
-      ));
-
-    return (
-      <View style={styles.graficoBarrasContainer}>
-        <BarChart
-          //style={{ flex: 1 }}
-          style={styles.graficoBarras}
-          data={data}
-          svg={{ fill: "rgba(194, 0, 4, 0.8)" }}
-          contentInset={{ top: 20, bottom: 10 }}
-          spacing={0.2}
-          gridMin={0}
-        >
-          <Grid direction={Grid.Direction.HORIZONTAL} />
-          <Labels />
-        </BarChart>
-      </View>
-    );
-  }
 
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {
     return (
-      <ScrollView>
+      <ScrollView refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh} />
+      }>
         <View style={styles.container}>
           <View style={styles.header}>
             <Image
@@ -301,10 +482,10 @@ export default function Dashboard() {
                       source={
                         usuario.caminhoFotoPerfil == undefined
                           ? {
-                              uri:
-                                "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
-                                usuario.caminhoFotoPerfil,
-                            }
+                            uri:
+                              "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
+                              usuario.caminhoFotoPerfil,
+                          }
                           : require("../../../assets/img-gp3/Perfil.png")
                       }
                       resizeMod="cover"
@@ -326,38 +507,73 @@ export default function Dashboard() {
                     </View>
                     <GraficoSatisfacao />
                   </View> */}
-                  <View style={styles.containerPieChart}>
-                    <View style={styles.containerLegendas}>
-                      <Text style={styles.tituloGrafico}>
-                        Média de Avaliação:
-                      </Text>
+
+                  <View style={styles.containerProdutividade}>
+                    <View style={styles.containerProdutividadeSup}>
+                      <Text style={styles.tituloComparativo}>Comparativo entre seus indíces:</Text>
+
                     </View>
-                    <GraficoAvaliacao />
+                    <GraficoBarras usuarioLogado={usuario} />
+                    <View style={styles.containerLabels}>
+                      <Text style={styles.nvsLabels}>Satisfação</Text>
+                      <Text style={styles.nvsLabels}>Produtividade</Text>
+                      <Text style={styles.nvsLabels}>Avaliação</Text>
+                    </View>
                   </View>
+
+                  <View style={styles.containerProdutividade}>
+                    <View style={styles.containerProdutividadeSup}>
+                      <Text style={styles.tituloGrafico}>Nível de Satisfação:</Text>
+                      <GraficoSatisfacao />
+                    </View>
+                    <GrafHistSatisfacao ghs={historicos} />
+
+                    {/* <Text style={styles.subtituloProdutividade}>
+                      Entregas de atividade por semana:{" "}
+                    </Text> */}
+                  </View>
+
+
+                
+
+                  <View style={styles.containerProdutividade}>
+                    <View style={styles.containerProdutividadeSup}>
+                      <Text style={styles.tituloGrafico}>Média de Avaliação:</Text>
+                      <GraficoAvaliacao />
+                    </View>
+                    <GrafHistAvaliacao gha={historicos} />
+                  </View>
+
 
                   <View style={styles.containerProdutividade}>
                     <View style={styles.containerProdutividadeSup}>
                       <Text style={styles.tituloGrafico}>Produtividade:</Text>
                       <GraficoProdutividade />
                     </View>
-                    <GraficoBarras />
                     <Text style={styles.subtituloProdutividade}>
-                      Entregas de atividade por semana:{" "}
+                      Entregas de atividades, realizadas nos últimos 60 dias:
                     </Text>
+                    <ContributionGraph
+                      style={styles.ContributionContainer}
+                      values={contibutionDates}
+                      //endDate={new Date(moment(now))}
+                      //endDate={moment(now)}
+                      numDays={59}
+                      width={'90%'}
+                      height={260}
+                      chartConfig={chartConfig}
+                      showMonthLabels={true}
+                      onDayPress={(d = contibutionDates) => showAlert(d.date, d.count)}
+                      gutterSize={3}
+                      squareSize={25}
+                      horizontal={true}
+                      showOutOfRangeDays={true}
+                    />
                   </View>
 
-                  <View style={styles.containerProdutividade}>
-                    <View style={styles.containerProdutividadeSup}>
-                      <Text style={styles.tituloGrafico}>Satisfação:</Text>
-                      <GraficoSatisfacao />
-                    </View>
-                    <GrafHistSatisfacao />
-                    {/* <Text style={styles.subtituloProdutividade}>
-                      Entregas de atividade por semana:{" "}
-                    </Text> */}
-                  </View>
 
-                  {/* <LineChartExample /> */}
+
+
                 </View>
               </View>
             );
@@ -366,7 +582,10 @@ export default function Dashboard() {
       </ScrollView>
     );
   }
+
+
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -395,20 +614,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: "5%",
   },
   containerDados: {
-    //backgroundColor: 'cyan',
+    //backgroundColor: 'lightgray',
     //height: 200,
     flex: 1,
     marginTop: 20,
     //alignItems: 'flex-start'
+    borderRadius: 5,
+    marginBottom: 10,
+    borderWidth: 3,
+    borderColor: 'lightgray'
   },
   containerLine: {
     width: "100%",
     //height: 110,
     borderRadius: 5,
-    borderWidth: 3,
-    borderColor: "gray",
+    //borderWidth: 3,
+    //borderColor: "purple",
     flexDirection: "row",
-    //backgroundColor: 'green',
+    backgroundColor: '#f1f1f1',
     padding: 10,
   },
   containerTextos: {
@@ -443,22 +666,27 @@ const styles = StyleSheet.create({
   },
   containerProdutividade: {
     flex: 1,
-    borderRadius: 5,
-    borderWidth: 3,
-    borderColor: "gray",
+    //borderRadius: 5,
+    borderTopWidth: 30,
+    //borderWidth: 3,
+    borderColor: "lightgray",
     //flexDirection: 'row',
-    //backgroundColor: 'purple',
-    //justifyContent: 'space-between',
-    marginTop: 20,
+    backgroundColor: "rgba(241, 241, 241, 0.85)",
+    justifyContent: 'center',
+    //marginTop: 20,
     //paddingRight: '5%',
     //alignItems: 'center',
-    padding: 10,
+    paddingBottom: 15,
+    paddingHorizontal: 10,
+    paddingTop: 10,
     //flexWrap: 'wrap',
     //height: 500,
+
   },
   subtituloProdutividade: {
     fontSize: 16,
-    marginTop: -20,
+    marginTop: 10,
+    textAlign: 'right',
   },
   containerLegendas: {
     flex: 1,
@@ -467,18 +695,22 @@ const styles = StyleSheet.create({
   containerProdutividadeSup: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    //backgroundColor: 'green'
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    //backgroundColor: 'green',
+    padding: 3.5
   },
   grafico: {
     //flex: 1,
-    width: 75,
-    height: 75,
+    width: 60,
+    height: 60,
     //backgroundColor: 'blue',
+    margin: -0,
+    paddingRight: 2
   },
   tituloGrafico: {
-    fontSize: 20,
+    fontSize: 22,
+    marginRight: 10,
     //marginLeft: 15,
     //backgroundColor: 'green'
   },
@@ -491,5 +723,38 @@ const styles = StyleSheet.create({
     flex: 1,
     //backgroundColor: 'yellow'
   },
-  
+  ContributionContainer: {
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    borderRadius: 10,
+    //paddingTop: 20,
+    marginTop: 10,
+    //marginBottom: 0,
+    borderWidth: 1,
+    //borderColor: 'red',
+    //paddingLeft: 30,
+
+    paddingRight: 0
+  },
+  tituloComparativo: {
+    textAlign: 'right',
+    fontSize: 22,
+    marginRight: 10,
+    marginBottom: 10
+  },
+  containerLabels: {
+    flex: 1,
+    width: '100%',
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    paddingHorizontal: '10.5%'
+  },
+  nvsLabels: {
+    fontSize: 12,
+    marginTop: -25,
+    color: '#f1f1f1',
+    textAlign: 'center'
+  }
+
+
+
 });
