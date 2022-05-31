@@ -59,13 +59,13 @@ export default function InteractiveChart(historicos) {
   
 
 
-  //useEffect(() => setListaHistoricos(historicos.historicos), []);
+  //useEffect(() => setListaHistoricos(historicos.gha), []);
   
     useEffect(() => {
-      //setListaHistoricos(historicos.historicos)
-      //console.warn(historicos.historicos[0])
+      //setListaHistoricos(historicos.gha)
+      //console.warn(historicos.gha[0])
   
-      setListaDatas(historicos.historicos.map(p => p.atualizadoEm));
+      setListaDatas(historicos.gha.map(p => p.atualizadoEm));
   
       // setListaDatas(resposta.data.map((p) => {
       //     return (p.atualizadoEm.split("-")[2]).substring(0, 2);
@@ -73,7 +73,7 @@ export default function InteractiveChart(historicos) {
       // ));
   
       setMediasAvaliacao(
-        historicos.historicos.map(
+        historicos.gha.map(
           (p) => { return (parseFloat(p.mediaAvaliacao) * 100); }
         )
       );
@@ -86,7 +86,7 @@ export default function InteractiveChart(historicos) {
 
   async function SetarHistorico() {
 
-    //console.log(historicos.historicos)
+    //console.log(historicos.gha)
     
 
     //console.warn(listaDatas)
@@ -314,7 +314,7 @@ export default function InteractiveChart(historicos) {
         </View>
 
         <YAxis
-          style={{ width: apx(200) }}
+          style={{ width: apx(190) }}
           data={mediasAvaliacao}
           contentInset={verticalContentInset}
           svg={{ fontSize: apx(20), fill: '#f1f1f1' }}
@@ -334,7 +334,7 @@ export default function InteractiveChart(historicos) {
         formatLabel={(value, index) => moment(listaDatas[value]).format('DD/MM')}
         contentInset={{
           left: apx(36),
-          right: apx(130),
+          right: apx(180),
         }}
         svg={{
           fontSize: apx(20),

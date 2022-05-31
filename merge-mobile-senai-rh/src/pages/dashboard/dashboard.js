@@ -85,7 +85,7 @@ export default function Dashboard() {
     setMinhasAtividades([]);
     setHistoricos([]);
     wait(2000).then(() => setRefreshing(false));
-    BuscarUsuario() ;
+    BuscarUsuario();
     BuscarMinhasAtividades();
     BuscarHistorico();
   }, []);
@@ -96,7 +96,7 @@ export default function Dashboard() {
   moment.locale('pt-br');
   const now = moment();
 
-  // const commitsData = [
+  // const dePara = [
   //   { date: "2022-04-02", count: 4 },
   //   { date: "2022-04-03", count: 2 },
   //   { date: "2022-04-04", count: 3 },
@@ -110,40 +110,38 @@ export default function Dashboard() {
   //   { date: "2022-05-25", count: 4 },
   // ];
 
-  // const mock = [
-  //   { date: "2022-04-02", count: 1 },
-  //   { date: "2022-04-02", count: 1 },
-  //   { date: "2022-04-02", count: 1 },
-  //   { date: "2022-04-05", count: 1 },
-  //   { date: "2022-04-06", count: 1 },
-  //   { date: "2022-04-30", count: 1 },
-  //   { date: "2022-04-31", count: 1 },
-  //   { date: "2022-04-01", count: 1 },
-  //   { date: "2022-05-05", count: 1 },
-  //   { date: "2022-05-05", count: 1 },
-  //   { date: "2022-05-25", count: 1 },
-  // ];
+  // const dePara = [
+
+  //   { date: "2022-05-01T00:00:0.000Z", count: 1 },
+  //   { date: "2022-05-20T00:00:0.000Z", count: 1 },
+  //   { date: "2022-05-26T00:00:0.000Z", count: 1 },
+  //   { date: "2022-05-28T00:00:0.000Z", count: 1 },
+  //   { date: "2022-05-29T00:00:0.000Z", count: 1 },
+  //   { date: "2022-05-30T00:00:0.000Z", count: 1 },
+  //   { date: "2022-05-31T00:00:0.000Z", count: 1 },
+  // ];;
 
   const dePara = [
-    { date: "2022-03-21", count: 3 },
-    { date: "2022-03-27", count: 1 },
-    { date: "2022-04-05", count: 2 },
-    { date: "2022-04-07", count: 4 },
-    { date: "2022-04-19", count: 1 },
-    { date: "2022-03-24", count: 2 },
-    { date: "2022-03-10", count: 3 },
-    { date: "2022-03-16", count: 2 },
-    { date: "2022-03-29", count: 5 },
-    { date: "2022-04-21", count: 4 },
+    { date: "2022-04-30", count: 3 },
+    { date: "2022-05-04", count: 3 },
+    { date: "2022-05-05", count: 1 },
     { date: "2022-05-06", count: 2 },
-    { date: "2022-05-14", count: 2 },
-    { date: "2022-05-22", count: 2 },
+    { date: "2022-05-07", count: 4 },
+    { date: "2022-05-08", count: 1 },
+    { date: "2022-05-09", count: 2 },
+    { date: "2022-05-10", count: 3 },
+    { date: "2022-05-20", count: 2 },
+    { date: "2022-05-21", count: 5 },
+    { date: "2022-05-22", count: 4 },
     { date: "2022-05-23", count: 1 },
-    { date: "2022-05-24", count: 3 },
-    { date: "2022-05-25", count: 5 },
-    { date: "2022-05-26", count: 3 },
-    { date: "2022-05-27", count: 1 },
+    { date: "2022-05-24", count: 2 },
+    { date: "2022-05-25", count: 2 },
+    { date: "2022-05-26", count: 1 },
+    { date: "2022-05-27", count: 3 },
     { date: "2022-05-28", count: 5 },
+    { date: "2022-05-29", count: 3 },
+    { date: "2022-05-30", count: 1 },
+    ,
   ];
 
 
@@ -151,15 +149,16 @@ export default function Dashboard() {
 
 
   const chartConfig = {
-    backgroundGradientFrom: "black",
-    backgroundGradientFromOpacity: .8,
-    backgroundGradientTo: "black",
-    backgroundGradientToOpacity: .8,
-    gutterSize: 30,
+    backgroundGradientFrom: "blue",
+    backgroundGradientFromOpacity: .0,
+    backgroundGradientTo: "cyan",
+    backgroundGradientToOpacity: .0,
+    gutterSize: 50,
     color: (opacity = 1) => `rgba(255, 0, 4, ${opacity})`,
     strokeWidth: 2, // optional, default 3
     barPercentage: 1,
-    useShadowColorFromDataset: false // optional
+    useShadowColorFromDataset: false,
+    //paddingRight: 20
   };
 
 
@@ -250,9 +249,7 @@ export default function Dashboard() {
         const datasFiltradas = [];
 
         for (var i = 0; i < datasDeFinalizacao.length; i++) {
-
           for (var j = i + 1; j < datasDeFinalizacao.length; j++) {
-
             if (datasDeFinalizacao[i].date === datasDeFinalizacao[j].date) {
               datasDeFinalizacao[i].count++;
               datasDeFinalizacao[j].date = null;
@@ -260,17 +257,12 @@ export default function Dashboard() {
             if (j === datasDeFinalizacao.length - 1 && datasDeFinalizacao[i].date !== null) {
               datasFiltradas.push(datasDeFinalizacao[i]);
             }
-
-
           }
           if (i === datasDeFinalizacao.length - 1 &&
             datasDeFinalizacao[datasDeFinalizacao.length - 1].date !== datasDeFinalizacao[datasDeFinalizacao.length]) {
             datasFiltradas.push(datasDeFinalizacao[i]);
           }
-
-
         }
-
 
         // console.warn(datasFiltradas);
         // setContibutionDates(datasFiltradas)
@@ -327,13 +319,48 @@ export default function Dashboard() {
 
 
 
+
+
+
+  const Cores = (nota) => {
+    if (nota >= 0 && nota <= 0.33)
+      return 'url(#gradienRed)';
+
+    else if (nota > 0.33 && nota <= 0.66)
+      //return "#162fba";
+      return 'url(#gradienBlue)';
+
+    else return 'url(#gradienGreen)'
+  }
+
+
+  const CustomGradient = () => (
+    <Defs key="gradient">
+      <LinearGradient id="gradienRed" x1="0" y="0%" x2="100%" y2="100%">
+        <Stop offset="0%" stopColor="red" />
+        <Stop offset="100%" stopColor="#C20004" />
+      </LinearGradient>
+      <LinearGradient id="gradienBlue" x1="0" y="0%" x2="100%" y2="100%">
+        <Stop offset="0%" stopColor="blue" />
+        <Stop offset="100%" stopColor="cyan" />
+      </LinearGradient>
+      <LinearGradient id="gradienGreen" x1="0" y="0%" x2="100%" y2="100%">
+        <Stop offset="0%" stopColor="green" />
+        <Stop offset="100%" stopColor="lime" />
+      </LinearGradient>
+    </Defs>
+  );
+
+
+
+
   const GraficoSatisfacao = () => {
     const u = usuario[0];
     return (
       <ProgressCircle
         style={styles.grafico}
         progress={u.medSatisfacaoGeral}
-        progressColor={u.medSatisfacaoGeral >= 0.66 ? 'lime' : "#C20004"}
+        progressColor={Cores(u.medSatisfacaoGeral)}
         backgroundColor={"rgba(0, 0, 0, 0.15)"}
         startAngle={0}
         cornerRadius={1}
@@ -343,7 +370,7 @@ export default function Dashboard() {
         <SvgText
           x={-8.5}
           y={1.5}
-          fill={"black"}
+          fill={u.medSatisfacaoGeral > 0 ? 'black' : "red"}
           textAnchor={"middle"}
           alignmentBaseline={"middle"}
           fontSize={22}
@@ -354,6 +381,7 @@ export default function Dashboard() {
         >
           {(u.medSatisfacaoGeral * 100).toPrecision(2)}%
         </SvgText>
+        <CustomGradient />
       </ProgressCircle>
     );
   };
@@ -364,7 +392,7 @@ export default function Dashboard() {
       <ProgressCircle
         style={styles.grafico}
         progress={u.mediaAvaliacao}
-        progressColor={u.medSatisfacaoGeral >= 0.66 ? 'lime' : "#C20004"}
+        progressColor={Cores(u.mediaAvaliacao)}
         backgroundColor={"rgba(0, 0, 0, 0.15)"}
         startAngle={0}
         cornerRadius={1}
@@ -374,7 +402,7 @@ export default function Dashboard() {
         <SvgText
           x={-8.5}
           y={1.5}
-          fill={"black"}
+          fill={u.mediaAvaliacao > 0 ? 'black' : "red"}
           textAnchor={"middle"}
           alignmentBaseline={"middle"}
           fontSize={22}
@@ -385,6 +413,7 @@ export default function Dashboard() {
         >
           {(u.mediaAvaliacao * 100).toPrecision(2)}%
         </SvgText>
+        <CustomGradient />
       </ProgressCircle>
     );
   };
@@ -395,7 +424,7 @@ export default function Dashboard() {
       <ProgressCircle
         style={styles.grafico}
         progress={u.notaProdutividade}
-        progressColor={u.medSatisfacaoGeral >= 0.66 ? 'lime' : "#C20004"}
+        progressColor={Cores(u.notaProdutividade)}
         backgroundColor={"rgba(0, 0, 0, 0.15)"}
         startAngle={0}
         cornerRadius={1}
@@ -405,7 +434,7 @@ export default function Dashboard() {
         <SvgText
           x={-8.5}
           y={1.5}
-          fill={"black"}
+          fill={u.notaProdutividade > 0 ? 'black' : "red"}
           textAnchor={"middle"}
           alignmentBaseline={"middle"}
           fontSize={22}
@@ -416,6 +445,7 @@ export default function Dashboard() {
         >
           {u.notaProdutividade}%
         </SvgText>
+        <CustomGradient />
       </ProgressCircle>
     );
   };
@@ -480,54 +510,6 @@ export default function Dashboard() {
 
                   <View style={styles.containerProdutividade}>
                     <View style={styles.containerProdutividadeSup}>
-                      <Text style={styles.tituloGrafico}>Nível de Satisfação:</Text>
-                      <GraficoSatisfacao />
-                    </View>
-                    <GrafHistSatisfacao historicos={historicos} />
-
-                    {/* <Text style={styles.subtituloProdutividade}>
-                      Entregas de atividade por semana:{" "}
-                    </Text> */}
-                  </View>
-
-
-                  <View style={styles.containerProdutividade}>
-                    <View style={styles.containerProdutividadeSup}>
-                      <Text style={styles.tituloGrafico}>Produtividade:</Text>
-                      <GraficoProdutividade />
-                    </View>
-                    <Text style={styles.subtituloProdutividade}>
-                      Entregas de atividades, realizadas nos últimos 90 dias:
-                    </Text>
-                    <ContributionGraph
-                      style={styles.ContributionContainer}
-                      values={contibutionDates}
-                      //endDate={new Date("2022-05-29")}
-                      //endDate={moment(now)}
-                      numDays={90}
-                      width={'100%'}
-                      height={220}
-                      chartConfig={chartConfig}
-                      showMonthLabels={true}
-                      onDayPress={(d = contibutionDates) => showAlert(d.date, d.count)}
-                      gutterSize={2}
-                      squareSize={18}
-                    />
-                  </View>
-
-
-
-                  <View style={styles.containerProdutividade}>
-                    <View style={styles.containerProdutividadeSup}>
-                      <Text style={styles.tituloGrafico}>Média de Avaliação:</Text>
-                      <GraficoAvaliacao />
-                    </View>
-                    <GrafHistAvaliacao historicos={historicos} />
-                  </View>
-
-
-                  <View style={styles.containerProdutividade}>
-                    <View style={styles.containerProdutividadeSup}>
                       <Text style={styles.tituloComparativo}>Comparativo entre seus indíces:</Text>
 
                     </View>
@@ -537,6 +519,56 @@ export default function Dashboard() {
                       <Text style={styles.nvsLabels}>Produtividade</Text>
                       <Text style={styles.nvsLabels}>Avaliação</Text>
                     </View>
+                  </View>
+
+                  <View style={styles.containerProdutividade}>
+                    <View style={styles.containerProdutividadeSup}>
+                      <Text style={styles.tituloGrafico}>Nível de Satisfação:</Text>
+                      <GraficoSatisfacao />
+                    </View>
+                    <GrafHistSatisfacao ghs={historicos} />
+
+                    {/* <Text style={styles.subtituloProdutividade}>
+                      Entregas de atividade por semana:{" "}
+                    </Text> */}
+                  </View>
+
+
+                
+
+                  <View style={styles.containerProdutividade}>
+                    <View style={styles.containerProdutividadeSup}>
+                      <Text style={styles.tituloGrafico}>Média de Avaliação:</Text>
+                      <GraficoAvaliacao />
+                    </View>
+                    <GrafHistAvaliacao gha={historicos} />
+                  </View>
+
+
+                  <View style={styles.containerProdutividade}>
+                    <View style={styles.containerProdutividadeSup}>
+                      <Text style={styles.tituloGrafico}>Produtividade:</Text>
+                      <GraficoProdutividade />
+                    </View>
+                    <Text style={styles.subtituloProdutividade}>
+                      Entregas de atividades, realizadas nos últimos 60 dias:
+                    </Text>
+                    <ContributionGraph
+                      style={styles.ContributionContainer}
+                      values={contibutionDates}
+                      //endDate={new Date(moment(now))}
+                      //endDate={moment(now)}
+                      numDays={59}
+                      width={'90%'}
+                      height={260}
+                      chartConfig={chartConfig}
+                      showMonthLabels={true}
+                      onDayPress={(d = contibutionDates) => showAlert(d.date, d.count)}
+                      gutterSize={3}
+                      squareSize={25}
+                      horizontal={true}
+                      showOutOfRangeDays={true}
+                    />
                   </View>
 
 
@@ -692,11 +724,16 @@ const styles = StyleSheet.create({
     //backgroundColor: 'yellow'
   },
   ContributionContainer: {
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
     borderRadius: 10,
+    //paddingTop: 20,
     marginTop: 10,
     //marginBottom: 0,
     borderWidth: 1,
     //borderColor: 'red',
+    //paddingLeft: 30,
+
+    paddingRight: 0
   },
   tituloComparativo: {
     textAlign: 'right',

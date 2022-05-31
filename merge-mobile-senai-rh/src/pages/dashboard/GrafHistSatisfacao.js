@@ -59,13 +59,13 @@ export default function InteractiveChart(historicos) {
   
 
 
-  //useEffect(() => setListaHistoricos(historicos.historicos), []);
+  //useEffect(() => setListaHistoricos(historicos.ghs), []);
   
     useEffect(() => {
-      //setListaHistoricos(historicos.historicos)
-      //console.warn(historicos.historicos[0])
+      //setListaHistoricos(historicos.ghs)
+      //console.warn(historicos.ghs[0])
   
-      setListaDatas(historicos.historicos.map(p => p.atualizadoEm));
+      setListaDatas(historicos.ghs.map(p => p.atualizadoEm));
   
       // setListaDatas(resposta.data.map((p) => {
       //     return (p.atualizadoEm.split("-")[2]).substring(0, 2);
@@ -73,7 +73,7 @@ export default function InteractiveChart(historicos) {
       // ));
   
       setMediasSatisfacao(
-        historicos.historicos.map(
+        historicos.ghs.map(
           (p) => { return (parseFloat(p.nivelSatisfacao) * 100); }
         )
       );
@@ -86,7 +86,7 @@ export default function InteractiveChart(historicos) {
 
   async function SetarHistorico() {
 
-    //console.log(historicos.historicos)
+    //console.log(historicos.ghs)
     
 
     //console.warn(listaDatas)
@@ -210,6 +210,7 @@ export default function InteractiveChart(historicos) {
       stroke="#f1f1f1"
       strokeWidth={apx(3)}
       fill="none"
+      //strokeDasharray={3}
     />
   );
 
@@ -223,6 +224,11 @@ export default function InteractiveChart(historicos) {
         <Stop offset="25%" stopColor="#C20004" stopOpacity={.25} /> */}
         <Stop offset="20%" stopColor="red" />
         <Stop offset="80%" stopColor="#C20004" />
+      </LinearGradient>
+      <LinearGradient id="gradienTest" x1="0" y="60%" x2="0%" y2="40%">
+       
+        <Stop offset="20%" stopColor="blue" />
+        <Stop offset="80%" stopColor="cyan" />
       </LinearGradient>
     </Defs>
   );
@@ -314,11 +320,11 @@ export default function InteractiveChart(historicos) {
         </View>
 
         <YAxis
-          style={{ width: apx(200) }}
+          style={{ width: apx(190) }}
           data={mediasSatisfacao}
           contentInset={verticalContentInset}
           svg={{ fontSize: apx(20), fill: '#f1f1f1' }}
-          numberOfTicks={4}
+          numberOfTicks={5}
         />
       </View>
       <XAxis
@@ -328,13 +334,13 @@ export default function InteractiveChart(historicos) {
           width: apx(600),
           height: apx(60),
         }}
-        numberOfTicks={4}
+        numberOfTicks={3}
         data={mediasSatisfacao}
         //formatLabel={(value, index) => moment(listaDatas[value]).startOf('day').fromNow()}
         formatLabel={(value, index) => moment(listaDatas[value]).format('DD/MM')}
         contentInset={{
           left: apx(36),
-          right: apx(130),
+          right: apx(180),
         }}
         svg={{
           fontSize: apx(20),
