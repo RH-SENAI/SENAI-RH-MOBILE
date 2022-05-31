@@ -344,7 +344,7 @@ export default class AtividadesExtras extends Component {
                         <Text style={styles.dataEntrega}>Data de Entrega: {moment(item.dataConclusao).format('LL')}</Text>
 
                         <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
-                            <AntDesign name="downcircleo" size={24} color="#C20004" />
+                            <AntDesign name="downcircleo" size={24} color="#B3093F" />
                         </Pressable>
 
                         {/* <View style={styles.statusImagem}>
@@ -638,10 +638,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-
     texto: {
         fontFamily: 'Montserrat-Medium',
-        color: '#E2E2E2',
+        color: '#F2F2F2',
         fontSize: 11,
         //alignItems: 'center',
     },
@@ -763,7 +762,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         height: 30,
         width: 108,
-        backgroundColor: '#C20004',
+        backgroundColor: '#B3093F',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -775,13 +774,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
-        borderColor: '#C20004',
-        color: '#C20004'
+        borderColor: '#B3093F',
+        color: '#B3093F'
     },
 
     textoFechar: {
         fontFamily: 'Montserrat-Medium',
-        color: '#C20004',
+        color: '#B3093F',
         fontSize: 12
     },
     descricao: {

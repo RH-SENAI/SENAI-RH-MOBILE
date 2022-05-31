@@ -43,6 +43,7 @@
     "react-native-exploding-heart": "^1.0.0",
     "react-native-gesture-handler": "~2.2.1",
     "react-native-leaderboard": "^1.0.6",
+    "react-native-masked-text": "^1.13.0",
     "react-native-modalize": "^2.0.13",
     "react-native-pager-view": "5.4.15",
     "react-native-ratings": "^8.1.0",

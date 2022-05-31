@@ -406,42 +406,43 @@ const styles = StyleSheet.create({
   },
 
   textInfGeralPerfil: {
+    // textAlign:'center',
     fontFamily: "Quicksand_400Regular",
     fontSize: 20,
     color: "black",
-    marginRight: 179,
-    marginBottom: 20,
+    // marginRight: 179,
+    // marginBottom: 20,
   },
 
-  animatedStyle1: {
-    top: 250,
-    left: 42,
-    position: "absolute",
-    backgroundColor: "#F2F2F2",
-    paddingLeft: 5,
-    zIndex: 1000,
-    width: 170,
-  },
+  // animatedStyle1: {
+  //   top: 250,
+  //   left: 42,
+  //   position: "absolute",
+  //   backgroundColor: "#F2F2F2",
+  //   paddingLeft: 5,
+  //   zIndex: 1000,
+  //   width: 170,
+  // },
 
-  animatedStyle2: {
-    top: 310,
-    left: 44,
-    position: "absolute",
-    zIndex: 1000,
-    backgroundColor: "#F2F2F2",
-    alignItems: "center",
-    width: 110,
-  },
+  // animatedStyle2: {
+  //   top: 310,
+  //   left: 44,
+  //   position: "absolute",
+  //   zIndex: 1000,
+  //   backgroundColor: "#F2F2F2",
+  //   alignItems: "center",
+  //   width: 110,
+  // },
 
-  animatedStyle3: {
-    top: 370,
-    left: 30,
-    position: "absolute",
-    zIndex: 1000,
-    backgroundColor: "#F2F2F2",
-    alignItems: "center",
-    width: 110,
-  },
+  // animatedStyle3: {
+  //   top: 370,
+  //   left: 30,
+  //   position: "absolute",
+  //   zIndex: 1000,
+  //   backgroundColor: "#F2F2F2",
+  //   alignItems: "center",
+  //   width: 110,
+  // },
 
   labelComentarioFeedback: {
     color: "#636466",
@@ -530,7 +531,7 @@ const styles = StyleSheet.create({
 
   conteudo: {
     alignItems: "center",
-    paddingBottom: 20,
+    paddingBottom: 25,
   },
 
   boxPerfil: {

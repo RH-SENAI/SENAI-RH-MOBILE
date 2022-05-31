@@ -8,6 +8,7 @@ import {
   TextInput,
   Alert,
   Pressable,
+  Dimensions
 } from 'react-native';
 
 
@@ -19,6 +20,7 @@ import jwt_decode from "jwt-decode";
 import apiGp1 from '../../services/apiGp1';
 import recuperar from "../alterarSenha/recuperarSenha.js"
 import AwesomeAlert from 'react-native-awesome-alerts';
+import { TextInputMask } from "react-native-masked-text";
 
 
 let customFonts = {
@@ -151,17 +153,19 @@ export default class Login extends Component {
           <Text style={styles.tituloPagina}>{'recursos humanos'.toUpperCase()}</Text>
 
           <View style={styles.inputLogin}>
-            <TextInput style={styles.viewLoginCPF}
+          <TextInputMask
+             style={styles.viewLoginCPF}
               placeholder="CPF"
+              type={"cpf"}
+              value={this.state.value}
               keyboardType="numeric"
               placeholderTextColor="#B3B3B3"
-              onChangeText={cpf => this.setState({ cpf })}
-              value={this.state.value}
+              onChangeText={(cpf) => this.setState({ cpf })}
             />
           </View>
 
           <View style={styles.inputLogin}>
-            <TextInput style={styles.TextEmail}
+            <TextInput style={styles.viewLoginCPF}
               placeholder="Senha"
               placeholderTextColor="#B3B3B3"
               keyboardType="default"
@@ -207,149 +211,273 @@ export default class Login extends Component {
 
 
 
-const styles = StyleSheet.create({
+if (Dimensions.get('window').width > 700) {
+  var styles = StyleSheet.create({
 
-  body: {
-    backgroundColor: '#F2F2F2',
-  },
-
-  mainHeader: {
-    paddingTop: "10%",
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  imgLogo: {
-    height:"20%",
-    // width: 360,
-    width:"47%",
-  },
-
-  container: {
-    alignItems: 'center',
-    justifyContent:'center'
-  },
-
-  tituloPagina: {
-    fontFamily: 'Montserrat-Bold',
-    fontSize: 40,
-    color: '#2A2E32',
-    // width:"60%" ,
-    paddingTop:"10%" ,
-    paddingBottom: "15%",
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tituloModalLogin:
-  {
-    color: '#C20004',
-    fontFamily: 'Montserrat-Medium',
-    fontSize: 23,
-    fontWeight: 'bold'
-  },
-  textoModalLogin:
-  {
-    width: 200,
-    textAlign: 'center'
-  },
-  confirmButton: {
-    width: 100,
-
-    paddingLeft: 32
-  },
-
-  inputLogin: {
-     width: "75%",
-    // backgroundColor: '#C20004',
-     height: "10%",
-    borderWidth: 1,
-    borderColor: '#B3B3B3',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
-    fontSize: 14,
-    marginBottom: 40
-    // flexDirection: 'column',
-    //paddingTop: 8,
-    //paddingBottom:24,
-    // paddingLeft: 15,
-  },
-
-  viewLoginCPF: {
-    // backgroundColor: 'blue',
-    height: "50%",
-    width: "80%",
-    // height: "23%",
-    // marginBottom: 24,
-  },
+    body: {
+      backgroundColor: '#F2F2F2',
+    },
   
-  TextEmail: {
-    // backgroundColor: 'pink',
-    height: "50%",
-    width: "80%",
-    // height: "20%",
-    // marginBottom: 24,
-  },
-
-  erroMsg: {
-    paddingTop: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    marginLeft: 250
-  },
-
-  erroText: {
-    fontFamily: 'Quicksand-Regular',
-    fontSize: 12,
-    color: '#C20004',
-    paddingRight: 115,
-    //paddingTop: 24,
-  },
-
-  textEsque: {
-    fontFamily: 'Quicksand-Regular',
-    fontSize: 12,
-    color: '#C20004',
-    //position:'absolute',
-    //paddingTop: 1,
-    paddingLeft: "25%",
-  },
-
-  btnLogin: {
-    width: "75%",
-    height: 46,
-    fontSize: 20,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 24,
-    elevation: 16,
-    backgroundColor: '#C20004',
-    borderRadius: 10,
-  },
-
-  btnText: {
-    fontFamily: 'Montserrat-Regular',
-    fontSize: 12,
-    color: "#F2F2F2",
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-
-  imgLoginView: {
-    // marginTop: 92,
-    //width: 180,
-    // height,
-    height:"100%" ,
-    width: "100%",
-    paddingLeft: 40,
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-  },
-  img: {
-    height:"20%" ,
-    width: "60%",
-  }
-});
+    mainHeader: {
+      paddingTop: "10%",
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  
+    imgLogo: {
+      height:"23%",
+      // width: 360,
+      width:"47%",
+    },
+  
+    container: {
+      alignItems: 'center',
+      justifyContent:'center'
+    },
+  
+    tituloPagina: {
+      fontFamily: 'Montserrat-Bold',
+      fontSize: 40,
+      color: '#2A2E32',
+      // width:"60%" ,
+      paddingTop:"10%" ,
+      paddingBottom: "15%",
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    tituloModalLogin:
+    {
+      color: '#C20004',
+      fontFamily: 'Montserrat-Medium',
+      fontSize: 23,
+      fontWeight: 'bold'
+    },
+    textoModalLogin:
+    {
+      width: 200,
+      textAlign: 'center'
+    },
+    confirmButton: {
+      width: 100,
+  
+      paddingLeft: 32
+    },
+  
+    inputLogin: {
+       width: "75%",
+      // backgroundColor: '#C20004',
+       height: "10%",
+      borderWidth: 1,
+      borderColor: '#B3B3B3',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 10,
+      fontSize: 14,
+      marginBottom: 40
+      // flexDirection: 'column',
+      //paddingTop: 8,
+      //paddingBottom:24,
+      // paddingLeft: 15,
+    },
+  
+    viewLoginCPF: {
+      // backgroundColor: 'blue',
+      height: "50%",
+      width: "80%",
+      // height: "23%",
+      // marginBottom: 24,
+    },
+    
+    TextEmail: {
+      // backgroundColor: 'pink',
+      height: "50%",
+      width: "80%",
+      // height: "20%",
+      // marginBottom: 24,
+    },
+  
+    erroMsg: {
+      paddingTop: 24,
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'row',
+      marginLeft: 250
+    },
+  
+    erroText: {
+      fontFamily: 'Quicksand-Regular',
+      fontSize: 12,
+      color: '#C20004',
+      paddingRight: 115,
+      //paddingTop: 24,
+    },
+  
+    textEsque: {
+      fontFamily: 'Quicksand-Regular',
+      fontSize: 12,
+      color: '#C20004',
+      //position:'absolute',
+      //paddingTop: 1,
+      paddingLeft: "40%",
+    },
+  
+    btnLogin: {
+      width: "75%",
+      height: 46,
+      fontSize: 20,
+      borderRadius: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 24,
+      elevation: 16,
+      backgroundColor: '#C20004',
+      borderRadius: 10,
+    },
+  
+    btnText: {
+      fontFamily: 'Montserrat-Regular',
+      fontSize: 12,
+      color: "#F2F2F2",
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  
+  
+    imgLoginView: {
+      // marginTop: 92,
+      //width: 180,
+      // height,
+      height:"100%" ,
+      width: "100%",
+      paddingLeft: 40,
+      alignItems: 'flex-start',
+      flexDirection: 'column',
+    },
+    img: {
+      height:"20%" ,
+      width: "60%",
+    }
+  });
+} else {
+  var styles = StyleSheet.create({
+    body: {
+      backgroundColor: '#F2F2F2',
+    },
+  
+    mainHeader: {
+      paddingTop: "26%",
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  
+    imgLogo: {
+      width: 224,
+      height: 31,
+    },
+  
+    container: {
+      alignItems: 'center',
+    },
+  
+    tituloPagina: {
+      fontFamily: 'Montserrat-Bold',
+      fontSize: 30,
+      color: '#2A2E32',
+      width: 175,
+      paddingTop: 64,
+      paddingBottom: 50,
+      alignItems: 'center',
+    },
+    tituloModalLogin:
+    {
+      color: '#C20004',
+      fontFamily: 'Montserrat-Medium',
+      fontSize: 23,
+      fontWeight: 'bold'
+    },
+    textoModalLogin:
+    {
+      width: 200,
+      textAlign: 'center'
+    },
+    confirmButton: {
+      width: 100,
+  
+      paddingLeft: 32
+    },
+  
+    inputLogin: {
+      width: "85%",
+      height: "10%",
+      borderWidth: 1,
+      borderColor: '#B3B3B3',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 10,
+      fontSize: 14,
+      marginBottom: 40
+    },
+  
+    viewLoginCPF: {
+      // padding: 3345678,
+      height: "50%",
+      width: "80%",
+    },
+  
+    erroMsg: {
+      paddingTop: 24,
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'row',
+      marginLeft: 250
+    },
+  
+    erroText: {
+      fontFamily: 'Quicksand-Regular',
+      fontSize: 12,
+      color: '#C20004',
+      paddingRight: 115,
+      //paddingTop: 24,
+    },
+  
+    textEsque: {
+      fontFamily: 'Quicksand-Regular',
+      fontSize: 12,
+      color: '#C20004',
+      //position:'absolute',
+      //paddingTop: 1,
+      //paddingRight: 50,
+    },
+  
+    btnLogin: {
+      width: 350,
+      height: 46,
+      fontSize: 20,
+      borderRadius: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 24,
+      elevation: 16,
+      backgroundColor: '#C20004',
+      borderRadius: 10,
+    },
+  
+    btnText: {
+      fontFamily: 'Montserrat-Regular',
+      fontSize: 12,
+      color: "#F2F2F2",
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  
+  
+    imgLoginView: {
+      marginTop: 92,
+      //width: 180,
+      //height: 165,
+      paddingLeft: 40,
+      alignItems: 'flex-start',
+      flexDirection: 'column',
+    },
+  });
+}

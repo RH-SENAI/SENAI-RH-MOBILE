@@ -55,7 +55,7 @@ export default function MainMotivar() {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: "#7B0AFF",
+        tabBarActiveTintColor: "#B3093F",
         tabBarInactiveTintColor: "gray",
         tabBarShowLabel: true,
         tabBarStyle: {
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 15,
     borderWidth: 4,
-    borderColor: "#7B0AFF",
+    borderColor: "#B3093F",
   },
   
 
