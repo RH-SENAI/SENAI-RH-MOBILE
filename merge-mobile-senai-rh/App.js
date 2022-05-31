@@ -34,12 +34,6 @@ import ComentarioDesconto from './src/pages/desconto/comentarioDesconto.js';
 // import 'intl';
 // import 'intl/locale-data/jsonp/pt-BR';
 
-// var express = require('express');
-// var app = express();
-
-// app.use(bodyParser.json({limit: '5mb'}));
-// app.use(bodyParser.urlencoded({limit: '5mb', extended: true}));
-
 const Stack = createNativeStackNavigator();
 
 function App() {
