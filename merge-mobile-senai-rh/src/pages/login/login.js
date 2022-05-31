@@ -20,6 +20,8 @@ import apiGp1 from '../../services/apiGp1';
 import recuperar from "../alterarSenha/recuperarSenha.js"
 import AwesomeAlert from 'react-native-awesome-alerts';
 
+import { TextInputMask } from "react-native-masked-text";
+
 
 let customFonts = {
   'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
@@ -79,7 +81,8 @@ export default class Login extends Component {
 
       //console.warn(token);
 
-      await AsyncStorage.setItem('idUsuario', token.jti);
+      await AsyncStorage.setItem('idUsuario',jwt_decode(token).jti);
+      
       await AsyncStorage.setItem('userToken', token);
       //console.warn(resposta.data);
 
@@ -151,12 +154,14 @@ export default class Login extends Component {
           <Text style={styles.tituloPagina}>{'recursos humanos'.toUpperCase()}</Text>
 
           <View style={styles.viewLoginCPF}>
-            <TextInput style={styles.inputLogin}
+            <TextInputMask
+              style={styles.inputLogin}
               placeholder="CPF"
+              type={"cpf"}
+              value={this.state.value}
               keyboardType="numeric"
               placeholderTextColor="#B3B3B3"
-              onChangeText={cpf => this.setState({ cpf })}
-              value={this.state.value}
+              onChangeText={(cpf) => this.setState({ cpf })}
             />
           </View>
 
