@@ -126,7 +126,6 @@ const styles = StyleSheet.create({
     color: "white",
     alignSelf: "center",
     fontSize: 20,
-    // marginBottom: "1%",
   },
   button: {
     position: "absolute",

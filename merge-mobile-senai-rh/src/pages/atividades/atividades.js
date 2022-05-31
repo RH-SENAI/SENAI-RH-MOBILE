@@ -13,7 +13,8 @@ import {
     SectionList,
     SafeAreaView,
     ScrollView,
-    Pressable
+    Pressable,
+    Dimensions
 } from 'react-native';
 
 import AppLoading from 'expo-app-loading';
@@ -339,7 +340,7 @@ export default class AtividadesExtras extends Component {
                         <Text style={styles.dataEntrega}> Data de Entrega: {moment(item.dataConclusao).format('DD-MM-YYYY')} </Text>
 
                         <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
-                            <AntDesign name="downcircleo" size={24} color="#9A0AFF" />
+                            <AntDesign name="downcircleo" size={24} color="#B3093F" />
                         </Pressable>
 
                         {/* <View style={styles.statusImagem}>
@@ -455,7 +456,8 @@ export default class AtividadesExtras extends Component {
     )
 
 };
-const styles = StyleSheet.create({
+if (Dimensions.get('window').width > 700) {
+    var styles = StyleSheet.create({
 
     main: {
         flex: 1,
@@ -468,6 +470,10 @@ const styles = StyleSheet.create({
         paddingTop: 40,
 
     },
+    // imgLogo:{
+    //     height: '20%',
+    //     width: '50%',
+    // },
 
     titulo: {
         justifyContent: 'center',
@@ -600,7 +606,7 @@ const styles = StyleSheet.create({
     },
 
     Modalbotao: {
-        paddingLeft: "10%",
+        paddingLeft: "59%",
         paddingTop: 13,
     },
 
@@ -635,7 +641,7 @@ const styles = StyleSheet.create({
 
     texto: {
         fontFamily: 'Montserrat-Medium',
-        color: '#E2E2E2',
+        color: '#F2F2F2',
         fontSize: 11,
         //alignItems: 'center',
     },
@@ -758,7 +764,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         height: 30,
         width: 108,
-        backgroundColor: '#9A0AFF',
+        backgroundColor: '#B3093F',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -770,13 +776,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
-        borderColor: '#9A0AFF',
-        color: '#9A0AFF'
+        borderColor: '#B3093F',
+        color: '#B3093F'
     },
 
     textoFechar: {
         fontFamily: 'Montserrat-Medium',
-        color: '#9A0AFF',
+        color: '#B3093F',
         fontSize: 12
     },
     descricao: {
@@ -826,4 +832,380 @@ const styles = StyleSheet.create({
         color: 'green'
     }
 
-})
+})}
+else{   var styles = StyleSheet.create({
+
+    main: {
+        flex: 1,
+        backgroundColor: '#F2F2F2',
+    },
+
+    mainHeader: {
+
+        alignItems: 'center',
+        paddingTop: 40,
+
+    },
+    // imgLogo:{
+    //     height: '20%',
+    //     width: '50%',
+    // },
+
+    titulo: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 40,
+        paddingBottom: 64
+    },
+
+    tituloEfects: {
+        fontFamily: 'SemiBoldM',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: '#2A2E32',
+        fontSize: 28,
+    },
+
+    escritaEscolha: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        paddingTop: 30,
+        // paddingBottom:20
+    },
+
+    itemEquipe: {
+
+        marginRight: 80,
+        alignItems: 'center',
+    },
+
+    font: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 20,
+        paddingBottom: 5,
+    },
+
+    line1: {
+        width: '100%',
+        borderBottomWidth: 1,
+    },
+
+    itemIndividual: {
+        alignItems: 'center',
+    },
+
+    line2: {
+        width: '100%',
+        borderBottomWidth: 1,
+    },
+
+    boxAtividade: {
+
+        // paddingTop: 40,
+
+        alignItems: 'center',
+    },
+
+    quadrado: {
+        backgroundColor: '#2A2E32',
+        height: 28,
+        width: '100%',
+        borderTopRightRadius: 8,
+        borderTopLeftRadius: 8,
+
+    },
+
+
+
+
+    box: {
+        height: 210,
+        borderWidth: 1,
+        borderColor: '#B3B3B3',
+        backgroundColor: '#F2F2F2',
+        borderRadius: 10,
+        marginBottom: 40,
+        width: '85%',
+
+    },
+
+    espacoPontos: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        paddingTop: 16,
+        paddingRight: 18,
+    },
+
+    pontos: {
+        fontSize: 14,
+        paddingRight: 5,
+        fontFamily: 'Quicksand-SemiBold',
+    },
+
+    imgCoins: {
+        width: 18,
+        height: 18,
+    },
+
+    conteudoBox: {
+        marginTop: 10,
+        paddingLeft: 16,
+        flexDirection: 'column'
+    },
+
+
+    nomeBox: {
+        fontFamily: 'Quicksand-SemiBold',
+        color: '#000000',
+        fontSize: 18,
+    },
+
+    criador: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+    },
+
+    dataEntrega: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+        //paddingLeft: 20
+    },
+
+
+    data: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 8,
+    },
+
+    Modalbotao: {
+        paddingLeft: "20%",
+        paddingTop: 13,
+    },
+
+    statusImagem: {
+        flexDirection: 'row',
+        marginTop: 7,
+        height: 20
+
+    },
+
+    status: {
+        fontFamily: "Regular",
+        fontSize: 14,
+        color: "#636466",
+    },
+
+    botao: {
+        // flexDirection: 'row',
+        justifyContent: 'flex-start',
+        paddingTop: 20,
+        paddingLeft: 16
+    },
+
+    corBotão: {
+        borderRadius: 15,
+        height: 30,
+        width: 100,
+        backgroundColor: '#C20004',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    texto: {
+        fontFamily: 'Montserrat-Medium',
+        color: '#F2F2F2',
+        fontSize: 11,
+        //alignItems: 'center',
+    },
+
+    botaoIndisp: {
+        //alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 19,
+    },
+
+    corIndisp: {
+        borderRadius: 5,
+        height: 40,
+        width: 90,
+        backgroundColor: '#B1B3B6',
+        //alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    ModaleBotao: {
+        flexDirection: 'row',
+        //paddingRight:30,
+        //alignItems:'flex-end',
+        //justifyContent: 'space-between',
+        //alignItems: 'center',
+
+
+    },
+
+    textoIndisp: {
+        // fontFamily: 'Montserrat-SemiBold',
+        color: '#000000',
+        fontSize: 10,
+        alignItems: 'center',
+    },
+
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.1)'
+        // marginTop: 22
+    },
+
+    modalView: {
+        height: 450,
+        borderWidth: 1,
+        borderColor: '#B3B3B3',
+        backgroundColor: '#F2F2F2',
+        borderRadius: 10,
+        // marginBottom: 20,
+        width: '78%',
+
+    },
+
+    quadradoModal: {
+        backgroundColor: '#2A2E32',
+        height: 35,
+        width: '100%',
+        borderTopRightRadius: 8,
+        borderTopLeftRadius: 8
+
+    },
+
+    conteudoBoxModal: {
+        flexDirection: 'column',
+    },
+
+    nomeBoxModal: {
+        fontFamily: 'Quicksand-SemiBold',
+        textAlign: "center",
+        paddingTop: 24,
+        fontSize: 20,
+    },
+
+    descricaoModal: {
+        fontFamily: 'Quicksand-Regular',
+        paddingTop: 24,
+        fontSize: 15,
+        //paddingBottom: 16,
+        marginLeft: 16
+    },
+
+    itemPostadoModal: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+        //paddingBottom: 24,
+        marginLeft: 16
+    },
+
+    entregaModal: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+        marginLeft: 16,
+    },
+
+    trofeu: {
+        paddingTop: 13,
+    },
+
+    criadorModal: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+        marginLeft: 16,
+        paddingBottom: 16,
+    },
+
+    botoesModal: {
+        fontFamily: 'Montserrat-Medium',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        justifyContent: 'space-evenly',
+        paddingTop: "10%"
+    },
+
+    associarModal: {
+        borderRadius: 15,
+        height: 30,
+        width: 108,
+        backgroundColor: '#B3093F',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    fecharModal: {
+        borderRadius: 15,
+        height: 30,
+        width: 108,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: '#B3093F',
+        color: '#B3093F'
+    },
+
+    textoFechar: {
+        fontFamily: 'Montserrat-Medium',
+        color: '#B3093F',
+        fontSize: 12
+    },
+    descricao: {
+        fontFamily: "Regular",
+        textAlign: 'center',
+        fontSize: 14,
+        color: "#636466",
+        marginBottom: 5,
+    },
+
+    anexo: {
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#B3B3B3',
+        width: 175,
+        marginLeft: 19,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row',
+        height: 30,
+        paddingLeft: 23,
+    },
+
+    txtanexo: {
+        fontFamily: 'Regular',
+    },
+
+    tituloModalLogin:
+    {
+        color: '#9A0AF',
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 23,
+        fontWeight: 'bold'
+    },
+    textoModalLogin:
+    {
+        width: 200,
+        textAlign: 'center'
+    },
+    confirmButton: {
+        width: 100,
+
+        paddingLeft: 32
+    },
+
+    tituloAlert: {
+        color: 'green'
+    }
+
+})}

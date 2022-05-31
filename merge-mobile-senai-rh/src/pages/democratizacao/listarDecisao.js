@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     width: 230,
     height: 130,
-    marginRight:40
+    marginRight:40,
   },
 
   containerCard: {

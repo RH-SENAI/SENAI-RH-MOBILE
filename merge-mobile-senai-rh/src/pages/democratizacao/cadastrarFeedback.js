@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 24,
-    backgroundColor: '#C20004',
+    backgroundColor: '#451531',
   },
 
   btnCadastroText: {
