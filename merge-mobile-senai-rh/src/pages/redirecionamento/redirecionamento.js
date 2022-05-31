@@ -3,10 +3,16 @@ import * as Animatable from "react-native-animatable";
 import { Image, View, StyleSheet, TouchableOpacity, Text,Dimensions } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
-import AppLoading from 'expo-app-loading';
-import { useFonts } from 'expo-font';
-import { MaterialIcons, MaterialCommunityIcons, EvilIcons, Entypo, Feather, AntDesign } from "@expo/vector-icons";
-
+import AppLoading from "expo-app-loading";
+import { useFonts } from "expo-font";
+import {
+  MaterialIcons,
+  MaterialCommunityIcons,
+  EvilIcons,
+  Entypo,
+  Feather,
+  AntDesign,
+} from "@expo/vector-icons";
 
 import {
   Quicksand_300Light,
@@ -14,7 +20,7 @@ import {
   Quicksand_500Medium,
   Quicksand_600SemiBold,
   Quicksand_700Bold,
-} from '@expo-google-fonts/quicksand'
+} from "@expo-google-fonts/quicksand";
 
 import {
   Montserrat_100Thin,
@@ -35,9 +41,7 @@ import {
   Montserrat_700Bold_Italic,
   Montserrat_800ExtraBold_Italic,
   Montserrat_900Black_Italic,
-} from '@expo-google-fonts/montserrat';
-
-
+} from "@expo-google-fonts/montserrat";
 
 export default function Redirecionar() {
   const navigation = useNavigation();
@@ -74,12 +78,21 @@ export default function Redirecionar() {
 
   return (
     <View style={styles.container}>
+<<<<<<< HEAD
 
       <Image style={styles.logoSenai} source={require('../../../assets/img-geral/logo_2S.png')} resizeMode="contain" />
+=======
+      <Image
+        style={styles.logoSenai}
+        source={require("../../../assets/img-geral/logo_2S.png")}
+        resizeMode="contain"
+      />
+>>>>>>> 894787b3cb70941653888a0a353b2e86b0cdd753
 
       <View style={styles.containerLinks}>
         <Text style={styles.titulo}>REDIRECIONAR PARA:</Text>
 
+<<<<<<< HEAD
         <TouchableOpacity style={styles.buttonA} onPress={() => navigation.navigate("mainAcompanhar")}>
           {/* <View style={styles.quadradoeTexto}>
             <View style={styles.quadrado}></View> */}
@@ -96,16 +109,213 @@ export default function Redirecionar() {
 
         <TouchableOpacity style={styles.buttonV} onPress={() => navigation.navigate("mainVantagem")}>
           <MaterialCommunityIcons name="label-percent" size={50} color="black" />
-          <Text style={styles.texto}>Minhas Vantagens</Text>
+=======
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("mainAcompanhar")}
+        >
+          <MaterialIcons name="computer" size={50} color="black" />
+          <Text style={styles.texto}>Acompanhamento</Text>
         </TouchableOpacity>
 
-      </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("mainMotivar")}
+        >
+          <MaterialCommunityIcons
+            style={styles.porco}
+            name="piggy-bank"
+            size={50}
+            color="black"
+          />
+          <Text style={styles.textoM}>Motivações</Text>
+        </TouchableOpacity>
 
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("mainVantagem")}
+        >
+          <MaterialCommunityIcons
+            name="label-percent"
+            size={50}
+            color="black"
+          />
+>>>>>>> 894787b3cb70941653888a0a353b2e86b0cdd753
+          <Text style={styles.texto}>Minhas Vantagens</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
+<<<<<<< HEAD
 if (Dimensions.get('window').width > 700) {
+=======
+if (Dimensions.get("window").width > 700) {
+  var styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      // backgroundColor: "white",
+    },
+
+    logoSenai: {
+      // width: "100%",
+      // height: 40,
+      alignSelf: "center",
+      marginTop: "20%",
+      //marginBottom: 20,
+    },
+
+    containerLinks: {
+      flex: 1,
+      // backgroundColor: 'cyan',
+      alignItems: "center",
+      width: "100%",
+      paddingLeft: "5%",
+      paddingRight: "5%",
+      paddingTop: 32,
+    },
+
+    titulo: {
+      fontSize: 30,
+      width: "80%",
+      textAlign: "center",
+      marginBottom: 15,
+      fontFamily: "SemiBoldM",
+      paddingTop: "10%",
+      paddingBottom: "10%",
+    },
+    button: {
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      // backgroundColor: "#C20004",
+      borderWidth: 2,
+      borderColor: "black",
+      width: "100%",
+      height: 85,
+      borderRadius: 5,
+      marginTop: 15,
+      marginBottom: "15%",
+    },
+    // buttonA: {
+    //   flexDirection: 'row',
+    //   justifyContent: 'center',
+    //   alignItems: 'center',
+    //   // backgroundColor: "#C20004",
+    //   borderWidth: 2,
+    //   borderColor: 'black',
+    //   width: "100%",
+    //   height: 85,
+    //   borderRadius: 5,
+    //   marginTop: 15,
+    //   marginBottom: 15,
+    // },
+    // buttonV: {
+    //   flexDirection: 'row',
+    //   justifyContent: 'center',
+    //   alignItems: 'center',
+    //   // backgroundColor: "#C20004",
+    //   borderWidth: 2,
+    //   borderColor: 'black',
+    //   width: "100%",
+    //   height: 85,
+    //   borderRadius: 5,
+    //   marginTop: 15,
+    //   marginBottom: 15,
+    // },
+    texto: {
+      // backgroundColor: 'blue',
+      color: "black",
+      textAlign: "center",
+      fontSize: 25,
+      // fontWeight: "bold",
+      marginLeft: 40,
+      fontFamily: "Regular",
+    },
+
+    porco: {
+      paddingRight: 70,
+    },
+
+    textoM: {
+      color: "black",
+      fontSize: 25,
+      marginRight: 50,
+      fontFamily: "Regular",
+    },
+  });
+} else {
+  var styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      // backgroundColor: "white",
+    },
+
+    logoSenai: {
+      // width: "100%",
+      // height: 40,
+      alignSelf: "center",
+      marginTop: 40,
+      //marginBottom: 20,
+    },
+
+    containerLinks: {
+      flex: 1,
+      // backgroundColor: 'cyan',
+      alignItems: "center",
+      width: "100%",
+      paddingLeft: "5%",
+      paddingRight: "5%",
+      paddingTop: 32,
+    },
+
+    titulo: {
+      fontSize: 30,
+      width: "80%",
+      textAlign: "center",
+      marginBottom: 15,
+      fontFamily: "SemiBoldM",
+      paddingTop: 32,
+      paddingBottom: 32,
+    },
+    button: {
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      // backgroundColor: "#C20004",
+      borderWidth: 2,
+      borderColor: "gray",
+      width: "100%",
+      height: 85,
+      borderRadius: 5,
+      marginTop: 15,
+      marginBottom: 15,
+    },
+    texto: {
+      // backgroundColor: 'blue',
+      color: "black",
+      textAlign: "center",
+      fontSize: 25,
+      // fontWeight: "bold",
+      marginLeft: 40,
+      fontFamily: "Regular",
+    },
+
+    porco: {
+      paddingRight: 70,
+    },
+
+    textoM: {
+      color: "black",
+      fontSize: 25,
+      marginRight: 50,
+      fontFamily: "Regular",
+    },
+  });
+}
+
+>>>>>>> 894787b3cb70941653888a0a353b2e86b0cdd753
 var styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -132,9 +342,10 @@ var styles = StyleSheet.create({
 
   titulo: {
     fontSize: 30,
-    width: '80%',
-    textAlign: 'center',
+    width: "80%",
+    textAlign: "center",
     marginBottom: 15,
+<<<<<<< HEAD
     fontFamily: 'SemiBoldM',
     paddingTop: "10%",
     paddingBottom: "10%",
@@ -178,6 +389,19 @@ var styles = StyleSheet.create({
     // borderColor: 'black',
     borderLeftWidth: 25 , 
     borderLeftColor:'#4B7294',   
+=======
+    fontFamily: "SemiBoldM",
+    paddingTop: "10%",
+    paddingBottom: "10%",
+  },
+  button: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    // backgroundColor: "#C20004",
+    borderWidth: 2,
+    borderColor: "black",
+>>>>>>> 894787b3cb70941653888a0a353b2e86b0cdd753
     width: "100%",
     height: 85,
     borderRadius: 5,
@@ -191,7 +415,11 @@ var styles = StyleSheet.create({
     fontSize: 25,
     // fontWeight: "bold",
     marginLeft: 40,
+<<<<<<< HEAD
     fontFamily: 'Regular'
+=======
+    fontFamily: "Regular",
+>>>>>>> 894787b3cb70941653888a0a353b2e86b0cdd753
   },
 
   porco: {
@@ -202,6 +430,7 @@ var styles = StyleSheet.create({
     color: "black",
     fontSize: 25,
     marginRight: 50,
+<<<<<<< HEAD
     fontFamily: 'Regular',
 
   },
@@ -335,3 +564,8 @@ else{
   
   // },
   });}
+=======
+    fontFamily: "Regular",
+  },
+});
+>>>>>>> 894787b3cb70941653888a0a353b2e86b0cdd753

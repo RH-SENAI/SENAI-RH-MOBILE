@@ -33,14 +33,14 @@ export default function MainAcompanhar() {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: "#C20004",
+        tabBarActiveTintColor: "#451531",
         tabBarInactiveTintColor: "gray",
         tabBarShowLabel: true,
         headerShown: false,
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: "#f1f1f1",
-          borderTopColor: "#C20004",
+          borderTopColor: "#451531",
           borderTopWidth: 1,
           paddingBottom: 5,
           paddingTop: 5,
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 15,
     borderWidth: 4,
-    borderColor: "#C20004",
+    borderColor: "#451531",
     shadowColor: "black",
     shadowOffset: {
       width: 0,
