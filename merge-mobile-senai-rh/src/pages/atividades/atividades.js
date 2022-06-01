@@ -323,7 +323,7 @@ export default class AtividadesExtras extends Component {
                 <View style={styles.quadrado}></View>
                 <View style={styles.espacoPontos}>
                     <Text style={styles.pontos}> {item.recompensaMoeda} Cashs </Text>
-                    <FontAwesome5 name="coins" size={24} color="black" />
+                    <FontAwesome5 name="coins" size={24} color="#FBB01E" /> 
                 </View>
                 <View style={styles.conteudoBox}>
                     <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>

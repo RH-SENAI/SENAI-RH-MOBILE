@@ -10,11 +10,14 @@ import {
   Animated,
   TextInput,
   KeyboardAvoidingView,
+  Dimensions,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 // Pacotes
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { MaterialCommunityIcons, EvilIcons, Entypo, Feather, AntDesign, MaterialIcons } from "@expo/vector-icons";
 // Expo
 import AppLoading from "expo-app-loading";
 
@@ -37,11 +40,26 @@ import apiGp1 from "../../services/apiGp1";
 import jwtDecode from "jwt-decode";
 
 export default function Perfil() {
+  const navigation = useNavigation();
   const [usuario, setUsuario] = useState([]);
   const [senhaAtual, setSenhaAtualUsuario] = useState("");
   const [mudarSenha, setMudarSenha] = useState(false);
   const [senhaNova, setSenhaNovaUsuario] = useState("");
   const [senhaConfirmacao, setSenhaConfirmacaoUsuario] = useState("");
+  const [openAlert, setOpenAlert] = useState(false)
+ 
+  async function realizarLogout() {
+    await AsyncStorage.removeItem('userToken');
+    navigation.navigate('Login')
+}
+
+ const hideAlert = () => {
+  setOpenAlert(false)
+}
+
+ const showAlert = () => {
+  setOpenAlert(true)
+}
 
   // Fontes utilizada
   let [fontsLoaded] = useFonts({
@@ -215,6 +233,8 @@ export default function Perfil() {
     }
   }
 
+ 
+
   async function MudarSenha() {
     try {
       const token = await AsyncStorage.getItem("userToken");
@@ -236,6 +256,7 @@ export default function Perfil() {
 
       if (resposta.status === 200) {
         console.warn("foi");
+        showAlert()
         AlterarSenha();
       }
     } catch (error) {
@@ -253,6 +274,7 @@ export default function Perfil() {
     return <AppLoading />;
   } else {
     return (
+      
       <KeyboardAvoidingView style={styles.container}>
         <Image
           style={styles.logoSenai}
@@ -336,7 +358,7 @@ export default function Perfil() {
           }
           return (
             <ScrollView contentContainerStyle={styles.conteudo}>
-              <Text style={styles.titulo}>Perfil</Text>
+              <Text style={styles.titulo}>perfil</Text>
               <View style={styles.fotoPerfilContainer}>
                 <Image
                   source={
@@ -351,6 +373,14 @@ export default function Perfil() {
                   resizeMod="cover"
                 />
               </View>
+
+              <TouchableOpacity
+               onPress={realizarLogout}
+                style={styles.logout}
+             >
+               <Text> Sair </Text>
+               <MaterialIcons name="logout" size={24} color="#C20004" /> 
+               </TouchableOpacity>
 
               <Text style={styles.textInfGeralPerfil}>Informação Geral</Text>
 
@@ -383,10 +413,421 @@ export default function Perfil() {
             </ScrollView>
           );
         })}
+         <AwesomeAlert
+          show={openAlert}
+          showProgress={false}
+          title="Sucesso"
+          titleStyle={styles.tituloModalOk}
+          message="Sua Senha foi alterada com sucesso!"
+          messageStyle={styles.textoModal}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          confirmButtonStyle={styles.confirmButton}
+          showCancelButton={false}
+           showConfirmButton={true}
+          confirmText="Voltar"
+          confirmButtonColor="#2CA347"
+          onConfirmPressed={() => {
+          hideAlert();
+        }}
+        />
       </KeyboardAvoidingView>
+      
     );
   }
 }
+<<<<<<< HEAD
+if ((Dimensions.get('window').width > 700)) {
+  var styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "#F2F2F2",
+    
+    },
+  
+    fotoPerfilContainer: {
+      width: 111,
+      height: 110,
+      borderRadius: 5,
+      alignItems: "center",
+      justifyContent: "center",
+      borderWidth: 3,
+      borderColor: "gray",
+      marginVertical: 16,
+    },
+  
+    // textInfGeralPerfil: {
+    //   // textAlign:'center',
+    //   fontFamily: "Quicksand_400Regular",
+    //   fontSize: 20,
+    //   color: "black",
+    //   // marginRight: 50,
+    //   // marginBottom: 20,
+    // },
+  
+    // animatedStyle1: {
+    //   top: 250,
+    //   left: 42,
+    //   position: "absolute",
+    //   backgroundColor: "#F2F2F2",
+    //   paddingLeft: 5,
+    //   zIndex: 1000,
+    //   width: 170,
+    // },
+  
+    // animatedStyle2: {
+    //   top: 310,
+    //   left: 44,
+    //   position: "absolute",
+    //   zIndex: 1000,
+    //   backgroundColor: "#F2F2F2",
+    //   alignItems: "center",
+    //   width: 110,
+    // },
+  
+    // animatedStyle3: {
+    //   top: 370,
+    //   left: 30,
+    //   position: "absolute",
+    //   zIndex: 1000,
+    //   backgroundColor: "#F2F2F2",
+    //   alignItems: "center",
+    //   width: 110,
+    // },
+  
+    labelComentarioFeedback: {
+      color: "#636466",
+      fontSize: 13,
+      fontFamily: "Quicksand_300Light",
+    },
+  
+    labelComentarioNota: {
+      color: "#636466",
+      fontSize: 13,
+      fontFamily: "Quicksand_300Light",
+    },
+  
+    textInfGeralPerfil: {
+      fontFamily: "Quicksand_400Regular",
+      fontSize: 20,
+      color: "black",
+      // marginRight: 20,
+      marginTop: 20,
+      marginBottom:20
+    },
+  
+    sectionDemocratizacaoInput: {
+      width: "90%",
+      height: 42,
+      borderRadius: 5,
+      borderWidth: 2,
+      borderColor: "#B3B3B3",
+      paddingLeft: 16,
+      marginBottom: 18,
+    },
+  
+    labelComentarioConfirmar: {
+      color: "#636466",
+      fontSize: 14,
+      width: "100%",
+      fontFamily: "Quicksand_300Light",
+    },
+    btnCadastro: {
+      width: "90%",
+      height: 43,
+      borderRadius: 5,
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 10,
+      backgroundColor: "#C20004",
+    },
+  
+    btnCadastroSenha: {
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 10,
+      paddingBottom: 10,
+    },
+  
+    btnCadastroTextSenha: {
+      fontFamily: "Montserrat_500Medium",
+      color: "#C20004",
+    },
+  
+    btnCadastroText: {
+      fontFamily: "Montserrat_500Medium",
+      color: "#F2F2F2",
+    },
+  
+    lineTextPerfil: {
+      fontFamily: "Quicksand_400Regular",
+      fontSize: 20,
+      color: "#B3B3B3",
+    },
+  
+    logoSenai: {
+      alignSelf: "center",
+      marginTop: 40,
+      marginBottom: 24,
+    },
+  
+    titulo: {
+      fontFamily: "Montserrat_600SemiBold",
+      fontSize: 40,
+      color: "#000000",
+      color: "#2A2E32",
+      marginBottom:40,
+      textAlign: "center",
+      textTransform: "uppercase",
+    },
+  
+    conteudo: {
+      alignItems: "center",
+      paddingTop: "10%",
+    },
+  
+    boxPerfil: {
+      backgroundColor: "#F2F2F2",
+      paddingHorizontal: "5%",
+      width: "100%",
+    },
+  
+    titulos: {
+      color: "#0A0A0A",
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+  
+    line: {
+      width: "100%",
+      height: 70,
+      borderRadius: 5,
+      paddingHorizontal: "3%",
+      paddingVertical: 5,
+      borderColor: "#C2C2C2",
+      borderWidth: 3,
+      marginBottom: 10,
+      justifyContent: "center",
+      borderRadius: 10,
+    },
+  
+    sobreTrofeu: {
+      width: 270,
+      height: 50,
+      fontSize: 30,
+      borderRadius: 5,
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 10,
+      elevation: 16,
+      backgroundColor: "#F2F2F2",
+      borderRadius: 5,
+      flexDirection: "row",
+    },
+  
+    
+    logout: {
+      flexDirection: "row",
+    },
+  });
+} else {
+  
+  var styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "#F2F2F2",
+    },
+  
+    fotoPerfilContainer: {
+      width: 111,
+      height: 110,
+      borderRadius: 5,
+      alignItems: "center",
+      justifyContent: "center",
+      borderWidth: 3,
+      borderColor: "gray",
+      marginVertical: 20,
+    },
+  
+    textInfGeralPerfil: {
+      // textAlign:'center',
+      fontFamily: "Quicksand_400Regular",
+      fontSize: 20,
+      color: "black",
+      // marginRight: 179,
+      // marginBottom: 20,
+    },
+  
+    // animatedStyle1: {
+    //   top: 250,
+    //   left: 42,
+    //   position: "absolute",
+    //   backgroundColor: "#F2F2F2",
+    //   paddingLeft: 5,
+    //   zIndex: 1000,
+    //   width: 170,
+    // },
+  
+    // animatedStyle2: {
+    //   top: 310,
+    //   left: 44,
+    //   position: "absolute",
+    //   zIndex: 1000,
+    //   backgroundColor: "#F2F2F2",
+    //   alignItems: "center",
+    //   width: 110,
+    // },
+  
+    // animatedStyle3: {
+    //   top: 370,
+    //   left: 30,
+    //   position: "absolute",
+    //   zIndex: 1000,
+    //   backgroundColor: "#F2F2F2",
+    //   alignItems: "center",
+    //   width: 110,
+    // },
+  
+    labelComentarioFeedback: {
+      color: "#636466",
+      fontSize: 13,
+      fontFamily: "Quicksand_300Light",
+    },
+  
+    labelComentarioNota: {
+      color: "#636466",
+      fontSize: 13,
+      fontFamily: "Quicksand_300Light",
+    },
+  
+    textInfGeralPerfil: {
+      fontFamily: "Quicksand_400Regular",
+      fontSize: 20,
+      color: "black",
+      marginRight: 203,
+      marginBottom: 20,
+    },
+  
+    sectionDemocratizacaoInput: {
+      width: "90%",
+      height: 42,
+      borderRadius: 5,
+      borderWidth: 2,
+      borderColor: "#B3B3B3",
+      paddingLeft: 16,
+      marginBottom: 18,
+    },
+  
+    labelComentarioConfirmar: {
+      color: "#636466",
+      fontSize: 14,
+      width: "100%",
+      fontFamily: "Quicksand_300Light",
+    },
+    btnCadastro: {
+      width: "86%",
+      height: 43,
+      borderRadius: 5,
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 10,
+      backgroundColor: "#C20004",
+    },
+  
+    btnCadastroSenha: {
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 10,
+      paddingBottom: 10,
+    },
+  
+    btnCadastroTextSenha: {
+      fontFamily: "Montserrat_500Medium",
+      color: "#C20004",
+    },
+  
+    btnCadastroText: {
+      fontFamily: "Montserrat_500Medium",
+      color: "#F2F2F2",
+    },
+  
+    lineTextPerfil: {
+      fontFamily: "Quicksand_400Regular",
+      fontSize: 20,
+      color: "#B3B3B3",
+    },
+  
+    logoSenai: {
+      alignSelf: "center",
+      marginTop: 40,
+      marginBottom: 24,
+    },
+  
+    titulo: {
+      fontFamily: "Montserrat_600SemiBold",
+      fontSize: 35,
+      color: "#000000",
+      color: "#2A2E32",
+  
+      textAlign: "center",
+      textTransform: "uppercase",
+    },
+  
+    conteudo: {
+      alignItems: "center",
+      paddingBottom: 25,
+    },
+  
+    boxPerfil: {
+      backgroundColor: "#F2F2F2",
+      paddingHorizontal: "5%",
+      width: "100%",
+    },
+  
+    titulos: {
+      color: "#0A0A0A",
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+  
+    line: {
+      width: "100%",
+      height: 50,
+      borderRadius: 5,
+      paddingHorizontal: "3%",
+      paddingVertical: 5,
+      borderColor: "#C2C2C2",
+      borderWidth: 3,
+      marginBottom: 10,
+      justifyContent: "center",
+      borderRadius: 10,
+    },
+  
+    sobreTrofeu: {
+      width: 270,
+      height: 50,
+      fontSize: 30,
+      borderRadius: 5,
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 10,
+      elevation: 16,
+      backgroundColor: "#F2F2F2",
+      borderRadius: 5,
+      flexDirection: "row",
+    },
+  
+    textTrofeu: {
+      color: "black",
+      marginLeft: 10,
+    },
+
+    logout: {
+      flexDirection: "row",
+    },
+  });
+}
+=======
 
 const styles = StyleSheet.create({
   container: {
@@ -522,7 +963,6 @@ const styles = StyleSheet.create({
   titulo: {
     fontFamily: "Montserrat_600SemiBold",
     fontSize: 35,
-    color: "#000000",
     color: "#2A2E32",
 
     textAlign: "center",
@@ -578,3 +1018,4 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
+>>>>>>> faa8a6b0bb3025abcf39653b6d46c39147979653

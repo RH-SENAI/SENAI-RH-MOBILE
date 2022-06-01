@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
   FlatList,
+  Dimensions,
 } from "react-native";
 
 // Pacotes
@@ -93,7 +94,7 @@ export default function ListaFeedback() {
             })
           }
         >
-           {/* <View style={styles.quadrado}></View> */}
+          {/* <View style={styles.quadrado}></View> */}
           <View style={styles.containerCard}>
             <View style={styles.tituloCardWrapper}>
               <Text style={styles.tituloCard}>
@@ -134,131 +135,200 @@ export default function ListaFeedback() {
   }
 }
 
-const styles = StyleSheet.create({
-  containerRenderItem: {
-    // width: 370,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    backgroundColor:'purple'
-  },
+if (Dimensions.get("window").width > 700) {
+  var styles = StyleSheet.create({
+    containerRenderItem: {
+      width: 370,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-around',
+    },
+  
+    imgPerfilCardWrapper: {
+      width: 70,
+      height: 70,
+      borderColor: '#B3B3B3',
+      borderWidth: 3,
+      borderRadius: 10,
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+  
+    img_perfil: {
+      width: '100%',
+      height: '100%'
+    },
+  
+    cardClicavel: {
+      borderWidth: 2,
+      borderColor: "gray",
+      borderRadius: 10,
+      padding: 10,
+      marginTop: 16,
+      width: 230,
+      height: 130,
+      marginRight:40
+    },
+  
+    containerCard: {
+      width: 207,
+      height: 105
+    },
+  
+    tituloCardWrapper: {
+      width: 200,
+      height: 38,
+    },
+  
+    tituloCard: {
+      textAlign: "auto",
+      marginBottom: 8,
+      height: 60,
+      fontFamily: 'Quicksand_600SemiBold',
+      color: 'black',
+      marginLeft: 14
+    },
+  
+    mensagem: {
+      textAlign: "center",
+      color: 'black',
+      fontFamily: 'Quicksand_300Light'
+    },
+  
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      marginHorizontal: '5%',
+    },
+  
+    header: {
+      width: 290,
+      height: 40,
+      alignSelf: "center",
+      marginTop: 16,
+  
+    },
+  
+    imgLogo: {
+      alignSelf: "center",
+      marginTop: 40,
+   
+      
+     
+    },
+  
+    // h1nonBold: {
+    //   fontSize: 30,
+    //   fontWeight: "500",
+    //   fontFamily: "Montserrat_600SemiBold",
+    //   textTransform: "uppercase",
+    //   color: "#000000",
+    // },
+  
+    h1Bold: {
+      fontSize: 32,
+      width: "80%",
+      textAlign: "center",
+      fontFamily: "Montserrat_600SemiBold",
+      textTransform: "uppercase",
+      color: "#2A2E32",
+      marginTop: 24,
+    },
+  
+    mainBodyContent: {
+      paddingBottom: 20
+    }
+  });
+} else {
+  var styles = StyleSheet.create({
+    containerRenderItem: {
+      width: 370,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-around",
+    },
 
-  imgPerfilCardWrapper: {
-    width: 70,
-    height: 70,
-    borderColor: "#B3B3B3",
-    borderWidth: 3,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    marginLeft: 32,
-  },
+    imgPerfilCardWrapper: {
+      width: 70,
+      height: 70,
+      borderColor: "#B3B3B3",
+      borderWidth: 3,
+      borderRadius: 10,
+      alignItems: "center",
+      justifyContent: "center",
+    },
 
-  img_perfil: {
-    width: "100%",
-    height: "100%",
-    backgroundColor:"pink"
-  },
+    img_perfil: {
+      width: "100%",
+      height: "100%",
+    },
+    cardClicavel: {
+      borderWidth: 2,
+      borderColor: "gray",
+      borderRadius: 10,
+      padding: 10,
+      marginTop: 16,
+      width: 230,
+      height: 130,
+      marginRight: 40,
+    },
 
-  // Nayara:{
-  //   justifyContent: 'flex-start',
-  // },
+    containerCard: {
+      width: 207,
+      height: 105,
+    },
 
-  cardClicavel: {
-    height: 210,
-    borderWidth: 1,
-    borderColor: '#B3B3B3',
-    backgroundColor: 'blue',
-    // backgroundColor: '#F2F2F2',
-    borderTopWidth:30,
-    borderTopColor:'#451531',
-    borderRadius: 10,
-    marginBottom: 40,
-    width: '95%',
-    // textAlign:"center",
-   // justifyContent: 'flex-start',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
+    tituloCardWrapper: {
+      width: 200,
+      height: 38,
+    },
 
-  containerCard: {
-    width: "80%",
-    height: 105,
-    backgroundColor:"green",
-    alignItems: "center",
-    // justifyContent:"center",
-    marginLeft:120
-  },
+    tituloCard: {
+      textAlign: "auto",
+      marginBottom: 8,
+      height: 60,
+      fontFamily: "Quicksand_600SemiBold",
+      color: "black",
+      marginLeft: 14,
+    },
 
-  tituloCardWrapper: {
-    width: 200,
-    height: 30
-  },
+    mensagem: {
+      textAlign: "center",
+      color: "black",
+      fontFamily: "Quicksand_300Light",
+    },
 
-  tituloCard: {
-    textAlign: "auto",
-    marginBottom: 8,
-    height: 60,
-    fontFamily: "Quicksand_600SemiBold",
-    // color: "black",
-    color: "yellow",
-    marginLeft: 14,
-    
-  },
+    container: {
+      flex: 1,
+      alignItems: "center",
+      marginHorizontal: "5%",
+    },
 
-  mensagem: {
-    textAlign: "center",
-    color: "red",
-    // color: "black",
-    fontFamily: "Quicksand_300Light",
-  },
+    header: {
+      width: 290,
+      height: 40,
+      alignSelf: "center",
+      marginTop: 16,
+      marginBottom: 32,
+    },
 
-  container: {
-    flex: 1,
-    alignItems: "center",
-    marginHorizontal: "5%",
-  },
+    imgLogo: {
+      alignSelf: "center",
+      marginTop: 24,
+      marginBottom: 24,
+    },
+    h1Bold: {
+      fontSize: 35,
+      width: "80%",
+      textAlign: "center",
+      fontFamily: "Montserrat_600SemiBold",
+      textTransform: "uppercase",
+      color: "#2A2E32",
+      marginTop:8
+    },
 
-  header: {
-    width: 290,
-    height: 40,
-    alignSelf: "center",
-    marginTop: 16,
-  },
-
-  imgLogo: {
-    alignSelf: "center",
-    marginTop: 40
-  },
-
-  // h1nonBold: {
-  //   fontSize: 30,
-  //   fontWeight: "500",
-  //   fontFamily: "Montserrat_600SemiBold",
-  //   textTransform: "uppercase",
-  //   color: "#000000",
-  // },
-
-  h1Bold: {
-    fontSize: 32,
-    width: "80%",
-    textAlign: "center",
-    fontFamily: "Montserrat_600SemiBold",
-    textTransform: "uppercase",
-    color: "#2A2E32",
-    marginTop: 24,
-  },
-
-  mainBodyContent: {
-    paddingBottom: 20,
-  },
-
-//   quadrado: {
-//     backgroundColor: '#451531',
-//     height: 28,
-//     width: '100%',
-//     borderTopRightRadius: 8,
-//     borderTopLeftRadius: 8,
-
-// },
-});
+    mainBodyContent: {
+      paddingBottom: 20,
+    },
+  });
+}
