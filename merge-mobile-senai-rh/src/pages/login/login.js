@@ -8,7 +8,6 @@ import {
   TextInput,
   Alert,
   Pressable,
-  Sty,
   Dimensions
 } from 'react-native';
 
