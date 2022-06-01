@@ -446,7 +446,7 @@ export default class ListagemCurso extends Component {
     onRefresh = async () => {
         this.setState({ refreshing: true });
         this.setState({ listaCurso: [] })
-        this.setState({ verifyCoracao: [] })
+        this.setState({ listaFavoritosCoracao: [] })
         this.wait(2000).then(() => this.setState({ refreshing: false }));
         this.ListarCurso();
     };
@@ -479,10 +479,13 @@ export default class ListagemCurso extends Component {
         await delay(2000);
         this.SaldoUsuario();
         await delay(3000);
-
         this.ListarCurso();
         // await delay(2000);
     }
+
+    // componentWillUnmount = () => {
+        
+    // }
 
     render() {
         return (
