@@ -207,7 +207,7 @@ export default function InteractiveChart(historicos) {
     <Path
       key="line"
       d={line}
-      stroke="#f1f1f1"
+      stroke="#451531"
       strokeWidth={apx(3)}
       fill="none"
       //strokeDasharray={3}
@@ -215,20 +215,21 @@ export default function InteractiveChart(historicos) {
   );
 
   const CustomGradient = () => (
-    <Defs key="gradient">
-      <LinearGradient id="gradient" x1="0" y="60%" x2="0%" y2="40%">
-        {/* <Stop offset="20%" stopColor="black" />
-        <Stop offset="100%" stopColor="#C20004" />
+    // <Defs key="gradient">
+    //   <LinearGradient id="gradient" x1="0" y="33%" x2="0%" y2="66%">
+    //     {/* <Stop offset="20%" stopColor="black" />
+    //     <Stop offset="100%" stopColor="#C20004" />
 
-        <Stop offset="75%" stopColor="black" stopOpacity={0.75} />
-        <Stop offset="25%" stopColor="#C20004" stopOpacity={.25} /> */}
-        <Stop offset="20%" stopColor="red" />
-        <Stop offset="80%" stopColor="#C20004" />
-      </LinearGradient>
-      <LinearGradient id="gradienTest" x1="0" y="60%" x2="0%" y2="40%">
-       
-        <Stop offset="20%" stopColor="blue" />
-        <Stop offset="80%" stopColor="cyan" />
+    //     <Stop offset="75%" stopColor="black" stopOpacity={0.75} />
+    //     <Stop offset="25%" stopColor="#C20004" stopOpacity={.25} /> */}
+    //     <Stop offset="33%" stopColor="lightgray" />
+    //     <Stop offset="66%" stopColor="#f1f1f1" />
+    //   </LinearGradient>
+    // </Defs>
+    <Defs key={'gradient'}>
+      <LinearGradient id={'gradient'} x1={'0'} y={'0%'} x2={'100%'} y2={'0%'}>
+        <Stop offset={'0%'} stopColor={'lightgray'} />
+        <Stop offset={'100%'} stopColor={'#f1f1f1'} />
       </LinearGradient>
     </Defs>
   );
@@ -274,7 +275,7 @@ export default function InteractiveChart(historicos) {
           <Line
             y1={ticks[0]}
             y2={ticks[Number(ticks.length)]}
-            stroke="#f1f1f1"
+            stroke="black"
             strokeWidth={apx(4)}
             strokeDasharray={[4, 3]}
 
@@ -283,7 +284,7 @@ export default function InteractiveChart(historicos) {
           <Circle
             cy={y(mediasSatisfacao[positionX])}
             r={apx(20 / 2)}
-            stroke="#f1f1f1"
+            stroke="black"
             strokeWidth={apx(2)}
             fill="#C20004"
           />
@@ -303,7 +304,9 @@ export default function InteractiveChart(historicos) {
           height: apx(250),
           alignSelf: 'stretch',
         }}>
-        <View style={{ flex: 1, marginRight: -40 }} {...panResponder.current.panHandlers}>
+        <View style={{ flex: 1, marginRight: -40, borderLeftWidth: 1, borderBottomWidth: 1, 
+        borderColor: 'black', borderStyle: 'dashed'  }} 
+        {...panResponder.current.panHandlers}>
           <AreaChart
             style={{ flex: 1 }}
             data={mediasSatisfacao}
@@ -323,7 +326,7 @@ export default function InteractiveChart(historicos) {
           style={{ width: apx(190) }}
           data={mediasSatisfacao}
           contentInset={verticalContentInset}
-          svg={{ fontSize: apx(20), fill: '#f1f1f1' }}
+          svg={{ fontSize: apx(20), fill: 'black' }}
           numberOfTicks={5}
         />
       </View>
@@ -344,7 +347,7 @@ export default function InteractiveChart(historicos) {
         }}
         svg={{
           fontSize: apx(20),
-          fill: '#f1f1f1',
+          fill: 'black',
           y: apx(20),
           // originY: 30,
         }}
@@ -355,7 +358,7 @@ export default function InteractiveChart(historicos) {
 
 const styles = StyleSheet.create({
   containerAreaGrafico: {
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    backgroundColor: "rgba(0, 0, 0, 0.0)",
     alignItems: 'stretch',
     borderRadius: 10,
     paddingLeft: 10,

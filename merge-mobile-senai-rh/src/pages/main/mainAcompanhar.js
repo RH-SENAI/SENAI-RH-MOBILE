@@ -43,7 +43,8 @@ export default function MainAcompanhar() {
           borderTopColor: "#451531",
           borderTopWidth: 1,
           paddingBottom: 5,
-          paddingTop: 5,
+          paddingTop: 3,
+          height: 50
         },
         headerLeft: () => null,
       }}
@@ -64,7 +65,7 @@ export default function MainAcompanhar() {
         component={Decisao}
         options={{
           tabBarIcon: ({ size, color }) => (
-            <Ionicons name="chatbox-outline" size={size} color={color} />
+            <AntDesign name="exclamationcircleo" size={size} color={color} />
           ),
           headerShown: false,
         }}
@@ -90,7 +91,7 @@ export default function MainAcompanhar() {
         component={Feedback}
         options={{
           tabBarIcon: ({ size, color }) => (
-            <AntDesign name="exclamationcircleo" size={size} color={color} />
+            <Ionicons name="chatbox-outline" size={size} color={color} />
           ),
           headerShown: false,
         }}
@@ -120,14 +121,14 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderWidth: 4,
     borderColor: "#451531",
-    shadowColor: "black",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.75,
-    shadowRadius: 4,
-    elevation: 7,
+    // shadowColor: "black",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.75,
+    // shadowRadius: 4,
+    // elevation: 7,
   },
 
   modalView: {

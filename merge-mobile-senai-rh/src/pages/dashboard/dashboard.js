@@ -17,7 +17,7 @@ import {
 
 
 import {
-  ContributionGraph,
+  ContributionGraph, BarChart as BarGraph
 } from "react-native-chart-kit";
 
 // Expo
@@ -84,6 +84,7 @@ export default function Dashboard() {
     setUsuario([]);
     setMinhasAtividades([]);
     setHistoricos([]);
+    setContibutionDates([]);
     wait(2000).then(() => setRefreshing(false));
     BuscarUsuario();
     BuscarMinhasAtividades();
@@ -145,6 +146,22 @@ export default function Dashboard() {
   ];
 
 
+  // const dataMock = {
+  //   labels: ["Satisfação", "Avaliação", "Produtividade"],
+  //   datasets: [
+  //     {
+  //       data: [20, 45, 28],
+  //       color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
+  //       strokeWidth: 2 // optional
+  //     }
+  //   ],
+  //   legend: ["Rainy Days"] // optional
+  // };
+
+
+
+
+
 
 
 
@@ -154,7 +171,7 @@ export default function Dashboard() {
     backgroundGradientTo: "cyan",
     backgroundGradientToOpacity: .0,
     gutterSize: 50,
-    color: (opacity = 1) => `rgba(255, 0, 4, ${opacity})`,
+    color: (opacity = 1) => `rgba(69, 21, 49, ${opacity})`,
     strokeWidth: 2, // optional, default 3
     barPercentage: 1,
     useShadowColorFromDataset: false,
@@ -230,7 +247,7 @@ export default function Dashboard() {
       const token = await AsyncStorage.getItem("userToken");
 
       const resposta = await apiGp1.get(
-        "Atividades/MinhasAtividade/" + jwtDecode(token).jti,
+        "Atividades/MinhasAtividadeFinalizadas/" + jwtDecode(token).jti,
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -241,12 +258,12 @@ export default function Dashboard() {
       if (resposta.status === 200) {
         setMinhasAtividades(resposta.data);
 
-        const datasDeFinalizacao = minhasAtividades
+        var datasDeFinalizacao = minhasAtividades
           //const datasDeFinalizacao = mock
           .filter(a => a.idSituacaoAtividade === 1)
           .map(p => { return { date: p.dataConclusao, count: 1 } });
 
-        const datasFiltradas = [];
+        var datasFiltradas = [];
 
         for (var i = 0; i < datasDeFinalizacao.length; i++) {
           for (var j = i + 1; j < datasDeFinalizacao.length; j++) {
@@ -264,10 +281,10 @@ export default function Dashboard() {
           }
         }
 
-        // console.warn(datasFiltradas);
-        // setContibutionDates(datasFiltradas)
+        //console.log(datasFiltradas);
+        setContibutionDates(datasFiltradas)
         //console.warn(dePara);
-        setContibutionDates(dePara)
+        //setContibutionDates(dePara)
 
       }
     } catch (error) {
@@ -336,17 +353,17 @@ export default function Dashboard() {
 
   const CustomGradient = () => (
     <Defs key="gradient">
-      <LinearGradient id="gradienRed" x1="0" y="0%" x2="100%" y2="100%">
-        <Stop offset="0%" stopColor="red" />
-        <Stop offset="100%" stopColor="#C20004" />
+      <LinearGradient id="gradienRed" x1="0" y="0%" x2="100%" y2={'0%'}>
+        <Stop offset="0%" stopColor="#ff4500" />
+        <Stop offset="100%" stopColor="crimson" />
       </LinearGradient>
-      <LinearGradient id="gradienBlue" x1="0" y="0%" x2="100%" y2="100%">
-        <Stop offset="0%" stopColor="blue" />
-        <Stop offset="100%" stopColor="cyan" />
+      <LinearGradient id="gradienBlue" x1="0" y="0%" x2="100%" y2={'0%'}>
+        <Stop offset="0%" stopColor="#1e90ff" />
+        <Stop offset="100%" stopColor="blue" />
       </LinearGradient>
-      <LinearGradient id="gradienGreen" x1="0" y="0%" x2="100%" y2="100%">
-        <Stop offset="0%" stopColor="green" />
-        <Stop offset="100%" stopColor="lime" />
+      <LinearGradient id="gradienGreen" x1="0" y="0%" x2="100%" y2={'0%'}>
+        <Stop offset="0%" stopColor="limegreen" />
+        <Stop offset="100%" stopColor="green" />
       </LinearGradient>
     </Defs>
   );
@@ -443,7 +460,7 @@ export default function Dashboard() {
           opacity={"0.8"}
         //strokeWidth={0.4}
         >
-          {u.notaProdutividade}%
+          {(u.notaProdutividade * 100).toPrecision(2)}%
         </SvgText>
         <CustomGradient />
       </ProgressCircle>
@@ -459,25 +476,25 @@ export default function Dashboard() {
     return <AppLoading />;
   } else {
     return (
-      <ScrollView refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh} />
-      }>
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Image
-              source={require("../../../assets/img-geral/logo_2S.png")}
-              style={styles.imgLogo}
-            />
-          </View>
-          <Text style={styles.tituloPage}>DASHBOARD</Text>
 
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Image
+            source={require("../../../assets/img-geral/logo_2S.png")}
+            style={styles.imgLogo}
+          />
+        </View>
+        <Text style={styles.tituloPage}>DASHBOARD</Text>
+        <ScrollView refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh} />
+        }>
           {usuario.map((usuario) => {
             return (
               <View style={styles.containerAreaDados}>
                 <View style={styles.containerDados}>
-                  <View style={styles.containerLine}>
+                  <View style={styles.containerLine} >
                     <Image
                       source={
                         usuario.caminhoFotoPerfil == undefined
@@ -519,6 +536,22 @@ export default function Dashboard() {
                       <Text style={styles.nvsLabels}>Produtividade</Text>
                       <Text style={styles.nvsLabels}>Avaliação</Text>
                     </View>
+                    {/* <BarGraph
+                      style={styles.barGraphContainer}
+                      //style={graphStyle}
+                      data={dataMock}
+                      width={screenWidth * .8}
+                      height={220}
+                      //yAxisLabel="$"
+                      withHorizontalLabels={false}
+                      withCustomBarColorFromData={false}
+                      chartConfig={chartConfigB}
+                      verticalLabelRotation={0}
+                      fromZero={true}
+                      showBarTops={true}
+                      showValuesOnTopOfBars={true}
+                      segments={5}
+                    /> */}
                   </View>
 
                   <View style={styles.containerProdutividade}>
@@ -534,7 +567,7 @@ export default function Dashboard() {
                   </View>
 
 
-                
+
 
                   <View style={styles.containerProdutividade}>
                     <View style={styles.containerProdutividadeSup}>
@@ -551,7 +584,7 @@ export default function Dashboard() {
                       <GraficoProdutividade />
                     </View>
                     <Text style={styles.subtituloProdutividade}>
-                      Entregas de atividades, realizadas nos últimos 60 dias:
+                      Entregas de atividades nos últimos 60 dias:
                     </Text>
                     <ContributionGraph
                       style={styles.ContributionContainer}
@@ -559,7 +592,8 @@ export default function Dashboard() {
                       //endDate={new Date(moment(now))}
                       //endDate={moment(now)}
                       numDays={59}
-                      width={'90%'}
+                      //width={'90%'}
+                      width={screenWidth}
                       height={260}
                       chartConfig={chartConfig}
                       showMonthLabels={true}
@@ -568,18 +602,17 @@ export default function Dashboard() {
                       squareSize={25}
                       horizontal={true}
                       showOutOfRangeDays={true}
+
                     />
                   </View>
-
-
-
 
                 </View>
               </View>
             );
           })}
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
+
     );
   }
 
@@ -589,7 +622,7 @@ export default function Dashboard() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F2F2F2",
+    backgroundColor: "#f1f1f1",
     alignItems: "center",
     width: "100%",
     //backgroundColor: 'orange'
@@ -621,15 +654,16 @@ const styles = StyleSheet.create({
     //alignItems: 'flex-start'
     borderRadius: 5,
     marginBottom: 10,
-    borderWidth: 3,
-    borderColor: 'lightgray'
+    //borderWidth: 3,
+    //borderColor: 'lightgray'
   },
   containerLine: {
     width: "100%",
     //height: 110,
     borderRadius: 5,
-    //borderWidth: 3,
-    //borderColor: "purple",
+    borderTopWidth: 25,
+    borderWidth: 3,
+    borderColor: "rgba(0, 0, 0, 0.8)",
     flexDirection: "row",
     backgroundColor: '#f1f1f1',
     padding: 10,
@@ -666,14 +700,15 @@ const styles = StyleSheet.create({
   },
   containerProdutividade: {
     flex: 1,
-    //borderRadius: 5,
-    borderTopWidth: 30,
+    borderRadius: 5,
+    borderWidth: 3,
+    borderTopWidth: 25,
     //borderWidth: 3,
-    borderColor: "lightgray",
+    borderColor: "rgba(0, 0, 0, 0.8)",
     //flexDirection: 'row',
     backgroundColor: "rgba(241, 241, 241, 0.85)",
     justifyContent: 'center',
-    //marginTop: 20,
+    marginTop: 20,
     //paddingRight: '5%',
     //alignItems: 'center',
     paddingBottom: 15,
@@ -724,13 +759,13 @@ const styles = StyleSheet.create({
     //backgroundColor: 'yellow'
   },
   ContributionContainer: {
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    backgroundColor: "rgba(0, 0, 0, 0)",
     borderRadius: 10,
     //paddingTop: 20,
     marginTop: 10,
     //marginBottom: 0,
     borderWidth: 1,
-    //borderColor: 'red',
+    borderColor: 'black',
     //paddingLeft: 30,
 
     paddingRight: 0
@@ -739,21 +774,34 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontSize: 22,
     marginRight: 10,
-    marginBottom: 10
+    marginBottom: 0
   },
   containerLabels: {
     flex: 1,
     width: '100%',
     flexDirection: "row",
     justifyContent: 'space-between',
-    paddingHorizontal: '10.5%'
+    paddingHorizontal: '15.5%'
   },
   nvsLabels: {
     fontSize: 12,
     marginTop: -25,
-    color: '#f1f1f1',
+    color: 'black',
     textAlign: 'center'
-  }
+  },
+  // barGraphContainer: {
+  //   //backgroundColor: "rgba(0, 0, 0, .8)",
+  //   flex: 1,
+  //   borderRadius: 10,
+  //   //paddingTop: 20,
+  //   marginTop: 10,
+  //   //marginBottom: 0,
+  //   borderWidth: 1,
+  //   borderColor: 'black',
+  //   //paddingLeft: 30,
+  //   alignSelf: 'center',
+  //   //paddingLeft: 20
+  // }
 
 
 

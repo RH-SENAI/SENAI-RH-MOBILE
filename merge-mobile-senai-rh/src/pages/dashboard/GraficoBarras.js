@@ -43,7 +43,7 @@ export default function GraficoBarras(usuarioLogado) {
                 x={x(index) + (bandwidth / 2)}
                 y={value < CUT_OFF ? y(value) - 10 : y(value) + 15}
                 fontSize={14}
-                fill={value >= CUT_OFF ? '#f1f1f1' : '#f1f1f1'}
+                fill={value >= CUT_OFF ? 'black' : 'black'}
                 alignmentBaseline={'middle'}
                 textAnchor={'middle'}
             >
@@ -55,20 +55,22 @@ export default function GraficoBarras(usuarioLogado) {
     const GradientB = () => (
         <Defs key={'gradient'}>
             <LinearGradient id={'gradient'} x1={'0'} y={'0%'} x2={'100%'} y2={'0%'}>
-                <Stop offset={'0%'} stopColor={'#C20004'} />
-                <Stop offset={'100%'} stopColor={'red'} />
+                <Stop offset={'0%'} stopColor={"#240b19"} />
+                <Stop offset={'100%'} stopColor={'#451531'} />
             </LinearGradient>
         </Defs>
     )
 
     return (
         <View style={{
-            flexDirection: 'row', height: 250, paddingTop: 16, paddingBottom: 20, backgroundColor: "rgba(0, 0, 0, 0.8)",
-            paddingHorizontal: 10, borderRadius: 10 }}>
+            flexDirection: 'row', height: 250, paddingTop: 16, paddingBottom: 20, backgroundColor: "rgba(0, 0, 0, 0)",
+            paddingHorizontal: '10%', borderRadius: 10, borderWidth: 1
+        }}>
             <BarChart
                 style={{ flex: 1 }}
                 data={data}
-                svg={{ fill: 'url(#gradient)' }}
+                //svg={{ fill: 'url(#gradient)' }}
+                svg={{ fill: 'rgba(69, 21, 49, 0.9)' }}
                 contentInset={{ top: 20, bottom: 10 }}
                 spacing={0.2}
                 gridMin={0}
@@ -78,7 +80,7 @@ export default function GraficoBarras(usuarioLogado) {
                 <GradientB />
                 <Labels />
             </BarChart>
-            
+
         </View>
     )
 
@@ -104,7 +106,7 @@ export default function GraficoBarras(usuarioLogado) {
   //     //     svg: {
   //     //         stroke: 'purple',
   //     //         strokeWidth: 2,
-  //     //         fill: 'white',
+  //     //         fill: 'black',
   //     //         strokeDasharray: [ 4, 2 ],
   //     //     },
   //     // },

@@ -8,11 +8,8 @@ import {
   TextInput,
   Alert,
   Pressable,
-<<<<<<< HEAD
+  Sty,
   Dimensions
-=======
-  Sty
->>>>>>> 894787b3cb70941653888a0a353b2e86b0cdd753
 } from 'react-native';
 
 
@@ -158,11 +155,7 @@ export default class Login extends Component {
 
           <View style={styles.inputLogin}>
           <TextInputMask
-<<<<<<< HEAD
-             style={styles.viewLoginCPF}
-=======
               style={styles.viewLoginCPF}
->>>>>>> 894787b3cb70941653888a0a353b2e86b0cdd753
               placeholder="CPF"
               type={"cpf"}
               value={this.state.value}
