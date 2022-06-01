@@ -55,6 +55,16 @@ export default class AtividadesExtras extends Component {
         });
     };
 
+    showAlertSuce = () => {
+        this.setState({ showAlertSuce: true })
+    }
+
+    hideAlertSuce = () => {
+        this.setState({
+            showAlertSuce: false
+        });
+    };
+
     imagePickerCall = async () => {
         const result = await DocumentPicker.getDocumentAsync({
             type: 'image/*',
@@ -95,11 +105,19 @@ export default class AtividadesExtras extends Component {
             })
                 .then(resposta => {
                     console.warn(resposta)
+
+                    if(resposta.status === 200){
+
+                        this.showAlertSuce();
+                        this.setState({imagemEntrega : null})
+                    }else{
+                        this.showAlert()
+                    }
                 })
 
         } catch (error) {
             console.warn(error)
-            this.showAlert();
+            this.showAlert()
         }
     }
 
@@ -364,12 +382,13 @@ export default class AtividadesExtras extends Component {
 
                             <Text style={styles.entregaModal}> Recompensa em Troféu: {this.state.AtividadeBuscada.recompensaTrofeu}
                                 <EvilIcons style={styles.trofeu} name="trophy" size={25} color="#E7C037" />
-                            </Text>
+                            </  Text>
 
 
                             <Text style={styles.criadorModal}> Criador: {this.state.AtividadeBuscada.criador} </Text>
                             <TouchableOpacity style={styles.anexo} onPress={this.imagePickerCall}>
                                 <Text style={styles.txtanexo}> + Adicionar Anexo</Text>
+                                {this.state.imagemEntrega == null ? null : <AntDesign name="checkcircleo" size={17} color="green" />}
                             </TouchableOpacity>
                         </View>
                         <View style={styles.botoesModal}  >
@@ -394,7 +413,7 @@ export default class AtividadesExtras extends Component {
                 </View>
 
                 <AwesomeAlert
-                    show={this.state.showAlert}
+                    show={this.state.showAlertSuce}
                     showProgress={false}
                     title="Sucesso"
                     titleStyle={styles.tituloAlert}
@@ -782,6 +801,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         height: 30,
         paddingLeft: 23,
+        paddingRight: 8
     },
 
     txtanexo: {

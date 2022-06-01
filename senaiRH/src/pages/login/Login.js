@@ -33,8 +33,8 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cpf: '11111111176',
-      senha: 'Sesisenai@2022',
+      cpf: '',
+      senha: '',
       fontsLoaded: false,
       error: 'Email ou Senha inválidos!',
       //erroMensagem: '',
@@ -84,10 +84,7 @@ export default class Login extends Component {
 
       if (resposta.status === 200) {
 
-        // console.warn('Login Realizado')
-        //console.warn(jwt_decode(token).role)
-
-        // this.state({isLoading:false})
+        
 
         var certo = jwt_decode(token).role
         // console.warn('certo ' + certo)
@@ -95,11 +92,13 @@ export default class Login extends Component {
         //this.showAlertSuce();
         this.props.navigation.navigate('Redirecionar');
 
+      }else{
+        this.showAlert()
       }
 
     } catch (error) {
       console.warn(error)
-      //this.showAlertSuce();
+      this.showAlert();
     }
 
   }
