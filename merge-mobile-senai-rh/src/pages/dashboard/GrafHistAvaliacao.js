@@ -208,7 +208,7 @@ export default function InteractiveChart(historicos) {
       key="line"
       d={line}
       stroke="#451531"
-      strokeWidth={apx(3)}
+      strokeWidth={apx(5)}
       fill="none"
     //strokeDasharray={3}
     />
@@ -252,7 +252,7 @@ export default function InteractiveChart(historicos) {
             ry={apx(12)} // borderRadius
             width={apx(200)}
             height={apx(96)}
-            stroke="rgba(255, 0, 4, 0.27)"
+            stroke="rgba(69, 21, 49, 0.27)"
             fill="rgba(255, 255, 255, 0.8)"
           />
           <SvgText
@@ -265,7 +265,7 @@ export default function InteractiveChart(historicos) {
             {/* {date} */}
             em {moment(date).format('DD/MM/YYYY')}
           </SvgText>
-          <SvgText x={apx(20)} fill="#C20004" opacity={0.65} fontSize={apx(24)} fontWeight={'bold'}>
+          <SvgText x={apx(20)} fill="#451531" opacity={0.65} fontSize={apx(24)} fontWeight={'bold'}>
             {mediasAvaliacao[positionX].toPrecision(2)}%
           </SvgText>
 
@@ -275,8 +275,8 @@ export default function InteractiveChart(historicos) {
           <Line
             y1={ticks[0]}
             y2={ticks[Number(ticks.length)]}
-            stroke="black"
-            strokeWidth={apx(4)}
+            stroke="#451531"
+            strokeWidth={apx(2)}
             strokeDasharray={[4, 3]}
 
           />
@@ -284,9 +284,9 @@ export default function InteractiveChart(historicos) {
           <Circle
             cy={y(mediasAvaliacao[positionX])}
             r={apx(20 / 2)}
-            stroke="black"
+            stroke="#451531"
             strokeWidth={apx(2)}
-            fill="#C20004"
+            fill="orange"
           />
         </G>
       </G>
@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
   containerAreaGrafico: {
     backgroundColor: "rgba(0, 0, 0, 0)",
     alignItems: 'stretch',
-    borderRadius: 10,
+    borderRadius: 5,
     paddingLeft: 10,
     paddingTop: 20,
     marginTop: 10,

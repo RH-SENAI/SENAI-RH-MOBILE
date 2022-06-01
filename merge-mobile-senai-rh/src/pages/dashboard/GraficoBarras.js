@@ -33,7 +33,7 @@ export default function GraficoBarras(usuarioLogado) {
 
 
 
-    const data = [usuario.medSatisfacaoGeral, usuario.notaProdutividade, usuario.mediaAvaliacao]
+    const data = [usuario.medSatisfacaoGeral, usuario.mediaAvaliacao, usuario.notaProdutividade]
 
     const CUT_OFF = 20
     const Labels = ({ x, y, bandwidth, data }) => (
@@ -64,7 +64,7 @@ export default function GraficoBarras(usuarioLogado) {
     return (
         <View style={{
             flexDirection: 'row', height: 250, paddingTop: 16, paddingBottom: 20, backgroundColor: "rgba(0, 0, 0, 0)",
-            paddingHorizontal: '10%', borderRadius: 10, borderWidth: 1
+            paddingHorizontal: '10%', borderRadius: 5, borderWidth: 1
         }}>
             <BarChart
                 style={{ flex: 1 }}

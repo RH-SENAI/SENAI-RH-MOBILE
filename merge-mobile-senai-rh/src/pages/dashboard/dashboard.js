@@ -84,7 +84,6 @@ export default function Dashboard() {
     setUsuario([]);
     setMinhasAtividades([]);
     setHistoricos([]);
-    setContibutionDates([]);
     wait(2000).then(() => setRefreshing(false));
     BuscarUsuario();
     BuscarMinhasAtividades();
@@ -196,7 +195,7 @@ export default function Dashboard() {
   const showAlert = (data, qtde) =>
     Alert.alert(
 
-      "",
+      "Detalhes:",
       `${qtde} atividade(s) entregue(s) em: \n${moment(data).locale('pt-BR').format('LLLL')};`,
       [
         // {
@@ -256,9 +255,10 @@ export default function Dashboard() {
       );
 
       if (resposta.status === 200) {
-        setMinhasAtividades(resposta.data);
+        //setMinhasAtividades(resposta.data);
 
-        var datasDeFinalizacao = minhasAtividades
+        //var datasDeFinalizacao = minhasAtividades
+        var datasDeFinalizacao = resposta.data
           //const datasDeFinalizacao = mock
           .filter(a => a.idSituacaoAtividade === 1)
           .map(p => { return { date: p.dataConclusao, count: 1 } });
@@ -282,7 +282,7 @@ export default function Dashboard() {
         }
 
         //console.log(datasFiltradas);
-        setContibutionDates(datasFiltradas)
+        setMinhasAtividades(datasFiltradas)
         //console.warn(dePara);
         //setContibutionDates(dePara)
 
@@ -533,8 +533,8 @@ export default function Dashboard() {
                     <GraficoBarras usuarioLogado={usuario} />
                     <View style={styles.containerLabels}>
                       <Text style={styles.nvsLabels}>Satisfação</Text>
-                      <Text style={styles.nvsLabels}>Produtividade</Text>
                       <Text style={styles.nvsLabels}>Avaliação</Text>
+                      <Text style={styles.nvsLabels}>Produtividade</Text>
                     </View>
                     {/* <BarGraph
                       style={styles.barGraphContainer}
@@ -556,9 +556,12 @@ export default function Dashboard() {
 
                   <View style={styles.containerProdutividade}>
                     <View style={styles.containerProdutividadeSup}>
-                      <Text style={styles.tituloGrafico}>Nível de Satisfação:</Text>
+                      <Text style={styles.tituloGrafico}>Satisfação:</Text>
                       <GraficoSatisfacao />
                     </View>
+                    <Text style={styles.legenda}>
+                      Histórico:
+                    </Text>
                     <GrafHistSatisfacao ghs={historicos} />
 
                     {/* <Text style={styles.subtituloProdutividade}>
@@ -571,9 +574,12 @@ export default function Dashboard() {
 
                   <View style={styles.containerProdutividade}>
                     <View style={styles.containerProdutividadeSup}>
-                      <Text style={styles.tituloGrafico}>Média de Avaliação:</Text>
+                      <Text style={styles.tituloGrafico}>Avaliação:</Text>
                       <GraficoAvaliacao />
                     </View>
+                    <Text style={styles.legenda}>
+                      Histórico:
+                    </Text>
                     <GrafHistAvaliacao gha={historicos} />
                   </View>
 
@@ -584,11 +590,11 @@ export default function Dashboard() {
                       <GraficoProdutividade />
                     </View>
                     <Text style={styles.subtituloProdutividade}>
-                      Entregas de atividades nos últimos 60 dias:
+                      Acompanhe abaixo suas entregas de atividades nos últimos 60 dias:
                     </Text>
                     <ContributionGraph
                       style={styles.ContributionContainer}
-                      values={contibutionDates}
+                      values={minhasAtividades}
                       //endDate={new Date(moment(now))}
                       //endDate={moment(now)}
                       numDays={59}
@@ -597,7 +603,7 @@ export default function Dashboard() {
                       height={260}
                       chartConfig={chartConfig}
                       showMonthLabels={true}
-                      onDayPress={(d = contibutionDates) => showAlert(d.date, d.count)}
+                      onDayPress={(d = minhasAtividades) => showAlert(d.date, d.count)}
                       gutterSize={3}
                       squareSize={25}
                       horizontal={true}
@@ -760,7 +766,7 @@ const styles = StyleSheet.create({
   },
   ContributionContainer: {
     backgroundColor: "rgba(0, 0, 0, 0)",
-    borderRadius: 10,
+    borderRadius: 5,
     //paddingTop: 20,
     marginTop: 10,
     //marginBottom: 0,
@@ -774,20 +780,30 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontSize: 22,
     marginRight: 10,
-    marginBottom: 0
+    marginBottom: 10
   },
   containerLabels: {
     flex: 1,
     width: '100%',
     flexDirection: "row",
     justifyContent: 'space-between',
-    paddingHorizontal: '15.5%'
+    paddingHorizontal: '14%',
+    //backgroundColor: 'blue'
   },
   nvsLabels: {
+    alignSelf: 'center',
     fontSize: 12,
-    marginTop: -25,
+    marginTop: -40,
     color: 'black',
-    textAlign: 'center'
+    textAlign: 'center',
+    marginLeft: '4%'
+    //backgroundColor: 'lime'
+  },
+  legenda: {
+    fontSize: 16,
+    marginTop: -10,
+    textAlign: 'left',
+    marginBottom: -5
   },
   // barGraphContainer: {
   //   //backgroundColor: "rgba(0, 0, 0, .8)",
