@@ -36,7 +36,7 @@ export default class Login extends Component {
     super(props);
     this.state = {
       cpf: '11111111176',
-      senha: 'Sesisenai@2022',
+      senha: 'Teste',
       fontsLoaded: false,
       error: 'Email ou Senha inválidos!',
       //erroMensagem: '',

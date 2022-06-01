@@ -32,7 +32,7 @@ export default function MainAcompanhar() {
     return (
         <Tab.Navigator
             screenOptions={{
-                tabBarActiveTintColor: "#1D438A",
+                tabBarActiveTintColor: "#4B7294",
                 tabBarInactiveTintColor: "gray",
                 tabBarShowLabel: true,
                 headerShown: false,
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         marginBottom: 15,
         borderWidth: 4,
-        borderColor: "#1D438A",
+        borderColor: "#4B7294",
     },
 
     modalView: {

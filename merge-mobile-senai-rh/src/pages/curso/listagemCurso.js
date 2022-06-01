@@ -26,6 +26,7 @@ import apiGp1 from '../../services/apiGp1.js';
 import apiMaps from '../../services/apiMaps.js';
 import * as Location from 'expo-location';
 import moment from 'moment';
+import { FontAwesome5 } from '@expo/vector-icons';
 const delay = require('delay');
 // import { Location, Permissions } from 'expo';
 
@@ -484,7 +485,7 @@ export default class ListagemCurso extends Component {
     }
 
     // componentWillUnmount = () => {
-        
+
     // }
 
     render() {
@@ -499,7 +500,7 @@ export default class ListagemCurso extends Component {
                 </View>
                 <View style={styles.boxInputSaldo}>
                     <View style={styles.boxSaldoUsuario}>
-                        <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
+                        <FontAwesome5 name="coins" size={24} color="#FBB01E" />
                         <Text style={styles.textDados}>{this.state.saldoUsuario}</Text>
                     </View>
                     <TextInput
@@ -549,7 +550,7 @@ export default class ListagemCurso extends Component {
                             count={5}
                             //starImage={star}
                             showRating={false}
-                            selectedColor={'#C20004'}
+                            selectedColor={'#4B7294'}
                             defaultRating={item.mediaAvaliacaoCurso}
                             isDisabled={true}
                             size={20} />
@@ -614,7 +615,7 @@ export default class ListagemCurso extends Component {
                                             count={5}
                                             //starImage={star}
                                             showRating={false}
-                                            selectedColor={'#C20004'}
+                                            selectedColor={'#4B7294'}
                                             defaultRating={this.state.cursoBuscado.mediaAvaliacaoDesconto}
                                             isDisabled={true}
                                             size={20}
@@ -910,7 +911,7 @@ if (Dimensions.get('window').width > 700) {
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'row',
-            backgroundColor: 'pink',
+            // backgroundColor: 'pink',
         },
         boxAvaliacaoModal: {
             flexDirection: 'row',
@@ -935,7 +936,7 @@ if (Dimensions.get('window').width > 700) {
         boxDadosModal: {
             flexDirection: 'row',
             alignItems: 'center',
-            marginTop: 16,
+            marginTop: '4%',
             marginLeft: 16,
         },
         textDadosModal: {
@@ -1001,7 +1002,7 @@ if (Dimensions.get('window').width > 700) {
         inscreverModal: {
             width: 150,
             height: 48,
-            backgroundColor: '#1D438A',
+            backgroundColor: '#4B7294',
             borderRadius: 10,
             alignItems: 'center',
             justifyContent: 'center',
@@ -1011,7 +1012,7 @@ if (Dimensions.get('window').width > 700) {
         inscreverModalDisable: {
             width: 150,
             height: 48,
-            backgroundColor: '#1D438A',
+            backgroundColor: '#4B7294',
             borderRadius: 10,
             alignItems: 'center',
             justifyContent: 'center',

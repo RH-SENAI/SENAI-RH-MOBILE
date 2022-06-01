@@ -25,6 +25,7 @@ import apiGp1 from '../../services/apiGp1.js';
 import apiMaps from '../../services/apiMaps.js';
 import * as Location from 'expo-location';
 import moment from 'moment';
+import { FontAwesome5 } from '@expo/vector-icons';
 const delay = require('delay');
 // import { Location, Permissions } from 'expo';
 
@@ -60,7 +61,7 @@ export default class ListagemDesconto extends Component {
                 this.setState({ descontoBuscado: resposta.data });
                 console.warn(this.state.descontoBuscado)
                 this.setState({ empresaBuscada: this.state.descontoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado })
-                
+
                 // console.warn(this.state.cursoBuscado)
             }
         }
@@ -350,8 +351,10 @@ export default class ListagemDesconto extends Component {
         this.ListarDescontos();
     };
 
-    RedirecionarComentario = () => {
+    RedirecionarComentario = async (id) => {
         this.setState({ modalVisivel: false })
+        let stringId = JSON.stringify(id);
+        await AsyncStorage.setItem('descontoId', stringId);
         this.props.navigation.navigate('ComentarioDesconto')
     }
 
@@ -389,7 +392,7 @@ export default class ListagemDesconto extends Component {
                 </View>
                 <View style={styles.boxInputSaldo}>
                     <View style={styles.boxSaldoUsuario}>
-                        <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
+                        <FontAwesome5 name="coins" size={24} color="#FBB01E" />
                         <Text style={styles.textDados}>{this.state.saldoUsuario}</Text>
                     </View>
                     <TextInput
@@ -440,7 +443,7 @@ export default class ListagemDesconto extends Component {
                                 count={5}
                                 //starImage={star}
                                 showRating={false}
-                                selectedColor={'#C20004'}
+                                selectedColor={'#4B7294'}
                                 defaultRating={item.mediaAvaliacaoDesconto}
                                 isDisabled={true}
                                 size={20} />
@@ -487,7 +490,7 @@ export default class ListagemDesconto extends Component {
                                                 count={5}
                                                 //starImage={star}
                                                 showRating={false}
-                                                selectedColor={'#C20004'}
+                                                selectedColor={'#4B7294'}
                                                 defaultRating={this.state.descontoBuscado.mediaAvaliacaoDesconto}
                                                 isDisabled={true}
                                                 size={20}
@@ -528,7 +531,7 @@ export default class ListagemDesconto extends Component {
 
                                         <View style={styles.boxValorInscrever}>
                                             <View style={styles.boxComentarioModal}>
-                                                <Pressable onPress={() => this.RedirecionarComentario()}>
+                                                <Pressable onPress={() => this.RedirecionarComentario(this.state.descontoBuscado.idDesconto)}>
                                                     <Image source={require('../../../assets/img-gp2/comentario.png')} />
                                                 </Pressable>
                                             </View>

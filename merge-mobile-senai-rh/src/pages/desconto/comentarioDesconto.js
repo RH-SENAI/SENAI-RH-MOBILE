@@ -14,6 +14,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Component } from 'react/cjs/react.production.min';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import api from '../../services/apiGp2';
+import { AntDesign } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
 export default class ListagemDesconto extends Component {
     constructor(props) {
@@ -80,12 +82,15 @@ export default class ListagemDesconto extends Component {
         return (
             <View style={styles.comentarios}>
                 <View style={styles.boxComentarioSair}>
+                    <View style={styles.boxLogoHeader}>
+                        <Image source={require('../../../assets/img-geral/logo_2S.png')} />
+                    </View>
                     <View style={styles.boxTituloComentario}>
                         <Text style={styles.tituloComentario}>Comentarios:</Text>
                     </View>
 
                     <Pressable style={styles.boxVoltar} onPress={() => this.props.navigation.navigate('mainVantagem')}>
-                        <Text>Voltar</Text>
+                        <AntDesign name="leftcircleo" size={40} color="#4B7294" />
                     </Pressable>
                 </View>
 
@@ -97,25 +102,29 @@ export default class ListagemDesconto extends Component {
                 />
 
                 <View style={styles.boxComentar}>
-                    <TextInput
-                        style={styles.inputBox}
-                        placeholder="Comente"
-                        keyboardType="default"
-                        placeholderTextColor="#B3B3B3"
-                        onChangeText={comentario => this.setState({ comentario })}
-                    />
-                    <AirbnbRating
-                        count={5}
-                        showRating={false}
-                        selectedColor={'#C20004'}
-                        defaultRating={0}
-                        isDisabled={false}
-                        onFinishRating={this.avaliacaoDesconto}
-                        size={20}
-                    />
+                    <View style={styles.boxComentarAvaliacao}>
+                        <View style={styles.boxAvaliacao}>
+                            <AirbnbRating
+                                count={5}
+                                showRating={false}
+                                selectedColor={'#4B7294'}
+                                defaultRating={0}
+                                isDisabled={false}
+                                onFinishRating={this.avaliacaoDesconto}
+                                size={20}
+                            />
+                        </View>
+                        <TextInput
+                            style={styles.inputBox}
+                            placeholder="Comente"
+                            keyboardType="default"
+                            placeholderTextColor="#B3B3B3"
+                            onChangeText={comentario => this.setState({ comentario })}
+                        />
+                    </View>
                     <View>
                         <Pressable style={styles.btnComentar} onPress={() => this.CadastrarComentario()}>
-                            <Text>Enviar</Text>
+                            <Feather name="send" size={32} color="black" />
                         </Pressable>
                     </View>
                 </View>
@@ -126,13 +135,16 @@ export default class ListagemDesconto extends Component {
         <View View style={styles.containerComentarios}>
             <View style={styles.boxComentarioEstrela}>
                 {/* {this.test()} */}
-                <View style={styles.boxComentario}>
-                    <Text style={styles.textComentario}>{item.idUsuarioNavigation.nome}: {item.comentarioDesconto1}</Text>
+                <View>
+                    <View style={styles.boxTextComentario}>
+                        <Text style={styles.textNome}>{item.idUsuarioNavigation.nome}: </Text>
+                        <Text style={styles.textComentario}>{item.comentarioDesconto1}</Text>
+                    </View>
                     <View style={styles.boxAvaliado}>
                         <AirbnbRating
                             count={5}
                             showRating={false}
-                            selectedColor={'#C20004'}
+                            selectedColor={'#4B7294'}
                             defaultRating={item.avaliacaoDesconto}
                             isDisabled={true}
                             size={20}
@@ -144,8 +156,12 @@ export default class ListagemDesconto extends Component {
     );
 }
 const styles = StyleSheet.create({
+    boxLogoHeader: {
+        marginBottom: 50
+    },
     comentarios: {
-        flex: 1,
+        height: '95%',
+        alignItems: 'center'
     },
     boxComentarioSair: {
         display: 'flex',
@@ -159,53 +175,97 @@ const styles = StyleSheet.create({
     },
     tituloComentario: {
         width: '100%',
-        backgroundColor: 'pink',
+        textTransform: 'uppercase',
+        fontFamily: 'Montserrat-Bold',
+        fontSize: 30,
         alignItems: 'center',
         justifyContent: 'center'
     },
     boxVoltar: {
         marginRight: '70%',
-        marginBottom: '15%'
+        marginBottom: '5%'
     },
     flatlist: {
         flex: 1,
+        width: '75%',
         height: '100%',
-        backgroundColor: 'pink'
+        borderWidth: 2,
+        borderColor: 'gray',
+        borderRadius: 10,
+        padding: 20
+        // backgroundColor: 'pink'
     },
     boxComentar: {
+        width: '75%',
+        height: '10%',
         flexDirection: 'row',
         alignItems: 'center',
-        marginLeft: 100,
-        marginBottom: 50
+        justifyContent: 'space-around',
+        marginTop: '20%',
+        // backgroundColor: 'gray',
+        borderWidth: 2,
+        borderColor: 'gray',
+        borderRadius: 10
+    },
+    boxComentarAvaliacao: {
+        // backgroundColor: 'gray',
+        flexDirection: 'column',
+        justifyContent: 'flex-start'
+    },
+    boxAvaliacao: {
+        marginRight: 200
     },
     inputBox: {
-        width: 100
+        width: 300,
+        height: 50,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 10,
+        paddingLeft: 10,
+        marginTop: 10
     },
     btnComentar: {
-        marginLeft: 50
+        width: '100%',
+        height: '30%',
+        marginTop: '110%',
+        // backgroundColor: '#4B7294',
+        // marginLeft: 50,
     },
     containerComentarios: {
+        width: '100%',
         alignItems: 'center'
     },
     boxComentarioEstrela: {
         flex: 1,
-        width: 300,
+        width: '100%',
         marginBottom: 30,
         borderWidth: 1,
         borderColor: 'black',
         borderRadius: 10
     },
-    textComentario: {
-        width: 200,
+    boxTextComentario: {
+        flexDirection: 'row'
+    },
+    textNome: {
         fontSize: 14,
-        fontWeight: '400',
+        fontWeight: '700',
+        marginRight: 2,
+        color: '#4B7294',
+        marginLeft: 50,
+        marginTop: 10
+    },
+    textComentario: {
+        width: '80%',
+        fontSize: 14,
+        fontWeight: '700',
         marginRight: 2,
         color: 'black',
-        marginLeft: 50,
+        marginLeft: 10,
         marginTop: 10
     },
     boxAvaliado: {
         marginBottom: 10,
-        marginRight: '25%'
+        marginTop: 5,
+        marginRight: '63%'
     },
 })
