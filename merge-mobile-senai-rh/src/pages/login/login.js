@@ -36,7 +36,7 @@ export default class Login extends Component {
     super(props);
     this.state = {
       cpf: '11111111176',
-      senha: 'Sesisenai@2022',
+      senha: 'Teste',
       fontsLoaded: false,
       error: 'Email ou Senha inválidos!',
       //erroMensagem: '',
@@ -46,15 +46,16 @@ export default class Login extends Component {
   }
 
   showAlert = () => {
-    this.setState({ showAlert: true })
-  }
+    this.setState({
+      showAlert: true
+    });
+  };
 
   hideAlert = () => {
     this.setState({
       showAlert: false
     });
   };
-
 
   async _loadFontsAsync() {
     await Font.loadAsync(customFonts);
@@ -66,7 +67,6 @@ export default class Login extends Component {
   }
 
   realizarLogin = async () => {
-
 
     try {
 
@@ -81,7 +81,7 @@ export default class Login extends Component {
 
       //console.warn(token);
 
-      await AsyncStorage.setItem('idUsuario',jwt_decode(token).jti);
+      await AsyncStorage.setItem('idUsuario', jwt_decode(token).jti);
       await AsyncStorage.setItem('userToken', token);
       //console.warn(resposta.data);
 
@@ -101,8 +101,8 @@ export default class Login extends Component {
       }
 
     } catch (error) {
-      console.warn(error)
-      this.hideAlert();
+      // console.warn(error)
+      this.showAlert();
     }
 
   }
@@ -110,6 +110,8 @@ export default class Login extends Component {
 
 
   render() {
+    // const {showAlert} = this.state;
+
     if (!this.state.fontsLoaded) {
       return <AppLoading />;
     }
@@ -141,6 +143,26 @@ export default class Login extends Component {
           }}
         />
 
+        {/* <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title="AwesomeAlert"
+          message="I have a message for you!"
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="No, cancel"
+          confirmText="Yes, delete it"
+          confirmButtonColor="#DD6B55"
+          onCancelPressed={() => {
+            this.hideAlert();
+          }}
+          onConfirmPressed={() => {
+            this.hideAlert();
+          }}
+        /> */}
+
 
         <View style={styles.mainHeader}>
           <Image source={require('../../../assets/img-geral/logo_2S.png')}
@@ -153,14 +175,14 @@ export default class Login extends Component {
           <Text style={styles.tituloPagina}>{'recursos humanos'.toUpperCase()}</Text>
 
           <View style={styles.inputLogin}>
-          <TextInputMask
+            <TextInput
               style={styles.viewLoginCPF}
               placeholder="CPF"
               type={"cpf"}
               value={this.state.value}
               keyboardType="numeric"
               placeholderTextColor="#B3B3B3"
-              onChangeText={(cpf) => this.setState({ cpf })}
+              onChangeText={(cpf) => this.setState({ cpf: cpf })}
             />
           </View>
 
@@ -169,7 +191,7 @@ export default class Login extends Component {
               placeholder="Senha"
               placeholderTextColor="#B3B3B3"
               keyboardType="default"
-              onChangeText={senha => this.setState({ senha })}
+              onChangeText={senha => this.setState({ senha: senha })}
               secureTextEntry={true}
               value={this.state.value}
             />
@@ -217,30 +239,30 @@ if (Dimensions.get('window').width > 700) {
     body: {
       backgroundColor: '#F2F2F2',
     },
-  
+
     mainHeader: {
       paddingTop: "10%",
       alignItems: 'center',
       justifyContent: 'center',
     },
-  
+
     imgLogo: {
-      height:"23%",
+      height: "23%",
       // width: 360,
-      width:"47%",
+      width: "47%",
     },
-  
+
     container: {
       alignItems: 'center',
-      justifyContent:'center'
+      justifyContent: 'center'
     },
-  
+
     tituloPagina: {
       fontFamily: 'Montserrat-Bold',
       fontSize: 40,
       color: '#2A2E32',
       // width:"60%" ,
-      paddingTop:"10%" ,
+      paddingTop: "10%",
       paddingBottom: "15%",
       alignItems: 'center',
       justifyContent: 'center',
@@ -259,14 +281,14 @@ if (Dimensions.get('window').width > 700) {
     },
     confirmButton: {
       width: 100,
-  
+
       paddingLeft: 32
     },
-  
+
     inputLogin: {
-       width: "75%",
+      width: "75%",
       // backgroundColor: '#C20004',
-       height: "10%",
+      height: "10%",
       borderWidth: 1,
       borderColor: '#B3B3B3',
       alignItems: 'center',
@@ -279,7 +301,7 @@ if (Dimensions.get('window').width > 700) {
       //paddingBottom:24,
       // paddingLeft: 15,
     },
-  
+
     viewLoginCPF: {
       // backgroundColor: 'blue',
       height: "50%",
@@ -287,7 +309,7 @@ if (Dimensions.get('window').width > 700) {
       // height: "23%",
       // marginBottom: 24,
     },
-    
+
     TextEmail: {
       // backgroundColor: 'pink',
       height: "50%",
@@ -295,7 +317,7 @@ if (Dimensions.get('window').width > 700) {
       // height: "20%",
       // marginBottom: 24,
     },
-  
+
     erroMsg: {
       paddingTop: 24,
       alignItems: 'center',
@@ -303,7 +325,7 @@ if (Dimensions.get('window').width > 700) {
       flexDirection: 'row',
       marginLeft: 250
     },
-  
+
     erroText: {
       fontFamily: 'Quicksand-Regular',
       fontSize: 12,
@@ -311,7 +333,7 @@ if (Dimensions.get('window').width > 700) {
       paddingRight: 115,
       //paddingTop: 24,
     },
-  
+
     textEsque: {
       fontFamily: 'Quicksand-Regular',
       fontSize: 12,
@@ -320,7 +342,7 @@ if (Dimensions.get('window').width > 700) {
       //paddingTop: 1,
       paddingLeft: "40%",
     },
-  
+
     btnLogin: {
       width: "75%",
       height: 46,
@@ -333,7 +355,7 @@ if (Dimensions.get('window').width > 700) {
       backgroundColor: '#C20004',
       borderRadius: 10,
     },
-  
+
     btnText: {
       fontFamily: 'Montserrat-Regular',
       fontSize: 12,
@@ -341,20 +363,20 @@ if (Dimensions.get('window').width > 700) {
       alignItems: 'center',
       justifyContent: 'center',
     },
-  
-  
+
+
     imgLoginView: {
       // marginTop: 92,
       //width: 180,
       // height,
-      height:"100%" ,
+      height: "100%",
       width: "100%",
       paddingLeft: 40,
       alignItems: 'flex-start',
       flexDirection: 'column',
     },
     img: {
-      height:"20%" ,
+      height: "20%",
       width: "60%",
     }
   });
@@ -363,22 +385,22 @@ if (Dimensions.get('window').width > 700) {
     body: {
       backgroundColor: '#F2F2F2',
     },
-  
+
     mainHeader: {
       paddingTop: "26%",
       alignItems: 'center',
       justifyContent: 'center',
     },
-  
+
     imgLogo: {
       width: 224,
       height: 31,
     },
-  
+
     container: {
       alignItems: 'center',
     },
-  
+
     tituloPagina: {
       fontFamily: 'Montserrat-Bold',
       fontSize: 30,
@@ -402,10 +424,10 @@ if (Dimensions.get('window').width > 700) {
     },
     confirmButton: {
       width: 100,
-  
+
       paddingLeft: 32
     },
-  
+
     inputLogin: {
       width: "85%",
       height: "10%",
@@ -417,13 +439,13 @@ if (Dimensions.get('window').width > 700) {
       fontSize: 14,
       marginBottom: 40
     },
-  
+
     viewLoginCPF: {
       // padding: 3345678,
       height: "50%",
       width: "80%",
     },
-  
+
     erroMsg: {
       paddingTop: 24,
       alignItems: 'center',
@@ -431,7 +453,7 @@ if (Dimensions.get('window').width > 700) {
       flexDirection: 'row',
       marginLeft: 250
     },
-  
+
     erroText: {
       fontFamily: 'Quicksand-Regular',
       fontSize: 12,
@@ -439,7 +461,7 @@ if (Dimensions.get('window').width > 700) {
       paddingRight: 115,
       //paddingTop: 24,
     },
-  
+
     textEsque: {
       fontFamily: 'Quicksand-Regular',
       fontSize: 12,
@@ -448,7 +470,7 @@ if (Dimensions.get('window').width > 700) {
       //paddingTop: 1,
       //paddingRight: 50,
     },
-  
+
     btnLogin: {
       width: 350,
       height: 46,
@@ -461,7 +483,7 @@ if (Dimensions.get('window').width > 700) {
       backgroundColor: '#C20004',
       borderRadius: 10,
     },
-  
+
     btnText: {
       fontFamily: 'Montserrat-Regular',
       fontSize: 12,
@@ -469,8 +491,8 @@ if (Dimensions.get('window').width > 700) {
       alignItems: 'center',
       justifyContent: 'center',
     },
-  
-  
+
+
     imgLoginView: {
       marginTop: 92,
       //width: 180,
