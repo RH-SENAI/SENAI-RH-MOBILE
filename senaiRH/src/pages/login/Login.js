@@ -99,7 +99,7 @@ export default class Login extends Component {
 
     } catch (error) {
       console.warn(error)
-      this.showAlertSuce();
+      //this.showAlertSuce();
     }
 
   }

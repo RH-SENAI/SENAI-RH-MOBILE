@@ -5,14 +5,8 @@ import {
     TouchableOpacity,
     View,
     Image,
-    ImageBackground,
-    TextInput,
     Modal,
-    AnimatableBlurView,
-    FlatList,
-    SectionList,
-    SafeAreaView,
-    ScrollView,
+    FlatList,   
     Pressable
 } from 'react-native';
 
@@ -20,16 +14,10 @@ import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../services/apiGp1'
-import base64 from 'react-native-base64';
 import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
-import Constants from 'expo-constants'
-import * as ImagePicker from 'expo-image-picker'
 import * as DocumentPicker from 'expo-document-picker'
-import * as FileSystem from 'expo-file-system'
-import * as Permission from 'expo-permissions';
 import axios from 'axios';
 import AwesomeAlert from 'react-native-awesome-alerts';
-// import 'intl';
 
 let customFonts = {
     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
@@ -68,30 +56,6 @@ export default class AtividadesExtras extends Component {
     };
 
     imagePickerCall = async () => {
-        // const options ={
-        //     title: 'Selecione uma imagem',
-        //     type: 'library',
-        //     options: {
-        //         selectionLimit: 1,
-        //         mediaType: 'photo',
-        //         includeBase64: false
-        //     }
-        // }
-        // if (Constants.platform.ios) {
-        //     const result = await Permission.askAsync(Permission.MEDIA_LIBRARY)
-        //     if (result.status !== 'granted') {
-        //         console.warn('permissão necessária')
-        //     }
-        // }
-
-        // const data = await ImagePicker.launchImageLibrary(options)
-
-        // console.warn(data)
-        //this.setState({ imagemEntrega: data })
-
-
-
-
         const result = await DocumentPicker.getDocumentAsync({
             type: 'image/*',
             multiple: false,

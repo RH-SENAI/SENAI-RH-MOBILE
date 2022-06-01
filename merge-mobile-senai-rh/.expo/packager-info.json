@@ -1,0 +1,10 @@
+{
+  "devToolsPort": 19002,
+  "expoServerPort": 19000,
+  "packagerPort": 19000,
+  "expoServerNgrokUrl": "https://vm-6je.anonymous.merge-mobile-senai-rh.exp.direct",
+  "packagerNgrokUrl": "https://vm-6je.anonymous.merge-mobile-senai-rh.exp.direct",
+  "ngrokPid": 12312,
+  "packagerPid": null,
+  "webpackServerPort": null
+}
