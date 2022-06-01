@@ -221,9 +221,9 @@ export default class Login extends Component {
           </TouchableOpacity>
 
         </View>
-        {/* <View style={styles.imgLoginView} >
+         {/* <View style={styles.imgLoginView} >
           <Image style={styles.img} source={require('../../../assets/img-geral/imagemLogin.png')} />
-        </View> */}
+        </View>  */}
 
       </View>
 

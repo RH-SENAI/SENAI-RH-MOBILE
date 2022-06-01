@@ -27,9 +27,9 @@ import primeiroAcesso from './src/pages/alterarSenha/primeiroAcesso.js';
 import ComentarioDesconto from './src/pages/desconto/comentarioDesconto.js';
 
 // //gp3
-// import CadastrarFeedback from "./src/pages/democratizacao/CadastrarFeedback";
-// import ListarFeedback from "./src/pages/democratizacao/ListarFeedbacks"
-// import ListarDecisao from "./src/pages/democratizacao/ListarDecisao"
+import CadastrarFeedback from "./src/pages/democratizacao/cadastrarFeedback";
+import ListarFeedback from "./src/pages/democratizacao/listarDecisao"
+import ListarDecisao from "./src/pages/democratizacao/listarDecisao"
 
 // import 'intl';
 // import 'intl/locale-data/jsonp/pt-BR';
@@ -67,9 +67,9 @@ function App() {
         */}
 
       {/* gp3 */}
-        {/* <Stack.Screen name="CadastrarFeedback" component={CadastrarFeedback} initialParams={{a : true}} />
+        <Stack.Screen name="CadastrarFeedback" component={CadastrarFeedback} initialParams={{a : true}} />
         <Stack.Screen name="ListarFeedbacks" component={ListarFeedback} />
-        <Stack.Screen name="ListarDecisao" component={ListarDecisao} /> */}
+        <Stack.Screen name="ListarDecisao" component={ListarDecisao} />
 
       </Stack.Navigator>
     </NavigationContainer>

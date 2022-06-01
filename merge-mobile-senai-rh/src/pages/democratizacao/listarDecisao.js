@@ -133,7 +133,7 @@ export default function ListarDecisao() {
 
         </View>
 
-        <Text style={styles.h1Bold}>Decisão</Text>
+        <Text style={styles.h1Bold}>DECISÕES</Text>
 
         <FlatList
           contentContainerStyle={styles.mainBodyContent}
@@ -149,7 +149,6 @@ export default function ListarDecisao() {
 
 const styles = StyleSheet.create({
   containerRenderItem: {
-    width: 370,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
@@ -221,16 +220,17 @@ const styles = StyleSheet.create({
 
   imgLogo: {
     alignSelf: "center",
-    // marginTop: 40,
+    marginTop: 24,
     marginBottom: 24,
   },
   h1Bold: {
-    fontSize: 32,
+    fontSize: 35,
     width: "80%",
     textAlign: "center",
     fontFamily: "Montserrat_600SemiBold",
     textTransform: "uppercase",
     color: "#2A2E32",
+    marginTop:8
   },
 
   mainBodyContent: {

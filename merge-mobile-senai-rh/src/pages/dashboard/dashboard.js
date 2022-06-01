@@ -639,12 +639,11 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   tituloPage: {
-    fontSize: 32,
-    width: "80%",
-    textAlign: "center",
     fontFamily: "Montserrat_600SemiBold",
-    textTransform: "uppercase",
+    fontSize: 35,
     color: "#2A2E32",
+    textAlign: "center",
+    textTransform: "uppercase",
   },
   containerAreaDados: {
     //backgroundColor: 'yellow',
