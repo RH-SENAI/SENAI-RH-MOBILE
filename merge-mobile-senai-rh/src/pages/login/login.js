@@ -36,7 +36,7 @@ export default class Login extends Component {
     super(props);
     this.state = {
       cpf: '11111111176',
-      senha: 'Sesisenai@2022',
+      senha: 'Teste',
       fontsLoaded: false,
       error: 'Email ou Senha inválidos!',
       //erroMensagem: '',
@@ -199,9 +199,9 @@ export default class Login extends Component {
           </TouchableOpacity>
 
         </View>
-        {/* <View style={styles.imgLoginView} >
+         {/* <View style={styles.imgLoginView} >
           <Image style={styles.img} source={require('../../../assets/img-geral/imagemLogin.png')} />
-        </View> */}
+        </View>  */}
 
       </View>
 

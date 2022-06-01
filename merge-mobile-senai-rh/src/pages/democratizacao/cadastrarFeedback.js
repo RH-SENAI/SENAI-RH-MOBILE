@@ -11,7 +11,8 @@ import {
   Animated,
   KeyboardAvoidingView,
   Keyboard,
-  BackHandler
+  BackHandler,
+  Dimensions
 } from 'react-native';
 
 // Expo
@@ -75,7 +76,6 @@ export default function CadastroFeedback({ route }) {
       duration: 250,
     }).start()
   }
-
 
   // Float Label Animação Nota
   const moveTextNota = useRef(new Animated.Value(0)).current;
@@ -330,12 +330,16 @@ export default function CadastroFeedback({ route }) {
           <Text style={styles.btnCadastroText}>Enviar Feedback</Text>
         </TouchableOpacity>
 
+       
+
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
+if (Dimensions.get('window').width > 700) 
+{
+  var styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
@@ -352,26 +356,23 @@ const styles = StyleSheet.create({
   },
 
   logoSenai: {
-    width: "100%",
-    height: 40,
     alignSelf: "center",
     marginTop: 40,
-    marginBottom: 20,
+    marginBottom: 24,
   },
   h1nonBold: {
     fontSize: 20,
     fontWeight: '500',
     textTransform: 'uppercase',
     color: '#000000',
-    marginTop: 60,
   },
 
   tituloDemocratizacao: {
     fontSize: 30,
     color: '#2A2E32',
     fontFamily: 'Montserrat_600SemiBold',
-    marginTop: 32,
-    marginBottom: 32,
+    marginTop: 56,
+    marginBottom: 72,
     textTransform: 'uppercase',
     width: '86%',
     textAlign:"center"
@@ -386,7 +387,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'flex-start',
     paddingLeft: 10,
-    marginBottom: 18
+    marginBottom: 40
   },
 
   sectionDemocratizacaoTxt: {
@@ -415,7 +416,7 @@ const styles = StyleSheet.create({
 
   sectionDemocratizacaoInput: {
     width: '100%',
-    height: 42,
+    height: 65,
     borderRadius: 5,
     borderWidth: 2,
     borderColor: '#B3B3B3',
@@ -450,7 +451,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 24,
+    marginTop: 80,
     backgroundColor: '#451531',
   },
 
@@ -507,4 +508,178 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 210,
   }
-})
+})} else {
+  var styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      backgroundColor: '#F2F2F2'
+    },
+  
+    mainHeader: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: 60,
+      backgroundColor: '#F2F2F2',
+      borderRadius: 5,
+      width: '100%',
+    },
+  
+    logoSenai: {
+      width: "100%",
+      height: 40,
+      alignSelf: "center",
+      marginTop: 40,
+      marginBottom: 20,
+    },
+    h1nonBold: {
+      fontSize: 20,
+      fontWeight: '500',
+      textTransform: 'uppercase',
+      color: '#000000',
+      marginTop: 60,
+    },
+  
+    tituloDemocratizacao: {
+      fontSize: 30,
+      color: '#2A2E32',
+      fontFamily: 'Montserrat_600SemiBold',
+      marginTop: 32,
+      marginBottom: 32,
+      textTransform: 'uppercase',
+      width: '86%',
+      textAlign:"center"
+    },
+  
+    sectionDemocratizacao:
+    {
+      borderColor: '#B3B3B3',
+      width: '86%',
+      borderStyle: 'solid',
+      borderWidth: 2,
+      borderRadius: 10,
+      alignItems: 'flex-start',
+      paddingLeft: 10,
+      marginBottom: 18
+    },
+  
+    sectionDemocratizacaoTxt: {
+      fontFamily: 'Quicksand_600SemiBold',
+      fontSize: 20,
+      color: '#000000',
+      paddingTop: 16,
+      paddingBottom: 8,
+      paddingLeft: 3
+    },
+  
+  
+    sectionDemocratizacaoDecisao: {
+      fontFamily: 'Quicksand_300Light',
+      color: '#000000',
+      fontSize: 18,
+      paddingLeft: 4,
+      paddingRight: 12,
+      marginBottom: 10
+    },
+  
+    sectionDemocratizacaoBox: {
+      width: '86%',
+      height: 100
+    },
+  
+    sectionDemocratizacaoInput: {
+      width: '100%',
+      height: 42,
+      borderRadius: 5,
+      borderWidth: 2,
+      borderColor: '#B3B3B3',
+      paddingLeft: 16,
+      marginBottom: 18
+    },
+  
+    tituloDecisao: {
+      fontSize: 15,
+      fontWeight: '700',
+      textTransform: 'uppercase',
+      color: '#000000',
+    },
+  
+    paragrafoDecisao: {
+      fontSize: 15,
+      fontWeight: '500',
+      textTransform: 'uppercase',
+      color: '#000000',
+      marginTop: 60,
+    },
+  
+    section: {
+      backgroundColor: '#f2f2f2',
+      marginTop: 20,
+      marginBottom: 20,
+    },
+  
+    btnCadastro: {
+      width: '86%',
+      height: 43,
+      borderRadius: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 24,
+      backgroundColor: '#451531',
+    },
+  
+    btnCadastroText: {
+      fontFamily: 'Montserrat_500Medium',
+      color: '#F2F2F2'
+    },
+  
+    imgCadastro: {
+      marginTop: 80,
+      marginLeft: 180
+    },
+  
+    boxFeedback: {
+      backgroundColor: '#ffffff',
+      height: 33,
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column'
+    },
+  
+    labelComentarioFeedback: {
+      color: '#636466',
+      fontSize: 13,
+      fontFamily: 'Quicksand_300Light',
+      justifyContent : 'center',
+      alignItems : 'center'
+    },
+  
+    labelComentarioNota: {
+      color: '#636466',
+      fontSize: 13,
+      fontFamily: 'Quicksand_300Light',
+      justifyContent : 'center',
+      alignItems : 'center'
+    },
+  
+    animatedStyle1: {
+      top: 6,
+      left : 20,
+      position: 'absolute',
+      backgroundColor : '#F2F2F2',
+      paddingLeft : 5,
+      zIndex: 1000,
+      width: 129
+    },
+  
+    animatedStyle2: {
+      top: 69,
+      left: 20,
+      position: 'absolute',
+      zIndex: 1000,
+      backgroundColor: '#F2F2F2',
+      alignItems: 'center',
+      width: 210,
+    }
+  })
+}

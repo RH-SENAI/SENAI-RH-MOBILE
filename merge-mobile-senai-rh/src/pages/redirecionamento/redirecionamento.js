@@ -78,45 +78,28 @@ export default function Redirecionar() {
 
   return (
     <View style={styles.container}>
-      <Image
-        style={styles.logoSenai}
-        source={require("../../../assets/img-geral/logo_2S.png")}
-        resizeMode="contain"
-      />
+
+      <Image style={styles.logoSenai} source={require('../../../assets/img-geral/logo_2S.png')} resizeMode="contain" />
 
       <View style={styles.containerLinks}>
         <Text style={styles.titulo}>REDIRECIONAR PARA:</Text>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate("mainAcompanhar")}
-        >
-          <MaterialIcons name="computer" size={50} color="black" />
-          <Text style={styles.texto}>Acompanhamento</Text>
+        <TouchableOpacity style={styles.buttonA} onPress={() => navigation.navigate("mainAcompanhar")}>
+          {/* <View style={styles.quadradoeTexto}>
+            <View style={styles.quadrado}></View> */}
+            <MaterialIcons name="computer" size={50} color="black" />
+            <Text style={styles.texto}>Acompanhamento</Text>
+          {/* </View> */}
+
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate("mainMotivar")}
-        >
-          <MaterialCommunityIcons
-            style={styles.porco}
-            name="piggy-bank"
-            size={50}
-            color="black"
-          />
+        <TouchableOpacity style={styles.buttonM} onPress={() => navigation.navigate("mainMotivar")} >
+          <MaterialCommunityIcons style={styles.porco} name="piggy-bank" size={50} color="black" />
           <Text style={styles.textoM}>Motivações</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate("mainVantagem")}
-        >
-          <MaterialCommunityIcons
-            name="label-percent"
-            size={50}
-            color="black"
-          />
+        <TouchableOpacity style={styles.buttonV} onPress={() => navigation.navigate("mainVantagem")}>
+          <MaterialCommunityIcons name="label-percent" size={50} color="black" />
           <Text style={styles.texto}>Minhas Vantagens</Text>
         </TouchableOpacity>
       </View>
@@ -124,170 +107,7 @@ export default function Redirecionar() {
   );
 }
 
-if (Dimensions.get("window").width > 700) {
-  var styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      // backgroundColor: "white",
-    },
-
-    logoSenai: {
-      // width: "100%",
-      // height: 40,
-      alignSelf: "center",
-      marginTop: "20%",
-      //marginBottom: 20,
-    },
-
-    containerLinks: {
-      flex: 1,
-      // backgroundColor: 'cyan',
-      alignItems: "center",
-      width: "100%",
-      paddingLeft: "5%",
-      paddingRight: "5%",
-      paddingTop: 32,
-    },
-
-    titulo: {
-      fontSize: 30,
-      width: "80%",
-      textAlign: "center",
-      marginBottom: 15,
-      fontFamily: "SemiBoldM",
-      paddingTop: "10%",
-      paddingBottom: "10%",
-    },
-    button: {
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-      // backgroundColor: "#C20004",
-      borderWidth: 2,
-      borderColor: "black",
-      width: "100%",
-      height: 85,
-      borderRadius: 5,
-      marginTop: 15,
-      marginBottom: "15%",
-    },
-    // buttonA: {
-    //   flexDirection: 'row',
-    //   justifyContent: 'center',
-    //   alignItems: 'center',
-    //   // backgroundColor: "#C20004",
-    //   borderWidth: 2,
-    //   borderColor: 'black',
-    //   width: "100%",
-    //   height: 85,
-    //   borderRadius: 5,
-    //   marginTop: 15,
-    //   marginBottom: 15,
-    // },
-    // buttonV: {
-    //   flexDirection: 'row',
-    //   justifyContent: 'center',
-    //   alignItems: 'center',
-    //   // backgroundColor: "#C20004",
-    //   borderWidth: 2,
-    //   borderColor: 'black',
-    //   width: "100%",
-    //   height: 85,
-    //   borderRadius: 5,
-    //   marginTop: 15,
-    //   marginBottom: 15,
-    // },
-    texto: {
-      // backgroundColor: 'blue',
-      color: "black",
-      textAlign: "center",
-      fontSize: 25,
-      // fontWeight: "bold",
-      marginLeft: 40,
-      fontFamily: "Regular",
-    },
-
-    porco: {
-      paddingRight: 70,
-    },
-
-    textoM: {
-      color: "black",
-      fontSize: 25,
-      marginRight: 50,
-      fontFamily: "Regular",
-    },
-  });
-} else {
-  var styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      // backgroundColor: "white",
-    },
-
-    logoSenai: {
-      // width: "100%",
-      // height: 40,
-      alignSelf: "center",
-      marginTop: 40,
-      //marginBottom: 20,
-    },
-
-    containerLinks: {
-      flex: 1,
-      // backgroundColor: 'cyan',
-      alignItems: "center",
-      width: "100%",
-      paddingLeft: "5%",
-      paddingRight: "5%",
-      paddingTop: 32,
-    },
-
-    titulo: {
-      fontSize: 30,
-      width: "80%",
-      textAlign: "center",
-      marginBottom: 15,
-      fontFamily: "SemiBoldM",
-      paddingTop: 32,
-      paddingBottom: 32,
-    },
-    button: {
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-      // backgroundColor: "#C20004",
-      borderWidth: 2,
-      borderColor: "gray",
-      width: "100%",
-      height: 85,
-      borderRadius: 5,
-      marginTop: 15,
-      marginBottom: 15,
-    },
-    texto: {
-      // backgroundColor: 'blue',
-      color: "black",
-      textAlign: "center",
-      fontSize: 25,
-      // fontWeight: "bold",
-      marginLeft: 40,
-      fontFamily: "Regular",
-    },
-
-    porco: {
-      paddingRight: 70,
-    },
-
-    textoM: {
-      color: "black",
-      fontSize: 25,
-      marginRight: 50,
-      fontFamily: "Regular",
-    },
-  });
-}
-
+if (Dimensions.get('window').width > 700) {
 var styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -317,17 +137,49 @@ var styles = StyleSheet.create({
     width: "80%",
     textAlign: "center",
     marginBottom: 15,
-    fontFamily: "SemiBoldM",
+    fontFamily: 'SemiBoldM',
     paddingTop: "10%",
     paddingBottom: "10%",
   },
-  button: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+  buttonM: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     // backgroundColor: "#C20004",
     borderWidth: 2,
-    borderColor: "black",
+    // borderColor: 'black',
+    borderLeftWidth: 25 , 
+    borderLeftColor:'#B3093F',   
+    width: "100%",
+    height: 85,
+    borderRadius: 5,
+    marginTop: 15,
+    marginBottom: "15%",
+  },
+  buttonA: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: "#C20004",
+    borderWidth: 2,
+    // borderColor: 'black',
+    borderLeftWidth: 25 , 
+    borderLeftColor:'#451531',   
+    width: "100%",
+    height: 85,
+    borderRadius: 5,
+    marginTop: 15,
+    marginBottom: "15%",
+  },
+  buttonV: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: "#C20004",
+    borderWidth: 2,
+    // borderColor: 'black',
+    borderLeftWidth: 25 , 
+    borderLeftColor:'#4B7294',   
     width: "100%",
     height: 85,
     borderRadius: 5,
@@ -341,7 +193,7 @@ var styles = StyleSheet.create({
     fontSize: 25,
     // fontWeight: "bold",
     marginLeft: 40,
-    fontFamily: "Regular",
+    fontFamily: 'Regular'
   },
 
   porco: {
@@ -352,6 +204,136 @@ var styles = StyleSheet.create({
     color: "black",
     fontSize: 25,
     marginRight: 50,
-    fontFamily: "Regular",
+    fontFamily: 'Regular',
+
   },
-});
+//   quadradoeTexto: {
+//     flexWrap: "wrap",
+// },
+
+// quadrado: {
+//     backgroundColor: '#2A2E32',
+//     height:'100%',
+//     width: '7%',
+//     // borderTopRightRadius: 8,
+//     borderTopLeftRadius: 8,
+//     borderBottomLeftRadius: 8,
+//     marginRight: '30%',
+
+// },
+});}
+else{
+  var styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      // backgroundColor: "white",
+    },
+  
+    logoSenai: {
+      // width: "100%",
+      // height: 40,
+      alignSelf: "center",
+      marginTop: "10%",
+      //marginBottom: 20,
+    },
+  
+    containerLinks: {
+      flex: 1,
+      // backgroundColor: 'cyan',
+      alignItems: "center",
+      width: "100%",
+      paddingLeft: "5%",
+      paddingRight: "5%",
+      paddingTop: 32,
+    },
+  
+    titulo: {
+      fontSize: 30,
+      width: '80%',
+      textAlign: 'center',
+      marginBottom: 15,
+      fontFamily: 'SemiBoldM',
+      paddingTop: "10%",
+      paddingBottom: "10%",
+    },
+    buttonM: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      // backgroundColor: "#C20004",
+      borderWidth: 2,
+      // borderColor: 'black',
+      borderLeftWidth: 25 , 
+      borderLeftColor:'#B3093F',   
+      width: "100%",
+      height: 85,
+      borderRadius: 5,
+      marginTop: 15,
+      marginBottom: "15%",
+    },
+    buttonA: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      // backgroundColor: "#C20004",
+      borderWidth: 2,
+      // borderColor: 'black',
+      borderLeftWidth: 25 , 
+      borderLeftColor:'#451531',   
+      width: "100%",
+      height: 85,
+      borderRadius: 5,
+      marginTop: 15,
+      marginBottom: "15%",
+    },
+    buttonV: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      // backgroundColor: "#C20004",
+      borderWidth: 2,
+      // borderColor: 'black',
+      borderLeftWidth: 25 , 
+      borderLeftColor:'#4B7294',   
+      width: "100%",
+      height: 85,
+      borderRadius: 5,
+      marginTop: 15,
+      marginBottom: "15%",
+    },
+    texto: {
+      // backgroundColor: 'blue',
+      color: "black",
+      textAlign: "center",
+      fontSize: 25,
+      // fontWeight: "bold",
+      marginLeft: 40,
+      fontFamily: 'Regular'
+    },
+  
+    porco: {
+      paddingRight: 70,
+    },
+  
+    textoM: {
+      color: "black",
+      fontSize: 25,
+      marginRight: 50,
+      fontFamily: 'Regular',
+  
+    },
+  //   quadradoeTexto: {
+  //     flexWrap: "wrap",
+  // },
+  
+  // quadrado: {
+  //     backgroundColor: '#2A2E32',
+  //     height:'100%',
+  //     width: '7%',
+  //     // borderTopRightRadius: 8,
+  //     borderTopLeftRadius: 8,
+  //     borderBottomLeftRadius: 8,
+  //     marginRight: '30%',
+  
+  // },
+  });}

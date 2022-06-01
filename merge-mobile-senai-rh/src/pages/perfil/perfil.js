@@ -336,7 +336,7 @@ export default function Perfil() {
           }
           return (
             <ScrollView contentContainerStyle={styles.conteudo}>
-              <Text style={styles.titulo}>Perfil</Text>
+              <Text style={styles.titulo}>perfil</Text>
               <View style={styles.fotoPerfilContainer}>
                 <Image
                   source={
@@ -522,7 +522,6 @@ const styles = StyleSheet.create({
   titulo: {
     fontFamily: "Montserrat_600SemiBold",
     fontSize: 35,
-    color: "#000000",
     color: "#2A2E32",
 
     textAlign: "center",
