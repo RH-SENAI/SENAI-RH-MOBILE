@@ -18,25 +18,25 @@ import api from '../../services/apiGp2';
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 
-export default class ComentarioDesconto extends Component {
+export default class ComentarioCurso extends Component {
     constructor(props) {
         super(props);
         this.state = {
             errorMessage: '',
             showAlert: false,
-            notaDesconto: 0,
+            notaCurso: 0,
             comentario: '',
-            listaDesconto: [],
+            listaCurso: [],
             listaComentario: [],
-            descontoBuscado: [],
+            cursoBuscado: [],
             listaComentarioBuscado: [],
         };
     }
 
     ListaComentarios = async () => {
         try {
-            let id = await AsyncStorage.getItem('descontoId')
-            const resposta = await api('/ComentarioDescontos/Comentario/' + id);
+            let id = await AsyncStorage.getItem('cursoId')
+            const resposta = await api('/ComentarioCursos/Comentario/' + id);
 
             if (resposta.status == 200) {
                 const dadosComentarios = await resposta.data;
@@ -52,26 +52,26 @@ export default class ComentarioDesconto extends Component {
 
     CadastrarComentario = async () => {
         try {
-            let id = await AsyncStorage.getItem('descontoId')
+            let id = await AsyncStorage.getItem('cursoId')
             let idUser = await AsyncStorage.getItem('idUsuario');
-            const resposta = await api.post('/ComentarioDescontos', {
-                idDesconto: id,
+            const resposta = await api.post('/ComentarioCursos', {
+                idCurso: id,
                 idUsuario: idUser,
-                avaliacaoDesconto: this.state.notaDesconto,
-                comentarioDesconto1: this.state.comentario,
+                avaliacaoComentario: this.state.notaCurso,
+                comentarioCurso1: this.state.comentario,
             });
 
             if (resposta.status == 201) {
                 this.ListaComentarios();
-                this.setState({ notaDesconto: 0 })
+                this.setState({ notaCurso: 0 })
             }
         } catch (erro) {
             console.warn(erro);
         }
     }
 
-    avaliacaoDesconto = (rating) => {
-        this.setState({ notaDesconto: rating })
+    avaliacaoCurso = (rating) => {
+        this.setState({ notaCurso: rating })
     }
 
     componentDidMount = () => {
@@ -111,7 +111,7 @@ export default class ComentarioDesconto extends Component {
                                 selectedColor={'#4B7294'}
                                 defaultRating={0}
                                 isDisabled={false}
-                                onFinishRating={this.avaliacaoDesconto}
+                                onFinishRating={this.avaliacaoCurso}
                                 size={20}
                             />
                         </View>
@@ -139,7 +139,7 @@ export default class ComentarioDesconto extends Component {
                 <View>
                     <View style={styles.boxTextComentario}>
                         <Text style={styles.textNome}>{item.idUsuarioNavigation.nome}: </Text>
-                        <Text style={styles.textComentario}>{item.comentarioDesconto1}</Text>
+                        <Text style={styles.textComentario}>{item.comentarioCurso1}</Text>
                     </View>
                     <View style={styles.boxAvaliado}>
                         <AirbnbRating
