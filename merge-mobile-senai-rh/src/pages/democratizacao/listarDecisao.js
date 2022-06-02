@@ -6,7 +6,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  FlatList
+  FlatList,
+  Dimensions
 } from "react-native";
 
 // Expo
@@ -30,6 +31,12 @@ import {
 
 //Services
 import api from "../../services/apiGp3";
+
+import imgPadrao from '../../../assets/img-gp3/Perfil.png'
+
+
+const largura = Dimensions.get('window').width;
+
 
 export default function ListarDecisao() {
 
@@ -62,6 +69,7 @@ export default function ListarDecisao() {
 
       const dadosDaApi = await resposta.data;
       setListaDecisao(dadosDaApi);
+      //console.log(listaDecisao);
     }
   };
 
@@ -70,52 +78,56 @@ export default function ListarDecisao() {
     BuscarDecisao();
   }, []);
 
+
+
   const renderItem = ({ item }) => (
-    <View style={styles.containerRenderItem}>
+
+
+    <TouchableOpacity
+      style={styles.itemLineRender}
+      //style={styles.containerRenderItem}
+      onPress={() =>
+        navigation.navigate("CadastrarFeedback", {
+          idDecisao: item.idDecisao,
+        })
+      }
+    >
 
       <View style={styles.imgPerfilCardWrapper}>
-
         <Image
-          source={{
-            uri:
-              "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
-              item.idUsuarioNavigation.caminhoFotoPerfil,
-          }}
-          resizeMode="cover"
+          source={
+            item.idUsuarioNavigation.caminhoFotoPerfil !== undefined
+              &&
+              item.idUsuarioNavigation.caminhoFotoPerfil !== null
+              ?
+              { uri: "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" + item.idUsuarioNavigation.caminhoFotoPerfil }
+              :
+              imgPadrao
+          }
           style={styles.img_perfil}
+          resizeMode="cover"
         />
-
       </View>
 
-      <View style={styles.cardClicavel}>
+      <View style={styles.containerTextos}>
+        <Text >{`${item.idUsuarioNavigation.nome} propôs: `}</Text>
+        <Text >{`${item.descricaoDecisao}`}</Text>
+      </View>
 
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("CadastrarFeedback", {
-              idDecisao: item.idDecisao,
-            })
-          }
-        >
-          <View style={styles.containerCard}>
 
+
+      {/* <View style={styles.containerCard}>
             <View style={styles.tituloCardWrapper}>
-
               <Text style={styles.tituloCard}>
                 {item.idUsuarioNavigation.nome} deu essa ideia: "
                 {item.descricaoDecisao}"
               </Text>
-
               <Text style={styles.mensagem}>Clique e de seu feedback!</Text>
 
             </View>
+          </View> */}
+    </TouchableOpacity>
 
-          </View>
-
-        </TouchableOpacity>
-
-      </View>
-
-    </View>
   );
 
   if (!fontsLoaded) {
@@ -125,18 +137,15 @@ export default function ListarDecisao() {
       <View style={styles.container}>
 
         <View style={styles.header}>
-
           <Image
             source={require("../../../assets/img-geral/logo_2S.png")}
             style={styles.imgLogo}
           />
-
+          <Text style={styles.h1Bold}>Decisão</Text>
         </View>
 
-        <Text style={styles.h1Bold}>DECISÕES</Text>
-
         <FlatList
-          contentContainerStyle={styles.mainBodyContent}
+          contentContainerStyle={styles.containerFlatList}
           data={listaDecisao}
           keyExtractor={(item) => item.idDecisao}
           renderItem={renderItem}
@@ -148,92 +157,79 @@ export default function ListarDecisao() {
 }
 
 const styles = StyleSheet.create({
-  containerRenderItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-  },
-
-  imgPerfilCardWrapper: {
-    width: 70,
-    height: 70,
-    borderColor: '#B3B3B3',
-    borderWidth: 3,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-
-  img_perfil: {
-    width: '100%',
-    height: '100%'
-  },
-  cardClicavel: {
-    borderWidth: 2,
-    borderColor: "gray",
-    borderRadius: 10,
-    padding: 10,
-    marginTop: 16,
-    width: 230,
-    height: 130,
-    marginRight:40,
-  },
-
-  containerCard: {
-    width: 207,
-    height: 105
-  },
-
-  tituloCardWrapper: {
-    width: 200,
-    height: 38,
-  },
-
-  tituloCard: {
-    textAlign: "auto",
-    marginBottom: 8,
-    height: 60,
-    fontFamily: 'Quicksand_600SemiBold',
-    color: 'black',
-    marginLeft: 14
-  },
-
-  mensagem: {
-    textAlign: "center",
-    color: 'black',
-    fontFamily: 'Quicksand_300Light'
-  },
 
   container: {
     flex: 1,
     alignItems: 'center',
-    marginHorizontal: '5%',
+    justifyContent: 'center',
+    width: '100%',
+    flexDirection: 'column',
+    //backgroundColor: 'purple',
   },
-
   header: {
-    width: 290,
-    height: 40,
     alignSelf: "center",
-    marginTop: 16,
-    marginBottom: 32,
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: '5%',
+    //backgroundColor: 'cyan',
   },
-
   imgLogo: {
     alignSelf: "center",
-    marginTop: 24,
-    marginBottom: 24,
   },
   h1Bold: {
-    fontSize: 35,
-    width: "80%",
+    fontSize: 32,
     textAlign: "center",
     fontFamily: "Montserrat_600SemiBold",
     textTransform: "uppercase",
     color: "#2A2E32",
-    marginTop:8
+    paddingTop: 10,
+    paddingBottom: '2%'
   },
 
-  mainBodyContent: {
-    paddingBottom: 20
+  itemLineRender: {
+    //flex: 1,
+    flexDirection: "row",
+    width: largura * .9,
+    height: largura * .27,
+    borderRadius: 5,
+    borderTopWidth: 25,
+    borderWidth: 1,
+    borderTopColor: "rgba(0, 0, 0, 0.8)",
+    borderColor: 'gray',
+    alignItems: 'center',
+    marginTop: 20,
+    //backgroundColor: 'blue'
+  },
+  containerFlatList: {
+    flex: 1,
+    width: largura * .9,
+    height: '100%',
+    alignItems: 'center',
+    //backgroundColor: 'orange',
+  },
+  img_perfil: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 7
+  },
+  imgPerfilCardWrapper: {
+    
+    width: 70,
+    height: 70,
+    borderColor: '#451531',
+    borderWidth: 3,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: '2%',
+    //backgroundColor: 'lime',
+  },
+  containerTextos: {
+    flex: 1,
+    marginRight: '2%',
+    //backgroundColor: 'red',
+    marginTop: -25
   }
+
 });

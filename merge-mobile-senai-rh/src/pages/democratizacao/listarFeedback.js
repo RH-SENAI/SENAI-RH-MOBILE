@@ -79,7 +79,7 @@ export default function ListaFeedback() {
             source={{
               uri:
                 "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
-                item.idUsuarioNavigation.caminhoFotoPerfil,
+                item.idUsuarioNavigation.caminhoFotoPerfil
             }}
             style={styles.img_perfil}
             resizeMode="cover"

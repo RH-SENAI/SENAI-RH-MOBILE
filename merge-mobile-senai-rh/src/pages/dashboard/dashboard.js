@@ -590,26 +590,28 @@ export default function Dashboard() {
                       <GraficoProdutividade />
                     </View>
                     <Text style={styles.subtituloProdutividade}>
-                      Acompanhe abaixo suas entregas de atividades nos últimos 60 dias:
+                      Acompanhe abaixo suas entregas de atividades nos últimos 120 dias:
                     </Text>
-                    <ContributionGraph
-                      style={styles.ContributionContainer}
-                      values={minhasAtividades}
-                      //endDate={new Date(moment(now))}
-                      //endDate={moment(now)}
-                      numDays={59}
-                      //width={'90%'}
-                      width={screenWidth}
-                      height={260}
-                      chartConfig={chartConfig}
-                      showMonthLabels={true}
-                      onDayPress={(d = minhasAtividades) => showAlert(d.date, d.count)}
-                      gutterSize={3}
-                      squareSize={25}
-                      horizontal={true}
-                      showOutOfRangeDays={true}
+                    <ScrollView horizontal={true}>
+                      <ContributionGraph
+                        style={styles.ContributionContainer}
+                        values={minhasAtividades}
+                        //endDate={new Date(moment(now))}
+                        //endDate={moment(now)}
+                        numDays={120}
+                        //width={'90%'}
+                        width={screenWidth * 1.4}
+                        height={260}
+                        chartConfig={chartConfig}
+                        showMonthLabels={true}
+                        onDayPress={(d = minhasAtividades) => showAlert(d.date, d.count)}
+                        gutterSize={3}
+                        squareSize={25}
+                        horizontal={true}
+                        showOutOfRangeDays={true}
 
-                    />
+                      />
+                    </ScrollView>
                   </View>
 
                 </View>
@@ -667,8 +669,9 @@ const styles = StyleSheet.create({
     //height: 110,
     borderRadius: 5,
     borderTopWidth: 25,
-    borderWidth: 3,
-    borderColor: "rgba(0, 0, 0, 0.8)",
+    borderTopColor: 'rgba(0, 0, 0, 0.8)',
+    borderWidth: 1,
+    borderColor: "gray",
     flexDirection: "row",
     backgroundColor: '#f1f1f1',
     padding: 10,
@@ -706,10 +709,10 @@ const styles = StyleSheet.create({
   containerProdutividade: {
     flex: 1,
     borderRadius: 5,
-    borderWidth: 3,
     borderTopWidth: 25,
-    //borderWidth: 3,
-    borderColor: "rgba(0, 0, 0, 0.8)",
+    borderTopColor: 'rgba(0, 0, 0, 0.8)',
+    borderWidth: 1,
+    borderColor: "gray",
     //flexDirection: 'row',
     backgroundColor: "rgba(241, 241, 241, 0.85)",
     justifyContent: 'center',
