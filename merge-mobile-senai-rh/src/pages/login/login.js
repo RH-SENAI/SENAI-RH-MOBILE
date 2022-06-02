@@ -17,7 +17,7 @@ import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import jwt_decode from "jwt-decode";
 //import api from '../../services/apiGp1';
-import apiGp1 from '../../services/apiGp1';
+import apiGp3 from '../../services/apiGp3';
 import recuperar from "../alterarSenha/recuperarSenha.js"
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { TextInputMask } from "react-native-masked-text";
@@ -71,7 +71,7 @@ export default class Login extends Component {
     try {
 
 
-      const resposta = await apiGp1.post('/Login', {
+      const resposta = await apiGp3.post('/Login', {
         cpf: this.state.cpf,
         senha: this.state.senha,
       });

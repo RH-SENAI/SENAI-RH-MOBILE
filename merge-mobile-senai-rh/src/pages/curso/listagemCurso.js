@@ -452,6 +452,13 @@ export default class ListagemCurso extends Component {
         this.ListarCurso();
     };
 
+    RedirecionarComentario = async (id) => {
+        this.setState({ modalVisivel: false })
+        let stringId = JSON.stringify(id);
+        await AsyncStorage.setItem('cursoId', stringId);
+        this.props.navigation.navigate('ComentarioCurso')
+    }
+
     verifyList = () => {
         if (this.state.switch == true) {
             console.warn('Cheguei bao');
@@ -574,7 +581,7 @@ export default class ListagemCurso extends Component {
 
                     <View style={styles.boxPrecoFavorito}>
                         <View style={styles.boxPreco}>
-                            <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
+                            <FontAwesome5 name="coins" size={24} color="#FBB01E" />
                             <Text style={styles.textDados}>{item.valorCurso}</Text>
                         </View>
 
@@ -665,7 +672,7 @@ export default class ListagemCurso extends Component {
 
                                     <View style={styles.boxValorInscrever}>
                                         <View style={styles.boxComentarioModal}>
-                                            <Pressable onPress={() => this.RedirecionarComentario()}>
+                                            <Pressable onPress={() => this.RedirecionarComentario(this.state.cursoBuscado.idCurso)}>
                                                 <Image source={require('../../../assets/img-gp2/comentario.png')} />
                                             </Pressable>
                                         </View>
@@ -1210,7 +1217,7 @@ else {
             borderWidth: 2,
             borderTopWidth: 0,
             borderColor: '#B3B3B3',
-            backgroundColor: 'pink',
+            // backgroundColor: 'pink',
             //borderStyle: 'dashed',
             // marginLeft: 33,
             // marginTop: 88,
@@ -1222,8 +1229,8 @@ else {
         imgModalCurso: {
             width: '101.5%',
             height: 100,
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
+            borderTopLeftRadius: 12,
+            borderTopRightRadius: 12,
         },
         textTituloModal: {
             fontFamily: 'Montserrat-Bold',
@@ -1236,13 +1243,28 @@ else {
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'row',
-            backgroundColor: 'pink'
+            marginTop: '3%',
+            // backgroundColor: 'pink',
         },
         boxAvaliacaoModal: {
             flexDirection: 'row',
             alignItems: 'center',
             marginTop: 8,
             marginLeft: 16,
+            marginRight: 48
+        },
+        boxPrecoModal: {
+            width: 90,
+            height: 48,
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: '3%',
+            // backgroundColor: 'green',
         },
         boxDadosModal: {
             flexDirection: 'row',
@@ -1251,7 +1273,7 @@ else {
             marginLeft: 16,
         },
         textDadosModal: {
-            width: 120,
+            width: 80,
             fontFamily: 'Quicksand-Regular',
             marginLeft: 16
         },
@@ -1266,7 +1288,7 @@ else {
             color: '#000',
         },
         boxVerMais: {
-            height: 150
+            height: 180
         },
         textDescricaoModal: {
             fontFamily: 'Quicksand-Regular',
@@ -1300,20 +1322,7 @@ else {
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'row',
-            marginTop: '5%',
-        },
-        boxPrecoModal: {
-            width: 90,
-            height: 48,
-            borderWidth: 2,
-            borderColor: '#B3B3B3',
-            borderRadius: 15,
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: '1%',
-            marginRight: 40
+            // marginTop: '1%',
         },
         boxComentarioModal: {
             marginTop: '8%',

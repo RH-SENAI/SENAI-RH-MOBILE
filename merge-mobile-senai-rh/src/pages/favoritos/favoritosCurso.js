@@ -21,6 +21,10 @@ import api from '../../services/apiGp2.js';
 import apiGp1 from '../../services/apiGp1.js';
 import Constants from 'expo-constants';
 import moment from 'moment';
+import { FontAwesome5 } from '@expo/vector-icons';
+// import { LogBox } from 'react-native';
+// LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+// LogBox.ignoreAllLogs();//Ignore all log notifications
 
 export default class TabViewExample extends React.Component {
     state = {
@@ -47,10 +51,11 @@ export default class TabViewExample extends React.Component {
         listaDesconto: [],
         descontoBuscado: [],
         localizacaoCurso: [],
+        listaFavoritosCoracao: []
     };
 
     //LISTAGEM POR IDFAVORITO - TROCAR ICURSO/FAVORITO 
-    
+
     //PROCURAR CURSO E DESCONTO MUDAR PARA FAVORITO
 
     ProcurarCurso = async (id) => {
@@ -112,7 +117,7 @@ export default class TabViewExample extends React.Component {
                 // console.warn(dadosCurso);
 
                 this.setState({ listaCurso: dadosCurso })
-
+                this.verifyCoracao();
                 // console.warn('Favoritos encontrados');
             }
         }
@@ -331,13 +336,17 @@ export default class TabViewExample extends React.Component {
         // this.props.navigation.navigate('ComentarioDesconto')
     }
 
-    RedirecionarComentarioDesconto = () => {
-        this.setState({ modalVisivel: false })
-        this.props.navigation.navigate('ComentarioDesconto')
+    verifyCoracao = async () => {
+        const idUser = await AsyncStorage.getItem('idUsuario');
+
+        const respostaFavoritos = await api('/FavoritosCursos/Favorito/' + idUser)
+        var dadosVerifyFavoritos = respostaFavoritos.data
+        this.setState({ listaFavoritosCoracao: dadosVerifyFavoritos })
+        console.warn(this.state.listaFavoritosCoracao)
     }
 
     componentDidMount = () => {
-        // this.SaldoUsuario();
+        this.SaldoUsuario();
         // await delay(3000);
         this.ListarCursoFavoritos();
         this.ListarDescontosFavoritos();
@@ -364,7 +373,7 @@ export default class TabViewExample extends React.Component {
                         <Text style={styles.textTituloPrincipal}>favoritos</Text>
                     </View>
                     <View style={styles.boxSaldoUsuario}>
-                        <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
+                        <FontAwesome5 name="coins" size={24} color="#FBB01E" />
                         <Text style={styles.textDados}>{this.state.saldoUsuario}</Text>
                     </View>
                 </View>
@@ -420,7 +429,7 @@ export default class TabViewExample extends React.Component {
                                 count={5}
                                 //starImage={star}
                                 showRating={false}
-                                selectedColor={'#C20004'}
+                                selectedColor={'#4B7294'}
                                 defaultRating={item.idCursoNavigation.mediaAvaliacaoCurso}
                                 isDisabled={true}
                                 size={20} />
@@ -440,12 +449,12 @@ export default class TabViewExample extends React.Component {
 
                         <View style={styles.boxPrecoFavorito}>
                             <View style={styles.boxPreco}>
-                                <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
+                                <FontAwesome5 name="coins" size={24} color="#FBB01E" />
                                 <Text style={styles.textDados}>{item.idCursoNavigation.valorCurso}</Text>
                             </View>
 
                             <View style={styles.boxFavorito}>
-                                <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
+                                <ExplodingHeart width={80} status={this.state.listaFavoritosCoracao.some(l => { if (l.idCurso == item.idCurso) { return true } return false })} onChange={() => this.Favoritar(true, item.idCurso)} />
                             </View>
                         </View>
                     </View>
@@ -477,7 +486,7 @@ export default class TabViewExample extends React.Component {
                                                 count={5}
                                                 //starImage={star}
                                                 showRating={false}
-                                                selectedColor={'#C20004'}
+                                                selectedColor={'#4B7294'}
                                                 defaultRating={item.idCursoNavigation.mediaAvaliacaoCurso}
                                                 isDisabled={true}
                                                 size={20}

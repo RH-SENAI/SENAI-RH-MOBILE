@@ -25,6 +25,7 @@ import primeiroAcesso from './src/pages/alterarSenha/primeiroAcesso.js';
 // import FavoritosCurso from './src/pages/favoritos/FavoritosCurso.js';
 // import FavoritosDesconto from './src/pages/favoritos/FavoritosDesconto.js';
 import ComentarioDesconto from './src/pages/desconto/comentarioDesconto.js';
+import ComentarioCurso from './src/pages/curso/comentarioCurso.js';
 
 // //gp3
 import CadastrarFeedback from "./src/pages/democratizacao/cadastrarFeedback";
@@ -61,6 +62,7 @@ function App() {
  
       {/* gp2 */}
       <Stack.Screen name="ComentarioDesconto" component={ComentarioDesconto} options={{ headerShown: false }} /> 
+      <Stack.Screen name="ComentarioCurso" component={ComentarioCurso} options={{ headerShown: false }} /> 
         {/* <Stack.Screen name="FavoritosDesconto" component={FavoritosDesconto} options={{ headerShown: false }} />
         <Stack.Screen name="RankingGp1" component={RankingGp1} options={{ headerShown: false }} /> 
         <Stack.Screen name="Favoritos" component={FavoritosCurso} options={{ headerShown: false }} />
