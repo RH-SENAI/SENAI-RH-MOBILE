@@ -2,13 +2,13 @@ import React from 'react';
 import {
     StyleSheet,
     Text,
+    TextInput,
     View,
     Modal,
     Pressable,
     Image,
     FlatList,
     ScrollView,
-    TextInput,
     RefreshControl,
     TouchableOpacity,
     Dimensions
@@ -26,8 +26,9 @@ import apiGp1 from '../../services/apiGp1.js';
 import apiMaps from '../../services/apiMaps.js';
 import * as Location from 'expo-location';
 import moment from 'moment';
+// import { mask, MaskedTextInput} from "react-native-mask-text";
 import { FontAwesome5 } from '@expo/vector-icons';
-import TextInputMask from 'react-native-text-input-mask';
+
 const delay = require('delay');
 // import { Location, Permissions } from 'expo';
 
@@ -45,6 +46,7 @@ export default class ListagemCurso extends Component {
             refreshing: false,
             desabilitado: false,
             verifyRegistro: false,
+            // passed: false,
             contadorCurso: 0,
             saldoUsuario: 0,
             distanceUser: 0,
@@ -52,10 +54,14 @@ export default class ListagemCurso extends Component {
             empresaBuscada: '',
             largura: 0,
             altura: 0,
+            // phone: '',
+            // maskPhone: '',
+            // mask: '',
             listaCurso: [],
             cursoBuscado: {},
             localizacaoCurso: [],
-            listaFavoritosCoracao: []
+            listaFavoritosCoracao: [],
+            distanceBeneficio: []
         };
     }
     ProcurarFavorito = async (id) => {
@@ -226,9 +232,26 @@ export default class ListagemCurso extends Component {
                     // console.warn(objLocalCurso);
                     var modalidadeCurso = objModalidadeCurso[i]['modalidadeCurso']
                     if (modalidadeCurso == false) {
+                        let stringLocalCurso = JSON.stringify(dadosCurso);
+                        let objLocalCurso = JSON.parse(stringLocalCurso);
+                        // console.warn(objLocalCurso);
+                        var localCurso = objLocalCurso[i]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
+
+                        var stringProblematica = `/json?origins=${this.state.Userlongitude}, ${this.state.Userlatitude}&destinations=${localCurso}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
+                        // console.warn(stringProblematica)
+
+                        const respostaLocal = await apiMaps(stringProblematica);
+                        let string = JSON.stringify(respostaLocal.data);
+                        let obj = JSON.parse(string);
+                        // console.warn(obj)
+
+                        let distance = obj['rows'][0]['elements'][0]['distance'].value
+                        console.log(distance)
+                        this.state.distanceBeneficio.push(distance);
+
                         let stringCurso = JSON.stringify(dadosCurso);
                         var objCurso = JSON.parse(stringCurso);
-
+                        console.log("CHEGUEI")
                         var curso = objCurso[i]
                         // console.warn(curso)
                         this.state.listaCurso.push(curso);
@@ -250,6 +273,8 @@ export default class ListagemCurso extends Component {
                         // console.warn(obj)
 
                         let distance = obj['rows'][0]['elements'][0]['distance'].value
+                        console.log(distance)
+                        this.state.distanceBeneficio.push(distance);
                         // console.log(distance)
                         if (respostaLocal.status == 200) {
                             // console.warn('Localização encontrada!');
@@ -291,6 +316,7 @@ export default class ListagemCurso extends Component {
 
                 this.setState({ contadorCurso: i })
                 this.verifyCoracao();
+                console.log(this.state.distanceBeneficio)
                 // console.warn(this.state.contadorCurso)
             }
         }
@@ -497,10 +523,30 @@ export default class ListagemCurso extends Component {
         console.warn(this.state.listaFavoritosCoracao)
     }
 
+    // verifyMask = () => {
+    //     console.log(this.state.phone.length)
+    //     if (this.state.phone.length + 1 == 1) {
+    //         this.setState({ mask: '9KM' })
+    //     }
+    //     else if (this.state.phone.length + 1 == 2) {
+    //         this.setState({ mask: '99KM' })
+    //     }
+    //     else {         
+    //         this.setState({ mask: '999KM' })
+    //     }
+    // }
+
+    distanceAdiciona = () => {
+        var h = 0
+        h++
+        return h
+    }
+
     componentDidMount = async () => {
         this.GetLocation();
         await delay(2000);
         this.SaldoUsuario();
+        // this.verifyMask();
         await delay(3000);
         this.ListarCurso();
         // await delay(2000);
@@ -525,26 +571,26 @@ export default class ListagemCurso extends Component {
                         <FontAwesome5 name="coins" size={24} color="#FBB01E" />
                         <Text style={styles.textDados}>{this.state.saldoUsuario}</Text>
                     </View>
-                    <TextInputMask
-                        onChangeText={(formatted, distanceUser) => {
-                            this.setState({ distanceUser })
-                            console.log(formatted) // +1 (123) 456-78-90
-                            console.log(extracted) // 1234567890
+
+                    {/* <MaskedTextInput
+                        mask={this.state.mask}
+                        onChangeText={(text, rawText) => {
+                            this.verifyMask();
+                            this.setState({ phone: text });
+                            this.setState({ maskPhone: rawText});                    
                         }}
-                        mask={"[000] [KM]"}
-                        placeholder="Insira KM"
-                        placeholderTextColor="#B3B3B3"
+                        style={styles.input}
                         keyboardType="numeric"
-                        maxLength={3}
-                    />
-                    {/* <TextInput
+                        maxLength={5}
+                    /> */}
+                    <TextInput
                         style={styles.inputDistance}
                         onChangeText={distanceUser => this.setState({ distanceUser })}
                         placeholder="150 km"
                         placeholderTextColor="#B3B3B3"
                         keyboardType="numeric"
                         maxLength={3}
-                    /> */}
+                    />
                 </View>
 
                 {this.verifyList()}
@@ -611,6 +657,8 @@ export default class ListagemCurso extends Component {
                             <FontAwesome5 name="coins" size={24} color="#FBB01E" />
                             <Text style={styles.textDados}>{item.valorCurso}</Text>
                         </View>
+
+                        <Text>{this.state.distanceBeneficio[this.distanceAdiciona()]}</Text>
 
                         <View style={styles.boxFavorito}>
                             <Pressable onPress={() => this.Favoritar(true, item.idCurso)}>

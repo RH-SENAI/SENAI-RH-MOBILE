@@ -35,6 +35,9 @@ import ListarDecisao from "./src/pages/democratizacao/listarDecisao"
 // import 'intl';
 // import 'intl/locale-data/jsonp/pt-BR';
 
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+
 const Stack = createNativeStackNavigator();
 
 function App() {
