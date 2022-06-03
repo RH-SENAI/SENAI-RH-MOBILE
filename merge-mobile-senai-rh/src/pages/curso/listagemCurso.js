@@ -27,6 +27,7 @@ import apiMaps from '../../services/apiMaps.js';
 import * as Location from 'expo-location';
 import moment from 'moment';
 import { FontAwesome5 } from '@expo/vector-icons';
+import TextInputMask from 'react-native-text-input-mask';
 const delay = require('delay');
 // import { Location, Permissions } from 'expo';
 
@@ -220,44 +221,58 @@ export default class ListagemCurso extends Component {
                 var i = 0
 
                 do {
-                    let stringLocalCurso = JSON.stringify(dadosCurso);
-                    let objLocalCurso = JSON.parse(stringLocalCurso);
+                    let stringModalidadeCurso = JSON.stringify(dadosCurso);
+                    let objModalidadeCurso = JSON.parse(stringModalidadeCurso);
                     // console.warn(objLocalCurso);
-                    var localCurso = objLocalCurso[i]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
+                    var modalidadeCurso = objModalidadeCurso[i]['modalidadeCurso']
+                    if (modalidadeCurso == false) {
+                        let stringCurso = JSON.stringify(dadosCurso);
+                        var objCurso = JSON.parse(stringCurso);
 
-                    // ----> Localização 
+                        var curso = objCurso[i]
+                        // console.warn(curso)
+                        this.state.listaCurso.push(curso);
+                    }
+                    else {
+                        let stringLocalCurso = JSON.stringify(dadosCurso);
+                        let objLocalCurso = JSON.parse(stringLocalCurso);
+                        // console.warn(objLocalCurso);
+                        var localCurso = objLocalCurso[i]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
 
-                    var stringProblematica = `/json?origins=${this.state.Userlongitude}, ${this.state.Userlatitude}&destinations=${localCurso}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
-                    // console.warn(stringProblematica)
+                        // ----> Localização 
 
-                    const respostaLocal = await apiMaps(stringProblematica);
-                    let string = JSON.stringify(respostaLocal.data);
-                    let obj = JSON.parse(string);
-                    // console.warn(obj)
+                        var stringProblematica = `/json?origins=${this.state.Userlongitude}, ${this.state.Userlatitude}&destinations=${localCurso}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
+                        // console.warn(stringProblematica)
 
-                    let distance = obj['rows'][0]['elements'][0]['distance'].value
-                    // console.log(distance)
-                    if (respostaLocal.status == 200) {
-                        // console.warn('Localização encontrada!');
-                        if (distance <= distanceBase) {
-                            console.warn(distance);
-                            //this.setState({ localizacaoCurso: dadosLocalizacao })
-                            // console.warn(distance);
-                            // console.warn('Localização está no alcance');
-                            // console.warn(this.state.listaCurso);
+                        const respostaLocal = await apiMaps(stringProblematica);
+                        let string = JSON.stringify(respostaLocal.data);
+                        let obj = JSON.parse(string);
+                        // console.warn(obj)
 
-                            let stringCurso = JSON.stringify(dadosCurso);
-                            var objCurso = JSON.parse(stringCurso);
-                            //var lugarCurso = objCurso[u]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
+                        let distance = obj['rows'][0]['elements'][0]['distance'].value
+                        // console.log(distance)
+                        if (respostaLocal.status == 200) {
+                            // console.warn('Localização encontrada!');
+                            if (distance <= distanceBase) {
+                                console.warn(distance);
+                                //this.setState({ localizacaoCurso: dadosLocalizacao })
+                                // console.warn(distance);
+                                // console.warn('Localização está no alcance');
+                                // console.warn(this.state.listaCurso);
 
-                            var curso = objCurso[i]
-                            // console.warn(curso)
-                            this.state.listaCurso.push(curso);
+                                let stringCurso = JSON.stringify(dadosCurso);
+                                var objCurso = JSON.parse(stringCurso);
+                                //var lugarCurso = objCurso[u]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
 
-                        }
-                        else if (distance > distanceBase) {
-                            console.warn(distance);
-                            console.warn('Localização fora do alcance');
+                                var curso = objCurso[i]
+                                // console.warn(curso)
+                                this.state.listaCurso.push(curso);
+
+                            }
+                            else if (distance > distanceBase) {
+                                console.warn(distance);
+                                console.warn('Localização fora do alcance');
+                            }
                         }
                     }
                     // console.warn('Curso encontrado');
@@ -510,14 +525,26 @@ export default class ListagemCurso extends Component {
                         <FontAwesome5 name="coins" size={24} color="#FBB01E" />
                         <Text style={styles.textDados}>{this.state.saldoUsuario}</Text>
                     </View>
-                    <TextInput
+                    <TextInputMask
+                        onChangeText={(formatted, distanceUser) => {
+                            this.setState({ distanceUser })
+                            console.log(formatted) // +1 (123) 456-78-90
+                            console.log(extracted) // 1234567890
+                        }}
+                        mask={"[000] [KM]"}
+                        placeholder="Insira KM"
+                        placeholderTextColor="#B3B3B3"
+                        keyboardType="numeric"
+                        maxLength={3}
+                    />
+                    {/* <TextInput
                         style={styles.inputDistance}
                         onChangeText={distanceUser => this.setState({ distanceUser })}
                         placeholder="150 km"
                         placeholderTextColor="#B3B3B3"
                         keyboardType="numeric"
                         maxLength={3}
-                    />
+                    /> */}
                 </View>
 
                 {this.verifyList()}
