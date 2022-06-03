@@ -27,7 +27,7 @@ import apiMaps from '../../services/apiMaps.js';
 import * as Location from 'expo-location';
 import moment from 'moment';
 import { FontAwesome5 } from '@expo/vector-icons';
-import TextInputMask from 'react-native-text-input-mask';
+//import TextInputMask from 'react-native-text-input-mask';
 const delay = require('delay');
 // import { Location, Permissions } from 'expo';
 
@@ -525,7 +525,7 @@ export default class ListagemCurso extends Component {
                         <FontAwesome5 name="coins" size={24} color="#FBB01E" />
                         <Text style={styles.textDados}>{this.state.saldoUsuario}</Text>
                     </View>
-                    <TextInputMask
+                    {/* <TextInputMask
                         onChangeText={(formatted, distanceUser) => {
                             this.setState({ distanceUser })
                             console.log(formatted) // +1 (123) 456-78-90
@@ -536,7 +536,7 @@ export default class ListagemCurso extends Component {
                         placeholderTextColor="#B3B3B3"
                         keyboardType="numeric"
                         maxLength={3}
-                    />
+                    /> */}
                     {/* <TextInput
                         style={styles.inputDistance}
                         onChangeText={distanceUser => this.setState({ distanceUser })}

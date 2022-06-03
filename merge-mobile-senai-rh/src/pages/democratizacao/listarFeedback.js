@@ -114,31 +114,35 @@ export default function ListarDecisao() {
         })
       }
     >
-      <View style={styles.imgPerfilCardWrapper}>
-        <Image
-          source={
-            item.idUsuarioNavigation.caminhoFotoPerfil !== undefined
-              &&
-              item.idUsuarioNavigation.caminhoFotoPerfil !== null
-              ?
-              { uri: "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" + item.idUsuarioNavigation.caminhoFotoPerfil }
-              :
-              imgPadrao
-          }
-          style={styles.img_perfil}
-          resizeMode="cover"
-        />
-        <View style={styles.containerTextos}>
-          <Text >{`${item.idUsuarioNavigation.nome} propôs: `}</Text>
-          <Text >{`${item.descricaoDecisao}`}</Text>
+      
+        <View style={styles.imgPerfilCardWrapper}>
+          <Image
+            source={
+              item.idUsuarioNavigation.caminhoFotoPerfil !== undefined
+                &&
+                item.idUsuarioNavigation.caminhoFotoPerfil !== null
+                ?
+                { uri: "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" + item.idUsuarioNavigation.caminhoFotoPerfil }
+                :
+                imgPadrao
+            }
+            style={styles.img_perfil}
+            resizeMode="cover"
+          />
+          <View style={styles.containerTextos}>
+            <Text >{`${item.idUsuarioNavigation.nome} propôs: `}</Text>
+            <Text >{`${item.descricaoDecisao}`}</Text>
+          </View>
         </View>
-      </View>
+
+      <ScrollView nestedScrollEnabled={true}>
       {/* ----------- LISTA DE FEEDBACKS DENTRO DE CADA DECISÃO --------------- */}
       {
         listaFeedback
           .filter(f => f.idDecisao === item.idDecisao)
           .map(feedback => {
             return (
+
               <TouchableOpacity
                 style={styles.itemLineRender_feedback}
                 //style={styles.containerRenderItem}
@@ -168,9 +172,11 @@ export default function ListarDecisao() {
                   </View>
                 </View>
               </TouchableOpacity>
+
             )
           })
       }
+      </ScrollView>
     </TouchableOpacity>
 
 
@@ -195,16 +201,15 @@ export default function ListarDecisao() {
           />
           <Text style={styles.h1Bold}>FeedBacks</Text>
         </View>
-        <ScrollView>
+        {/* <ScrollView> */}
           <FlatList
             contentContainerStyle={styles.containerFlatList}
             data={listaDecisao}
             keyExtractor={(item) => item.idDecisao}
             renderItem={renderDecisao}
+            scrollEnabled={true}
           />
-
-        </ScrollView>
-
+        {/* </ScrollView> */}
       </View>
     );
   }
@@ -255,6 +260,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     width: largura * .9,
     //height: 300,
+    maxHeight: largura * .7,
     borderRadius: 5,
     borderTopWidth: 25,
     borderWidth: 1,
@@ -288,7 +294,7 @@ const styles = StyleSheet.create({
     //backgroundColor: 'red',
   },
 
-// --------- cards de feedbacks/styles, abaixo
+  // --------- cards de feedbacks/styles, abaixo
 
   itemLineRender_feedback: {
     //flex: 1,
