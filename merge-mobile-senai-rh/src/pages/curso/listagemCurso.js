@@ -28,7 +28,7 @@ import * as Location from 'expo-location';
 import moment from 'moment';
 // import { mask, MaskedTextInput} from "react-native-mask-text";
 import { FontAwesome5 } from '@expo/vector-icons';
-
+//import TextInputMask from 'react-native-text-input-mask';
 const delay = require('delay');
 // import { Location, Permissions } from 'expo';
 
@@ -571,13 +571,11 @@ export default class ListagemCurso extends Component {
                         <FontAwesome5 name="coins" size={24} color="#FBB01E" />
                         <Text style={styles.textDados}>{this.state.saldoUsuario}</Text>
                     </View>
-
-                    {/* <MaskedTextInput
-                        mask={this.state.mask}
-                        onChangeText={(text, rawText) => {
-                            this.verifyMask();
-                            this.setState({ phone: text });
-                            this.setState({ maskPhone: rawText});                    
+                    {/* <TextInputMask
+                        onChangeText={(formatted, distanceUser) => {
+                            this.setState({ distanceUser })
+                            console.log(formatted) // +1 (123) 456-78-90
+                            console.log(extracted) // 1234567890
                         }}
                         style={styles.input}
                         keyboardType="numeric"

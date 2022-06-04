@@ -497,15 +497,18 @@ export default function Dashboard() {
                   <View style={styles.containerLine} >
                     <Image
                       source={
-                        usuario.caminhoFotoPerfil == undefined
-                          ? {
-                            uri:
-                              "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
-                              usuario.caminhoFotoPerfil,
+                        usuario.caminhoFotoPerfil !== undefined
+                        &&
+                        usuario.caminhoFotoPerfil !== null
+                    ? {
+                      uri:
+                    "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
+                    usuario.caminhoFotoPerfil,
                           }
-                          : require("../../../assets/img-gp3/Perfil.png")
+                    : require("../../../assets/img-gp3/Perfil.png")
                       }
-                      resizeMod="cover"
+                      style={styles.img_perfil}
+                    resizeMod="cover"
                     />
 
                     <View style={styles.containerTextos}>
@@ -676,8 +679,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#f1f1f1',
     padding: 10,
   },
+  img_perfil: {
+    width: 70,
+    height: 70,
+    borderRadius: 7
+  },
   containerTextos: {
-    marginLeft: 24,
+    marginLeft: 10,
     marginTop: 0,
     fontFamily: "Quicksand_300Light",
     //backgroundColor: 'blue'

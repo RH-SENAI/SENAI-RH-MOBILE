@@ -107,12 +107,13 @@ export default function ListarDecisao() {
           style={styles.img_perfil}
           resizeMode="cover"
         />
+        <View style={styles.containerTextos}>
+          <Text >{`${item.idUsuarioNavigation.nome} propôs: `}</Text>
+          <Text >{`${item.descricaoDecisao}`}</Text>
+        </View>
       </View>
 
-      <View style={styles.containerTextos}>
-        <Text >{`${item.idUsuarioNavigation.nome} propôs: `}</Text>
-        <Text >{`${item.descricaoDecisao}`}</Text>
-      </View>
+
 
 
 
@@ -141,7 +142,7 @@ export default function ListarDecisao() {
             source={require("../../../assets/img-geral/logo_2S.png")}
             style={styles.imgLogo}
           />
-          <Text style={styles.h1Bold}>Decisão</Text>
+          <Text style={styles.h1Bold}>Decisões</Text>
         </View>
 
         <FlatList
@@ -184,20 +185,19 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     color: "#2A2E32",
     paddingTop: 10,
-    paddingBottom: '2%'
   },
 
   itemLineRender: {
     //flex: 1,
-    flexDirection: "row",
+    flexDirection: 'column',
     width: largura * .9,
-    height: largura * .27,
+    //height: largura * .27,
     borderRadius: 5,
     borderTopWidth: 25,
     borderWidth: 1,
     borderTopColor: "rgba(0, 0, 0, 0.8)",
     borderColor: 'gray',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginTop: 20,
     //backgroundColor: 'blue'
   },
@@ -208,28 +208,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     //backgroundColor: 'orange',
   },
-  img_perfil: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 7
-  },
+
   imgPerfilCardWrapper: {
-    
+    flexDirection: 'row',
+    width: "100%",
+    height: 75,
+    //borderColor: '#451531',
+    //borderWidth: 3,
+    borderRadius: 5,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    //backgroundColor: 'lime',
+  },
+  img_perfil: {
     width: 70,
     height: 70,
-    borderColor: '#451531',
-    borderWidth: 3,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: '2%',
-    //backgroundColor: 'lime',
+    borderRadius: 7
   },
   containerTextos: {
     flex: 1,
-    marginRight: '2%',
     //backgroundColor: 'red',
-    marginTop: -25
   }
 
 });
