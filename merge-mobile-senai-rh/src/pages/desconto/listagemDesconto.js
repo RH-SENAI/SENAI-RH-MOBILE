@@ -10,7 +10,8 @@ import {
     ScrollView,
     TextInput,
     RefreshControl,
-    TouchableOpacity
+    TouchableOpacity,
+    Dimensions
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -431,7 +432,7 @@ export default class ListagemDesconto extends Component {
                 <Pressable onPress={() => this.setModalVisivel(true, item.idDesconto)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
-                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemDesconto}` }} resizeMode="stretch" />
+                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemDesconto}` }} resizeMode="cover" />
                         </View>
 
                         <View style={styles.boxTituloCurso}>
@@ -479,7 +480,7 @@ export default class ListagemDesconto extends Component {
                                 <ScrollView>
                                     <View style={styles.boxTituloModal}>
                                         <View style={styles.boxImgCurso}>
-                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${this.state.descontoBuscado.caminhoImagemDesconto}` }} resizeMode="stretch" />
+                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${this.state.descontoBuscado.caminhoImagemDesconto}` }} resizeMode="cover" />
                                         </View>
                                         <Text style={styles.textTituloModal}>{this.state.descontoBuscado.nomeDesconto}</Text>
                                     </View>
@@ -574,299 +575,654 @@ export default class ListagemDesconto extends Component {
         </View>
     );
 }
-const styles = StyleSheet.create({
-    containerRefresh: {
-        alignItems: 'center'
-    },
-    verify: {
-        color: 'black'
-    },
-    containerListagem: {
-        flex: 1,
-        alignItems: 'center'
-    },
-    boxLogoHeader: {
-        marginTop: 50
-    },
-    boxTituloPrincipal: {
-        marginTop: 24,
-        marginBottom: 24
-    },
-    textTituloPrincipal: {
-        textTransform: 'uppercase',
-        fontFamily: 'Montserrat-Bold',
-        fontSize: 30
-    },
-    boxInputSaldo: {
-        width: 275,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 24
-    },
-    boxSaldoUsuario: {
-        width: 90,
-        height: 42,
-        borderWidth: 2,
-        borderColor: '#B3B3B3',
-        borderRadius: 15,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    inputDistance: {
-        width: 100,
-        height: 42,
-        borderColor: '#B3B3B3',
-        borderWidth: 2,
-        borderRadius: 15,
-        display: 'flex',
-        alignItems: 'center',
-        paddingLeft: 28
-    },
-    containerCurso: {
-        marginBottom: 50,
-    },
-    boxCurso: {
-        width: 275,
-        height: 285,
-        borderWidth: 2,
-        borderColor: '#B3B3B3',
-        borderTopWidth: 0,
-        borderRadius: 10,
-    },
-    boxImgCurso: {
-        alignItems: 'center',
-    },
-    imgCurso: {
-        width: 275,
-        height: 125,
-        borderTopLeftRadius: 4,
-        borderTopRightRadius: 4,
-    },
-    boxTituloCurso: {
-        marginLeft: 16
-    },
-    textTituloCurso: {
-        fontSize: 20,
-        fontFamily: 'Montserrat-Medium',
-        marginTop: 8,
-    },
-    boxAvaliacao: {
-        width: 150,
-        height: 32,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginLeft: 16,
-        marginTop: 4
-    },
-    boxDados: {
-        display: 'flex',
-        flexDirection: 'row',
-        marginTop: 8,
-        marginLeft: 16
-    },
-    imgDados: {
-        width: 19.7,
-        height: 19.8,
-        marginTop: 1
-    },
-    textDados: {
-        fontFamily: 'Quicksand-Regular',
-        marginLeft: 8,
-        marginBottom: 3
-    },
-    boxPrecoFavorito: {
-        height: 40,
-        display: 'flex',
-        flexDirection: 'row',
-        marginTop: 35,
-        marginLeft: 16
-    },
-    boxPreco: {
-        width: 90,
-        height: 42,
-        borderWidth: 2,
-        borderColor: '#B3B3B3',
-        borderRadius: 15,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    imgCoin: {
-        width: 22.1,
-        height: 22,
-    },
-    boxFavorito: {
-        width: 50,
-        height: 40,
-        //backgroundColor: 'black',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginLeft: 105,
-    },
-    modalAbrir: {
-        width: 100,
-        height: 40,
-        backgroundColor: '#CB334B',
-        borderRadius: 12,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    totalModal: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.3)',
-    },
-    containerModal: {
-        width: '83%',
-        height: '81%',
-        backgroundColor: '#F2F2F2',
-        borderWidth: 2,
-        borderTopWidth: 1,
-        borderColor: '#B3B3B3',
-        //borderStyle: 'dashed',
-        marginLeft: 33,
-        marginTop: 88,
-        borderRadius: 10,
-    },
-    boxTituloModal: {
-        //alignItems: 'center',
-    },
-    imgModalCurso: {
-        width: '100%',
-        height: 150,
-        borderTopLeftRadius: 4,
-        borderTopRightRadius: 4,
-    },
-    textTituloModal: {
-        fontFamily: 'Montserrat-Bold',
-        fontSize: 20,
-        color: '#000',
-        marginTop: 24,
-        marginLeft: 16
-    },
-    boxAvaliacaoPreco: {
-        display: 'flex',
-        alignItems: 'center',
-        flexDirection: 'row',
-    },
-    boxAvaliacaoModal: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 24,
-        marginLeft: 16,
-    },
-    boxPrecoModal: {
-        width: 90,
-        height: 48,
-        borderWidth: 2,
-        borderColor: '#B3B3B3',
-        borderRadius: 15,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 24,
-        marginRight: 40,
-        marginLeft: 64
-    },
-    boxDadosModal: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 16,
-        marginLeft: 24,
-    },
-    textDadosModal: {
-        width: 120,
-        fontFamily: 'Quicksand-Regular',
-        marginLeft: 16
-    },
-    boxDescricaoModal: {
-        width: '75%',
-        height: '70%',
-        marginLeft: 16,
-        marginTop: 24
-    },
-    descricaoModal: {
-        fontFamily: 'Montserrat-Medium',
-        fontSize: 16,
-        color: '#000',
-    },
-    boxVerMais: {
-        // height: '10%'
-    },
-    textDescricaoModal: {
-        fontFamily: 'Quicksand-Regular',
-        width: 280,
-        height: '18%',
-        fontSize: 12,
-        color: '#000',
-        alignItems: 'center',
-        display: 'flex',
-        //textAlign: 'justify',
-        marginTop: 5,
-    },
-    boxEmpresa: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: '38%'
-    },
-    tituloEmpresa: {
-        fontFamily: 'Montserrat-Medium',
-        fontSize: 14,
-        color: '#000',
-    },
-    textEmpresa: {
-        fontFamily: 'Quicksand-Regular',
-        fontSize: 14,
-        color: '#000',
-        marginLeft: 10
-    },
-    boxValorInscrever: {
-        height: '10%',
-        display: 'flex',
-        alignItems: 'center',
-        flexDirection: 'row',
-        marginTop: '5%',
-    },
-    boxComentarioModal: {
-        marginTop: '13%',
-        alignItems: 'center'
-    },
-    boxInscreverModal: {
-        alignItems: 'center',
-        marginLeft: 80
-    },
-    inscreverModal: {
-        width: 150,
-        height: 48,
-        backgroundColor: '#1D438A',
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 32,
-        marginLeft: 8,
-    },
-    inscreverModalDisable: {
-        width: 150,
-        height: 48,
-        backgroundColor: '#1D438A',
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 32,
-        marginLeft: 8,
-        opacity: 0.5
-    },
-    textDetalhes: {
-        color: 'white',
-        fontFamily: 'Montserrat-Medium',
-    },
-    tituloAlert: {
-        color: 'green'
-    }
-})
+if (Dimensions.get('window').width > 700) {
+    var styles = StyleSheet.create({
+        containerRefresh: {
+            alignItems: 'center'
+        },
+        verify: {
+            color: 'black'
+        },
+        containerListagem: {
+            flex: 1,
+            alignItems: 'center'
+        },
+        boxLogoHeader: {
+            marginTop: 50
+        },
+        boxTituloPrincipal: {
+            marginTop: 24,
+            marginBottom: 24
+        },
+        textTituloPrincipal: {
+            textTransform: 'uppercase',
+            fontFamily: 'Montserrat-Bold',
+            fontSize: 30
+        },
+        boxInputSaldo: {
+            width: 275,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 24,
+            // backgroundColor: 'yellow'
+        },
+        boxSaldoUsuario: {
+            width: 90,
+            height: 42,
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        inputDistance: {
+            width: 100,
+            height: 42,
+            borderColor: '#B3B3B3',
+            borderWidth: 2,
+            borderRadius: 15,
+            display: 'flex',
+            alignItems: 'center',
+            paddingLeft: 28
+        },
+        flatlist: {
+            flex: 1,
+            width: '75%',
+            height: '100%'
+            // backgroundColor: 'blue'
+        },
+        // containerCurso: {
+        //     width: '100%',
+        //     height: 500,
+        //     // backgroundColor: 'blue',
+        //     // marginBottom: '1%',
+        //     marginBottom: 20
+        // },
+        boxCurso: {
+            // backgroundColor: 'pink',
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderTopWidth: 0,
+            borderRadius: 10,
+            marginBottom: 20
+        },
+        boxImgCurso: {
+            alignItems: 'center',
+        },
+        imgCurso: {
+            width: '100%',
+            height: 100,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            // backgroundColor: 'red',
+        },
+        containerCard: {
+            // backgroundColor: 'green',
+            marginBottom: 24
+        },
+        boxTituloCurso: {
+            marginLeft: 16
+        },
+        textTituloCurso: {
+            fontSize: 20,
+            fontFamily: 'Montserrat-Medium',
+            marginTop: 8,
+        },
+        boxAvaliacao: {
+            width: 150,
+            height: 32,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginLeft: 16,
+            marginTop: 4
+        },
+        boxDados: {
+            display: 'flex',
+            flexDirection: 'row',
+            marginTop: 8,
+            marginLeft: 16
+        },
+        imgDados: {
+            width: 19.7,
+            height: 19.8,
+            marginTop: 1
+        },
+        textDados: {
+            fontFamily: 'Quicksand-Regular',
+            marginLeft: 8,
+            marginBottom: 3
+        },
+        boxPrecoFavorito: {
+            height: 40,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginTop: 16,
+            marginLeft: 16,
+            marginBottom: 10
+        },
+        boxPreco: {
+            width: 90,
+            height: 42,
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            // backgroundColor: 'pink'
+        },
+        imgCoin: {
+            width: 22.1,
+            height: 22,
+        },
+        boxFavorito: {
+            width: '10%',
+            height: 40,
+            // backgroundColor: 'pink',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '5%'
+        },
+        textFavoritos: {
+            color: 'white'
+        },
+        // modalAbrir: {
+        //     width: 100,
+        //     height: 40,
+        //     backgroundColor: '#CB334B',
+        //     borderRadius: 12,
+        //     alignItems: 'center',
+        //     justifyContent: 'center'
+        // },
+        totalModal: {
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            alignItems: 'center',
+            justifyContent: 'center'
+        },
+        containerModal: {
+            width: 500,
+            height: '75%',
+            backgroundColor: '#F2F2F2',
+            borderWidth: 2,
+            borderTopWidth: 0,
+            borderColor: '#B3B3B3',
+            // backgroundColor: 'pink',
+            //borderStyle: 'dashed',
+            // marginLeft: 33,
+            // marginTop: 88,
+            borderRadius: 10,
+        },
+        boxTituloModal: {
+            //alignItems: 'center',
+        },
+        imgModalCurso: {
+            width: '101.5%',
+            height: 150,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+        },
+        textTituloModal: {
+            fontFamily: 'Montserrat-Bold',
+            fontSize: 20,
+            color: '#000',
+            marginTop: 24,
+            marginLeft: 16
+        },
+        boxAvaliacaoPreco: {
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'row',
+            // backgroundColor: 'pink',
+        },
+        boxAvaliacaoModal: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 8,
+            marginLeft: 16,
+        },
+        boxPrecoModal: {
+            width: 90,
+            height: 48,
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: '1%',
+            marginRight: 40,
+            marginLeft: '40%'
+        },
+        boxDadosModal: {
+            width: '70%',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-evenly',
+            marginTop: '4%',
+            marginLeft: 8,
+        },
+        textDadosModal: {
+            width: 120,
+            fontFamily: 'Quicksand-Regular',
+            marginLeft: 8
+        },
+        boxDescricaoModal: {
+            width: 300,
+            marginLeft: 16,
+            marginTop: 24
+        },
+        descricaoModal: {
+            fontFamily: 'Montserrat-Medium',
+            fontSize: 16,
+            color: '#000',
+        },
+        boxVerMais: {
+            height: 150
+        },
+        textDescricaoModal: {
+            fontFamily: 'Quicksand-Regular',
+            width: 280,
+            height: '18%',
+            fontSize: 12,
+            color: '#000',
+            alignItems: 'center',
+            display: 'flex',
+            //textAlign: 'justify',
+            marginTop: 5,
+        },
+        boxEmpresa: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: '60%'
+        },
+        tituloEmpresa: {
+            fontFamily: 'Montserrat-Medium',
+            fontSize: 14,
+            color: '#000',
+        },
+        textEmpresa: {
+            fontFamily: 'Quicksand-Regular',
+            fontSize: 14,
+            color: '#000',
+            marginLeft: 10
+        },
+        boxValorInscrever: {
+            height: '10%',
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'row',
+            marginTop: '5%',
+        },
+        boxComentarioModal: {
+            marginTop: '8%',
+            alignItems: 'center'
+        },
+        boxInscreverModal: {
+            alignItems: 'center',
+            marginLeft: '85%'
+        },
+        inscreverModal: {
+            width: 150,
+            height: 48,
+            backgroundColor: '#4B7294',
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 32,
+            marginLeft: 8,
+        },
+        inscreverModalDisable: {
+            width: 150,
+            height: 48,
+            backgroundColor: '#4B7294',
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 32,
+            marginLeft: 8,
+            opacity: 0.5
+        },
+        textDetalhes: {
+            color: 'white',
+            fontFamily: 'Montserrat-Medium',
+        },
+        tituloAlert: {
+            color: 'green'
+        }
+    })
+}
+
+// CELULAR
+else {
+    var styles = StyleSheet.create({
+        containerRefresh: {
+            alignItems: 'center'
+        },
+        verify: {
+            color: 'black'
+        },
+        containerListagem: {
+            flex: 1,
+            alignItems: 'center'
+        },
+        boxLogoHeader: {
+            marginTop: 50
+        },
+        boxTituloPrincipal: {
+            marginTop: 24,
+            marginBottom: 24
+        },
+        textTituloPrincipal: {
+            textTransform: 'uppercase',
+            fontFamily: 'Montserrat-Bold',
+            fontSize: 30
+        },
+        boxInputSaldo: {
+            width: 275,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 24,
+            // backgroundColor: 'yellow'
+        },
+        boxSaldoUsuario: {
+            width: 90,
+            height: 42,
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        inputDistance: {
+            width: 100,
+            height: 42,
+            borderColor: '#B3B3B3',
+            borderWidth: 2,
+            borderRadius: 15,
+            display: 'flex',
+            alignItems: 'center',
+            paddingLeft: 28
+        },
+        flatlist: {
+            flex: 1,
+            width: '75%',
+            height: '100%'
+            // backgroundColor: 'blue'
+        },
+        // containerCurso: {
+        //     width: '100%',
+        //     height: 500,
+        //     // backgroundColor: 'blue',
+        //     // marginBottom: '1%',
+        //     marginBottom: 20
+        // },
+        boxCurso: {
+            // backgroundColor: 'pink',
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderTopWidth: 0,
+            borderRadius: 10,
+            marginBottom: 20
+        },
+        boxImgCurso: {
+            alignItems: 'center',
+        },
+        imgCurso: {
+            width: '100%',
+            height: 100,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            // backgroundColor: 'red',
+        },
+        containerCard: {
+            // backgroundColor: 'green',
+            marginBottom: 24
+        },
+        boxTituloCurso: {
+            marginLeft: 16
+        },
+        textTituloCurso: {
+            fontSize: 20,
+            fontFamily: 'Montserrat-Medium',
+            marginTop: 8,
+        },
+        boxAvaliacao: {
+            width: 150,
+            height: 32,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginLeft: 16,
+            marginTop: 4
+        },
+        boxDados: {
+            display: 'flex',
+            flexDirection: 'row',
+            marginTop: 8,
+            marginLeft: 16
+        },
+        imgDados: {
+            width: 19.7,
+            height: 19.8,
+            marginTop: 1
+        },
+        textDados: {
+            fontFamily: 'Quicksand-Regular',
+            marginLeft: 8,
+            marginBottom: 3
+        },
+        boxPrecoFavorito: {
+            height: 40,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginTop: 16,
+            marginLeft: 16,
+            marginBottom: 10
+        },
+        boxPreco: {
+            width: 90,
+            height: 42,
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            // backgroundColor: 'pink'
+        },
+        imgCoin: {
+            width: 22.1,
+            height: 22,
+        },
+        boxFavorito: {
+            width: '10%',
+            height: 40,
+            // backgroundColor: 'pink',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '5%'
+        },
+        textFavoritos: {
+            color: 'white'
+        },
+        // modalAbrir: {
+        //     width: 100,
+        //     height: 40,
+        //     backgroundColor: '#CB334B',
+        //     borderRadius: 12,
+        //     alignItems: 'center',
+        //     justifyContent: 'center'
+        // },
+        totalModal: {
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            alignItems: 'center',
+            justifyContent: 'center'
+        },
+        containerModal: {
+            width: '100%',
+            height: '90%',
+            backgroundColor: '#F2F2F2',
+            borderWidth: 2,
+            borderTopWidth: 0,
+            borderColor: '#B3B3B3',
+            // backgroundColor: 'pink',
+            //borderStyle: 'dashed',
+            // marginLeft: 33,
+            // marginTop: 88,
+            borderRadius: 10,
+        },
+        boxTituloModal: {
+            //alignItems: 'center',
+        },
+        imgModalCurso: {
+            width: '101.5%',
+            height: 100,
+            borderTopLeftRadius: 12,
+            borderTopRightRadius: 12,
+        },
+        textTituloModal: {
+            fontFamily: 'Montserrat-Bold',
+            fontSize: 20,
+            color: '#000',
+            marginTop: 24,
+            marginLeft: 16
+        },
+        boxAvaliacaoPreco: {
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'row',
+            marginTop: '3%',
+            // backgroundColor: 'pink',
+        },
+        boxAvaliacaoModal: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 8,
+            marginLeft: 16,
+            marginRight: 48
+        },
+        boxPrecoModal: {
+            width: 90,
+            height: 48,
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: '3%',
+            // backgroundColor: 'green',
+        },
+        boxDadosModal: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 16,
+            marginLeft: 16,
+        },
+        textDadosModal: {
+            width: 80,
+            fontFamily: 'Quicksand-Regular',
+            marginLeft: 16
+        },
+        boxDescricaoModal: {
+            width: 300,
+            marginLeft: 16,
+            marginTop: 24
+        },
+        descricaoModal: {
+            fontFamily: 'Montserrat-Medium',
+            fontSize: 16,
+            color: '#000',
+        },
+        boxVerMais: {
+            height: 180
+        },
+        textDescricaoModal: {
+            fontFamily: 'Quicksand-Regular',
+            width: 280,
+            height: '18%',
+            fontSize: 12,
+            color: '#000',
+            alignItems: 'center',
+            display: 'flex',
+            //textAlign: 'justify',
+            marginTop: 5,
+        },
+        boxEmpresa: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 32
+        },
+        tituloEmpresa: {
+            fontFamily: 'Montserrat-Medium',
+            fontSize: 14,
+            color: '#000',
+        },
+        textEmpresa: {
+            fontFamily: 'Quicksand-Regular',
+            fontSize: 14,
+            color: '#000',
+            marginLeft: 10
+        },
+        boxValorInscrever: {
+            height: '10%',
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'row',
+            // marginTop: '1%',
+        },
+        boxComentarioModal: {
+            marginTop: '8%',
+            alignItems: 'center'
+        },
+        boxInscreverModal: {
+            alignItems: 'center',
+            marginLeft: 80
+        },
+        inscreverModal: {
+            width: 150,
+            height: 48,
+            backgroundColor: '#1D438A',
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 32,
+            marginLeft: 8,
+        },
+        inscreverModalDisable: {
+            width: 150,
+            height: 48,
+            backgroundColor: '#1D438A',
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 32,
+            marginLeft: 8,
+            opacity: 0.5
+        },
+        textDetalhes: {
+            color: 'white',
+            fontFamily: 'Montserrat-Medium',
+        },
+        tituloAlert: {
+            color: 'green'
+        }
+    })
+}
