@@ -42,7 +42,7 @@ export default function GraficoBarras(usuarioLogado) {
                 key={index}
                 x={x(index) + (bandwidth / 2)}
                 y={value < CUT_OFF ? y(value) - 10 : y(value) + 15}
-                fontSize={14}
+                fontSize={Dimensions.get('window').width * .02}
                 fill={value >= CUT_OFF ? 'black' : 'black'}
                 alignmentBaseline={'middle'}
                 textAnchor={'middle'}
@@ -62,17 +62,14 @@ export default function GraficoBarras(usuarioLogado) {
     )
 
     return (
-        <View style={{
-            flexDirection: 'row', height: 250, paddingTop: 16, paddingBottom: 20, backgroundColor: "rgba(0, 0, 0, 0)",
-            paddingHorizontal: '10%', borderRadius: 5, borderWidth: 1
-        }}>
+        <View style={styles.containerAreaGrafico} >
             <BarChart
-                style={{ flex: 1 }}
+                style={styles.areaGrafico}
                 data={data}
                 //svg={{ fill: 'url(#gradient)' }}
                 svg={{ fill: 'rgba(69, 21, 49, 0.9)' }}
                 contentInset={{ top: 20, bottom: 10 }}
-                spacing={0.2}
+                spacingInner={.2}
                 gridMin={0}
             >
 
@@ -87,79 +84,48 @@ export default function GraficoBarras(usuarioLogado) {
 
 }
 
-  // function GraficoBarras() {
+if (Dimensions.get('window').width > 700) {
 
-  //   const u = usuario[0];
+    var styles = StyleSheet.create({
 
-  //   const data = [
-  //     // {
-  //     //     value: 50,
-  //     // },
-  //     // {
-  //     //     value: 10,
-  //     //     svg: {
-  //     //         fill: 'rgba(134, 65, 244, 0.5)',
-  //     //     },
-  //     // },
-  //     // {
-  //     //     value: 40,
-  //     //     svg: {
-  //     //         stroke: 'purple',
-  //     //         strokeWidth: 2,
-  //     //         fill: 'black',
-  //     //         strokeDasharray: [ 4, 2 ],
-  //     //     },
-  //     // },
-  //     {
-  //       value: u.medSatisfacaoGeral,
-  //       svg: {
-  //         fill: 'url(#gradient)',
-  //       },
-  //     },
-  //     {
-  //       value: u.notaProdutividade,
-  //       svg: {
-  //         fill: 'url(#gradient)',
-  //       },
-  //     },
-  //     {
-  //       value: u.mediaAvaliacao,
-  //       svg: {
-  //         fill: 'url(#gradient)',
-  //       },
-  //     },
-  //     // {
-  //     //     value: 85,
-  //     //     svg: {
-  //     //         fill: 'green',
-  //     //     },
-  //     // },
-  //   ]
+        containerAreaGrafico: {
+            flexDirection: 'row', 
+            height: Dimensions.get('window').width * .45, 
+            paddingTop: 16, 
+            paddingBottom: 20, 
+            paddingHorizontal: '10%', 
+            borderRadius: 5, 
+            borderWidth: 1,
+            paddingHorizontal: '15%',
+            backgroundColor: "transparent",
+        },
+        areaGrafico: {
+            flex: 1,
+            height: '100%',
+            // backgroundColor: 'lime'
+        }
 
+    })
+}
+else {
+    var styles = StyleSheet.create({
 
-  //   const GradientB = () => (
-  //     <Defs key={'gradient'}>
-  //       <LinearGradient id={'gradient'} x1={'0'} y={'0%'} x2={'100%'} y2={'0%'}>
-  //         <Stop offset={'0%'} stopColor={'#C20004'} />
-  //         <Stop offset={'100%'} stopColor={'red'} />
-  //       </LinearGradient>
-  //     </Defs>
-  //   )
+        containerAreaGrafico: {
+            flexDirection: 'row', 
+            height: Dimensions.get('window').width * .5, 
+            paddingTop: 16, 
+            paddingBottom: 20, 
+            paddingHorizontal: '10%', 
+            borderRadius: 5, 
+            borderWidth: 1,
+            paddingHorizontal: '10%',
+            backgroundColor: "transparent",
+        },
+        areaGrafico: {
+            flex: 1,
+            height: '100%',
+            // backgroundColor: 'lime'
+        }
 
-  //   return (
-  //     <BarChart
-  //       style={{ height: 200 }}
-  //       data={data}
-  //       gridMin={0}
-  //       svg={{ fill: 'rgba(134, 65, 244, 0.8)' }}
-  //       yAccessor={({ item }) => item.value}
-  //       contentInset={{ top: 20, bottom: 20 }}
-  //       lab
-  //     >
-  //       <Grid />
-  //       <GradientB />
-  //     </BarChart>
-  //   )
-
-
-  // }
+    })
+}

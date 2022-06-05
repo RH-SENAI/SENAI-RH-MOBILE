@@ -317,18 +317,23 @@ export default function Dashboard() {
 
   useEffect(() => {
     BuscarUsuario()
+    wait(200)
     return (
       setUsuario([])
     )
   }, []);
+
   useEffect(() => {
     BuscarMinhasAtividades()
+    wait(200)
     return (
       setMinhasAtividades([])
     )
   }, []);
+
   useEffect(() => {
     BuscarHistorico()
+    wait(200)
     return (
       setHistoricos([])
     )
@@ -498,17 +503,17 @@ export default function Dashboard() {
                     <Image
                       source={
                         usuario.caminhoFotoPerfil !== undefined
-                        &&
-                        usuario.caminhoFotoPerfil !== null
-                    ? {
-                      uri:
-                    "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
-                    usuario.caminhoFotoPerfil,
+                          &&
+                          usuario.caminhoFotoPerfil !== null
+                          ? {
+                            uri:
+                              "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
+                              usuario.caminhoFotoPerfil,
                           }
-                    : require("../../../assets/img-gp3/Perfil.png")
+                          : require("../../../assets/img-gp3/Perfil.png")
                       }
                       style={styles.img_perfil}
-                    resizeMod="cover"
+                      resizeMod="cover"
                     />
 
                     <View style={styles.containerTextos}>
@@ -528,10 +533,11 @@ export default function Dashboard() {
                     <GraficoSatisfacao />
                   </View> */}
 
+                  {/* ------------------------------- GRAFICO DE BARRAS ----------------------------------- */}
+
                   <View style={styles.containerProdutividade}>
                     <View style={styles.containerProdutividadeSup}>
                       <Text style={styles.tituloComparativo}>Comparativo entre seus indíces:</Text>
-
                     </View>
                     <GraficoBarras usuarioLogado={usuario} />
                     <View style={styles.containerLabels}>
@@ -539,22 +545,6 @@ export default function Dashboard() {
                       <Text style={styles.nvsLabels}>Avaliação</Text>
                       <Text style={styles.nvsLabels}>Produtividade</Text>
                     </View>
-                    {/* <BarGraph
-                      style={styles.barGraphContainer}
-                      //style={graphStyle}
-                      data={dataMock}
-                      width={screenWidth * .8}
-                      height={220}
-                      //yAxisLabel="$"
-                      withHorizontalLabels={false}
-                      withCustomBarColorFromData={false}
-                      chartConfig={chartConfigB}
-                      verticalLabelRotation={0}
-                      fromZero={true}
-                      showBarTops={true}
-                      showValuesOnTopOfBars={true}
-                      segments={5}
-                    /> */}
                   </View>
 
                   <View style={styles.containerProdutividade}>
@@ -593,7 +583,7 @@ export default function Dashboard() {
                       <GraficoProdutividade />
                     </View>
                     <Text style={styles.subtituloProdutividade}>
-                      Acompanhe abaixo suas entregas de atividades nos últimos 120 dias:
+                      Acompanhe abaixo suas entregas de atividades nos últimos 150 dias:
                     </Text>
                     <ScrollView horizontal={true}>
                       <ContributionGraph
@@ -601,9 +591,9 @@ export default function Dashboard() {
                         values={minhasAtividades}
                         //endDate={new Date(moment(now))}
                         //endDate={moment(now)}
-                        numDays={120}
+                        numDays={150}
                         //width={'90%'}
-                        width={screenWidth * 1.4}
+                        width={screenWidth * 2}
                         height={260}
                         chartConfig={chartConfig}
                         showMonthLabels={true}
@@ -629,206 +619,414 @@ export default function Dashboard() {
 
 
 }
+if (Dimensions.get('window').width > 700) {
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f1f1f1",
-    alignItems: "center",
-    width: "100%",
-    //backgroundColor: 'orange'
-  },
-  imgLogo: {
-    alignSelf: "center",
-    marginTop: 40,
-    marginBottom: 24,
-  },
-  tituloPage: {
-    fontFamily: "Montserrat_600SemiBold",
-    fontSize: 35,
-    color: "#2A2E32",
-    textAlign: "center",
-    textTransform: "uppercase",
-  },
-  containerAreaDados: {
-    //backgroundColor: 'yellow',
-    flex: 1,
-    width: "100%",
-    paddingHorizontal: "5%",
-  },
-  containerDados: {
-    //backgroundColor: 'lightgray',
-    //height: 200,
-    flex: 1,
-    marginTop: 20,
-    //alignItems: 'flex-start'
-    borderRadius: 5,
-    marginBottom: 10,
-    //borderWidth: 3,
-    //borderColor: 'lightgray'
-  },
-  containerLine: {
-    width: "100%",
-    //height: 110,
-    borderRadius: 5,
-    borderTopWidth: 25,
-    borderTopColor: 'rgba(0, 0, 0, 0.8)',
-    borderWidth: 1,
-    borderColor: "gray",
-    flexDirection: "row",
-    backgroundColor: '#f1f1f1',
-    padding: 10,
-  },
-  img_perfil: {
-    width: 70,
-    height: 70,
-    borderRadius: 7
-  },
-  containerTextos: {
-    marginLeft: 10,
-    marginTop: 0,
-    fontFamily: "Quicksand_300Light",
-    //backgroundColor: 'blue'
-  },
-  lineTextPerfil: {
-    fontFamily: "Quicksand_300Light",
-    fontSize: 25,
-    color: "#000",
-  },
-  lineTextPerfiLCargo: {
-    fontFamily: "Quicksand_300Light",
-    fontSize: 18,
-    color: "#000",
-  },
-  containerPieChart: {
-    //flex: 1,
-    borderRadius: 5,
-    borderWidth: 3,
-    borderColor: "gray",
-    flexDirection: "row",
-    //backgroundColor: 'purple',
-    justifyContent: "space-between",
-    marginTop: 20,
-    //paddingRight: '5%',
-    alignItems: "center",
-    padding: 10,
-    height: 100,
-  },
-  containerProdutividade: {
-    flex: 1,
-    borderRadius: 5,
-    borderTopWidth: 25,
-    borderTopColor: 'rgba(0, 0, 0, 0.8)',
-    borderWidth: 1,
-    borderColor: "gray",
-    //flexDirection: 'row',
-    backgroundColor: "rgba(241, 241, 241, 0.85)",
-    justifyContent: 'center',
-    marginTop: 20,
-    //paddingRight: '5%',
-    //alignItems: 'center',
-    paddingBottom: 15,
-    paddingHorizontal: 10,
-    paddingTop: 10,
-    //flexWrap: 'wrap',
-    //height: 500,
+  var styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "#f1f1f1",
+      alignItems: "center",
+      width: "100%",
+      //backgroundColor: 'orange'
+    },
+    imgLogo: {
+      alignSelf: "center",
+      marginTop: 40,
+      marginBottom: 24,
+    },
+    tituloPage: {
+      fontFamily: "Montserrat_600SemiBold",
+      fontSize: 35,
+      color: "#2A2E32",
+      textAlign: "center",
+      textTransform: "uppercase",
+    },
+    containerAreaDados: {
+      //backgroundColor: 'yellow',
+      flex: 1,
+      width: "100%",
+      paddingHorizontal: "5%",
+    },
+    containerDados: {
+      //backgroundColor: 'lightgray',
+      //height: 200,
+      flex: 1,
+      marginTop: 20,
+      //alignItems: 'flex-start'
+      borderRadius: 5,
+      marginBottom: 10,
+      //borderWidth: 3,
+      //borderColor: 'lightgray'
+    },
+    containerLine: {
+      width: "100%",
+      //height: 110,
+      borderRadius: 5,
+      borderTopWidth: 25,
+      borderTopColor: 'rgba(0, 0, 0, 0.8)',
+      borderWidth: 1,
+      borderColor: "gray",
+      flexDirection: "row",
+      backgroundColor: '#f1f1f1',
+      padding: 10,
+    },
+    img_perfil: {
+      width: 90,
+      height: 90,
+      borderRadius: 5
+    },
+    containerTextos: {
+      marginLeft: 10,
+      marginTop: 0,
+      fontFamily: "Quicksand_300Light",
+      //backgroundColor: 'blue'
+    },
+    lineTextPerfil: {
+      fontFamily: "Quicksand_300Light",
+      fontSize: 25,
+      color: "#000",
+    },
+    lineTextPerfiLCargo: {
+      fontFamily: "Quicksand_300Light",
+      fontSize: 18,
+      color: "#000",
+    },
+    containerPieChart: {
+      //flex: 1,
+      borderRadius: 5,
+      borderWidth: 3,
+      borderColor: "gray",
+      flexDirection: "row",
+      //backgroundColor: 'purple',
+      justifyContent: "space-between",
+      marginTop: 20,
+      //paddingRight: '5%',
+      alignItems: "center",
+      padding: 10,
+      height: 100,
+    },
+    containerProdutividade: {
+      flex: 1,
+      borderRadius: 5,
+      borderTopWidth: 25,
+      borderTopColor: 'rgba(0, 0, 0, 0.8)',
+      borderWidth: 1,
+      borderColor: "gray",
+      //flexDirection: 'row',
+      backgroundColor: "rgba(241, 241, 241, 0.85)",
+      justifyContent: 'center',
+      marginTop: 20,
+      //paddingRight: '5%',
+      //alignItems: 'center',
+      paddingBottom: 15,
+      paddingHorizontal: 10,
+      paddingTop: 10,
+      //flexWrap: 'wrap',
+      //height: 500,
 
-  },
-  subtituloProdutividade: {
-    fontSize: 16,
-    marginTop: 10,
-    textAlign: 'right',
-  },
-  containerLegendas: {
-    flex: 1,
-    //backgroundColor: 'orange'
-  },
-  containerProdutividadeSup: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    //backgroundColor: 'green',
-    padding: 3.5
-  },
-  grafico: {
-    //flex: 1,
-    width: 60,
-    height: 60,
-    //backgroundColor: 'blue',
-    margin: -0,
-    paddingRight: 2
-  },
-  tituloGrafico: {
-    fontSize: 22,
-    marginRight: 10,
-    //marginLeft: 15,
-    //backgroundColor: 'green'
-  },
-  graficoBarrasContainer: {
-    flexDirection: "row",
-    height: 200,
-    paddingVertical: 16,
-  },
-  graficoBarras: {
-    flex: 1,
-    //backgroundColor: 'yellow'
-  },
-  ContributionContainer: {
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    borderRadius: 5,
-    //paddingTop: 20,
-    marginTop: 10,
-    //marginBottom: 0,
-    borderWidth: 1,
-    borderColor: 'black',
-    //paddingLeft: 30,
+    },
+    subtituloProdutividade: {
+      fontSize: 16,
+      marginTop: 10,
+      textAlign: 'right',
+    },
+    containerLegendas: {
+      flex: 1,
+      //backgroundColor: 'orange'
+    },
+    containerProdutividadeSup: {
+      flex: 1,
+      flexDirection: "row",
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      //backgroundColor: 'green',
+      padding: 3.5
+    },
+    grafico: {
+      //flex: 1,
+      width: 75,
+      height: 75,
+      //backgroundColor: 'blue',
+      margin: -0,
+      paddingRight: 2
+    },
+    tituloGrafico: {
+      fontSize: 22,
+      marginRight: 10,
+      //marginLeft: 15,
+      //backgroundColor: 'green'
+    },
+    graficoBarrasContainer: {
+      flexDirection: "row",
+      height: 200,
+      paddingVertical: 16,
+    },
+    graficoBarras: {
+      flex: 1,
+      //backgroundColor: 'yellow'
+    },
+    ContributionContainer: {
+      backgroundColor: "rgba(0, 0, 0, 0)",
+      borderRadius: 5,
+      //paddingTop: 20,
+      marginTop: 10,
+      //marginBottom: 0,
+      borderWidth: 1,
+      borderColor: 'black',
+      //paddingLeft: 30,
 
-    paddingRight: 0
-  },
-  tituloComparativo: {
-    textAlign: 'right',
-    fontSize: 22,
-    marginRight: 10,
-    marginBottom: 10
-  },
-  containerLabels: {
-    flex: 1,
-    width: '100%',
-    flexDirection: "row",
-    justifyContent: 'space-between',
-    paddingHorizontal: '14%',
-    //backgroundColor: 'blue'
-  },
-  nvsLabels: {
-    alignSelf: 'center',
-    fontSize: 12,
-    marginTop: -40,
-    color: 'black',
-    textAlign: 'center',
-    marginLeft: '4%'
-    //backgroundColor: 'lime'
-  },
-  legenda: {
-    fontSize: 16,
-    marginTop: -10,
-    textAlign: 'left',
-    marginBottom: -5
-  },
-  // barGraphContainer: {
-  //   //backgroundColor: "rgba(0, 0, 0, .8)",
-  //   flex: 1,
-  //   borderRadius: 10,
-  //   //paddingTop: 20,
-  //   marginTop: 10,
-  //   //marginBottom: 0,
-  //   borderWidth: 1,
-  //   borderColor: 'black',
-  //   //paddingLeft: 30,
-  //   alignSelf: 'center',
-  //   //paddingLeft: 20
-  // }
+      paddingRight: 0
+    },
+    tituloComparativo: {
+      textAlign: 'right',
+      fontSize: 22,
+      marginRight: 10,
+      marginBottom: 10
+    },
+    containerLabels: {
+      flex: 1,
+      width: '100%',
+      flexDirection: "row",
+      justifyContent: 'space-between',
+      paddingHorizontal: '19%',
+      //backgroundColor: 'blue'
+    },
+    nvsLabels: {
+      alignSelf: 'center',
+      fontSize: Dimensions.get('window').width * .02,
+      marginTop: -40,
+      color: 'black',
+      textAlign: 'center',
+      marginLeft: '3%',
+      // backgroundColor: 'lime'
+    },
+    legenda: {
+      fontSize: 16,
+      marginTop: -10,
+      textAlign: 'left',
+      marginBottom: -5
+    },
+    // barGraphContainer: {
+    //   //backgroundColor: "rgba(0, 0, 0, .8)",
+    //   flex: 1,
+    //   borderRadius: 10,
+    //   //paddingTop: 20,
+    //   marginTop: 10,
+    //   //marginBottom: 0,
+    //   borderWidth: 1,
+    //   borderColor: 'black',
+    //   //paddingLeft: 30,
+    //   alignSelf: 'center',
+    //   //paddingLeft: 20
+    // }
 
 
 
-});
+  });
+}
+// ------------------ CELULAR ---------------------------
+else {
+  var styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "#f1f1f1",
+      alignItems: "center",
+      width: "100%",
+      //backgroundColor: 'orange'
+    },
+    imgLogo: {
+      alignSelf: "center",
+      marginTop: 40,
+      marginBottom: 24,
+    },
+    tituloPage: {
+      fontFamily: "Montserrat_600SemiBold",
+      fontSize: 35,
+      color: "#2A2E32",
+      textAlign: "center",
+      textTransform: "uppercase",
+    },
+    containerAreaDados: {
+      //backgroundColor: 'yellow',
+      flex: 1,
+      width: "100%",
+      paddingHorizontal: "5%",
+    },
+    containerDados: {
+      //backgroundColor: 'lightgray',
+      //height: 200,
+      flex: 1,
+      marginTop: 20,
+      //alignItems: 'flex-start'
+      borderRadius: 5,
+      marginBottom: 10,
+      //borderWidth: 3,
+      //borderColor: 'lightgray'
+    },
+    containerLine: {
+      width: "100%",
+      //height: 110,
+      borderRadius: 5,
+      borderTopWidth: 25,
+      borderTopColor: 'rgba(0, 0, 0, 0.8)',
+      borderWidth: 1,
+      borderColor: "gray",
+      flexDirection: "row",
+      backgroundColor: '#f1f1f1',
+      padding: 10,
+    },
+    img_perfil: {
+      width: 70,
+      height: 70,
+      borderRadius: 7
+    },
+    containerTextos: {
+      marginLeft: 10,
+      marginTop: 0,
+      fontFamily: "Quicksand_300Light",
+      //backgroundColor: 'blue'
+    },
+    lineTextPerfil: {
+      fontFamily: "Quicksand_300Light",
+      fontSize: 25,
+      color: "#000",
+    },
+    lineTextPerfiLCargo: {
+      fontFamily: "Quicksand_300Light",
+      fontSize: 18,
+      color: "#000",
+    },
+    containerPieChart: {
+      //flex: 1,
+      borderRadius: 5,
+      borderWidth: 3,
+      borderColor: "gray",
+      flexDirection: "row",
+      //backgroundColor: 'purple',
+      justifyContent: "space-between",
+      marginTop: 20,
+      //paddingRight: '5%',
+      alignItems: "center",
+      padding: 10,
+      height: 100,
+    },
+    containerProdutividade: {
+      flex: 1,
+      borderRadius: 5,
+      borderTopWidth: 25,
+      borderTopColor: 'rgba(0, 0, 0, 0.8)',
+      borderWidth: 1,
+      borderColor: "gray",
+      //flexDirection: 'row',
+      backgroundColor: "rgba(241, 241, 241, 0.85)",
+      justifyContent: 'center',
+      marginTop: 20,
+      //paddingRight: '5%',
+      //alignItems: 'center',
+      paddingBottom: 15,
+      paddingHorizontal: 10,
+      paddingTop: 10,
+      //flexWrap: 'wrap',
+      //height: 500,
+
+    },
+    subtituloProdutividade: {
+      fontSize: 16,
+      marginTop: 10,
+      textAlign: 'right',
+    },
+    containerLegendas: {
+      flex: 1,
+      //backgroundColor: 'orange'
+    },
+    containerProdutividadeSup: {
+      flex: 1,
+      flexDirection: "row",
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      //backgroundColor: 'green',
+      padding: 3.5
+    },
+    grafico: {
+      //flex: 1,
+      width: 60,
+      height: 60,
+      //backgroundColor: 'blue',
+      margin: -0,
+      paddingRight: 2
+    },
+    tituloGrafico: {
+      fontSize: 22,
+      marginRight: 10,
+      //marginLeft: 15,
+      //backgroundColor: 'green'
+    },
+    graficoBarrasContainer: {
+      flexDirection: "row",
+      height: 200,
+      paddingVertical: 16,
+    },
+    graficoBarras: {
+      flex: 1,
+      //backgroundColor: 'yellow'
+    },
+    ContributionContainer: {
+      width: Dimensions.get('window').width * 1.7,
+      backgroundColor: "rgba(0, 0, 0, 0)",
+      borderRadius: 5,
+      //paddingTop: 20,
+      marginTop: 10,
+      //marginBottom: 0,
+      borderWidth: 1,
+      borderColor: 'black',
+      //paddingLeft: 30,
+
+      paddingRight: 0
+    },
+    tituloComparativo: {
+      textAlign: 'right',
+      fontSize: 22,
+      marginRight: 10,
+      marginBottom: 10
+    },
+    containerLabels: {
+      flex: 1,
+      width: '100%',
+      flexDirection: "row",
+      justifyContent: 'space-between',
+      paddingHorizontal: '12%',
+      //backgroundColor: 'blue'
+    },
+    nvsLabels: {
+      alignSelf: 'center',
+      fontSize: 12,
+      marginTop: -40,
+      color: 'black',
+      textAlign: 'center',
+      marginLeft: '4%'
+      //backgroundColor: 'lime'
+    },
+    legenda: {
+      fontSize: 16,
+      marginTop: -10,
+      textAlign: 'left',
+      marginBottom: -5
+    },
+    // barGraphContainer: {
+    //   //backgroundColor: "rgba(0, 0, 0, .8)",
+    //   flex: 1,
+    //   borderRadius: 10,
+    //   //paddingTop: 20,
+    //   marginTop: 10,
+    //   //marginBottom: 0,
+    //   borderWidth: 1,
+    //   borderColor: 'black',
+    //   //paddingLeft: 30,
+    //   alignSelf: 'center',
+    //   //paddingLeft: 20
+    // }
+
+
+
+  });
+}
