@@ -1,48 +1,226 @@
-import { Component } from "react";
-import React, { useState, useEffect } from 'react';
-//import { SvgUri } from 'react-native-svg';
+import React, { Component } from 'react';
 import {
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
+    Image,
+    ImageBackground,
+    TextInput,
     Modal,
     AnimatableBlurView,
     FlatList,
-    Image,
-    Alert,
+    SectionList,
+    SafeAreaView,
+    ScrollView,
     Pressable,
-    Button
+    Dimensions
 } from 'react-native';
-import { BlurView } from 'expo-blur';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from "@react-navigation/native";
-import base64 from 'react-native-base64';
 import AppLoading from 'expo-app-loading';
-import api from "../../services/apiGp1";
 import * as Font from 'expo-font';
-import { EvilIcons, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '../../services/apiGp1'
+import base64 from 'react-native-base64';
+import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
+import Constants from 'expo-constants'
+import * as ImagePicker from 'expo-image-picker'
+import * as DocumentPicker from 'expo-document-picker'
+import * as FileSystem from 'expo-file-system'
+import * as Permission from 'expo-permissions';
+import axios from 'axios';
+import AwesomeAlert from 'react-native-awesome-alerts';
+import moment from 'moment';
+// import 'intl';
 
 let customFonts = {
     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
-    'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
     'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
-    'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf')
+    'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
+    'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
+    'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
+    'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
 }
 
+export default class AtividadesExtras extends Component {
 
-export default class MinhasAtividades extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
-            modalVisible: false,
-            mensagem: '',
             listaAtividades: [],
-            minhaAtividade: {}
+            AtividadeBuscada: {},
+            fontsLoaded: false,
+            modalVisible: false,
+            imagemEntrega: null,
+            showAlert: false,
+            showAlertSuce: false,
+            mensagem: '',
+            setLoading: false,
+        };
+    }
+
+    showAlert = () => {
+        this.setState({ showAlert: true })
+    }
+
+    hideAlert = () => {
+        this.setState({
+            showAlert: false
+        });
+    };
+
+    showAlertSuce = () => {
+        this.setState({ showAlertSuce: true })
+    }
+
+    hideAlertSuce = () => {
+        this.setState({
+            showAlertSuce: false
+        });
+    };
+
+    imagePickerCall = async () => {
+        const result = await DocumentPicker.getDocumentAsync({
+            type: 'image/*',
+            multiple: false,
+            copyToCacheDirectory: true
+        })
+        console.warn(result)
+        this.setState({ imagemEntrega: result})
+    }
+
+    finalizarAtividade = async (item) => {
+        let arquivo = this.state.imagemEntrega;
+
+        const token = (await AsyncStorage.getItem('userToken'));
+        var Buffer = require('buffer/').Buffer
+        let base64Url = token.split('.')[1]; // token you get
+        let base64 = base64Url.replace('-', '+').replace('_', '/');
+        let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+        console.warn(decodedData.jti)
+
+        try {
+            const data = new FormData();
+
+            data.append('file', {
+                uri: arquivo.uri,
+                type: arquivo.mimeType,
+                name: arquivo.name
+            })
+
+
+            axios({
+                method: 'post',
+                url: 'http://apirhsenaigp1.azurewebsites.net/api/Atividades/FinalizarAtividade/' + item + '/' + decodedData.jti,
+                data: data,
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }
+            })
+                .then(resposta => {
+                    console.warn(resposta)
+
+                    if(resposta.status === 200){
+
+                        this.showAlertSuce();
+                        this.setState({imagemEntrega : null})
+                    }else{
+                        this.showAlert()
+                    }
+                })
+
+        } catch (error) {
+            console.warn(error)
+            this.showAlert()
+        }
+    }
+
+
+    buscarAtividade = async () => {
+        var Buffer = require('buffer/').Buffer
+
+        const token = (await AsyncStorage.getItem('userToken'));
+        let base64Url = token.split('.')[1]; // token you get
+        let base64 = base64Url.replace('-', '+').replace('_', '/');
+        let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+        console.warn(decodedData.jti);
+
+        const resposta = await api.get('/Atividades/MinhasAtividadeExtra/' + decodedData.jti);
+        const dadosDaApi = resposta.data;
+        //console.warn(resposta)
+        this.setState({ listaAtividades: dadosDaApi });
+    };
+
+    // ListarMinhas = async () => {
+
+    //     var Buffer = require('buffer/').Buffer
+
+
+    //     const token = (await AsyncStorage.getItem('userToken'));
+    //     let base64Url = token.split('.')[1]; // token you get
+    //     let base64 = base64Url.replace('-', '+').replace('_', '/');
+    //     let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+    //     //const xambers = JSON.parse(atob(token.split('.')[1]))
+    //     console.warn(decodedData);
+
+
+
+    //     if (token != null) {
+    //         await api.get("/Atividades/MinhasAtividade/" + decodedData.jti, {
+    //             headers: {
+    //                 "Authorization": "Bearer " + token,
+    //             },
+
+    //         })
+    //             .then(response => {
+    //                 if (response.status === 200) {
+    //                     // console.warn(response)
+    //                     // console.warn(this.state.modalVisible)
+    //                     const dadosMinhasAtividades =  response.data;
+    //                     console.warn(dadosMinhasAtividades);
+    //                     this.setState({ listaAtividades: dadosMinhasAtividades });
+    //                 }
+    //             })
+    //             .catch(response => {
+    //                 console.warn(response)
+    //             })
+
+
+
+    //     }
+    // };
+
+
+    ProcurarAtividades = async (id) => {
+        //console.warn(id)
+        try {
+
+            const resposta = await api('/Atividades/' + id);
+            if (resposta.status == 200) {
+                const dadosAtividades = await resposta.data.atividade;
+                await this.setState({ AtividadeBuscada: dadosAtividades })
+                console.warn(dadosAtividades.idAtividade)
+            }
+        }
+        catch (erro) {
+            console.warn(erro);
+        }
+    }
+
+    setModalVisible = async (visible, id) => {
+        if (visible == true) {
+            // console.warn(id)
+            await this.ProcurarAtividades(id)
+            this.setState({ modalVisible: true });
+            // console.warn(this.state.AtividadeBuscada)
+        }
+        else if (visible == false) {
+            this.setState({ AtividadeBuscada: {} })
+            this.setState({ modalVisible: false })
         }
 
     }
+
 
     async _loadFontsAsync() {
         await Font.loadAsync(customFonts);
@@ -51,241 +229,246 @@ export default class MinhasAtividades extends Component {
 
     componentDidMount() {
         this._loadFontsAsync();
+        this.buscarAtividade();
     }
 
-    ListarMinhas = async () => {
-
-        const token = await AsyncStorage.getItem("userToken");
-
-        const xambers = base64.decode(token.split('.')[1])
-        const user = JSON.parse(xambers)
-
-        // console.warn('wertyui')
-
-        // console.warn(user)
-
-
-        if (token != null) {
-            await api.get("/Atividades/MinhasAtividadeExtra/" + user.jti, {
-                headers: {
-                    "Authorization": "Bearer " + token,
-                },
-
-            })
-                .then(response => {
-                    if (response.status === 200) {
-                        // console.warn(response)
-                        // console.warn(this.state.modalVisible)
-                        this.setState({ listaAtividades: response.data });
-                    }
-                })
-                .catch(response => {
-                    console.warn(response)
-                })
+    // componentWillUnmount() {
+    //     this._loadFontsAsync();
+    //     this.buscarAtividade();
+    // }
+    // associar = async (item) => {
+    //     var Buffer = require('buffer/').Buffer
+    //     try {
+    //         console.warn(item)
+    //         const token = (await AsyncStorage.getItem('userToken'));
+    //         let base64Url = token.split('.')[1]; // token you get
+    //         let base64 = base64Url.replace('-', '+').replace('_', '/');
+    //         let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+    //         //const xambers = JSON.parse(atob(token.split('.')[1]))
+    //         console.warn(decodedData);
 
 
 
-        }
-    };
 
-    openModal = async (id) => {
-        // console.warn(id)
-        await api.get("/Atividades/" + id, {})
+    //         const resposta = await api.post(
+    //             '/Atividades/Associar/' + decodedData.jti + '/' + item,
+    //             {
 
-            .then(response => {
-                let dadosApi = response.data.atividade
-                //console.warn(dadosApi)
-                this.setState(
-                    {
-                        minhaAtividade: dadosApi,
-                        modalVisible: true
-                    }
-                )
+    //             },
+    //             {
+    //                 headers: {
+    //                     Authorization: 'Bearer ' + token,
+    //                 },
+    //             },
+
+    //             // console.warn(resposta)
 
 
-            })
-
-    }
-
-    closeModal = () => {
-        this.setState({ modalVisible: false })
-    }
-
-    componentDidMount() {
-        this.ListarMinhas();
-    }
+    //         );
+    //         if (resposta.status == 200) {
+    //             console.warn('Voce se associou a uma atividade');
+    //         } else {
+    //             console.warn('Falha ao se associar.');
+    //         }
+    //     } catch (error) {
+    //         console.warn(error);
+    //     }
+    // }
 
     render() {
-        if (!this.state.fontsLoaded) {
+        if (!customFonts) {
             return <AppLoading />;
         }
-
         return (
 
             <View style={styles.main}>
-                <View>
 
+                <View>
                     <View style={styles.mainHeader}>
-                        <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
+                        <Image source={require('../../../assets/img-geral/logo_2S.png')}
                             style={styles.imgLogo}
                         />
-
-                        {/* IMPORTACAO DE IMAGENS */}
-                        {/* <SvgUri
-                        uri= "http"
-                    /> */}
-
                     </View>
 
+                    <View style={styles.titulo}>
 
-                    <View>
+                        <Text style={styles.tituloEfects}>{'Extras'.toUpperCase()} </Text>
 
-                        <Text style={styles.tituloEfects}>{'Minhas atividades'.toUpperCase()} </Text>
-
-                        <View style={styles.escritaEscolha}>
+                        {/* <View style={styles.escritaEscolha}>
                             <View style={styles.itemEquipe}>
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate('MinhasAtividades2')}>
+                                <Pressable >
                                     <Text style={styles.font}> Obrigatórios </Text>
-                                    <View style={styles.line1}></View>
-                                </TouchableOpacity>
-
+                                </Pressable><View style={styles.line1}></View>
                             </View>
-
                             <View style={styles.itemIndividual}>
-                                <TouchableOpacity >
+                                <Pressable onPress={() => this.props.navigation.navigate('AtividadesExtras')}>
                                     <Text style={styles.font}> Extras </Text>
-
-                                </TouchableOpacity>
-                                <View style={styles.line2}></View>
+                                    <View style={styles.line2}></View>
+                                </Pressable>
+                               
                             </View>
-
-                        </View>
+                        </View> */}
                     </View>
                 </View>
 
-
                 <FlatList
-                    style={styles.FlatList}
                     data={this.state.listaAtividades}
-                    keyExtractor={item => item.idMinhasAtividades}
+                    keyExtractor={item => item.idAtividade}
                     renderItem={this.renderItem}
                 />
 
-            </View >
 
-        );
+            </View>
+
+        )
     }
+
     renderItem = ({ item }) => (
 
-        <View style={styles.MinhaAtividadeCentro}>
 
-
-            <View style={styles.MinhaAtividade}>
-                <View style={styles.quadradoeTexto}>
-                    <View style={styles.quadrado}></View>
-                    <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
-
-                    <View style={styles.descricaoOlho}>
-                        <Text style={styles.descricao}> Data de Entrega: {Intl.DateTimeFormat("pt-BR", {
+        <View style={styles.boxAtividade}>
+            <View style={styles.box}>
+                <View style={styles.quadrado}></View>
+                <View style={styles.espacoPontos}>
+                    <Text style={styles.pontos}> {item.recompensaMoeda} Cashs </Text>
+                    <FontAwesome5 name="coins" size={24} color="#FBB01E" /> 
+                </View>
+                <View style={styles.conteudoBox}>
+                    <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
+                    {/* <Text style={styles.nomeBox}> {item.idAtividade} </Text> */}
+                    <Text style={styles.criador}> Responsável: {item.criador} </Text>
+                    {/* <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
                     year: 'numeric', month: 'short', day: 'numeric',
-                }).format(new Date(item.dataConclusao))} </Text>
+                }).format(new Date(item.dataCriacao))} 
+                    </Text> */}
 
-                        <TouchableOpacity style={styles.Modalbotao} onPress={() => this.openModal(item.idAtividade)}>
-                            <AntDesign name="downcircleo" size={24} color="#636466" />
-                        </TouchableOpacity>
-
-                    </View>
 
                     <View style={styles.ModaleBotao}>
-                        <View style={styles.statusImagem}>
 
+                        <Text style={styles.dataEntrega}> Data de Entrega: {moment(item.dataConclusao).format('DD-MM-YYYY')} </Text>
+
+                        <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
+                            <AntDesign name="downcircleo" size={24} color="#B3093F" />
+                        </Pressable>
+
+                        {/* <View style={styles.statusImagem}>
                             {item.idSituacaoAtividade == 1 &&
                                 <AntDesign name="check" size={24} color="black" />
                             }
                             {item.idSituacaoAtividade == 2 &&
-                                <Feather name="alert-triangle" size={24} color="black" />
+                                <Feather name="alert-triangle" size={24} color="#C20004" />
                             }
-                            {item.idSituacaoAtividade == 3 &&
-                                <MaterialCommunityIcons name="clipboard-clock-outline" size={24} color="black" />
-                            }
-                            <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({ mensagem: 'Validado' }) : item.idSituacaoAtividade == 2 ? this.setState({ mensagem: 'Pendente' }) : item.idSituacaoAtividade == 3 ? this.setState({ mensagem: 'Avaliando' }) : null} </Text>
-
-                        </View>
-
-                    </View> 
-
-
-
-
+                            <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({ mensagem: 'Validado' }) : item.idSituacaoAtividade == 2 ? this.setState({ mensagem: 'Pendente' }) : null} </Text>
+                        </View> */}
+                    </View>
                 </View>
+
             </View>
 
-
             <Modal
-                animationType="slide"
+                animationType="fade"
                 transparent={true}
                 visible={this.state.modalVisible}
-                key={this.state.minhaAtividade.idMinhasAtividades}
+                key={item.idAtividade == this.state.AtividadeBuscada.idAtividade}
                 onRequestClose={() => {
-                    // console.warn(item)
-                    //setModalVisible(!modalVisible)
-                    //Alert.alert("Modal has been closed.");
-                    //setModalVisible(!modalVisible);
+                    console.warn(item)
+                    this.setModalVisible(!this.state.modalVisible)
                 }}
             >
+
+
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <View style={styles.quadradoModal}></View>
                         <View style={styles.conteudoBoxModal}>
-                            <Text style={styles.nomeBoxModal}> {this.state.minhaAtividade.nomeAtividade} </Text>
-                            <Text style={styles.descricaoModal}> {this.state.minhaAtividade.descricaoAtividade} </Text>
-                            <Text style={styles.itemPostadoModal}>Item Postado: {this.state.minhaAtividade.dataInicio} </Text>
-                            <Text style={styles.entregaModal}> Data de Entrega: {this.state.minhaAtividade.dataConclusao} </Text>
-                            <Text style={styles.entregaModal}> Responsável: {this.state.minhaAtividade.criador} </Text>
+                            <Text style={styles.nomeBoxModal}>{this.state.AtividadeBuscada.nomeAtividade} </Text>
+                            <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
+                            <Text style={styles.itemPostadoModal}> Item Postado: {moment(this.state.AtividadeBuscada.dataCriacao).format('DD-MM-YYYY')} </Text>
+                            <Text style={styles.entregaModal}> Data de Entrega: {moment(this.state.AtividadeBuscada.dataConclusao).format('DD-MM-YYYY')}</Text>
+
+                            <Text style={styles.entregaModal}> Recompensa em Troféu: {this.state.AtividadeBuscada.recompensaTrofeu}
+                                <EvilIcons style={styles.trofeu} name="trophy" size={25} color="#E7C037" />
+                            </Text>
 
 
-                            <TouchableOpacity style={styles.anexo}>
-                                <Text style={styles.mais}>   + </Text>
-                                <Text style={styles.txtanexo}>    Adicionar Anexo</Text>
+                            <Text style={styles.criadorModal}> Criador: {this.state.AtividadeBuscada.criador} </Text>
+                            <TouchableOpacity style={styles.anexo} onPress={this.imagePickerCall}>
+                                <Text style={styles.txtanexo}> + Adicionar Anexo</Text>
+                                {this.state.imagemEntrega == null ? null : <AntDesign name="checkcircleo" size={17} color="green" />}
                             </TouchableOpacity>
-
                         </View>
-
-                        <View style={styles.botoesModal} >
-                            <TouchableOpacity
-                            // onPress={() => setModalVisible(!modalVisibleVar)}
-                            // onPress={() => Concluir()}
-                            >
+                        <View style={styles.botoesModal}  >
+                            <Pressable onPress={() => this.finalizarAtividade(this.state.AtividadeBuscada.idAtividade)} >
                                 <View style={styles.associarModal}>
                                     <Text style={styles.texto}> Concluida </Text>
                                 </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity
+                            </Pressable>
+                            <Pressable
 
-                            //onPress={() => setModalVisible(!modalVisible)}
+                                onPress={() => this.setModalVisible(!this.state.modalVisible)}
                             >
                                 <View style={styles.fecharModal}>
-                                    <Text style={styles.textoFechar} onPress={() => this.closeModal()} >Fechar X</Text>
+                                    <Text style={styles.textoFechar}>Fechar X</Text>
                                 </View>
 
-                            </TouchableOpacity>
+                            </Pressable>
                         </View>
+
                     </View>
+
                 </View>
+                <AwesomeAlert
+                    show={this.state.showAlertSuce}
+                    showProgress={false}
+                    title="Sucesso"
+                    titleStyle={styles.tituloAlert}
+                    message="Sua Atividade foi Enviada!"
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={true}
+                    cancelText="Okay"
+                    cancelButtonColor="#C20004"
+                    cancelButtonStyle={this.alertView = StyleSheet.create({
+                        width: 150,
+                        paddingLeft: 62
+                    })}
+                    onCancelPressed={() => {
+                        this.hideAlertSuce();
+                    }}
+                />
 
-
+                <AwesomeAlert
+                    show={this.state.showAlert}
+                    showProgress={false}
+                    title="Oops !"
+                    titleStyle={
+                        styles.tituloModalLogin
+                    }
+                    message="Falha ao enviar sua Atividade"
+                    messageStyle={styles.textoModalLogin}
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    confirmButtonStyle={styles.confirmButton}
+                    showCancelButton={false}
+                    showConfirmButton={true}
+                    confirmText="Voltar"
+                    confirmButtonColor="#C20004"
+                    onConfirmPressed={() => {
+                        this.hideAlert();
+                    }}
+                /> 
             </Modal>
         </View>
+
     )
-}
 
-
-const styles = StyleSheet.create({
+};
+if (Dimensions.get('window').width > 700) {
+    var styles = StyleSheet.create({
 
     main: {
         flex: 1,
         backgroundColor: '#F2F2F2',
-        alignItems: 'center'
     },
 
     mainHeader: {
@@ -294,23 +477,32 @@ const styles = StyleSheet.create({
         paddingTop: 40,
 
     },
+    // imgLogo:{
+    //     height: '20%',
+    //     width: '50%',
+    // },
+
+    titulo: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 40,
+        paddingBottom: 64
+    },
 
     tituloEfects: {
         fontFamily: 'SemiBoldM',
-        // justifyContent: 'center',
-        // alignItems: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
         color: '#2A2E32',
-        fontSize: 30,
-        paddingTop: 40,
-        textAlign: 'center'
+        fontSize: 28,
     },
 
     escritaEscolha: {
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        paddingTop: 40,
-        paddingBottom: 48
+        paddingTop: 30,
+        // paddingBottom:20
     },
 
     itemEquipe: {
@@ -320,9 +512,8 @@ const styles = StyleSheet.create({
     },
 
     font: {
-        fontFamily: 'Regular',
-        color: "#636466",
-        fontSize: 23,
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 20,
         paddingBottom: 5,
     },
 
@@ -340,77 +531,90 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
     },
 
+    boxAtividade: {
 
-    boxTitulo: {
-        justifyContent: 'center',
+        // paddingTop: 40,
+
         alignItems: 'center',
-        paddingTop: 40,
-    },
-
-    titulo: {
-        color: '#B83F52',
-        fontSize: 18,
-        fontFamily: 'SemiBold',
-    },
-
-
-    MinhaAtividade: {
-        // paddingTop: 80,
-        // alignItems:'center',
-        // justifyContent:'center',
-        height: 120,
-        borderWidth: 1,
-        borderColor: '#B3B3B3',
-        backgroundColor: '#F2F2F2',
-        borderRadius: 10,
-        marginBottom: 20,
-        width: '85%',
-    },
-
-    quadradoeTexto: {
-        flexWrap: "wrap",
     },
 
     quadrado: {
         backgroundColor: '#2A2E32',
-        height: 119,
-        width: '7%',
-        // borderTopRightRadius: 8,
+        height: 28,
+        width: '100%',
+        borderTopRightRadius: 8,
         borderTopLeftRadius: 8,
-        borderBottomLeftRadius: 8,
-        marginRight: 16,
 
     },
 
-    TituloAtividade: {
-        //  fontFamily: "Quicksand-SemiBold",
+
+
+
+    box: {
+        height: 210,
+        borderWidth: 1,
+        borderColor: '#B3B3B3',
+        backgroundColor: '#F2F2F2',
+        borderRadius: 10,
+        marginBottom: 40,
+        width: '85%',
+
+    },
+
+    espacoPontos: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        paddingTop: 16,
+        paddingRight: 18,
+    },
+
+    pontos: {
+        fontSize: 14,
+        paddingRight: 5,
+        fontFamily: 'Quicksand-SemiBold',
+    },
+
+    imgCoins: {
+        width: 18,
+        height: 18,
+    },
+
+    conteudoBox: {
+        marginTop: 10,
+        paddingLeft: 16,
+        flexDirection: 'column'
+    },
+
+
+    nomeBox: {
+        fontFamily: 'Quicksand-SemiBold',
+        color: '#000000',
         fontSize: 18,
-        color: "#0E0E0E",
-        marginTop: 16,
-        height: 36
-        // marginBottom: 13,
-
     },
 
-    descricao: {
-        fontFamily: "Regular",
-        textAlign: 'center',
-        fontSize: 14,
-        color: "#636466",
-        marginBottom: 5,
+    criador: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
     },
 
-    status: {
-        fontFamily: "Regular",
-        fontSize: 14,
-        color: "#636466",
+    dataEntrega: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+        //paddingLeft: 20
     },
 
-    avaliando: {
-        marginRight: 9,
-        marginTop: 4,
-        height: 15,
-        width: 15,
+
+    data: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 8,
+    },
+
+    Modalbotao: {
+        paddingLeft: "59%",
+        paddingTop: 13,
     },
 
     statusImagem: {
@@ -420,86 +624,37 @@ const styles = StyleSheet.create({
 
     },
 
-    descricaoOlho: {
-        flexDirection: 'row',
-        // justifyContent: 'flex-end',
-        justifyContent: 'space-between',
-
-    },
-
-
-    lineAtividade: {
-        width: 260,
-        paddingTop: 10,
-        borderBottomColor: '#D9D9D9',
-        borderBottomWidth: 3,
-    },
-
-    centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 22
-    },
-
-    modalView: {
-        margin: 20,
-        backgroundColor: "#F2F2F2",
-        borderRadius: 5,
-        padding: 35,
-        alignItems: "center",
-        width: 280
-    },
-
-    button: {
-        borderRadius: 10,
-        padding: 10,
-        elevation: 2,
-        height: 40,
-        width: 90,
-        backgroundColor: '#F2F2F2',
-        borderRadius: 5,
-    },
-
-    boxTextos: {
-        marginBottom: 30,
-        marginTop: 20,
-    },
-
-    Modalbotao: {
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        // paddingRight: 18,
-        paddingTop: 6,
-        // marginLeft:130,
-        paddingLeft: 130
+    status: {
+        fontFamily: "Regular",
+        fontSize: 14,
+        color: "#636466",
     },
 
     botao: {
         // flexDirection: 'row',
-        // justifyContent: 'flex-start',
-        // paddingTop: 20,
-        // paddingLeft: 16
+        justifyContent: 'flex-start',
+        paddingTop: 20,
+        paddingLeft: 16
     },
 
     corBotão: {
         borderRadius: 15,
         height: 30,
-        width: 87,
+        width: 100,
         backgroundColor: '#C20004',
         alignItems: 'center',
         justifyContent: 'center',
     },
 
     texto: {
-        fontFamily: 'MediumM',
-        color: '#E2E2E2',
+        fontFamily: 'Montserrat-Medium',
+        color: '#F2F2F2',
         fontSize: 11,
-        alignItems: 'center',
+        //alignItems: 'center',
     },
 
     botaoIndisp: {
-        alignItems: 'center',
+        //alignItems: 'center',
         justifyContent: 'center',
         paddingTop: 19,
     },
@@ -509,38 +664,44 @@ const styles = StyleSheet.create({
         height: 40,
         width: 90,
         backgroundColor: '#B1B3B6',
-        alignItems: 'center',
+        //alignItems: 'center',
         justifyContent: 'center',
     },
 
     ModaleBotao: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        //paddingRight:30,
+        //alignItems:'flex-end',
+        //justifyContent: 'space-between',
+        //alignItems: 'center',
+
+
     },
 
     textoIndisp: {
-        fontFamily: 'SemiBoldM',
+        // fontFamily: 'Montserrat-SemiBold',
         color: '#000000',
-        fontSize: 11,
+        fontSize: 10,
         alignItems: 'center',
     },
 
     centeredView: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.1)'
         // marginTop: 22
     },
 
     modalView: {
-        height: 390,
+        height: 450,
         borderWidth: 1,
         borderColor: '#B3B3B3',
         backgroundColor: '#F2F2F2',
         borderRadius: 10,
         // marginBottom: 20,
-        width: '78%',
+        width: '100%',
+
     },
 
     quadradoModal: {
@@ -549,57 +710,68 @@ const styles = StyleSheet.create({
         width: '100%',
         borderTopRightRadius: 8,
         borderTopLeftRadius: 8
+
+    },
+
+    conteudoBoxModal: {
+        flexDirection: 'column',
     },
 
     nomeBoxModal: {
-        fontFamily: 'SemiBold',
+        fontFamily: 'Quicksand-SemiBold',
         textAlign: "center",
         paddingTop: 24,
-        fontSize: 20
+        fontSize: 20,
     },
 
     descricaoModal: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         paddingTop: 24,
         fontSize: 15,
-        paddingBottom: 16,
+        //paddingBottom: 16,
         marginLeft: 16
     },
 
     itemPostadoModal: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
-        paddingBottom: 16,
+        paddingTop: 16,
+        //paddingBottom: 24,
         marginLeft: 16
     },
 
     entregaModal: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
-        paddingBottom: 16,
-        marginLeft: 16
+        paddingTop: 16,
+        marginLeft: 16,
+    },
+
+    trofeu: {
+        paddingTop: 13,
     },
 
     criadorModal: {
-        fontFamily: 'Regular',
+        fontFamily: 'Quicksand-Regular',
         fontSize: 15,
+        paddingTop: 16,
+        marginLeft: 16,
         paddingBottom: 16,
-        marginLeft: 16
     },
 
     botoesModal: {
-        fontFamily: 'MediumM',
+        fontFamily: 'Montserrat-Medium',
         flexDirection: 'row',
         justifyContent: 'center',
         justifyContent: 'space-evenly',
-        paddingTop: 30
+        paddingTop: "10%"
     },
 
     associarModal: {
         borderRadius: 15,
         height: 30,
         width: 108,
-        backgroundColor: '#C20004',
+        backgroundColor: '#B3093F',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -611,8 +783,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
-        borderColor: '#C20004',
-        color: '#C20004'
+        borderColor: '#B3093F',
+        color: '#B3093F'
+    },
+
+    textoFechar: {
+        fontFamily: 'Montserrat-Medium',
+        color: '#B3093F',
+        fontSize: 12
+    },
+    descricao: {
+        fontFamily: "Regular",
+        textAlign: 'center',
+        fontSize: 14,
+        color: "#636466",
+        marginBottom: 5,
     },
 
     anexo: {
@@ -624,45 +809,410 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         flexDirection: 'row',
-        height: 30
+        height: 30,
+        paddingLeft: 23,
     },
 
     txtanexo: {
         fontFamily: 'Regular',
-        marginRight: 40
     },
 
-    mais: {
-        fontSize: 21,
+    tituloModalLogin:
+    {
+        color: '#9A0AF',
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 23,
+        fontWeight: 'bold'
+    },
+    textoModalLogin:
+    {
+        width: 200,
         textAlign: 'center'
     },
+    confirmButton: {
+        width: 100,
 
-    textoFechar: {
-        fontFamily: 'MediumM',
-        color: '#C20004'
+        paddingLeft: 32
     },
 
-    FlatList: {
-        width: '100%',
-        // alignItems:'center'
+    tituloAlert: {
+        color: 'green'
+    }
+
+})}
+else{   var styles = StyleSheet.create({
+
+    main: {
+        flex: 1,
+        backgroundColor: '#F2F2F2',
     },
 
-    MinhaAtividadeCentro: {
+    mainHeader: {
+
         alignItems: 'center',
-        marginBottom: 40
+        paddingTop: 40,
+
+    },
+    // imgLogo:{
+    //     height: '20%',
+    //     width: '50%',
+    // },
+
+    titulo: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 40,
+        paddingBottom: 64
     },
 
-    MinhaAtividade: {
-        // paddingTop: 80,
-        // alignItems:'center',
-        // justifyContent:'center',
-        height: 120,
+    tituloEfects: {
+        fontFamily: 'SemiBoldM',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: '#2A2E32',
+        fontSize: 28,
+    },
+
+    escritaEscolha: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        paddingTop: 30,
+        // paddingBottom:20
+    },
+
+    itemEquipe: {
+
+        marginRight: 80,
+        alignItems: 'center',
+    },
+
+    font: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 20,
+        paddingBottom: 5,
+    },
+
+    line1: {
+        width: '100%',
+        borderBottomWidth: 1,
+    },
+
+    itemIndividual: {
+        alignItems: 'center',
+    },
+
+    line2: {
+        width: '100%',
+        borderBottomWidth: 1,
+    },
+
+    boxAtividade: {
+
+        // paddingTop: 40,
+
+        alignItems: 'center',
+    },
+
+    quadrado: {
+        backgroundColor: '#2A2E32',
+        height: 28,
+        width: '100%',
+        borderTopRightRadius: 8,
+        borderTopLeftRadius: 8,
+
+    },
+
+
+
+
+    box: {
+        height: 210,
         borderWidth: 1,
         borderColor: '#B3B3B3',
         backgroundColor: '#F2F2F2',
         borderRadius: 10,
-        // marginBottom: 70,
+        marginBottom: 40,
         width: '85%',
 
     },
-})
+
+    espacoPontos: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        paddingTop: 16,
+        paddingRight: 18,
+    },
+
+    pontos: {
+        fontSize: 14,
+        paddingRight: 5,
+        fontFamily: 'Quicksand-SemiBold',
+    },
+
+    imgCoins: {
+        width: 18,
+        height: 18,
+    },
+
+    conteudoBox: {
+        marginTop: 10,
+        paddingLeft: 16,
+        flexDirection: 'column'
+    },
+
+
+    nomeBox: {
+        fontFamily: 'Quicksand-SemiBold',
+        color: '#000000',
+        fontSize: 18,
+    },
+
+    criador: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+    },
+
+    dataEntrega: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+        //paddingLeft: 20
+    },
+
+
+    data: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 8,
+    },
+
+    Modalbotao: {
+        paddingLeft: "20%",
+        paddingTop: 13,
+    },
+
+    statusImagem: {
+        flexDirection: 'row',
+        marginTop: 7,
+        height: 20
+
+    },
+
+    status: {
+        fontFamily: "Regular",
+        fontSize: 14,
+        color: "#636466",
+    },
+
+    botao: {
+        // flexDirection: 'row',
+        justifyContent: 'flex-start',
+        paddingTop: 20,
+        paddingLeft: 16
+    },
+
+    corBotão: {
+        borderRadius: 15,
+        height: 30,
+        width: 100,
+        backgroundColor: '#C20004',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    texto: {
+        fontFamily: 'Montserrat-Medium',
+        color: '#F2F2F2',
+        fontSize: 11,
+        //alignItems: 'center',
+    },
+
+    botaoIndisp: {
+        //alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 19,
+    },
+
+    corIndisp: {
+        borderRadius: 5,
+        height: 40,
+        width: 90,
+        backgroundColor: '#B1B3B6',
+        //alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    ModaleBotao: {
+        flexDirection: 'row',
+        //paddingRight:30,
+        //alignItems:'flex-end',
+        //justifyContent: 'space-between',
+        //alignItems: 'center',
+
+
+    },
+
+    textoIndisp: {
+        // fontFamily: 'Montserrat-SemiBold',
+        color: '#000000',
+        fontSize: 10,
+        alignItems: 'center',
+    },
+
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.1)'
+        // marginTop: 22
+    },
+
+    modalView: {
+        height: 450,
+        borderWidth: 1,
+        borderColor: '#B3B3B3',
+        backgroundColor: '#F2F2F2',
+        borderRadius: 10,
+        // marginBottom: 20,
+        width: '78%',
+
+    },
+
+    quadradoModal: {
+        backgroundColor: '#2A2E32',
+        height: 35,
+        width: '100%',
+        borderTopRightRadius: 8,
+        borderTopLeftRadius: 8
+
+    },
+
+    conteudoBoxModal: {
+        flexDirection: 'column',
+    },
+
+    nomeBoxModal: {
+        fontFamily: 'Quicksand-SemiBold',
+        textAlign: "center",
+        paddingTop: 24,
+        fontSize: 20,
+    },
+
+    descricaoModal: {
+        fontFamily: 'Quicksand-Regular',
+        paddingTop: 24,
+        fontSize: 15,
+        //paddingBottom: 16,
+        marginLeft: 16
+    },
+
+    itemPostadoModal: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+        //paddingBottom: 24,
+        marginLeft: 16
+    },
+
+    entregaModal: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+        marginLeft: 16,
+    },
+
+    trofeu: {
+        paddingTop: 13,
+    },
+
+    criadorModal: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+        marginLeft: 16,
+        paddingBottom: 16,
+    },
+
+    botoesModal: {
+        fontFamily: 'Montserrat-Medium',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        justifyContent: 'space-evenly',
+        paddingTop: "10%"
+    },
+
+    associarModal: {
+        borderRadius: 15,
+        height: 30,
+        width: 108,
+        backgroundColor: '#B3093F',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    fecharModal: {
+        borderRadius: 15,
+        height: 30,
+        width: 108,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: '#B3093F',
+        color: '#B3093F'
+    },
+
+    textoFechar: {
+        fontFamily: 'Montserrat-Medium',
+        color: '#B3093F',
+        fontSize: 12
+    },
+    descricao: {
+        fontFamily: "Regular",
+        textAlign: 'center',
+        fontSize: 14,
+        color: "#636466",
+        marginBottom: 5,
+    },
+
+    anexo: {
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#B3B3B3',
+        width: 175,
+        marginLeft: 19,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row',
+        height: 30,
+        paddingLeft: 23,
+    },
+
+    txtanexo: {
+        fontFamily: 'Regular',
+    },
+
+    tituloModalLogin:
+    {
+        // color: '#9A0AF',
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 23,
+        fontWeight: 'bold'
+    },
+    textoModalLogin:
+    {
+        width: 200,
+        textAlign: 'center'
+    },
+    confirmButton: {
+        width: 100,
+
+        paddingLeft: 32
+    },
+
+    tituloAlert: {
+        color: 'green'
+    }
+
+})}

@@ -1,5 +1,16 @@
 import { registerRootComponent } from 'expo';
 
+import { LogBox } from 'react-native';
+
+// Ignore log notification by message:
+LogBox.ignoreLogs(['Warning: ...']);
+
+// Ignore all log notifications:
+LogBox.ignoreAllLogs();
+
+// import { LogBox } from 'react-native';
+// LogBox.ignoreWarnings(['Remote debugger']);
+
 import App from './App';
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);

@@ -1,469 +1,474 @@
-import * as React from 'react';
+import React, { Component } from 'react';
 import {
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
+    Image,
+    ImageBackground,
+    TextInput,
     Modal,
     AnimatableBlurView,
     FlatList,
-    Image,
-    Alert,
+    SectionList,
+    SafeAreaView,
+    ScrollView,
     Pressable,
-    Button,
-    Animated,
+    Dimensions
 } from 'react-native';
-import { BlurView } from 'expo-blur';
 
-import { TabView, SceneMap, } from 'react-native-tab-view';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from "@react-navigation/native";
-import base64 from 'react-native-base64';
 import AppLoading from 'expo-app-loading';
-import api from "../../services/apiGp1";
 import * as Font from 'expo-font';
-import { Feather, EvilIcons, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
-import * as DocumentPicker from 'expo-document-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '../../services/apiGp1'
+import base64 from 'react-native-base64';
+import { EvilIcons, AntDesign, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
+import Constants from 'expo-constants'
+import * as ImagePicker from 'expo-image-picker'
+import * as DocumentPicker from 'expo-document-picker'
+import * as FileSystem from 'expo-file-system'
+import * as Permission from 'expo-permissions';
+import axios from 'axios';
+import AwesomeAlert from 'react-native-awesome-alerts';
+import moment from 'moment';
+// import 'intl';
 
 let customFonts = {
     'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
-    'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
     'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
     'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
+    'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
     'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
     'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
 }
 
+export default class AtividadesExtras extends Component {
 
-export default class TabViewExample extends React.Component {
-
-    state = {
-        index: 0,
-        routes: [
-            { key: 'first', title: 'Obrigatórios' },
-            { key: 'second', title: 'Extras' },
-        ],
-        modalVisible: false,
-        mensagem: '',
-        listaAtividades: [],
-        minhaAtividade: {}
+    constructor(props) {
+        super(props);
+        this.state = {
+            listaAtividades: [],
+            AtividadeBuscada: {},
+            fontsLoaded: false,
+            modalVisible: false,
+            imagemEntrega: null,
+            showAlert: false,
+            showAlertSuce: false,
+            mensagem: '',
+            setLoading: false,
+        };
     }
 
-    EnviarAtividade = () => {
-        
+    showAlert = () => {
+        this.setState({ showAlert: true })
     }
 
-    ListarMinhas = async () => {
+    hideAlert = () => {
+        this.setState({
+            showAlert: false
+        });
+    };
 
+    showAlertSuce = () => {
+        this.setState({ showAlertSuce: true })
+    }
+
+    hideAlertSuce = () => {
+        this.setState({
+            showAlertSuce: false
+        });
+    };
+
+    imagePickerCall = async () => {
+        const result = await DocumentPicker.getDocumentAsync({
+            type: 'image/*',
+            multiple: false,
+            copyToCacheDirectory: true
+        })
+        console.warn(result)
+        this.setState({ imagemEntrega: result})
+    }
+
+    finalizarAtividade = async (item) => {
+        let arquivo = this.state.imagemEntrega;
+
+        const token = (await AsyncStorage.getItem('userToken'));
         var Buffer = require('buffer/').Buffer
+        let base64Url = token.split('.')[1]; // token you get
+        let base64 = base64Url.replace('-', '+').replace('_', '/');
+        let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+        console.warn(decodedData.jti)
 
+        try {
+            const data = new FormData();
+
+            data.append('file', {
+                uri: arquivo.uri,
+                type: arquivo.mimeType,
+                name: arquivo.name
+            })
+
+
+            axios({
+                method: 'post',
+                url: 'http://apirhsenaigp1.azurewebsites.net/api/Atividades/FinalizarAtividade/' + item + '/' + decodedData.jti,
+                data: data,
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }
+            })
+                .then(resposta => {
+                    console.warn(resposta)
+
+                    if(resposta.status === 200){
+
+                        this.showAlertSuce();
+                        this.setState({imagemEntrega : null})
+                    }else{
+                        this.showAlert()
+                    }
+                })
+
+        } catch (error) {
+            console.warn(error)
+            this.showAlert()
+        }
+    }
+
+
+    buscarAtividade = async () => {
+        var Buffer = require('buffer/').Buffer
 
         const token = (await AsyncStorage.getItem('userToken'));
         let base64Url = token.split('.')[1]; // token you get
         let base64 = base64Url.replace('-', '+').replace('_', '/');
         let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
-        //const xambers = JSON.parse(atob(token.split('.')[1]))
-        console.warn(decodedData);
+        console.warn(decodedData.jti);
 
-
-
-        if (token != null) {
-            await api.get("/Atividades/MinhasAtividade/" + decodedData.jti, {
-                headers: {
-                    "Authorization": "Bearer " + token,
-                },
-
-            })
-                .then(response => {
-                    if (response.status === 200) {
-                        // console.warn(response)
-                        // console.warn(this.state.modalVisible)
-                        const dadosMinhasAtividades = response.data;
-                        console.warn(dadosMinhasAtividades);
-                        this.setState({ listaAtividades: dadosMinhasAtividades });
-                    }
-                })
-                .catch(response => {
-                    console.warn(response)
-                })
-        }
+        const resposta = await api.get('/Atividades/MinhasAtividadeExtra/' + decodedData.jti);
+        const dadosDaApi = resposta.data;
+        //console.warn(resposta)
+        this.setState({ listaAtividades: dadosDaApi });
     };
 
-    ListarMinhasExtras = async () => {
+    // ListarMinhas = async () => {
 
-        const token = await AsyncStorage.getItem("userToken");
-
-        const xambers = base64.decode(token.split('.')[1])
-        const user = JSON.parse(xambers)
-
-        // console.warn('wertyui')
-
-        // console.warn(user)
+    //     var Buffer = require('buffer/').Buffer
 
 
-        if (token != null) {
-            await api.get("/Atividades/MinhasAtividadeExtra/" + user.jti, {
-                headers: {
-                    "Authorization": "Bearer " + token,
-                },
+    //     const token = (await AsyncStorage.getItem('userToken'));
+    //     let base64Url = token.split('.')[1]; // token you get
+    //     let base64 = base64Url.replace('-', '+').replace('_', '/');
+    //     let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+    //     //const xambers = JSON.parse(atob(token.split('.')[1]))
+    //     console.warn(decodedData);
 
-            })
-                .then(response => {
-                    if (response.status === 200) {
-                        // console.warn(response)
-                        // console.warn(this.state.modalVisible)
-                        this.setState({ listaAtividades: response.data });
-                    }
-                })
-                .catch(response => {
-                    console.warn(response)
-                })
+
+
+    //     if (token != null) {
+    //         await api.get("/Atividades/MinhasAtividade/" + decodedData.jti, {
+    //             headers: {
+    //                 "Authorization": "Bearer " + token,
+    //             },
+
+    //         })
+    //             .then(response => {
+    //                 if (response.status === 200) {
+    //                     // console.warn(response)
+    //                     // console.warn(this.state.modalVisible)
+    //                     const dadosMinhasAtividades =  response.data;
+    //                     console.warn(dadosMinhasAtividades);
+    //                     this.setState({ listaAtividades: dadosMinhasAtividades });
+    //                 }
+    //             })
+    //             .catch(response => {
+    //                 console.warn(response)
+    //             })
+
+
+
+    //     }
+    // };
+
+
+    ProcurarAtividades = async (id) => {
+        //console.warn(id)
+        try {
+
+            const resposta = await api('/Atividades/' + id);
+            if (resposta.status == 200) {
+                const dadosAtividades = await resposta.data.atividade;
+                await this.setState({ AtividadeBuscada: dadosAtividades })
+                console.warn(dadosAtividades.idAtividade)
+            }
         }
-    };
+        catch (erro) {
+            console.warn(erro);
+        }
+    }
 
-    openModalMinhas = async (id) => {
-        // console.warn(id)
-        await api.get("/Atividades/" + id, {})
-
-            .then(response => {
-                let dadosApi = response.data.atividade
-                //console.warn(dadosApi)
-                this.setState(
-                    {
-                        minhaAtividade: dadosApi,
-                        modalVisible: true
-                    }
-                )
-
-                console.warn(dadosApi)
-            })
+    setModalVisible = async (visible, id) => {
+        if (visible == true) {
+            // console.warn(id)
+            await this.ProcurarAtividades(id)
+            this.setState({ modalVisible: true });
+            // console.warn(this.state.AtividadeBuscada)
+        }
+        else if (visible == false) {
+            this.setState({ AtividadeBuscada: {} })
+            this.setState({ modalVisible: false })
+        }
 
     }
 
-    closeModalMinhas = () => {
-        this.setState({ modalVisible: false })
-    }
-
-    openModalExtras = async (id) => {
-        // console.warn(id)
-        await api.get("/Atividades/" + id, {})
-
-            .then(response => {
-                let dadosApi = response.data.atividade
-                //console.warn(dadosApi)
-                this.setState(
-                    {
-                        minhaAtividade: dadosApi,
-                        modalVisible: true
-                    }
-                )
-            })
-    }
-
-    closeModalExtras = () => {
-        this.setState({ modalVisible: false })
-    }
 
     async _loadFontsAsync() {
         await Font.loadAsync(customFonts);
         this.setState({ fontsLoaded: true });
     }
 
-    pickDoc = async() =>{
-        let result =  DocumentPicker.getDocumentAsync({})
-        alert(result.uri)
-        console.log(result)
-    }
-
     componentDidMount() {
         this._loadFontsAsync();
-        
-        this.ListarMinhas();
-        this.ListarMinhasExtras();
+        this.buscarAtividade();
     }
 
-    componentWillUnmount = () => {
-        this.ListarMinhas();
-        this.ListarMinhasExtras();
-    }
+    // componentWillUnmount() {
+    //     this._loadFontsAsync();
+    //     this.buscarAtividade();
+    // }
+    // associar = async (item) => {
+    //     var Buffer = require('buffer/').Buffer
+    //     try {
+    //         console.warn(item)
+    //         const token = (await AsyncStorage.getItem('userToken'));
+    //         let base64Url = token.split('.')[1]; // token you get
+    //         let base64 = base64Url.replace('-', '+').replace('_', '/');
+    //         let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
+    //         //const xambers = JSON.parse(atob(token.split('.')[1]))
+    //         console.warn(decodedData);
 
 
-    _handleIndexChange = (index) => this.setState({ index });
 
-    _renderTabBar = (props) => {
-        const inputRange = props.navigationState.routes.map((x, i) => i);
 
+    //         const resposta = await api.post(
+    //             '/Atividades/Associar/' + decodedData.jti + '/' + item,
+    //             {
+
+    //             },
+    //             {
+    //                 headers: {
+    //                     Authorization: 'Bearer ' + token,
+    //                 },
+    //             },
+
+    //             // console.warn(resposta)
+
+
+    //         );
+    //         if (resposta.status == 200) {
+    //             console.warn('Voce se associou a uma atividade');
+    //         } else {
+    //             console.warn('Falha ao se associar.');
+    //         }
+    //     } catch (error) {
+    //         console.warn(error);
+    //     }
+    // }
+
+    render() {
+        if (!customFonts) {
+            return <AppLoading />;
+        }
         return (
 
             <View style={styles.main}>
-                <View>
 
+                <View>
                     <View style={styles.mainHeader}>
-                        <Image source={require('../../../assets/img-gp1/logoSenai2.png')}
+                        <Image source={require('../../../assets/img-geral/logo_2S.png')}
                             style={styles.imgLogo}
                         />
                     </View>
 
-                    <View>
-                        <Text style={styles.tituloEfects}>{'Minhas atividades'.toUpperCase()} </Text>
+                    <View style={styles.titulo}>
+
+                        <Text style={styles.tituloEfects}>{'Extras'.toUpperCase()} </Text>
+
+                        {/* <View style={styles.escritaEscolha}>
+                            <View style={styles.itemEquipe}>
+                                <Pressable >
+                                    <Text style={styles.font}> Obrigatórios </Text>
+                                </Pressable><View style={styles.line1}></View>
+                            </View>
+                            <View style={styles.itemIndividual}>
+                                <Pressable onPress={() => this.props.navigation.navigate('AtividadesExtras')}>
+                                    <Text style={styles.font}> Extras </Text>
+                                    <View style={styles.line2}></View>
+                                </Pressable>
+                               
+                            </View>
+                        </View> */}
                     </View>
                 </View>
-                <View style={styles.tabBar}>
-                    {props.navigationState.routes.map((route, i) => {
-                        const opacity = props.position.interpolate({
-                            inputRange,
-                            outputRange: inputRange.map((inputIndex) =>
-                                inputIndex === i ? 1 : 0.5
-                            ),
-                        });
 
-                        return (
-                            <TouchableOpacity
-                                style={styles.tabItem}
-                                onPress={() => this.setState({ index: i })}>
-                                <Animated.Text style={{ opacity }}>{route.title}</Animated.Text>
-                                <Animated.View style={{ opacity, width: '100%', borderBottomWidth: 1, }} />
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
+                <FlatList
+                    data={this.state.listaAtividades}
+                    keyExtractor={item => item.idAtividade}
+                    renderItem={this.renderItem}
+                />
+
+
             </View>
-        )
-    };
 
-    FirstRoute = () => (
-        <FlatList
-            style={styles.FlatList}
-            data={this.state.listaAtividades}
-            keyExtractor={item => item.idMinhasAtividades}
-            renderItem={this.renderItem}
-        />
-    );
+        )
+    }
 
     renderItem = ({ item }) => (
 
-        <View style={styles.MinhaAtividadeCentro}>
 
+        <View style={styles.boxAtividade}>
+            <View style={styles.box}>
+                <View style={styles.quadrado}></View>
+                <View style={styles.espacoPontos}>
+                    <Text style={styles.pontos}> {item.recompensaMoeda} Cashs </Text>
+                    <FontAwesome5 name="coins" size={24} color="#FBB01E" /> 
+                </View>
+                <View style={styles.conteudoBox}>
+                    <Text style={styles.nomeBox}> {item.nomeAtividade} </Text>
+                    {/* <Text style={styles.nomeBox}> {item.idAtividade} </Text> */}
+                    <Text style={styles.criador}> Responsável: {item.criador} </Text>
+                    {/* <Text style={styles.data}> Item Postado: {Intl.DateTimeFormat("pt-BR", {
+                    year: 'numeric', month: 'short', day: 'numeric',
+                }).format(new Date(item.dataCriacao))} 
+                    </Text> */}
 
-            <View style={styles.MinhaAtividade}>
-                <View style={styles.quadradoeTexto}>
-                    <View style={styles.quadrado}></View>
-                    <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
-
-                    <View style={styles.descricaoOlho}>
-                        <Text style={styles.descricao}> Data de Entrega: {Intl.DateTimeFormat("pt-BR", {
-                            year: 'numeric', month: 'short', day: 'numeric',
-                        }).format(new Date(item.dataConclusao))}</Text>
-
-                        <TouchableOpacity style={styles.Modalbotao} onPress={() => this.openModalMinhas(item.idAtividade)}>
-                            <AntDesign name="downcircleo" size={24} color="#636466" />
-                        </TouchableOpacity>
-                    </View>
 
                     <View style={styles.ModaleBotao}>
 
-                        <View style={styles.statusImagem}>
+                        <Text style={styles.dataEntrega}> Data de Entrega: {moment(item.dataConclusao).format('DD-MM-YYYY')} </Text>
 
+                        <Pressable style={styles.Modalbotao} onPress={() => this.setModalVisible(true, item.idAtividade)}  >
+                            <AntDesign name="downcircleo" size={24} color="#B3093F" />
+                        </Pressable>
+
+                        {/* <View style={styles.statusImagem}>
                             {item.idSituacaoAtividade == 1 &&
                                 <AntDesign name="check" size={24} color="black" />
                             }
                             {item.idSituacaoAtividade == 2 &&
-                                <Feather name="alert-triangle" size={24} color="black" />
+                                <Feather name="alert-triangle" size={24} color="#C20004" />
                             }
                             <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({ mensagem: 'Validado' }) : item.idSituacaoAtividade == 2 ? this.setState({ mensagem: 'Pendente' }) : null} </Text>
-
-                        </View>
-
+                        </View> */}
                     </View>
                 </View>
 
-
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={this.state.modalVisible}
-                    key={item.idMinhasAtividades == this.state.minhaAtividade.idMinhasAtividades}
-                    onRequestClose={() => {
-                    }}
-                >
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <View style={styles.quadradoModal}></View>
-                            <View style={styles.conteudoBoxModal}>
-                                <Text style={styles.nomeBoxModal}> {this.state.minhaAtividade.nomeAtividade} </Text>
-                                <Text style={styles.descricaoModal}> {this.state.minhaAtividade.descricaoAtividade} </Text>
-                                <Text style={styles.itemPostadoModal}>Item Postado: {this.state.minhaAtividade.dataInicio} </Text>
-                                <Text style={styles.entregaModal}> Data de Entrega: {this.state.minhaAtividade.dataConclusao} </Text>
-                                <Text style={styles.entregaModal}> Responsável: {this.state.minhaAtividade.criador} </Text>
-
-
-                                <TouchableOpacity style={styles.anexo} onPress={() => {pickDoc()}}>
-                                    {/* <Text style={styles.mais}>   + </Text> */}
-                                    <Text style={styles.txtanexo}> +   Adicionar Anexo</Text>
-                                </TouchableOpacity>
-
-                            </View>
-
-                            <View style={styles.botoesModal} >
-                                <TouchableOpacity
-                                // onPress={() => setModalVisible(!modalVisibleVar)}
-                                // onPress={() => Concluir()}
-                                >
-                                    <View style={styles.associarModal}>
-                                        <Text style={styles.texto}> Concluida </Text>
-                                    </View>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity
-                                //onPress={() => setModalVisible(!modalVisible)}
-                                >
-                                    <View style={styles.fecharModal}>
-                                        <Text style={styles.textoFechar} onPress={() => this.closeModalMinhas()} >Fechar X</Text>
-                                    </View>
-
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-
-
-                </Modal>
             </View>
-
-        </View>
-    );
-
-    SecondRoute = () => (
-        <FlatList
-            style={styles.FlatList}
-            data={this.state.listaAtividades}
-            keyExtractor={item => item.idMinhasAtividades}
-            renderItem={this.renderItem2}
-        />
-    );
-
-    renderItem2 = ({ item }) => (
-
-        <View style={styles.MinhaAtividadeCentro}>
-
-
-            <View style={styles.MinhaAtividade}>
-                <View style={styles.quadradoeTexto}>
-                    <View style={styles.quadrado}></View>
-                    <Text style={styles.TituloAtividade}> {item.nomeAtividade} </Text>
-
-                    <View style={styles.descricaoOlho}>
-                        <Text style={styles.descricao}> Data de Entrega: {Intl.DateTimeFormat("pt-BR", {
-                            year: 'numeric', month: 'short', day: 'numeric',
-                        }).format(new Date(item.dataConclusao))} </Text>
-
-                        <TouchableOpacity style={styles.Modalbotao} onPress={() => this.openModalExtras(item.idAtividade)}>
-                            <AntDesign name="downcircleo" size={24} color="#636466" />
-                        </TouchableOpacity>
-
-                    </View>
-
-                    <View style={styles.ModaleBotao}>
-                        <View style={styles.statusImagem}>
-
-                            {item.idSituacaoAtividade == 1 &&
-                                <AntDesign name="check" size={24} color="black" />
-                            }
-                            {item.idSituacaoAtividade == 2 &&
-                                <Feather name="alert-triangle" size={24} color="black" />
-                            }
-                            {item.idSituacaoAtividade == 3 &&
-                                <MaterialCommunityIcons name="clipboard-clock-outline" size={24} color="black" />
-                            }
-                            <Text style={styles.status}>{item.idSituacaoAtividade == 1 ? this.setState({ mensagem: 'Validado' }) : item.idSituacaoAtividade == 2 ? this.setState({ mensagem: 'Pendente' }) : item.idSituacaoAtividade == 3 ? this.setState({ mensagem: 'Avaliando' }) : null} </Text>
-
-                        </View>
-
-                    </View>
-
-
-
-
-                </View>
-            </View>
-
 
             <Modal
-                animationType="slide"
+                animationType="fade"
                 transparent={true}
                 visible={this.state.modalVisible}
-                key={this.state.minhaAtividade.idMinhasAtividades}
+                key={item.idAtividade == this.state.AtividadeBuscada.idAtividade}
                 onRequestClose={() => {
+                    console.warn(item)
+                    this.setModalVisible(!this.state.modalVisible)
                 }}
             >
+
+
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <View style={styles.quadradoModal}></View>
                         <View style={styles.conteudoBoxModal}>
-                            <Text style={styles.nomeBoxModal}> {this.state.minhaAtividade.nomeAtividade} </Text>
-                            <Text style={styles.descricaoModal}> {this.state.minhaAtividade.descricaoAtividade} </Text>
-                            <Text style={styles.itemPostadoModal}>Item Postado: {this.state.minhaAtividade.dataInicio} </Text>
-                            <Text style={styles.entregaModal}> Data de Entrega: {this.state.minhaAtividade.dataConclusao} </Text>
-                            <Text style={styles.entregaModal}> Responsável: {this.state.minhaAtividade.criador} </Text>
+                            <Text style={styles.nomeBoxModal}>{this.state.AtividadeBuscada.nomeAtividade} </Text>
+                            <Text style={styles.descricaoModal}> {this.state.AtividadeBuscada.descricaoAtividade}</Text>
+                            <Text style={styles.itemPostadoModal}> Item Postado: {moment(this.state.AtividadeBuscada.dataCriacao).format('DD-MM-YYYY')} </Text>
+                            <Text style={styles.entregaModal}> Data de Entrega: {moment(this.state.AtividadeBuscada.dataConclusao).format('DD-MM-YYYY')}</Text>
+
+                            <Text style={styles.entregaModal}> Recompensa em Troféu: {this.state.AtividadeBuscada.recompensaTrofeu}
+                                <EvilIcons style={styles.trofeu} name="trophy" size={25} color="#E7C037" />
+                            </Text>
 
 
-                            <TouchableOpacity style={styles.anexo}>
-                                <Text style={styles.mais}>   + </Text>
-                                <Text style={styles.txtanexo}>    Adicionar Anexo</Text>
+                            <Text style={styles.criadorModal}> Criador: {this.state.AtividadeBuscada.criador} </Text>
+                            <TouchableOpacity style={styles.anexo} onPress={this.imagePickerCall}>
+                                <Text style={styles.txtanexo}> + Adicionar Anexo</Text>
+                                {this.state.imagemEntrega == null ? null : <AntDesign name="checkcircleo" size={17} color="green" />}
                             </TouchableOpacity>
-
                         </View>
-
-                        <View style={styles.botoesModal} >
-                            <TouchableOpacity
-                            // onPress={() => setModalVisible(!modalVisibleVar)}
-                            // onPress={() => Concluir()}
-                            >
+                        <View style={styles.botoesModal}  >
+                            <Pressable onPress={() => this.finalizarAtividade(this.state.AtividadeBuscada.idAtividade)} >
                                 <View style={styles.associarModal}>
                                     <Text style={styles.texto}> Concluida </Text>
                                 </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity
+                            </Pressable>
+                            <Pressable
 
-                            //onPress={() => setModalVisible(!modalVisible)}
+                                onPress={() => this.setModalVisible(!this.state.modalVisible)}
                             >
                                 <View style={styles.fecharModal}>
-                                    <Text style={styles.textoFechar} onPress={() => this.closeModalExtras()} >Fechar X</Text>
+                                    <Text style={styles.textoFechar}>Fechar X</Text>
                                 </View>
 
-                            </TouchableOpacity>
+                            </Pressable>
                         </View>
+
                     </View>
+
                 </View>
+                <AwesomeAlert
+                    show={this.state.showAlertSuce}
+                    showProgress={false}
+                    title="Sucesso"
+                    titleStyle={styles.tituloAlert}
+                    message="Sua Atividade foi Enviada!"
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={true}
+                    cancelText="Okay"
+                    cancelButtonColor="#C20004"
+                    cancelButtonStyle={this.alertView = StyleSheet.create({
+                        width: 150,
+                        paddingLeft: 62
+                    })}
+                    onCancelPressed={() => {
+                        this.hideAlertSuce();
+                    }}
+                />
 
-
+                <AwesomeAlert
+                    show={this.state.showAlert}
+                    showProgress={false}
+                    title="Oops !"
+                    titleStyle={
+                        styles.tituloModalLogin
+                    }
+                    message="Falha ao enviar sua Atividade"
+                    messageStyle={styles.textoModalLogin}
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    confirmButtonStyle={styles.confirmButton}
+                    showCancelButton={false}
+                    showConfirmButton={true}
+                    confirmText="Voltar"
+                    confirmButtonColor="#C20004"
+                    onConfirmPressed={() => {
+                        this.hideAlert();
+                    }}
+                /> 
             </Modal>
         </View>
-    );
-    _renderScene = SceneMap({
-        first: this.FirstRoute,
-        second: this.SecondRoute,
-    });
 
-    render() {
-        return (
-            <TabView
-                navigationState={this.state}
-                renderScene={this._renderScene}
-                renderTabBar={this._renderTabBar}
-                onIndexChange={this._handleIndexChange}
-            />
-        );
-    }
+    )
 
 };
-
-const styles = StyleSheet.create({
+if (Dimensions.get('window').width > 700) {
+    var styles = StyleSheet.create({
 
     main: {
         flex: 1,
         backgroundColor: '#F2F2F2',
-        alignItems: 'center'
     },
 
     mainHeader: {
@@ -472,36 +477,32 @@ const styles = StyleSheet.create({
         paddingTop: 40,
 
     },
+    // imgLogo:{
+    //     height: '20%',
+    //     width: '50%',
+    // },
+
+    titulo: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 40,
+        paddingBottom: 64
+    },
 
     tituloEfects: {
         fontFamily: 'SemiBoldM',
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        color: '#2A2E32',
-        fontSize: 30,
-        paddingTop: 40,
-        textAlign: 'center'
-    },
-
-    tabBar: {
-        flexDirection: 'row',
-        backgroundColor: '#B3B3B3',
-        // marginTop: 50,
-    },
-
-    tabItem: {
-        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
-        padding: 40,
-        backgroundColor: '#F2F2F2',
+        color: '#2A2E32',
+        fontSize: 28,
     },
 
     escritaEscolha: {
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        paddingTop: 40,
-        paddingBottom: 48
+        paddingTop: 30,
+        // paddingBottom:20
     },
 
     itemEquipe: {
@@ -512,85 +513,108 @@ const styles = StyleSheet.create({
 
     font: {
         fontFamily: 'Quicksand-Regular',
-        color: "#636466",
-        fontSize: 23,
+        fontSize: 20,
         paddingBottom: 5,
+    },
+
+    line1: {
+        width: '100%',
+        borderBottomWidth: 1,
     },
 
     itemIndividual: {
         alignItems: 'center',
     },
 
-    boxTitulo: {
-        justifyContent: 'center',
+    line2: {
+        width: '100%',
+        borderBottomWidth: 1,
+    },
+
+    boxAtividade: {
+
+        // paddingTop: 40,
+
         alignItems: 'center',
-        paddingTop: 40,
-    },
-
-    titulo: {
-        color: '#B83F52',
-        fontSize: 18,
-        fontFamily: 'SemiBold',
-    },
-
-
-    MinhaAtividade: {
-        // paddingTop: 80,
-        // alignItems:'center',
-        // justifyContent:'center',
-        height: 120,
-        borderWidth: 1,
-        borderColor: '#B3B3B3',
-        backgroundColor: '#F2F2F2',
-        borderRadius: 10,
-        marginBottom: 20,
-        width: '85%',
-    },
-
-    quadradoeTexto: {
-        flexWrap: "wrap",
     },
 
     quadrado: {
         backgroundColor: '#2A2E32',
-        height: 119,
-        width: '7%',
-        // borderTopRightRadius: 8,
+        height: 28,
+        width: '100%',
+        borderTopRightRadius: 8,
         borderTopLeftRadius: 8,
-        borderBottomLeftRadius: 8,
-        marginRight: 16,
 
     },
 
-    TituloAtividade: {
-        fontFamily: "Quicksand-SemiBold",
+
+
+
+    box: {
+        height: 210,
+        borderWidth: 1,
+        borderColor: '#B3B3B3',
+        backgroundColor: '#F2F2F2',
+        borderRadius: 10,
+        marginBottom: 40,
+        width: '85%',
+
+    },
+
+    espacoPontos: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        paddingTop: 16,
+        paddingRight: 18,
+    },
+
+    pontos: {
+        fontSize: 14,
+        paddingRight: 5,
+        fontFamily: 'Quicksand-SemiBold',
+    },
+
+    imgCoins: {
+        width: 18,
+        height: 18,
+    },
+
+    conteudoBox: {
+        marginTop: 10,
+        paddingLeft: 16,
+        flexDirection: 'column'
+    },
+
+
+    nomeBox: {
+        fontFamily: 'Quicksand-SemiBold',
+        color: '#000000',
         fontSize: 18,
-        color: "#0E0E0E",
-        marginTop: 16,
-        height: 36
-        // marginBottom: 13,
-
     },
 
-    descricao: {
-        fontFamily: "Quicksand-Regular",
-        textAlign: 'center',
-        fontSize: 14,
-        color: "#636466",
-        marginBottom: 5,
+    criador: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
     },
 
-    status: {
-        fontFamily: "Quicksand-Regular",
-        fontSize: 14,
-        color: "#636466",
+    dataEntrega: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+        //paddingLeft: 20
     },
 
-    avaliando: {
-        marginRight: 9,
-        marginTop: 4,
-        height: 15,
-        width: 15,
+
+    data: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 8,
+    },
+
+    Modalbotao: {
+        paddingLeft: "59%",
+        paddingTop: 13,
     },
 
     statusImagem: {
@@ -600,72 +624,23 @@ const styles = StyleSheet.create({
 
     },
 
-    descricaoOlho: {
-        flexDirection: 'row',
-        // justifyContent: 'flex-end',
-        justifyContent: 'space-between',
-
-    },
-
-
-    lineAtividade: {
-        width: 260,
-        paddingTop: 10,
-        borderBottomColor: '#D9D9D9',
-        borderBottomWidth: 3,
-    },
-
-    centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 22
-    },
-
-    modalView: {
-        margin: 20,
-        backgroundColor: "#F2F2F2",
-        borderRadius: 5,
-        padding: 35,
-        alignItems: "center",
-        width: 280
-    },
-
-    button: {
-        borderRadius: 10,
-        padding: 10,
-        elevation: 2,
-        height: 40,
-        width: 90,
-        backgroundColor: '#F2F2F2',
-        borderRadius: 5,
-    },
-
-    boxTextos: {
-        marginBottom: 30,
-        marginTop: 20,
-    },
-
-    Modalbotao: {
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        // paddingRight: 18,
-        paddingTop: 6,
-        // marginLeft:130,
-        paddingLeft: 130
+    status: {
+        fontFamily: "Regular",
+        fontSize: 14,
+        color: "#636466",
     },
 
     botao: {
         // flexDirection: 'row',
-        // justifyContent: 'flex-start',
-        // paddingTop: 20,
-        // paddingLeft: 16
+        justifyContent: 'flex-start',
+        paddingTop: 20,
+        paddingLeft: 16
     },
 
     corBotão: {
         borderRadius: 15,
         height: 30,
-        width: 87,
+        width: 100,
         backgroundColor: '#C20004',
         alignItems: 'center',
         justifyContent: 'center',
@@ -673,13 +648,13 @@ const styles = StyleSheet.create({
 
     texto: {
         fontFamily: 'Montserrat-Medium',
-        color: '#E2E2E2',
+        color: '#F2F2F2',
         fontSize: 11,
-        alignItems: 'center',
+        //alignItems: 'center',
     },
 
     botaoIndisp: {
-        alignItems: 'center',
+        //alignItems: 'center',
         justifyContent: 'center',
         paddingTop: 19,
     },
@@ -689,38 +664,44 @@ const styles = StyleSheet.create({
         height: 40,
         width: 90,
         backgroundColor: '#B1B3B6',
-        alignItems: 'center',
+        //alignItems: 'center',
         justifyContent: 'center',
     },
 
     ModaleBotao: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        //paddingRight:30,
+        //alignItems:'flex-end',
+        //justifyContent: 'space-between',
+        //alignItems: 'center',
+
+
     },
 
     textoIndisp: {
-        fontFamily: 'Montserrat-SemiBold',
+        // fontFamily: 'Montserrat-SemiBold',
         color: '#000000',
-        fontSize: 11,
+        fontSize: 10,
         alignItems: 'center',
     },
 
     centeredView: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.1)'
         // marginTop: 22
     },
 
     modalView: {
-        height: 390,
+        height: 450,
         borderWidth: 1,
         borderColor: '#B3B3B3',
         backgroundColor: '#F2F2F2',
         borderRadius: 10,
         // marginBottom: 20,
-        width: '78%',
+        width: '100%',
+
     },
 
     quadradoModal: {
@@ -729,42 +710,53 @@ const styles = StyleSheet.create({
         width: '100%',
         borderTopRightRadius: 8,
         borderTopLeftRadius: 8
+
+    },
+
+    conteudoBoxModal: {
+        flexDirection: 'column',
     },
 
     nomeBoxModal: {
         fontFamily: 'Quicksand-SemiBold',
         textAlign: "center",
         paddingTop: 24,
-        fontSize: 20
+        fontSize: 20,
     },
 
     descricaoModal: {
         fontFamily: 'Quicksand-Regular',
         paddingTop: 24,
         fontSize: 15,
-        paddingBottom: 16,
+        //paddingBottom: 16,
         marginLeft: 16
     },
 
     itemPostadoModal: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
-        paddingBottom: 16,
+        paddingTop: 16,
+        //paddingBottom: 24,
         marginLeft: 16
     },
 
     entregaModal: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
-        paddingBottom: 16,
-        marginLeft: 16
+        paddingTop: 16,
+        marginLeft: 16,
+    },
+
+    trofeu: {
+        paddingTop: 13,
     },
 
     criadorModal: {
         fontFamily: 'Quicksand-Regular',
         fontSize: 15,
+        paddingTop: 16,
+        marginLeft: 16,
         paddingBottom: 16,
-        marginLeft: 16
     },
 
     botoesModal: {
@@ -772,14 +764,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         justifyContent: 'space-evenly',
-        paddingTop: 30
+        paddingTop: "10%"
     },
 
     associarModal: {
         borderRadius: 15,
         height: 30,
         width: 108,
-        backgroundColor: '#C20004',
+        backgroundColor: '#B3093F',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -791,8 +783,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
-        borderColor: '#C20004',
-        color: '#C20004'
+        borderColor: '#B3093F',
+        color: '#B3093F'
+    },
+
+    textoFechar: {
+        fontFamily: 'Montserrat-Medium',
+        color: '#B3093F',
+        fontSize: 12
+    },
+    descricao: {
+        fontFamily: "Regular",
+        textAlign: 'center',
+        fontSize: 14,
+        color: "#636466",
+        marginBottom: 5,
     },
 
     anexo: {
@@ -804,32 +809,410 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         flexDirection: 'row',
-        height: 30
+        height: 30,
+        paddingLeft: 23,
     },
 
     txtanexo: {
-        fontFamily: 'Quicksand-Regular',
-        marginRight: 40
+        fontFamily: 'Regular',
     },
 
-    mais: {
-        fontSize: 21,
+    tituloModalLogin:
+    {
+        color: '#9A0AF',
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 23,
+        fontWeight: 'bold'
+    },
+    textoModalLogin:
+    {
+        width: 200,
         textAlign: 'center'
+    },
+    confirmButton: {
+        width: 100,
+
+        paddingLeft: 32
+    },
+
+    tituloAlert: {
+        color: 'green'
+    }
+
+})}
+else{   var styles = StyleSheet.create({
+
+    main: {
+        flex: 1,
+        backgroundColor: '#F2F2F2',
+    },
+
+    mainHeader: {
+
+        alignItems: 'center',
+        paddingTop: 40,
+
+    },
+    // imgLogo:{
+    //     height: '20%',
+    //     width: '50%',
+    // },
+
+    titulo: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 40,
+        paddingBottom: 64
+    },
+
+    tituloEfects: {
+        fontFamily: 'SemiBoldM',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: '#2A2E32',
+        fontSize: 28,
+    },
+
+    escritaEscolha: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        paddingTop: 30,
+        // paddingBottom:20
+    },
+
+    itemEquipe: {
+
+        marginRight: 80,
+        alignItems: 'center',
+    },
+
+    font: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 20,
+        paddingBottom: 5,
+    },
+
+    line1: {
+        width: '100%',
+        borderBottomWidth: 1,
+    },
+
+    itemIndividual: {
+        alignItems: 'center',
+    },
+
+    line2: {
+        width: '100%',
+        borderBottomWidth: 1,
+    },
+
+    boxAtividade: {
+
+        // paddingTop: 40,
+
+        alignItems: 'center',
+    },
+
+    quadrado: {
+        backgroundColor: '#2A2E32',
+        height: 28,
+        width: '100%',
+        borderTopRightRadius: 8,
+        borderTopLeftRadius: 8,
+
+    },
+
+
+
+
+    box: {
+        height: 210,
+        borderWidth: 1,
+        borderColor: '#B3B3B3',
+        backgroundColor: '#F2F2F2',
+        borderRadius: 10,
+        marginBottom: 40,
+        width: '85%',
+
+    },
+
+    espacoPontos: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        paddingTop: 16,
+        paddingRight: 18,
+    },
+
+    pontos: {
+        fontSize: 14,
+        paddingRight: 5,
+        fontFamily: 'Quicksand-SemiBold',
+    },
+
+    imgCoins: {
+        width: 18,
+        height: 18,
+    },
+
+    conteudoBox: {
+        marginTop: 10,
+        paddingLeft: 16,
+        flexDirection: 'column'
+    },
+
+
+    nomeBox: {
+        fontFamily: 'Quicksand-SemiBold',
+        color: '#000000',
+        fontSize: 18,
+    },
+
+    criador: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+    },
+
+    dataEntrega: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+        //paddingLeft: 20
+    },
+
+
+    data: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 8,
+    },
+
+    Modalbotao: {
+        paddingLeft: "20%",
+        paddingTop: 13,
+    },
+
+    statusImagem: {
+        flexDirection: 'row',
+        marginTop: 7,
+        height: 20
+
+    },
+
+    status: {
+        fontFamily: "Regular",
+        fontSize: 14,
+        color: "#636466",
+    },
+
+    botao: {
+        // flexDirection: 'row',
+        justifyContent: 'flex-start',
+        paddingTop: 20,
+        paddingLeft: 16
+    },
+
+    corBotão: {
+        borderRadius: 15,
+        height: 30,
+        width: 100,
+        backgroundColor: '#C20004',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    texto: {
+        fontFamily: 'Montserrat-Medium',
+        color: '#F2F2F2',
+        fontSize: 11,
+        //alignItems: 'center',
+    },
+
+    botaoIndisp: {
+        //alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 19,
+    },
+
+    corIndisp: {
+        borderRadius: 5,
+        height: 40,
+        width: 90,
+        backgroundColor: '#B1B3B6',
+        //alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    ModaleBotao: {
+        flexDirection: 'row',
+        //paddingRight:30,
+        //alignItems:'flex-end',
+        //justifyContent: 'space-between',
+        //alignItems: 'center',
+
+
+    },
+
+    textoIndisp: {
+        // fontFamily: 'Montserrat-SemiBold',
+        color: '#000000',
+        fontSize: 10,
+        alignItems: 'center',
+    },
+
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.1)'
+        // marginTop: 22
+    },
+
+    modalView: {
+        height: 450,
+        borderWidth: 1,
+        borderColor: '#B3B3B3',
+        backgroundColor: '#F2F2F2',
+        borderRadius: 10,
+        // marginBottom: 20,
+        width: '78%',
+
+    },
+
+    quadradoModal: {
+        backgroundColor: '#2A2E32',
+        height: 35,
+        width: '100%',
+        borderTopRightRadius: 8,
+        borderTopLeftRadius: 8
+
+    },
+
+    conteudoBoxModal: {
+        flexDirection: 'column',
+    },
+
+    nomeBoxModal: {
+        fontFamily: 'Quicksand-SemiBold',
+        textAlign: "center",
+        paddingTop: 24,
+        fontSize: 20,
+    },
+
+    descricaoModal: {
+        fontFamily: 'Quicksand-Regular',
+        paddingTop: 24,
+        fontSize: 15,
+        //paddingBottom: 16,
+        marginLeft: 16
+    },
+
+    itemPostadoModal: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+        //paddingBottom: 24,
+        marginLeft: 16
+    },
+
+    entregaModal: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+        marginLeft: 16,
+    },
+
+    trofeu: {
+        paddingTop: 13,
+    },
+
+    criadorModal: {
+        fontFamily: 'Quicksand-Regular',
+        fontSize: 15,
+        paddingTop: 16,
+        marginLeft: 16,
+        paddingBottom: 16,
+    },
+
+    botoesModal: {
+        fontFamily: 'Montserrat-Medium',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        justifyContent: 'space-evenly',
+        paddingTop: "10%"
+    },
+
+    associarModal: {
+        borderRadius: 15,
+        height: 30,
+        width: 108,
+        backgroundColor: '#B3093F',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    fecharModal: {
+        borderRadius: 15,
+        height: 30,
+        width: 108,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: '#B3093F',
+        color: '#B3093F'
     },
 
     textoFechar: {
         fontFamily: 'Montserrat-Medium',
-        color: '#C20004'
+        color: '#B3093F',
+        fontSize: 12
+    },
+    descricao: {
+        fontFamily: "Regular",
+        textAlign: 'center',
+        fontSize: 14,
+        color: "#636466",
+        marginBottom: 5,
     },
 
-    FlatList: {
-        width: '100%',
-        // alignItems:'center'
-    },
-
-    MinhaAtividadeCentro: {
+    anexo: {
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#B3B3B3',
+        width: 175,
+        marginLeft: 19,
+        justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 40
+        flexDirection: 'row',
+        height: 30,
+        paddingLeft: 23,
     },
 
-})
+    txtanexo: {
+        fontFamily: 'Regular',
+    },
+
+    tituloModalLogin:
+    {
+        // color: '#9A0AF',
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 23,
+        fontWeight: 'bold'
+    },
+    textoModalLogin:
+    {
+        width: 200,
+        textAlign: 'center'
+    },
+    confirmButton: {
+        width: 100,
+
+        paddingLeft: 32
+    },
+
+    tituloAlert: {
+        color: 'green'
+    }
+
+})}
