@@ -300,12 +300,12 @@ export default function InteractiveChart(historicos) {
       <View
         style={{
           flexDirection: 'row',
-          width: apx(600),
+          width: apx(610),
           height: apx(250),
           alignSelf: 'stretch',
         }}>
         <View style={{
-          flex: 1, marginRight: -40, borderLeftWidth: 1, borderBottomWidth: 1,
+          flex: 1, marginRight: Dimensions.get('window').width * -.1, borderLeftWidth: 1, borderBottomWidth: 1,
           borderColor: 'black', borderStyle: 'dashed'
         }}
           {...panResponder.current.panHandlers}>
@@ -325,10 +325,10 @@ export default function InteractiveChart(historicos) {
         </View>
 
         <YAxis
-          style={{ width: apx(190) }}
+          style={{ width: apx(180) }}
           data={mediasAvaliacao}
           contentInset={verticalContentInset}
-          svg={{ fontSize: apx(20), fill: 'black' }}
+          svg={{ fontSize: apx(15), fill: 'black' }}
           numberOfTicks={4}
         />
       </View>
@@ -336,7 +336,7 @@ export default function InteractiveChart(historicos) {
         style={{
           alignSelf: 'stretch',
           // marginTop: apx(57),
-          width: apx(600),
+          width: apx(640),
           height: apx(60),
         }}
         numberOfTicks={3}
@@ -348,7 +348,7 @@ export default function InteractiveChart(historicos) {
           right: apx(180),
         }}
         svg={{
-          fontSize: apx(20),
+          fontSize: apx(15),
           fill: 'black',
           y: apx(20),
           // originY: 30,
