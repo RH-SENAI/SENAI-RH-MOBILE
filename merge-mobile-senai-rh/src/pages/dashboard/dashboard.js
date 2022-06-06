@@ -68,7 +68,8 @@ export default function Dashboard() {
   const [listaUsuarios, setListaUsuarios] = useState([]);
   const [notaProdutividade, setNotaProdutividade] = useState(0);
   const [usuario, setUsuario] = useState([]);
-  const [minhasAtividades, setMinhasAtividades] = useState([]);
+  const [minhasAtividadesFinalizadas, setMinhasAtividadesFinalizadas] = useState([]);
+  const [minhasAtividadesEmAberto, setMinhasAtividadesEmAberto] = useState([]);
   const [contibutionDates, setContibutionDates] = useState([]);
   const [historicos, setHistoricos] = useState([]);
 
@@ -82,11 +83,13 @@ export default function Dashboard() {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setUsuario([]);
-    setMinhasAtividades([]);
+    setMinhasAtividadesFinalizadas([]);
+    setMinhasAtividadesEmAberto([]);
     setHistoricos([]);
     wait(2000).then(() => setRefreshing(false));
     BuscarUsuario();
-    BuscarMinhasAtividades();
+    BuscarMinhasAtividadesFinalizadas();
+    BuscarMinhasAtividadesEmAberto();
     BuscarHistorico();
   }, []);
 
@@ -241,7 +244,7 @@ export default function Dashboard() {
     }
   }
 
-  async function BuscarMinhasAtividades() {
+  async function BuscarMinhasAtividadesFinalizadas() {
     try {
       const token = await AsyncStorage.getItem("userToken");
 
@@ -255,9 +258,9 @@ export default function Dashboard() {
       );
 
       if (resposta.status === 200) {
-        //setMinhasAtividades(resposta.data);
+        //setMinhasAtividadesFinalizadas(resposta.data);
 
-        //var datasDeFinalizacao = minhasAtividades
+        //var datasDeFinalizacao = minhasAtividadesFinalizadas
         var datasDeFinalizacao = resposta.data
           //const datasDeFinalizacao = mock
           .filter(a => a.idSituacaoAtividade === 1)
@@ -282,7 +285,57 @@ export default function Dashboard() {
         }
 
         //console.log(datasFiltradas);
-        setMinhasAtividades(datasFiltradas)
+        setMinhasAtividadesFinalizadas(datasFiltradas)
+        //console.warn(dePara);
+        //setContibutionDates(dePara)
+
+      }
+    } catch (error) {
+      console.warn(error);
+    }
+  }
+  async function BuscarMinhasAtividadesEmAberto() {
+    try {
+      const token = await AsyncStorage.getItem("userToken");
+
+      const resposta = await apiGp1.get(
+        "Atividades/MinhasAtividade/" + jwtDecode(token).jti,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+
+      if (resposta.status === 200) {
+        //setMinhasAtividadesFinalizadas(resposta.data);
+
+        //var datasCriacao = minhasAtividadesFinalizadas
+        var datasCriacao = resposta.data
+          //const datasCriacao = mock
+          .filter(a => a.idSituacaoAtividade === 3)
+          .map(p => { return { date: p.dataCriacao, count: 1 } });
+
+        var datasCriacaoFiltradas = [];
+
+        for (var i = 0; i < datasCriacao.length; i++) {
+          for (var j = i + 1; j < datasCriacao.length; j++) {
+            if (datasCriacao[i].date === datasCriacao[j].date) {
+              datasCriacao[i].count++;
+              datasCriacao[j].date = null;
+            }
+            if (j === datasCriacao.length - 1 && datasCriacao[i].date !== null) {
+              datasCriacaoFiltradas.push(datasCriacao[i]);
+            }
+          }
+          if (i === datasCriacao.length - 1 &&
+            datasCriacao[datasCriacao.length - 1].date !== datasCriacao[datasCriacao.length]) {
+            datasCriacaoFiltradas.push(datasCriacao[i]);
+          }
+        }
+
+        //console.log(datasCriacaoFiltradas);
+        setMinhasAtividadesEmAberto(datasCriacaoFiltradas)
         //console.warn(dePara);
         //setContibutionDates(dePara)
 
@@ -324,10 +377,18 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    BuscarMinhasAtividades()
+    BuscarMinhasAtividadesFinalizadas()
     wait(200)
     return (
-      setMinhasAtividades([])
+      setMinhasAtividadesFinalizadas([])
+    )
+  }, []);
+
+  useEffect(() => {
+    BuscarMinhasAtividadesEmAberto()
+    wait(200)
+    return (
+      setMinhasAtividadesEmAberto([])
     )
   }, []);
 
@@ -535,7 +596,7 @@ export default function Dashboard() {
 
                   {/* ------------------------------- GRAFICO DE BARRAS ----------------------------------- */}
 
-                  <View style={styles.containerProdutividade}>
+                  <View style={styles.containerSatisfacaoAvaliacao}>
                     <View style={styles.containerProdutividadeSup}>
                       <Text style={styles.tituloComparativo}>Comparativo entre seus indíces:</Text>
                     </View>
@@ -547,7 +608,7 @@ export default function Dashboard() {
                     </View>
                   </View>
 
-                  <View style={styles.containerProdutividade}>
+                  <View style={styles.containerSatisfacaoAvaliacao}>
                     <View style={styles.containerProdutividadeSup}>
                       <Text style={styles.tituloGrafico}>Satisfação:</Text>
                       <GraficoSatisfacao />
@@ -565,7 +626,7 @@ export default function Dashboard() {
 
 
 
-                  <View style={styles.containerProdutividade}>
+                  <View style={styles.containerSatisfacaoAvaliacao}>
                     <View style={styles.containerProdutividadeSup}>
                       <Text style={styles.tituloGrafico}>Avaliação:</Text>
                       <GraficoAvaliacao />
@@ -588,7 +649,7 @@ export default function Dashboard() {
                     <ScrollView horizontal={true}>
                       <ContributionGraph
                         style={styles.ContributionContainer}
-                        values={minhasAtividades}
+                        values={minhasAtividadesFinalizadas}
                         //endDate={new Date(moment(now))}
                         //endDate={moment(now)}
                         numDays={150}
@@ -597,14 +658,32 @@ export default function Dashboard() {
                         height={260}
                         chartConfig={chartConfig}
                         showMonthLabels={true}
-                        onDayPress={(d = minhasAtividades) => showAlert(d.date, d.count)}
+                        onDayPress={(d = minhasAtividadesFinalizadas) => showAlert(d.date, d.count)}
                         gutterSize={3}
                         squareSize={25}
                         horizontal={true}
                         showOutOfRangeDays={true}
-
                       />
                     </ScrollView>
+                    {/* <ScrollView horizontal={true}>
+                      <ContributionGraph
+                        style={styles.ContributionContainer}
+                        values={minhasAtividadesEmAberto}
+                        //endDate={new Date(moment(now))}
+                        //endDate={moment(now)}
+                        numDays={150}
+                        //width={'90%'}
+                        width={screenWidth * 2}
+                        height={260}
+                        chartConfig={chartConfig}
+                        showMonthLabels={true}
+                        onDayPress={(d = minhasAtividadesEmAberto) => showAlert(d.date, d.count)}
+                        gutterSize={3}
+                        squareSize={25}
+                        horizontal={true}
+                        showOutOfRangeDays={true}
+                      />
+                    </ScrollView> */}
                   </View>
 
                 </View>
@@ -682,7 +761,7 @@ if (Dimensions.get('window').width > 700) {
       //backgroundColor: 'blue'
     },
     lineTextPerfil: {
-      fontFamily: "Quicksand_300Light",
+      fontFamily: "Quicksand_600SemiBold",
       fontSize: 25,
       color: "#000",
     },
@@ -705,8 +784,29 @@ if (Dimensions.get('window').width > 700) {
       padding: 10,
       height: 100,
     },
+    containerSatisfacaoAvaliacao: {
+      flex: 1,
+      borderRadius: 5,
+      borderTopWidth: 25,
+      borderTopColor: 'rgba(0, 0, 0, 0.8)',
+      borderWidth: 1,
+      borderColor: "gray",
+      //flexDirection: 'row',
+      backgroundColor: "rgba(241, 241, 241, 0.85)",
+      justifyContent: 'center',
+      marginTop: 20,
+      //paddingRight: '5%',
+      //alignItems: 'center',
+      paddingBottom: 15,
+      paddingHorizontal: 10,
+      paddingTop: 10,
+      //flexWrap: 'wrap',
+      //height: 500,
+
+    },
     containerProdutividade: {
       flex: 1,
+      //flexDirection: 'column',
       borderRadius: 5,
       borderTopWidth: 25,
       borderTopColor: 'rgba(0, 0, 0, 0.8)',
@@ -729,6 +829,8 @@ if (Dimensions.get('window').width > 700) {
       fontSize: 16,
       marginTop: 10,
       textAlign: 'right',
+      fontFamily: 'Quicksand_300Light',
+      marginRight: '3%'
     },
     containerLegendas: {
       flex: 1,
@@ -753,6 +855,7 @@ if (Dimensions.get('window').width > 700) {
     tituloGrafico: {
       fontSize: 22,
       marginRight: 10,
+      fontFamily: "Montserrat_600SemiBold",
       //marginLeft: 15,
       //backgroundColor: 'green'
     },
@@ -779,6 +882,7 @@ if (Dimensions.get('window').width > 700) {
     },
     tituloComparativo: {
       textAlign: 'right',
+      fontFamily: "Montserrat_600SemiBold",
       fontSize: 22,
       marginRight: 10,
       marginBottom: 10
@@ -887,7 +991,7 @@ else {
       //backgroundColor: 'blue'
     },
     lineTextPerfil: {
-      fontFamily: "Quicksand_300Light",
+      fontFamily: "Quicksand_600SemiBold",
       fontSize: 25,
       color: "#000",
     },
@@ -909,6 +1013,26 @@ else {
       alignItems: "center",
       padding: 10,
       height: 100,
+    },
+    containerSatisfacaoAvaliacao: {
+      flex: 1,
+      borderRadius: 5,
+      borderTopWidth: 25,
+      borderTopColor: 'rgba(0, 0, 0, 0.8)',
+      borderWidth: 1,
+      borderColor: "gray",
+      //flexDirection: 'row',
+      backgroundColor: "rgba(241, 241, 241, 0.85)",
+      justifyContent: 'center',
+      marginTop: 20,
+      //paddingRight: '5%',
+      //alignItems: 'center',
+      paddingBottom: 15,
+      paddingHorizontal: 10,
+      paddingTop: 10,
+      //flexWrap: 'wrap',
+      //height: 500,
+
     },
     containerProdutividade: {
       flex: 1,
@@ -934,6 +1058,8 @@ else {
       fontSize: 16,
       marginTop: 10,
       textAlign: 'right',
+      fontFamily: 'Quicksand_300Light',
+      marginRight: '3%'
     },
     containerLegendas: {
       flex: 1,
@@ -958,6 +1084,7 @@ else {
     tituloGrafico: {
       fontSize: 22,
       marginRight: 10,
+      fontFamily: "Montserrat_600SemiBold",
       //marginLeft: 15,
       //backgroundColor: 'green'
     },
@@ -986,6 +1113,7 @@ else {
     tituloComparativo: {
       textAlign: 'right',
       fontSize: 22,
+      fontFamily: "Montserrat_600SemiBold",
       marginRight: 10,
       marginBottom: 10
     },

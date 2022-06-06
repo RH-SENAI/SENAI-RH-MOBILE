@@ -42,7 +42,7 @@ export default function GraficoBarras(usuarioLogado) {
                 key={index}
                 x={x(index) + (bandwidth / 2)}
                 y={value < CUT_OFF ? y(value) - 10 : y(value) + 15}
-                fontSize={Dimensions.get('window').width * .02}
+                fontSize={Dimensions.get('window').width * .025}
                 fill={value >= CUT_OFF ? 'black' : 'black'}
                 alignmentBaseline={'middle'}
                 textAnchor={'middle'}

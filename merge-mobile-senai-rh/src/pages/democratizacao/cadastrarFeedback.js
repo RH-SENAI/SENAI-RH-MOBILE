@@ -311,7 +311,7 @@ export default function CadastroFeedback({ route }) {
             blurOnSubmit
           />
 
-          <TextInput
+          {/* <TextInput
             keyboardType="decimal-pad"
             onChangeText={campo => onChangeNota(campo)}
             placeholder="Insira uma nota para o feedback"
@@ -322,7 +322,7 @@ export default function CadastroFeedback({ route }) {
             onBlur={() => onBlurHandlerNota()}
             onPressIn={() => ChangeSizeDown()}
             blurOnSubmit
-          />
+          /> */}
 
         </KeyboardAvoidingView>
 
@@ -411,12 +411,12 @@ if (Dimensions.get('window').width > 700)
 
   sectionDemocratizacaoBox: {
     width: '86%',
-    height: 100
+    height: 150
   },
 
   sectionDemocratizacaoInput: {
     width: '100%',
-    height: 65,
+    height: 150,
     borderRadius: 5,
     borderWidth: 2,
     borderColor: '#B3B3B3',
@@ -584,12 +584,12 @@ if (Dimensions.get('window').width > 700)
   
     sectionDemocratizacaoBox: {
       width: '86%',
-      height: 100
+      height: 150
     },
   
     sectionDemocratizacaoInput: {
       width: '100%',
-      height: 42,
+      height: 150,
       borderRadius: 5,
       borderWidth: 2,
       borderColor: '#B3B3B3',
