@@ -14,6 +14,8 @@ import {
     Dimensions
 } from 'react-native';
 
+import AppLoading from 'expo-app-loading';
+import * as Font from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Component } from 'react/cjs/react.production.min';
 // import { AppRegistry, TextInput } from 'react-native-web';
@@ -26,11 +28,19 @@ import apiGp1 from '../../services/apiGp1.js';
 import apiMaps from '../../services/apiMaps.js';
 import * as Location from 'expo-location';
 import moment from 'moment';
-// import { mask, MaskedTextInput} from "react-native-mask-text";
 import { FontAwesome5 } from '@expo/vector-icons';
-//import TextInputMask from 'react-native-text-input-mask';
 const delay = require('delay');
 // import { Location, Permissions } from 'expo';
+
+
+let customFonts = {
+    'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
+    'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
+    'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
+    'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
+    'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
+    'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
+}
 
 export default class ListagemCurso extends Component {
     constructor(props) {
@@ -42,11 +52,12 @@ export default class ListagemCurso extends Component {
             modalVisivel: false,
             isFavorite: true,
             inscrito: '',
+            fontsLoaded: false,
             showAlert: false,
             refreshing: false,
             desabilitado: false,
             verifyRegistro: false,
-            // passed: false,
+            distancePassed: false,
             contadorCurso: 0,
             saldoUsuario: 0,
             distanceUser: 0,
@@ -54,9 +65,7 @@ export default class ListagemCurso extends Component {
             empresaBuscada: '',
             largura: 0,
             altura: 0,
-            // phone: '',
-            // maskPhone: '',
-            // mask: '',
+            indexDistance: 0,
             listaCurso: [],
             cursoBuscado: {},
             localizacaoCurso: [],
@@ -237,7 +246,7 @@ export default class ListagemCurso extends Component {
                         // console.warn(objLocalCurso);
                         var localCurso = objLocalCurso[i]['idEmpresaNavigation']['idLocalizacaoNavigation']['idCepNavigation'].cep1
 
-                        var stringProblematica = `/json?origins=${this.state.Userlongitude}, ${this.state.Userlatitude}&destinations=${localCurso}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
+                        var stringProblematica = `/json?origins=08310580&destinations=${localCurso}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
                         // console.warn(stringProblematica)
 
                         const respostaLocal = await apiMaps(stringProblematica);
@@ -245,13 +254,16 @@ export default class ListagemCurso extends Component {
                         let obj = JSON.parse(string);
                         // console.warn(obj)
 
-                        let distance = obj['rows'][0]['elements'][0]['distance'].value
-                        console.log(distance)
-                        this.state.distanceBeneficio.push(distance);
+                        let distanceKm = obj['rows'][0]['elements'][0]['distance'].text
+                        // console.log(distance)
+                        this.state.distanceBeneficio.push({
+                            id: objLocalCurso[i].idCurso,
+                            distancia: distanceKm
+                        });
 
                         let stringCurso = JSON.stringify(dadosCurso);
                         var objCurso = JSON.parse(stringCurso);
-                        console.log("CHEGUEI")
+                        // console.log("CHEGUEI")
                         var curso = objCurso[i]
                         // console.warn(curso)
                         this.state.listaCurso.push(curso);
@@ -264,7 +276,7 @@ export default class ListagemCurso extends Component {
 
                         // ----> Localização 
 
-                        var stringProblematica = `/json?origins=${this.state.Userlongitude}, ${this.state.Userlatitude}&destinations=${localCurso}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
+                        var stringProblematica = `/json?origins=08310580&destinations=${localCurso}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
                         // console.warn(stringProblematica)
 
                         const respostaLocal = await apiMaps(stringProblematica);
@@ -273,8 +285,12 @@ export default class ListagemCurso extends Component {
                         // console.warn(obj)
 
                         let distance = obj['rows'][0]['elements'][0]['distance'].value
-                        console.log(distance)
-                        this.state.distanceBeneficio.push(distance);
+                        let distanceKm = obj['rows'][0]['elements'][0]['distance'].text
+                        // console.log(distance)
+                        this.state.distanceBeneficio.push({
+                            id: objLocalCurso[i].idCurso,
+                            distancia: distanceKm
+                        });
                         // console.log(distance)
                         if (respostaLocal.status == 200) {
                             // console.warn('Localização encontrada!');
@@ -487,6 +503,7 @@ export default class ListagemCurso extends Component {
 
     onRefresh = async () => {
         this.setState({ refreshing: true });
+        this.setState({ distanceBeneficio: [] })
         this.setState({ listaCurso: [] })
         this.setState({ listaFavoritosCoracao: [] })
         this.wait(2000).then(() => this.setState({ refreshing: false }));
@@ -536,13 +553,28 @@ export default class ListagemCurso extends Component {
     //     }
     // }
 
-    distanceAdiciona = () => {
-        var h = 0
-        h++
-        return h
+    // distanceAdiciona = () => {
+
+    //     console.log(h)
+
+    //     return (          
+    //         <View>
+    //             <Text>{this.state.distanceBeneficio[h]}</Text>
+    //         </View>
+    //     )
+    // }
+
+    // tirarIndex= () => {
+    //     return h--
+    // }
+
+    async _loadFontsAsync() {
+        await Font.loadAsync(customFonts);
+        this.setState({ fontsLoaded: true });
     }
 
     componentDidMount = async () => {
+        this._loadFontsAsync();
         this.GetLocation();
         await delay(2000);
         this.SaldoUsuario();
@@ -557,6 +589,10 @@ export default class ListagemCurso extends Component {
     // }
 
     render() {
+        if (!customFonts) {
+            return <AppLoading />;
+        }
+        // h--
         return (
             <View style={styles.containerListagem}>
                 <View style={styles.boxLogoHeader}>
@@ -656,7 +692,18 @@ export default class ListagemCurso extends Component {
                             <Text style={styles.textDados}>{item.valorCurso}</Text>
                         </View>
 
-                        <Text>{this.state.distanceBeneficio[this.distanceAdiciona()]}</Text>
+                        {
+                            this.state.distanceBeneficio.map((dis) => {
+                                if (dis.id == item.idCurso) {
+                                    return (
+                                        <View style={styles.boxDistance}>
+                                            <FontAwesome5 name="walking" size={24} color="black" />
+                                            <Text>{dis.distancia}</Text>
+                                        </View>
+                                    )
+                                }
+                            })
+                        }
 
                         <View style={styles.boxFavorito}>
                             <Pressable onPress={() => this.Favoritar(true, item.idCurso)}>
@@ -739,7 +786,7 @@ export default class ListagemCurso extends Component {
                                     </View>
 
                                     <View style={styles.boxEmpresa}>
-                                        <Text style={styles.tituloEmpresa}>Empresa: </Text>
+                                        {/* <Text style={styles.tituloEmpresa}>Empresa: </Text> */}
                                         {/* <Text style={styles.textEmpresa}>{this.state.cursoBuscado.idEmpresaNavigation.nomeEmpresa}</Text> */}
                                     </View>
 
@@ -842,7 +889,7 @@ if (Dimensions.get('window').width > 700) {
         },
         flatlist: {
             flex: 1,
-            width: '75%',
+            width: '60%',
             height: '100%'
             // backgroundColor: 'blue'
         },
@@ -907,6 +954,16 @@ if (Dimensions.get('window').width > 700) {
             fontFamily: 'Quicksand-Regular',
             marginLeft: 8,
             marginBottom: 3
+        },
+        boxDistance: {
+            width: 100,
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
         },
         boxPrecoFavorito: {
             height: 40,
@@ -1051,7 +1108,7 @@ if (Dimensions.get('window').width > 700) {
         boxEmpresa: {
             flexDirection: 'row',
             alignItems: 'center',
-            marginTop: '10%'
+            marginTop: '8%'
         },
         tituloEmpresa: {
             fontFamily: 'Montserrat-Medium',
@@ -1069,7 +1126,7 @@ if (Dimensions.get('window').width > 700) {
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'row',
-            marginTop: '5%',
+            marginTop: '3%',
         },
         boxComentarioModal: {
             marginTop: '8%',
