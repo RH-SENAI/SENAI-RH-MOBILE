@@ -1290,6 +1290,16 @@ else {
             marginLeft: 8,
             marginBottom: 3
         },
+        boxDistance: {
+            width: 100,
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
+        },
         boxPrecoFavorito: {
             height: 40,
             display: 'flex',
@@ -1455,7 +1465,7 @@ else {
             // marginTop: '1%',
         },
         boxComentarioModal: {
-            marginTop: '8%',
+            marginTop: '2%',
             alignItems: 'center'
         },
         boxInscreverModal: {
