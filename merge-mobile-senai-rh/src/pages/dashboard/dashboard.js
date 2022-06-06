@@ -370,7 +370,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     BuscarUsuario()
-    wait(200)
     return (
       setUsuario([])
     )
@@ -378,7 +377,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     BuscarMinhasAtividadesFinalizadas()
-    wait(200)
     return (
       setMinhasAtividadesFinalizadas([])
     )
@@ -386,7 +384,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     BuscarMinhasAtividadesEmAberto()
-    wait(200)
     return (
       setMinhasAtividadesEmAberto([])
     )
@@ -394,7 +391,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     BuscarHistorico()
-    wait(200)
     return (
       setHistoricos([])
     )

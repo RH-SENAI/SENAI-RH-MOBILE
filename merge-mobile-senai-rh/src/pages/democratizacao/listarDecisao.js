@@ -108,8 +108,8 @@ export default function ListarDecisao() {
           resizeMode="cover"
         />
         <View style={styles.containerTextos}>
-          <Text >{`${item.idUsuarioNavigation.nome} propôs: `}</Text>
-          <Text >{`${item.descricaoDecisao}`}</Text>
+          <Text style={styles.containerTextosText} >{`${item.idUsuarioNavigation.nome} propôs: `}</Text>
+          <Text style={styles.containerTextosTextDescricao} >{`${item.descricaoDecisao}`}</Text>
         </View>
       </View>
 
@@ -150,6 +150,7 @@ export default function ListarDecisao() {
           data={listaDecisao}
           keyExtractor={(item) => item.idDecisao}
           renderItem={renderItem}
+          scrollEnabled={true}
         />
 
       </View>
@@ -202,7 +203,7 @@ const styles = StyleSheet.create({
     //backgroundColor: 'blue'
   },
   containerFlatList: {
-    flex: 1,
+    // flex: 1,
     width: largura * .9,
     height: '100%',
     alignItems: 'center',
@@ -213,6 +214,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: "100%",
     height: 75,
+    marginLeft : 8,
+    marginTop : 8,
+    marginBottom : 6,
     //borderColor: '#451531',
     //borderWidth: 3,
     borderRadius: 5,
@@ -227,7 +231,16 @@ const styles = StyleSheet.create({
   },
   containerTextos: {
     flex: 1,
-    //backgroundColor: 'red',
+    // backgroundColor: 'red'
+    marginTop : 15,
+    marginLeft : 8
+  },
+  containerTextosText : {
+    fontFamily : 'Montserrat_600SemiBold'
+  },
+
+  containerTextosTextDescricao : {
+    fontFamily : 'Montserrat_500Medium'
   }
 
 });
