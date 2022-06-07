@@ -476,8 +476,7 @@ export default class ListagemDesconto extends Component {
         this._loadFontsAsync();
         this.GetLocation();
         this.SaldoUsuario();
-        await delay(3000);
-        // setTimeout(function(){this.setState({ timeGeolocation: true})}, 1000);
+        await delay(100);
         this.ListarDescontos();
     }
 

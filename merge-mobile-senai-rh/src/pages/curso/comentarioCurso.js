@@ -98,7 +98,7 @@ export default class ComentarioCurso extends Component {
                 <FlatList
                     style={styles.flatlist}
                     data={this.state.listaComentarioBuscado}
-                    keyExtractor={item => item.idComentarioDesconto}
+                    keyExtractor={item => item.idComentarioCurso}
                     renderItem={this.renderItem}
                 />
 
@@ -146,7 +146,7 @@ export default class ComentarioCurso extends Component {
                             count={5}
                             showRating={false}
                             selectedColor={'#4B7294'}
-                            defaultRating={item.avaliacaoDesconto}
+                            defaultRating={item.avaliacaoComentario}
                             isDisabled={true}
                             size={20}
                         />

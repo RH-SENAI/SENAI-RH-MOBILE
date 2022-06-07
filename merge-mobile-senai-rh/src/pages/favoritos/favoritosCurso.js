@@ -23,6 +23,7 @@ import apiGp1 from '../../services/apiGp1.js';
 import Constants from 'expo-constants';
 import moment from 'moment';
 import { FontAwesome5 } from '@expo/vector-icons';
+const delay = require('delay');
 // import { LogBox } from 'react-native';
 // LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 // LogBox.ignoreAllLogs();//Ignore all log notifications
@@ -111,6 +112,148 @@ export default class TabViewExample extends React.Component {
         }
     }
 
+    FavoritarCurso = async (favorite, id) => {
+        try {
+            if (favorite == true) {
+                this.ProcurarCurso(id);
+                await delay(2000);
+
+                //Id usuário
+                const idUser = await AsyncStorage.getItem('idUsuario');
+
+                //Requisição favoritos pelo id do usuário
+                const respostaFavoritos = await api('/FavoritosCursos/Favorito/' + idUser)
+                var dadosFavoritos = respostaFavoritos.data
+                // this.setState({ listaFavoritosCoracao: dadosFavoritos })
+
+                //Tamanho do json do respostaFavoritos
+                var tamanhoJson = Object.keys(dadosFavoritos).length;
+                console.warn(tamanhoJson)
+                var p = 0;
+
+                do {
+                    console.warn(p)
+                    let stringFavoritos = JSON.stringify(dadosFavoritos);
+                    var objFavoritos = JSON.parse(stringFavoritos);
+                    console.warn(objFavoritos);
+
+                    if (objFavoritos != '') {
+
+                        var cursoId = objFavoritos[p]['idCurso'];
+                        let favoritoId = objFavoritos[p]['idCursoFavorito'];
+                        console.warn(cursoId);
+
+                        if (cursoId == id) {
+                            const respostaExcluir = await api.delete(`/FavoritosCursos/deletar/${favoritoId}`);
+                            var verifyDelete = respostaExcluir.status;
+
+                            if (respostaExcluir.status == 204) {
+                                this.setState(!this.state.isFavorite);
+                                this.setState({ cursoFavoritoBuscado: [] });
+                                this.setState({ isFavorite: false })
+                                console.warn('Desfavoritado');
+                            }
+                        }
+                        p++
+                    }
+                    else {
+                        console.warn("Está vazio!")
+                    }
+                } while (p < tamanhoJson);
+                if (verifyDelete != 204) {
+                    // console.warn("CHEGOU")
+                    if (cursoId != id) {
+                        const respostaCadastro = await api.post('/FavoritosCursos', {
+                            idCurso: this.state.cursoBuscado.idCurso,
+                            idUsuario: idUser,
+                        });
+
+                        if (respostaCadastro.status == 201) {
+                            this.setState({ isFavorite: favorite });
+                            console.warn('Favorito adicionado');
+                            this.setState({ cursoFavoritoBuscado: [] });
+                            console.warn(this.state.isFavorite);
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.warn(error);
+        }
+    }
+
+    FavoritarDesconto = async (favorite, id) => {
+        try {
+            if (favorite == true) {
+                this.ProcurarDescontos(id);
+                await delay(2000);
+
+                //Id usuário
+                const idUser = await AsyncStorage.getItem('idUsuario');
+
+                //Requisição favoritos pelo id do usuário
+                const respostaFavoritos = await api('/FavoritosDescontos/Favorito/' + idUser)
+                var dadosFavoritos = respostaFavoritos.data
+                // this.setState({ listaFavoritosCoracao: dadosFavoritos })
+
+                //Tamanho do json do respostaFavoritos
+                var tamanhoJson = Object.keys(dadosFavoritos).length;
+                console.warn(tamanhoJson)
+                var p = 0;
+
+                do {
+                    console.warn(p)
+                    let stringFavoritos = JSON.stringify(dadosFavoritos);
+                    var objFavoritos = JSON.parse(stringFavoritos);
+                    console.warn(objFavoritos);
+
+                    if (objFavoritos != '') {
+
+                        var cursoId = objFavoritos[p]['idDesconto'];
+                        let favoritoId = objFavoritos[p]['idDescontoFavorito'];
+                        console.warn(cursoId);
+
+                        if (cursoId == id) {
+                            const respostaExcluir = await api.delete(`/FavoritosDescontos/deletar/${favoritoId}`);
+                            var verifyDelete = respostaExcluir.status;
+
+                            if (respostaExcluir.status == 204) {
+                                this.setState(!this.state.isFavorite);
+                                this.setState({ descontoFavoritoBuscado: [] });                              
+                                // await delay(1000)
+                                this.setState({ isFavorite: false })                              
+                                console.warn('Desfavoritado');
+                                // this.setState(prevState => ({listaCurso: prevState }))
+                            }
+                        }
+                        p++
+                    }
+                    else {
+                        console.warn("Está vazio!")
+                    }
+                } while (p < tamanhoJson);
+                if (verifyDelete != 204) {
+                    // console.warn("CHEGOU")
+                    if (cursoId != id) {
+                        const respostaCadastro = await api.post('/FavoritosDescontos', {
+                            idDesconto: this.state.descontoBuscado.idDesconto,
+                            idUsuario: idUser,
+                        });
+
+                        if (respostaCadastro.status == 201) {
+                            this.setState({ isFavorite: favorite });
+                            console.warn('Favorito adicionado');
+                            this.setState({ descontoFavoritoBuscado: [] });
+                            console.warn(this.state.isFavorite);
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.warn(error);
+        }
+    }
+
     ListarCursoFavoritos = async () => {
         try {
             // const resposta = await api('/FavoritosCursos',
@@ -180,16 +323,15 @@ export default class TabViewExample extends React.Component {
     setModalVisivelCurso = async (visible, id) => {
         if (visible == true) {
             this.ProcurarCurso(id);
-            await delay(750);
+            await delay(300);
             this.verifySaldo(this.state.cursoBuscado.valorCurso);
             this.verifySituacaoCurso(id);
             console.warn(this.state.saldoUsuario)
-            // await delay(500);
-            // console.warn(this.state.desabilitado)
-            this.setState({ modalVisivel: visible })
+            this.setState({ modalVisivelCurso: visible })
+            console.log(modalVisivelCurso)
         }
         else if (visible == false) {
-            this.setState({ modalVisivel: visible })
+            this.setState({ modalVisivelCurso: visible })
             this.setState({ verifyRegistro: false })
             this.setState({ cursoBuscado: [] })
         }
@@ -200,16 +342,14 @@ export default class TabViewExample extends React.Component {
     setModalVisivelDesconto = async (visible, id) => {
         if (visible == true) {
             this.ProcurarDescontos(id);
-            await delay(750);
+            await delay(300);
             this.verifySaldo(this.state.descontoBuscado.valorDesconto);
             this.verifySituacao(id);
             console.warn(this.state.saldoUsuario)
-            // await delay(500);
-            // console.warn(this.state.desabilitado)
-            this.setState({ modalVisivel: visible })
+            this.setState({ modalVisivelDesconto: visible })
         }
         else if (visible == false) {
-            this.setState({ modalVisivel: visible })
+            this.setState({ modalVisivelDesconto: visible })
             this.setState({ verifyRegistro: false })
             this.setState({ descontoBuscado: [] })
         }
@@ -262,7 +402,16 @@ export default class TabViewExample extends React.Component {
         }
     }
 
-    showAlert = async () => {
+    setSituacaoDesconto = () => {
+        if (this.state.verifyRegistro == true) {
+            return this.state.descontoBuscado.numeroCupom
+        }
+        else {
+            return 'Pegue'
+        }
+    }
+
+    showAlertCurso = async (id) => {
         try {
             const idUser = await AsyncStorage.getItem('idUsuario');
             console.warn(idUser)
@@ -309,14 +458,61 @@ export default class TabViewExample extends React.Component {
         }
     };
 
+    showAlertDesconto = async (id) => {
+        try {
+            const idUser = await AsyncStorage.getItem('idUsuario');
+            console.warn(idUser)
+            console.warn(id)
+
+            const respostaBuscar = await api(`/Registrodescontos/RegistroDescontos/IdUsuario/${idUser}`);
+
+            var tamanhoJsonRegistro = Object.keys(respostaBuscar.data).length;
+
+            let stringRegistros = JSON.stringify(respostaBuscar.data);
+            var objRegistros = JSON.parse(stringRegistros);
+
+            var k = 0;
+            do {
+                if (objRegistros != '') {
+                    var registroId = objRegistros[k]['idDesconto'];
+
+                    if (registroId == id) {
+                        // this.setState({ verifyRegistro: true })
+                        console.warn("Desconto já pego!")
+                        // this.setSituacao();
+                    }
+                }
+                else {
+                    console.warn("Está vazio!")
+                }
+                k++
+            } while (k < tamanhoJsonRegistro);
+
+            if (this.state.verifyRegistro != true) {
+                const resposta = await api.post('/Registrodescontos/Cadastrar', {
+                    idDesconto: id,
+                    idUsuario: idUser,
+                    idSituacaoAtividade: 1,
+                });
+
+                if (resposta.status == 201) {
+                    this.setState({ showAlert: true });
+                }
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    };
+
     hideAlert = () => {
         this.setState({
             showAlert: false
         });
     };
 
-    modalidade = (item) => {
-        if (item.modalidadeCurso == true) {
+    modalidade = (modalidade) => {
+        if (modalidade == true) {
             return 'Presencial'
         }
         else {
@@ -375,15 +571,14 @@ export default class TabViewExample extends React.Component {
     componentDidMount = () => {
         this._loadFontsAsync();
         this.SaldoUsuario();
-        // await delay(3000);
         this.ListarCursoFavoritos();
         this.ListarDescontosFavoritos();
     }
 
-    componentWillUnmount = () => {
-        this.ListarCursoFavoritos();
-        this.ListarDescontosFavoritos();
-    }
+    // componentWillUnmount = () => {
+    //     this.ListarCursoFavoritos();
+    //     this.ListarDescontosFavoritos();
+    // }
 
     _handleIndexChange = (index) => this.setState({ index });
 
@@ -482,7 +677,7 @@ export default class TabViewExample extends React.Component {
                         </View>
 
                         <View style={styles.boxFavorito}>
-                            <ExplodingHeart width={80} status={this.state.listaFavoritosCoracaoCurso.some(l => { if (l.idCurso == item.idCurso) { return true } return false })} onChange={() => this.Favoritar(true, item.idCursoNavigation.idCurso)} />
+                            <ExplodingHeart width={80} status={this.state.listaFavoritosCoracaoCurso.some(l => { if (l.idCurso == item.idCurso) { return true } return false })} onChange={() => this.FavoritarCurso(true, item.idCursoNavigation.idCurso)} />
                         </View>
                     </View>
                 </View>
@@ -503,9 +698,9 @@ export default class TabViewExample extends React.Component {
                             <ScrollView>
                                 <View style={styles.boxTituloModal}>
                                     <View style={styles.boxImgCurso}>
-                                        <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idCursoNavigation.caminhoImagemCurso}` }} resizeMode='cover' />
+                                        <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${this.state.cursoBuscado.caminhoImagemCurso}` }} resizeMode='cover' />
                                     </View>
-                                    <Text style={styles.textTituloModal}>{item.idCursoNavigation.nomeCurso}</Text>
+                                    <Text style={styles.textTituloModal}>{this.state.cursoBuscado.nomeCurso}</Text>
                                 </View>
 
                                 <View style={styles.boxAvaliacaoPreco}>
@@ -515,20 +710,20 @@ export default class TabViewExample extends React.Component {
                                             //starImage={star}
                                             showRating={false}
                                             selectedColor={'#4B7294'}
-                                            defaultRating={item.idCursoNavigation.mediaAvaliacaoCurso}
+                                            defaultRating={this.state.cursoBuscado.mediaAvaliacaoCurso}
                                             isDisabled={true}
                                             size={20}
                                         />
                                     </View>
                                     <View style={styles.boxPrecoModal}>
                                         <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
-                                        <Text style={styles.textDados}>{item.idCursoNavigation.valorCurso}</Text>
+                                        <Text style={styles.textDados}>{this.state.cursoBuscado.valorCurso}</Text>
                                     </View>
                                 </View>
 
                                 <View style={styles.boxDadosModal}>
                                     <Image source={require('../../../assets/img-gp2/relogio.png')} />
-                                    <Text style={styles.textDadosModal}>{item.idCursoNavigation.cargaHoraria}</Text>
+                                    <Text style={styles.textDadosModal}>{this.state.cursoBuscado.cargaHoraria}</Text>
 
                                     <Image source={require('../../../assets/img-gp2/mapa.png')} />
                                     {/* <Text style={styles.textDadosModal}>{item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado}</Text> */}
@@ -536,11 +731,11 @@ export default class TabViewExample extends React.Component {
 
                                 <View style={styles.boxDadosModal}>
                                     <Image source={require('../../../assets/img-gp2/local.png')} />
-                                    <Text style={styles.textDadosModal}>{this.modalidade(item.idCursoNavigation.modalidadeCurso)}</Text>
+                                    <Text style={styles.textDadosModal}>{this.modalidade(this.state.cursoBuscado.modalidadeCurso)}</Text>
 
                                     <Image source={require('../../../assets/img-gp2/dataFinal.png')} />
                                     <Text style={styles.textDadosModal}>
-                                        {moment(item.dataFinalizacao).format('LL')}
+                                        {moment(this.state.cursoBuscado.dataFinalizacao).format('LL')}
                                     </Text>
                                 </View>
 
@@ -553,7 +748,7 @@ export default class TabViewExample extends React.Component {
                                         renderRevealedFooter={this._renderRevealedFooter}
                                         onReady={this._handleTextReady}
                                     >
-                                        <Text style={styles.textDescricaoModal}>{item.idCursoNavigation.descricaoCurso}</Text>
+                                        <Text style={styles.textDescricaoModal}>{this.state.cursoBuscado.descricaoCurso}</Text>
                                     </ReadMore>
 
                                     <View style={styles.boxEmpresa}>
@@ -569,7 +764,7 @@ export default class TabViewExample extends React.Component {
                                         </View>
 
                                         <View style={styles.boxInscreverModal}>
-                                            <TouchableOpacity style={this.state.desabilitado ? styles.inscreverModalDisable : styles.inscreverModal} activeOpacity={this.state.desabilitado ? 1 : 0.1} disabled={this.state.desabilitado} onPress={() => { this.showAlert(this.state.cursoBuscado.idCurso) }} >
+                                            <TouchableOpacity style={this.state.desabilitado ? styles.inscreverModalDisable : styles.inscreverModal} activeOpacity={this.state.desabilitado ? 1 : 0.1} disabled={this.state.desabilitado} onPress={() => { this.showAlertCurso(this.state.cursoBuscado.idCurso) }} >
                                                 <Text style={styles.textDetalhes}>{this.setSituacaoCurso()}</Text>
                                             </TouchableOpacity>
                                         </View>
@@ -646,7 +841,7 @@ export default class TabViewExample extends React.Component {
                         </View>
 
                         <View style={styles.boxFavorito}>
-                            <ExplodingHeart width={80} status={this.state.listaFavoritosCoracaoDesconto.some(l => { if (l.idDesconto == item.idDesconto) { return true } return false })} onChange={() => this.Favoritar(true, item.idDescontoNavigation.idDesconto)} />
+                            <ExplodingHeart width={80} status={this.state.listaFavoritosCoracaoDesconto.some(l => { if (l.idDesconto == item.idDesconto) { return true } return false })} onChange={() => this.FavoritarDesconto(true, item.idDescontoNavigation.idDesconto)} />
                         </View>
                     </View>
                 </View>
@@ -726,8 +921,8 @@ export default class TabViewExample extends React.Component {
                                         </View>
 
                                         <View style={styles.boxInscreverModal}>
-                                            <Pressable style={styles.inscreverModal} onPress={() => { this.showAlert() }}  >
-                                                <Text style={styles.textDetalhes}>Inscreva-se</Text>
+                                            <Pressable style={this.state.desabilitado ? styles.inscreverModalDisable : styles.inscreverModal} activeOpacity={this.state.desabilitado ? 1 : 0.1} disabled={this.state.desabilitado} onPress={() => { this.showAlertDesconto(this.state.descontoBuscado.idDesconto) }}  >
+                                                <Text style={styles.textDetalhes}>{this.setSituacaoDesconto()}</Text>
                                             </Pressable>
                                         </View>
                                     </View>
@@ -737,7 +932,7 @@ export default class TabViewExample extends React.Component {
                                         show={this.state.showAlert}
                                         showProgress={false}
                                         title="Sucesso"
-                                        message="Você foi inscrito no curso!"
+                                        message="Você pegou o desconto!"
                                         closeOnTouchOutside={true}
                                         closeOnHardwareBackPress={false}
                                         showCancelButton={true}
@@ -1083,7 +1278,7 @@ if (Dimensions.get('window').width > 700) {
         boxEmpresa: {
             flexDirection: 'row',
             alignItems: 'center',
-            marginTop: '8%'
+            marginTop: '25%'
         },
         tituloEmpresa: {
             fontFamily: 'Montserrat-Medium',
@@ -1097,19 +1292,24 @@ if (Dimensions.get('window').width > 700) {
             marginLeft: 10
         },
         boxValorInscrever: {
-            height: '10%',
+            height: 100,
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'row',
             marginTop: '3%',
+            // backgroundColor: 'green'
         },
         boxComentarioModal: {
-            marginTop: '8%',
-            alignItems: 'center'
+            marginTop: '1%',
+            alignItems: 'center',
+            // backgroundColor: 'blue'
         },
         boxInscreverModal: {
+            height: 50,
+            justifyContent: 'center',
             alignItems: 'center',
-            marginLeft: '85%'
+            marginLeft: '85%',
+            // backgroundColor: 'pink'
         },
         inscreverModal: {
             width: 150,
@@ -1118,7 +1318,7 @@ if (Dimensions.get('window').width > 700) {
             borderRadius: 10,
             alignItems: 'center',
             justifyContent: 'center',
-            marginTop: 32,
+            // marginTop: 32,
             marginLeft: 8,
         },
         inscreverModalDisable: {
@@ -1128,7 +1328,7 @@ if (Dimensions.get('window').width > 700) {
             borderRadius: 10,
             alignItems: 'center',
             justifyContent: 'center',
-            marginTop: 32,
+            // marginTop: 32,
             marginLeft: 8,
             opacity: 0.5
         },

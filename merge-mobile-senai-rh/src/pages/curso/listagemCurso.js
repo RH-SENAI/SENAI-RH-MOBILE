@@ -353,12 +353,10 @@ export default class ListagemCurso extends Component {
     setModalVisivel = async (visible, id) => {
         if (visible == true) {
             this.ProcurarCurso(id);
-            await delay(750);
+            await delay(300);
             this.verifySaldo(this.state.cursoBuscado.valorCurso);
             this.verifySituacao(id);
             console.warn(this.state.saldoUsuario)
-            // await delay(500);
-            // console.warn(this.state.desabilitado)
             this.setState({ modalVisivel: visible })
         }
         else if (visible == false) {
@@ -576,12 +574,9 @@ export default class ListagemCurso extends Component {
     componentDidMount = async () => {
         this._loadFontsAsync();
         this.GetLocation();
-        await delay(2000);
         this.SaldoUsuario();
-        // this.verifyMask();
-        await delay(3000);
+        await delay(100);
         this.ListarCurso();
-        // await delay(2000);
     }
 
     // componentWillUnmount = () => {
