@@ -124,7 +124,6 @@ export default function ListarDecisao() {
                 {item.descricaoDecisao}"
               </Text>
               <Text style={styles.mensagem}>Clique e de seu feedback!</Text>
-
             </View>
           </View> */}
     </TouchableOpacity>
@@ -205,7 +204,7 @@ const styles = StyleSheet.create({
   containerFlatList: {
     // flex: 1,
     width: largura * .9,
-    height: '100%',
+    // height: '100%',
     alignItems: 'center',
     //backgroundColor: 'orange',
   },

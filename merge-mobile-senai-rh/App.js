@@ -43,7 +43,7 @@ const Stack = createNativeStackNavigator();
 function App() {
   return (
     <NavigationContainer>
-      <StatusBar backgroundColor={'#C20004'} barStyle="light-content" />
+      <StatusBar backgroundColor={'#B3B3B3'} barStyle="light-content" />
 
       <Stack.Navigator screenOptions={{headerShown : false}}>
 
