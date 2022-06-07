@@ -6,8 +6,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Welcome from './src/pages/welcome/Welcome.js';
 import Redirecionar from './src/pages/redirecionamento/redirecionamento.js';
-import MainMotivar from './src/pages/main/mainMotivar.js';
-import Login from './src/pages/login/login.js';
+import MainMotivar from './src/pages/main/MainMotivar.js';
+import Login from './src/pages/login/Login.js';
 import MinhasExtras from './src/pages/minhasAtividades/MinhasExtras'
 import AtividadesExtras from './src/pages/atividades/AtividadesExtras.js';
 import recuperarSenha from "./src/pages/alterarSenha/recuperarSenha";

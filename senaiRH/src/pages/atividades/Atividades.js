@@ -81,7 +81,7 @@ export default class AtividadesExtras extends Component {
 
     imagePickerCall = async () => {
         const result = await DocumentPicker.getDocumentAsync({
-            type: 'image/*',
+            type: '*/*',
             multiple: false,
             copyToCacheDirectory: true
         })
