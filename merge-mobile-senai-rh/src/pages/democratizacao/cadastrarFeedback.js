@@ -190,7 +190,7 @@ export default function CadastroFeedback({ route }) {
       const token = await AsyncStorage.getItem('userToken');
 
       const feedback = {
-        idUsuario: jwtDecode(token).jti,
+        idUsuario: 0,
         idDecisao: idDecisao,
         comentarioFeedBack: comentarioFeedback,
         notaDecisao: notaDecisao,
@@ -589,7 +589,7 @@ if (Dimensions.get('window').width > 700)
   
     sectionDemocratizacaoInput: {
       width: '100%',
-      height: 50,
+      height: 150,
       borderRadius: 5,
       borderWidth: 2,
       borderColor: '#B3B3B3',
