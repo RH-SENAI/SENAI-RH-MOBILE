@@ -353,7 +353,7 @@ export default class ListagemCurso extends Component {
     setModalVisivel = async (visible, id) => {
         if (visible == true) {
             this.ProcurarCurso(id);
-            await delay(300);
+            await delay(400);
             this.verifySaldo(this.state.cursoBuscado.valorCurso);
             this.verifySituacao(id);
             console.warn(this.state.saldoUsuario)

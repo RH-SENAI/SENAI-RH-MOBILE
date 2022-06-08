@@ -64,6 +64,7 @@ export default class ListagemDesconto extends Component {
             listaDesconto: [],
             listaFavoritosCoracao: [],
             descontoBuscado: {},
+            distanceBeneficio: []
         };
     }
 
@@ -229,6 +230,13 @@ export default class ListagemDesconto extends Component {
                     console.warn(respostaLocal)
 
                     let distance = obj['rows'][0]['elements'][0]['distance'].value
+                    let distanceKm = obj['rows'][0]['elements'][0]['distance'].text
+
+                    this.state.distanceBeneficio.push({
+                        id: objLocalDesconto[i].idDesconto,
+                        distancia: distanceKm
+                    });
+
                     console.log(distance)
                     if (respostaLocal.status == 200) {
                         // console.warn('Localização encontrada!');
@@ -287,7 +295,7 @@ export default class ListagemDesconto extends Component {
     setModalVisivel = async (visible, id) => {
         if (visible == true) {
             this.ProcurarDescontos(id);
-            await delay(750);
+            await delay(400);
             this.verifySaldo(this.state.descontoBuscado.valorDesconto);
             this.verifySituacao(id);
             console.warn(this.state.saldoUsuario)
@@ -431,6 +439,7 @@ export default class ListagemDesconto extends Component {
 
     onRefresh = async () => {
         this.setState({ refreshing: true });
+        this.setState({ distanceBeneficio: [] })
         this.setState({ listaDesconto: [] })
         this.setState({ listaFavoritosCoracao: [] })
         this.wait(2000).then(() => this.setState({ refreshing: false }));
@@ -558,6 +567,19 @@ export default class ListagemDesconto extends Component {
                                 <Text style={styles.textDados}>{item.valorDesconto}</Text>
                             </View>
 
+                            {
+                                this.state.distanceBeneficio.map((dis) => {
+                                    if (dis.id == item.idDesconto) {
+                                        return (
+                                            <View style={styles.boxDistance}>
+                                                <FontAwesome5 name="walking" size={24} color="black" />
+                                                <Text>{dis.distancia}</Text>
+                                            </View>
+                                        )
+                                    }
+                                })
+                            }
+
                             <View style={styles.boxFavorito}>
                                 {/* <Pressable onPress={this.Favoritar(item.idCurso)}> */}
                                 <ExplodingHeart width={80} status={this.state.listaFavoritosCoracao.some(l => { if (l.idDesconto == item.idDesconto) { return true } return false })} onChange={() => this.Favoritar(true, item.idDesconto)} />
@@ -628,8 +650,8 @@ export default class ListagemDesconto extends Component {
                                         </ReadMore>
 
                                         <View style={styles.boxEmpresa}>
-                                            <Text style={styles.tituloEmpresa}>Empresa: </Text>
-                                            <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text>
+                                            {/* <Text style={styles.tituloEmpresa}>Empresa: </Text> */}
+                                            {/* <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text> */}
                                         </View>
 
                                         <View style={styles.boxValorInscrever}>
@@ -799,6 +821,16 @@ if (Dimensions.get('window').width > 700) {
             fontFamily: 'Quicksand-Regular',
             marginLeft: 8,
             marginBottom: 3
+        },
+        boxDistance: {
+            width: 100,
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
         },
         boxPrecoFavorito: {
             height: 40,

@@ -55,7 +55,8 @@ export default class TabViewExample extends React.Component {
         verifyRegistro: false,
         contadorCurso: 0,
         saldoUsuario: 0,
-        empresaBuscada: '',
+        empresaBuscadaCurso: '',
+        empresaBuscadaDesconto: '',
         listaCurso: [],
         cursoBuscado: [],
         localizacaoCurso: [],
@@ -78,7 +79,7 @@ export default class TabViewExample extends React.Component {
             if (resposta.status == 200) {
                 const dadosCurso = await resposta.data;
                 this.setState({ cursoBuscado: dadosCurso })
-                this.setState({ empresaBuscada: this.state.cursoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado })
+                this.setState({ empresaBuscadaCurso: this.state.cursoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado })
             }
         }
         catch (erro) {
@@ -93,7 +94,7 @@ export default class TabViewExample extends React.Component {
             if (resposta.status == 200) {
                 const dadosDesconto = await resposta.data;
                 this.setState({ descontoBuscado: dadosDesconto })
-                this.setState({ empresaBuscada: this.state.descontoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado })
+                this.setState({ empresaBuscadaDesconto: this.state.descontoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado })
             }
         }
         catch (erro) {
@@ -185,7 +186,7 @@ export default class TabViewExample extends React.Component {
     FavoritarDesconto = async (favorite, id) => {
         try {
             if (favorite == true) {
-                this.ProcurarDescontos(id);
+                this.ProcurarDesconto(id);
                 await delay(2000);
 
                 //Id usuário
@@ -219,9 +220,9 @@ export default class TabViewExample extends React.Component {
 
                             if (respostaExcluir.status == 204) {
                                 this.setState(!this.state.isFavorite);
-                                this.setState({ descontoFavoritoBuscado: [] });                              
+                                this.setState({ descontoFavoritoBuscado: [] });
                                 // await delay(1000)
-                                this.setState({ isFavorite: false })                              
+                                this.setState({ isFavorite: false })
                                 console.warn('Desfavoritado');
                                 // this.setState(prevState => ({listaCurso: prevState }))
                             }
@@ -341,12 +342,14 @@ export default class TabViewExample extends React.Component {
 
     setModalVisivelDesconto = async (visible, id) => {
         if (visible == true) {
-            this.ProcurarDescontos(id);
+            this.ProcurarDesconto(id);
             await delay(300);
             this.verifySaldo(this.state.descontoBuscado.valorDesconto);
-            this.verifySituacao(id);
+            this.verifySituacaoDesconto(id);
             console.warn(this.state.saldoUsuario)
             this.setState({ modalVisivelDesconto: visible })
+            // console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+            // console.log(this.state.descontoBuscado.caminhoImagemDesconto)
         }
         else if (visible == false) {
             this.setState({ modalVisivelDesconto: visible })
@@ -379,6 +382,42 @@ export default class TabViewExample extends React.Component {
                         this.setState({ verifyRegistro: true })
                         this.setState({ desabilitado: true });
                         console.warn("Curso já comprado!");
+                    }
+                }
+                else {
+                    this.setState({ verifyRegistro: false })
+                    console.warn("Está vazio!")
+                }
+                k++
+            } while (k < tamanhoJsonRegistro);
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    verifySituacaoDesconto = async (id) => {
+        try {
+            const idUser = await AsyncStorage.getItem('idUsuario');
+            console.warn(idUser)
+            console.warn(id)
+
+            const respostaBuscar = await api(`/Registrodescontos/RegistroDescontos/IdUsuario/${idUser}`);
+
+            var tamanhoJsonRegistro = Object.keys(respostaBuscar.data).length;
+
+            let stringRegistros = JSON.stringify(respostaBuscar.data);
+            var objRegistros = JSON.parse(stringRegistros);
+
+            var k = 0;
+            do {
+                if (objRegistros != '') {
+                    var registroId = objRegistros[k]['idDesconto'];
+
+                    if (registroId == id) {
+                        this.setState({ verifyRegistro: true })
+                        this.setState({ desabilitado: true });
+                        console.warn("Desconto já comprado!");
                     }
                 }
                 else {
@@ -542,7 +581,12 @@ export default class TabViewExample extends React.Component {
 
     RedirecionarComentarioCurso = () => {
         this.setState({ modalVisivel: false })
-        // this.props.navigation.navigate('ComentarioDesconto')
+        this.props.navigation.navigate('ComentarioCurso')
+    }
+
+    RedirecionarComentarioDesconto = () => {
+        this.setState({ modalVisivel: false })
+        this.props.navigation.navigate('ComentarioDesconto')
     }
 
     verifyCoracaoCurso = async () => {
@@ -716,7 +760,7 @@ export default class TabViewExample extends React.Component {
                                         />
                                     </View>
                                     <View style={styles.boxPrecoModal}>
-                                        <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
+                                        <FontAwesome5 name="coins" size={24} color="#FBB01E" />
                                         <Text style={styles.textDados}>{this.state.cursoBuscado.valorCurso}</Text>
                                     </View>
                                 </View>
@@ -726,7 +770,7 @@ export default class TabViewExample extends React.Component {
                                     <Text style={styles.textDadosModal}>{this.state.cursoBuscado.cargaHoraria}</Text>
 
                                     <Image source={require('../../../assets/img-gp2/mapa.png')} />
-                                    {/* <Text style={styles.textDadosModal}>{item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado}</Text> */}
+                                    <Text style={styles.textDadosModal}>{this.state.empresaBuscadaCurso}</Text>
                                 </View>
 
                                 <View style={styles.boxDadosModal}>
@@ -752,7 +796,7 @@ export default class TabViewExample extends React.Component {
                                     </ReadMore>
 
                                     <View style={styles.boxEmpresa}>
-                                        <Text style={styles.tituloEmpresa}>Empresa: </Text>
+                                        {/* <Text style={styles.tituloEmpresa}>Empresa: </Text> */}
                                         {/* <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text> */}
                                     </View>
 
@@ -836,7 +880,7 @@ export default class TabViewExample extends React.Component {
 
                     <View style={styles.boxPrecoFavoritoDesconto}>
                         <View style={styles.boxPreco}>
-                            <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
+                            <FontAwesome5 name="coins" size={24} color="#FBB01E" />
                             <Text style={styles.textDados}>{item.idDescontoNavigation.valorDesconto}</Text>
                         </View>
 
@@ -862,7 +906,7 @@ export default class TabViewExample extends React.Component {
                             <ScrollView>
                                 <View style={styles.boxTituloModal}>
                                     <View style={styles.boxImgCurso}>
-                                        <Image style={styles.imgModalDesconto} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idDescontoNavigation.caminhoImagemDesconto}` }} resizeMode='cover' />
+                                        <Image style={styles.imgModalDesconto} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${this.state.descontoBuscado.caminhoImagemDesconto}` }} resizeMode='cover' />
                                     </View>
                                     <Text style={styles.textTituloModal}>{item.idDescontoNavigation.nomeDesconto}</Text>
                                 </View>
@@ -874,7 +918,7 @@ export default class TabViewExample extends React.Component {
                                             //starImage={star}
                                             showRating={false}
                                             selectedColor={'#C20004'}
-                                            defaultRating={item.idDescontoNavigation.mediaAvaliacaoDesconto}
+                                            defaultRating={this.state.descontoBuscado.mediaAvaliacaoDesconto}
                                             isDisabled={true}
                                             size={20}
                                         />
@@ -886,14 +930,13 @@ export default class TabViewExample extends React.Component {
                                 </View>
 
                                 <View style={styles.boxDadosModal}>
-                                    <Image source={require('../../../assets/img-gp2/relogio.png')} />
-                                    <Text style={styles.textDadosModal}>{item.idDescontoNavigation.cargaHoraria}</Text>
-
                                     <Image source={require('../../../assets/img-gp2/dataFinal.png')} />
                                     <Text style={styles.textDadosModal}>
                                         {moment(item.validadeDesconto).format('LL')}
                                     </Text>
 
+                                    <Image source={require('../../../assets/img-gp2/mapa.png')} />
+                                    <Text style={styles.textDadosModal}>{this.state.empresaBuscadaDesconto}</Text>
                                 </View>
 
                                 <View style={styles.boxDescricaoModal}>
@@ -905,11 +948,11 @@ export default class TabViewExample extends React.Component {
                                         renderRevealedFooter={this._renderRevealedFooter}
                                         onReady={this._handleTextReady}
                                     >
-                                        <Text style={styles.textDescricaoModal}>{item.idDescontoNavigation.descricaoCurso}</Text>
+                                        <Text style={styles.textDescricaoModal}>{this.state.descontoBuscado.descricaoCurso}</Text>
                                     </ReadMore>
 
                                     <View style={styles.boxEmpresa}>
-                                        <Text style={styles.tituloEmpresa}>Empresa: </Text>
+                                        {/* <Text style={styles.tituloEmpresa}>Empresa: </Text> */}
                                         {/* <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text> */}
                                     </View>
 
