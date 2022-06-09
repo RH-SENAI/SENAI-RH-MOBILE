@@ -14,6 +14,8 @@ import {
     Dimensions
 } from 'react-native';
 
+import AppLoading from 'expo-app-loading';
+import * as Font from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Component } from 'react/cjs/react.production.min';
 import { AppRegistry } from 'react-native-web';
@@ -30,6 +32,15 @@ import { FontAwesome5 } from '@expo/vector-icons';
 const delay = require('delay');
 // import { Location, Permissions } from 'expo';
 
+let customFonts = {
+    'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
+    'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
+    'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
+    'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
+    'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
+    'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
+}
+
 export default class ListagemDesconto extends Component {
     constructor(props) {
         super(props);
@@ -40,6 +51,7 @@ export default class ListagemDesconto extends Component {
             modalVisivel: false,
             isFavorite: false,
             inscrito: '',
+            fontsLoaded: false,
             showAlert: false,
             refreshing: false,
             desabilitado: false,
@@ -50,7 +62,9 @@ export default class ListagemDesconto extends Component {
             switch: false,
             empresaBuscada: '',
             listaDesconto: [],
+            listaFavoritosCoracao: [],
             descontoBuscado: {},
+            distanceBeneficio: []
         };
     }
 
@@ -112,6 +126,76 @@ export default class ListagemDesconto extends Component {
         // console.warn(text) 
     }
 
+    Favoritar = async (favorite, id) => {
+        try {
+            if (favorite == true) {
+                this.ProcurarDescontos(id);
+                await delay(2000);
+
+                //Id usuário
+                const idUser = await AsyncStorage.getItem('idUsuario');
+
+                //Requisição favoritos pelo id do usuário
+                const respostaFavoritos = await api('/FavoritosDescontos/Favorito/' + idUser)
+                var dadosFavoritos = respostaFavoritos.data
+                // this.setState({ listaFavoritosCoracao: dadosFavoritos })
+
+                //Tamanho do json do respostaFavoritos
+                var tamanhoJson = Object.keys(dadosFavoritos).length;
+                console.warn(tamanhoJson)
+                var p = 0;
+
+                do {
+                    console.warn(p)
+                    let stringFavoritos = JSON.stringify(dadosFavoritos);
+                    var objFavoritos = JSON.parse(stringFavoritos);
+                    console.warn(objFavoritos);
+
+                    if (objFavoritos != '') {
+
+                        var cursoId = objFavoritos[p]['idDesconto'];
+                        let favoritoId = objFavoritos[p]['idDescontoFavorito'];
+                        console.warn(cursoId);
+
+                        if (cursoId == id) {
+                            const respostaExcluir = await api.delete(`/FavoritosDescontos/deletar/${favoritoId}`);
+                            var verifyDelete = respostaExcluir.status;
+
+                            if (respostaExcluir.status == 204) {
+                                this.setState(!this.state.isFavorite);
+                                this.setState({ descontoFavoritoBuscado: [] });
+                                this.setState({ isFavorite: false })
+                                console.warn('Desfavoritado');
+                            }
+                        }
+                        p++
+                    }
+                    else {
+                        console.warn("Está vazio!")
+                    }
+                } while (p < tamanhoJson);
+                if (verifyDelete != 204) {
+                    // console.warn("CHEGOU")
+                    if (cursoId != id) {
+                        const respostaCadastro = await api.post('/FavoritosDescontos', {
+                            idDesconto: this.state.descontoBuscado.idDesconto,
+                            idUsuario: idUser,
+                        });
+
+                        if (respostaCadastro.status == 201) {
+                            this.setState({ isFavorite: favorite });
+                            console.warn('Favorito adicionado');
+                            this.setState({ descontoFavoritoBuscado: [] });
+                            console.warn(this.state.isFavorite);
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.warn(error);
+        }
+    }
+
     ListarDescontos = async () => {
         try {
             var distanceBase = 150000;
@@ -137,7 +221,7 @@ export default class ListagemDesconto extends Component {
 
                     // ----> Localização 
 
-                    var stringProblematica = `/json?origins=${this.state.Userlongitude}, ${this.state.Userlatitude}&destinations=${localDesconto}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
+                    var stringProblematica = `/json?origins=08310580&destinations=${localDesconto}&units=km&key=AIzaSyB7gPGvYozarJEWUaqmqLiV5rRYU37_TT0`
                     console.warn(stringProblematica)
 
                     const respostaLocal = await apiMaps(stringProblematica);
@@ -146,6 +230,13 @@ export default class ListagemDesconto extends Component {
                     console.warn(respostaLocal)
 
                     let distance = obj['rows'][0]['elements'][0]['distance'].value
+                    let distanceKm = obj['rows'][0]['elements'][0]['distance'].text
+
+                    this.state.distanceBeneficio.push({
+                        id: objLocalDesconto[i].idDesconto,
+                        distancia: distanceKm
+                    });
+
                     console.log(distance)
                     if (respostaLocal.status == 200) {
                         // console.warn('Localização encontrada!');
@@ -176,7 +267,7 @@ export default class ListagemDesconto extends Component {
                 } while (i < tamanhoJson);
                 // console.warn(i)
 
-                if (this.state.listaCurso == '') {
+                if (this.state.listaDesconto == '') {
                     this.setState({ switch: true })
                 }
                 else {
@@ -184,6 +275,7 @@ export default class ListagemDesconto extends Component {
                 }
 
                 this.setState({ contadorDesconto: i })
+                this.verifyCoracao();
                 // console.warn(this.state.contadorCurso)
             }
         }
@@ -203,7 +295,7 @@ export default class ListagemDesconto extends Component {
     setModalVisivel = async (visible, id) => {
         if (visible == true) {
             this.ProcurarDescontos(id);
-            await delay(750);
+            await delay(400);
             this.verifySaldo(this.state.descontoBuscado.valorDesconto);
             this.verifySituacao(id);
             console.warn(this.state.saldoUsuario)
@@ -347,8 +439,10 @@ export default class ListagemDesconto extends Component {
 
     onRefresh = async () => {
         this.setState({ refreshing: true });
-        this.wait(2000).then(() => this.setState({ refreshing: false }));
+        this.setState({ distanceBeneficio: [] })
         this.setState({ listaDesconto: [] })
+        this.setState({ listaFavoritosCoracao: [] })
+        this.wait(2000).then(() => this.setState({ refreshing: false }));
         this.ListarDescontos();
     };
 
@@ -364,7 +458,7 @@ export default class ListagemDesconto extends Component {
             console.warn('Cheguei bao');
             return (
                 <View style={styles.containerRefresh}>
-                    <Text style={styles.verify}>Sem cursos nesse raio de alcance!</Text>
+                    <Text style={styles.verify}>Sem descontos nesse raio de alcance!</Text>
                     <Pressable style={styles.boxRefresh} onPress={() => this.onRefresh()}>
                         <Text style={styles.textRefresh}>Refresh</Text>
                     </Pressable>
@@ -373,15 +467,32 @@ export default class ListagemDesconto extends Component {
         }
     }
 
+    verifyCoracao = async () => {
+        const idUser = await AsyncStorage.getItem('idUsuario');
+
+        const respostaFavoritos = await api('/FavoritosDescontos/Favorito/' + idUser)
+        var dadosVerifyFavoritos = respostaFavoritos.data
+        this.setState({ listaFavoritosCoracao: dadosVerifyFavoritos })
+        console.warn(this.state.listaFavoritosCoracao)
+    }
+
+    async _loadFontsAsync() {
+        await Font.loadAsync(customFonts);
+        this.setState({ fontsLoaded: true });
+    }
+
     componentDidMount = async () => {
+        this._loadFontsAsync();
         this.GetLocation();
         this.SaldoUsuario();
-        await delay(3000);
-        // setTimeout(function(){this.setState({ timeGeolocation: true})}, 1000);
+        await delay(100);
         this.ListarDescontos();
     }
 
     render() {
+        if (!customFonts) {
+            return <AppLoading />;
+        }
         return (
             <View style={styles.containerListagem}>
                 <View style={styles.boxLogoHeader}>
@@ -432,7 +543,7 @@ export default class ListagemDesconto extends Component {
                 <Pressable onPress={() => this.setModalVisivel(true, item.idDesconto)}>
                     <View style={styles.boxCurso}>
                         <View style={styles.boxImgCurso}>
-                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemDesconto}` }} resizeMode="cover" />
+                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.caminhoImagemDesconto}` }} resizeMode='stretch' />
                         </View>
 
                         <View style={styles.boxTituloCurso}>
@@ -456,9 +567,22 @@ export default class ListagemDesconto extends Component {
                                 <Text style={styles.textDados}>{item.valorDesconto}</Text>
                             </View>
 
+                            {
+                                this.state.distanceBeneficio.map((dis) => {
+                                    if (dis.id == item.idDesconto) {
+                                        return (
+                                            <View style={styles.boxDistance}>
+                                                <FontAwesome5 name="walking" size={24} color="black" />
+                                                <Text>{dis.distancia}</Text>
+                                            </View>
+                                        )
+                                    }
+                                })
+                            }
+
                             <View style={styles.boxFavorito}>
                                 {/* <Pressable onPress={this.Favoritar(item.idCurso)}> */}
-                                <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
+                                <ExplodingHeart width={80} status={this.state.listaFavoritosCoracao.some(l => { if (l.idDesconto == item.idDesconto) { return true } return false })} onChange={() => this.Favoritar(true, item.idDesconto)} />
                                 {/* </Pressable> */}
                             </View>
                         </View>
@@ -480,7 +604,7 @@ export default class ListagemDesconto extends Component {
                                 <ScrollView>
                                     <View style={styles.boxTituloModal}>
                                         <View style={styles.boxImgCurso}>
-                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${this.state.descontoBuscado.caminhoImagemDesconto}` }} resizeMode="cover" />
+                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${this.state.descontoBuscado.caminhoImagemDesconto}` }} resizeMode='stretch' />
                                         </View>
                                         <Text style={styles.textTituloModal}>{this.state.descontoBuscado.nomeDesconto}</Text>
                                     </View>
@@ -526,8 +650,8 @@ export default class ListagemDesconto extends Component {
                                         </ReadMore>
 
                                         <View style={styles.boxEmpresa}>
-                                            <Text style={styles.tituloEmpresa}>Empresa: </Text>
-                                            <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text>
+                                            {/* <Text style={styles.tituloEmpresa}>Empresa: </Text> */}
+                                            {/* <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text> */}
                                         </View>
 
                                         <View style={styles.boxValorInscrever}>
@@ -631,7 +755,7 @@ if (Dimensions.get('window').width > 700) {
         },
         flatlist: {
             flex: 1,
-            width: '75%',
+            width: '60%',
             height: '100%'
             // backgroundColor: 'blue'
         },
@@ -648,14 +772,15 @@ if (Dimensions.get('window').width > 700) {
             borderColor: '#B3B3B3',
             borderTopWidth: 0,
             borderRadius: 10,
-            marginBottom: 20
+            marginBottom: 20,
+            // backgroundColor: 'pink'
         },
         boxImgCurso: {
             alignItems: 'center',
         },
         imgCurso: {
             width: '100%',
-            height: 100,
+            height: 175,
             borderTopLeftRadius: 10,
             borderTopRightRadius: 10,
             // backgroundColor: 'red',
@@ -696,6 +821,16 @@ if (Dimensions.get('window').width > 700) {
             fontFamily: 'Quicksand-Regular',
             marginLeft: 8,
             marginBottom: 3
+        },
+        boxDistance: {
+            width: 100,
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
         },
         boxPrecoFavorito: {
             height: 40,
@@ -765,9 +900,9 @@ if (Dimensions.get('window').width > 700) {
         },
         imgModalCurso: {
             width: '101.5%',
-            height: 150,
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
+            height: 175,
+            borderTopLeftRadius: 16,
+            borderTopRightRadius: 16,
         },
         textTituloModal: {
             fontFamily: 'Montserrat-Bold',
@@ -803,17 +938,18 @@ if (Dimensions.get('window').width > 700) {
             marginLeft: '40%'
         },
         boxDadosModal: {
-            width: '70%',
+            width: '75%',
             flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'space-evenly',
+            justifyContent: 'space-between',
             marginTop: '4%',
-            marginLeft: 8,
+            marginLeft: 20,
         },
         textDadosModal: {
             width: 120,
             fontFamily: 'Quicksand-Regular',
-            marginLeft: 8
+            fontSize: 16,
+            // marginLeft: 32
         },
         boxDescricaoModal: {
             width: 300,
@@ -822,17 +958,17 @@ if (Dimensions.get('window').width > 700) {
         },
         descricaoModal: {
             fontFamily: 'Montserrat-Medium',
-            fontSize: 16,
+            fontSize: 18,
             color: '#000',
         },
         boxVerMais: {
-            height: 150
+            height: 100
         },
         textDescricaoModal: {
             fontFamily: 'Quicksand-Regular',
             width: 280,
             height: '18%',
-            fontSize: 12,
+            fontSize: 16,
             color: '#000',
             alignItems: 'center',
             display: 'flex',
@@ -842,16 +978,16 @@ if (Dimensions.get('window').width > 700) {
         boxEmpresa: {
             flexDirection: 'row',
             alignItems: 'center',
-            marginTop: '60%'
+            marginTop: '45%'
         },
         tituloEmpresa: {
             fontFamily: 'Montserrat-Medium',
-            fontSize: 14,
+            fontSize: 16,
             color: '#000',
         },
         textEmpresa: {
             fontFamily: 'Quicksand-Regular',
-            fontSize: 14,
+            fontSize: 16,
             color: '#000',
             marginLeft: 10
         },
@@ -893,6 +1029,7 @@ if (Dimensions.get('window').width > 700) {
         },
         textDetalhes: {
             color: 'white',
+            fontSize: 16,
             fontFamily: 'Montserrat-Medium',
         },
         tituloAlert: {
@@ -996,7 +1133,7 @@ else {
         },
         textTituloCurso: {
             fontSize: 20,
-            fontFamily: 'Montserrat-Medium',
+            fontFamily: 'Montserrat_600SemiBold',
             marginTop: 8,
         },
         boxAvaliacao: {
@@ -1147,7 +1284,7 @@ else {
             marginTop: 24
         },
         descricaoModal: {
-            fontFamily: 'Montserrat-Medium',
+            fontFamily: 'Montserrat_600SemiBold',
             fontSize: 16,
             color: '#000',
         },
@@ -1219,7 +1356,7 @@ else {
         },
         textDetalhes: {
             color: 'white',
-            fontFamily: 'Montserrat-Medium',
+            fontFamily: 'Montserrat_600SemiBold',
         },
         tituloAlert: {
             color: 'green'

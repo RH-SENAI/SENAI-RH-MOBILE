@@ -7,6 +7,7 @@ import {
     Image,
     FlatList,
     ScrollView,
+    Dimensions
 } from 'react-native';
 import { Animated, TouchableOpacity, StyleSheet } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
@@ -22,9 +23,19 @@ import apiGp1 from '../../services/apiGp1.js';
 import Constants from 'expo-constants';
 import moment from 'moment';
 import { FontAwesome5 } from '@expo/vector-icons';
+const delay = require('delay');
 // import { LogBox } from 'react-native';
 // LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 // LogBox.ignoreAllLogs();//Ignore all log notifications
+
+let customFonts = {
+    'Montserrat-Regular': require('../../../assets/fonts/Montserrat-Regular.ttf'),
+    'Montserrat-Bold': require('../../../assets/fonts/Montserrat-Bold.ttf'),
+    'Montserrat-SemiBold': require('../../../assets/fonts/Montserrat-SemiBold.ttf'),
+    'Montserrat-Medium': require('../../../assets/fonts/Montserrat-Medium.ttf'),
+    'Quicksand-Regular': require('../../../assets/fonts/Quicksand-Regular.ttf'),
+    'Quicksand-SemiBold': require('../../../assets/fonts/Quicksand-SemiBold.ttf')
+}
 
 export default class TabViewExample extends React.Component {
     state = {
@@ -38,12 +49,14 @@ export default class TabViewExample extends React.Component {
         modalVisivelDesconto: false,
         isFavorite: false,
         inscrito: '',
+        fontsLoaded: false,
         showAlert: false,
         desabilitado: false,
         verifyRegistro: false,
         contadorCurso: 0,
         saldoUsuario: 0,
-        empresaBuscada: '',
+        empresaBuscadaCurso: '',
+        empresaBuscadaDesconto: '',
         listaCurso: [],
         cursoBuscado: [],
         localizacaoCurso: [],
@@ -51,7 +64,8 @@ export default class TabViewExample extends React.Component {
         listaDesconto: [],
         descontoBuscado: [],
         localizacaoCurso: [],
-        listaFavoritosCoracao: []
+        listaFavoritosCoracaoCurso: [],
+        listaFavoritosCoracaoDesconto: []
     };
 
     //LISTAGEM POR IDFAVORITO - TROCAR ICURSO/FAVORITO 
@@ -65,7 +79,7 @@ export default class TabViewExample extends React.Component {
             if (resposta.status == 200) {
                 const dadosCurso = await resposta.data;
                 this.setState({ cursoBuscado: dadosCurso })
-                this.setState({ empresaBuscada: this.state.cursoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado })
+                this.setState({ empresaBuscadaCurso: this.state.cursoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado })
             }
         }
         catch (erro) {
@@ -80,7 +94,7 @@ export default class TabViewExample extends React.Component {
             if (resposta.status == 200) {
                 const dadosDesconto = await resposta.data;
                 this.setState({ descontoBuscado: dadosDesconto })
-                this.setState({ empresaBuscada: this.state.descontoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado })
+                this.setState({ empresaBuscadaDesconto: this.state.descontoBuscado.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado })
             }
         }
         catch (erro) {
@@ -96,6 +110,148 @@ export default class TabViewExample extends React.Component {
             var dadosUsuario = resposta.data
             // console.log(dadosUsuario);
             this.setState({ saldoUsuario: dadosUsuario.saldoMoeda })
+        }
+    }
+
+    FavoritarCurso = async (favorite, id) => {
+        try {
+            if (favorite == true) {
+                this.ProcurarCurso(id);
+                await delay(2000);
+
+                //Id usuário
+                const idUser = await AsyncStorage.getItem('idUsuario');
+
+                //Requisição favoritos pelo id do usuário
+                const respostaFavoritos = await api('/FavoritosCursos/Favorito/' + idUser)
+                var dadosFavoritos = respostaFavoritos.data
+                // this.setState({ listaFavoritosCoracao: dadosFavoritos })
+
+                //Tamanho do json do respostaFavoritos
+                var tamanhoJson = Object.keys(dadosFavoritos).length;
+                console.warn(tamanhoJson)
+                var p = 0;
+
+                do {
+                    console.warn(p)
+                    let stringFavoritos = JSON.stringify(dadosFavoritos);
+                    var objFavoritos = JSON.parse(stringFavoritos);
+                    console.warn(objFavoritos);
+
+                    if (objFavoritos != '') {
+
+                        var cursoId = objFavoritos[p]['idCurso'];
+                        let favoritoId = objFavoritos[p]['idCursoFavorito'];
+                        console.warn(cursoId);
+
+                        if (cursoId == id) {
+                            const respostaExcluir = await api.delete(`/FavoritosCursos/deletar/${favoritoId}`);
+                            var verifyDelete = respostaExcluir.status;
+
+                            if (respostaExcluir.status == 204) {
+                                this.setState(!this.state.isFavorite);
+                                this.setState({ cursoFavoritoBuscado: [] });
+                                this.setState({ isFavorite: false })
+                                console.warn('Desfavoritado');
+                            }
+                        }
+                        p++
+                    }
+                    else {
+                        console.warn("Está vazio!")
+                    }
+                } while (p < tamanhoJson);
+                if (verifyDelete != 204) {
+                    // console.warn("CHEGOU")
+                    if (cursoId != id) {
+                        const respostaCadastro = await api.post('/FavoritosCursos', {
+                            idCurso: this.state.cursoBuscado.idCurso,
+                            idUsuario: idUser,
+                        });
+
+                        if (respostaCadastro.status == 201) {
+                            this.setState({ isFavorite: favorite });
+                            console.warn('Favorito adicionado');
+                            this.setState({ cursoFavoritoBuscado: [] });
+                            console.warn(this.state.isFavorite);
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.warn(error);
+        }
+    }
+
+    FavoritarDesconto = async (favorite, id) => {
+        try {
+            if (favorite == true) {
+                this.ProcurarDesconto(id);
+                await delay(2000);
+
+                //Id usuário
+                const idUser = await AsyncStorage.getItem('idUsuario');
+
+                //Requisição favoritos pelo id do usuário
+                const respostaFavoritos = await api('/FavoritosDescontos/Favorito/' + idUser)
+                var dadosFavoritos = respostaFavoritos.data
+                // this.setState({ listaFavoritosCoracao: dadosFavoritos })
+
+                //Tamanho do json do respostaFavoritos
+                var tamanhoJson = Object.keys(dadosFavoritos).length;
+                console.warn(tamanhoJson)
+                var p = 0;
+
+                do {
+                    console.warn(p)
+                    let stringFavoritos = JSON.stringify(dadosFavoritos);
+                    var objFavoritos = JSON.parse(stringFavoritos);
+                    console.warn(objFavoritos);
+
+                    if (objFavoritos != '') {
+
+                        var cursoId = objFavoritos[p]['idDesconto'];
+                        let favoritoId = objFavoritos[p]['idDescontoFavorito'];
+                        console.warn(cursoId);
+
+                        if (cursoId == id) {
+                            const respostaExcluir = await api.delete(`/FavoritosDescontos/deletar/${favoritoId}`);
+                            var verifyDelete = respostaExcluir.status;
+
+                            if (respostaExcluir.status == 204) {
+                                this.setState(!this.state.isFavorite);
+                                this.setState({ descontoFavoritoBuscado: [] });
+                                // await delay(1000)
+                                this.setState({ isFavorite: false })
+                                console.warn('Desfavoritado');
+                                // this.setState(prevState => ({listaCurso: prevState }))
+                            }
+                        }
+                        p++
+                    }
+                    else {
+                        console.warn("Está vazio!")
+                    }
+                } while (p < tamanhoJson);
+                if (verifyDelete != 204) {
+                    // console.warn("CHEGOU")
+                    if (cursoId != id) {
+                        const respostaCadastro = await api.post('/FavoritosDescontos', {
+                            idDesconto: this.state.descontoBuscado.idDesconto,
+                            idUsuario: idUser,
+                        });
+
+                        if (respostaCadastro.status == 201) {
+                            this.setState({ isFavorite: favorite });
+                            console.warn('Favorito adicionado');
+                            this.setState({ descontoFavoritoBuscado: [] });
+                            console.warn(this.state.isFavorite);
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.warn(error);
         }
     }
 
@@ -117,7 +273,7 @@ export default class TabViewExample extends React.Component {
                 // console.warn(dadosCurso);
 
                 this.setState({ listaCurso: dadosCurso })
-                this.verifyCoracao();
+                this.verifyCoracaoCurso();
                 // console.warn('Favoritos encontrados');
             }
         }
@@ -147,6 +303,7 @@ export default class TabViewExample extends React.Component {
                 // console.warn(dadosDesconto);
 
                 this.setState({ listaDesconto: dadosDesconto })
+                this.verifyCoracaoDesconto();
                 // console.warn(this.state.listaDesconto)
                 // console.warn('Favoritos encontrados');
             }
@@ -167,16 +324,15 @@ export default class TabViewExample extends React.Component {
     setModalVisivelCurso = async (visible, id) => {
         if (visible == true) {
             this.ProcurarCurso(id);
-            await delay(750);
+            await delay(300);
             this.verifySaldo(this.state.cursoBuscado.valorCurso);
             this.verifySituacaoCurso(id);
             console.warn(this.state.saldoUsuario)
-            // await delay(500);
-            // console.warn(this.state.desabilitado)
-            this.setState({ modalVisivel: visible })
+            this.setState({ modalVisivelCurso: visible })
+            console.log(modalVisivelCurso)
         }
         else if (visible == false) {
-            this.setState({ modalVisivel: visible })
+            this.setState({ modalVisivelCurso: visible })
             this.setState({ verifyRegistro: false })
             this.setState({ cursoBuscado: [] })
         }
@@ -186,17 +342,17 @@ export default class TabViewExample extends React.Component {
 
     setModalVisivelDesconto = async (visible, id) => {
         if (visible == true) {
-            this.ProcurarDescontos(id);
-            await delay(750);
+            this.ProcurarDesconto(id);
+            await delay(300);
             this.verifySaldo(this.state.descontoBuscado.valorDesconto);
-            this.verifySituacao(id);
+            this.verifySituacaoDesconto(id);
             console.warn(this.state.saldoUsuario)
-            // await delay(500);
-            // console.warn(this.state.desabilitado)
-            this.setState({ modalVisivel: visible })
+            this.setState({ modalVisivelDesconto: visible })
+            // console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+            // console.log(this.state.descontoBuscado.caminhoImagemDesconto)
         }
         else if (visible == false) {
-            this.setState({ modalVisivel: visible })
+            this.setState({ modalVisivelDesconto: visible })
             this.setState({ verifyRegistro: false })
             this.setState({ descontoBuscado: [] })
         }
@@ -240,6 +396,42 @@ export default class TabViewExample extends React.Component {
         }
     }
 
+    verifySituacaoDesconto = async (id) => {
+        try {
+            const idUser = await AsyncStorage.getItem('idUsuario');
+            console.warn(idUser)
+            console.warn(id)
+
+            const respostaBuscar = await api(`/Registrodescontos/RegistroDescontos/IdUsuario/${idUser}`);
+
+            var tamanhoJsonRegistro = Object.keys(respostaBuscar.data).length;
+
+            let stringRegistros = JSON.stringify(respostaBuscar.data);
+            var objRegistros = JSON.parse(stringRegistros);
+
+            var k = 0;
+            do {
+                if (objRegistros != '') {
+                    var registroId = objRegistros[k]['idDesconto'];
+
+                    if (registroId == id) {
+                        this.setState({ verifyRegistro: true })
+                        this.setState({ desabilitado: true });
+                        console.warn("Desconto já comprado!");
+                    }
+                }
+                else {
+                    this.setState({ verifyRegistro: false })
+                    console.warn("Está vazio!")
+                }
+                k++
+            } while (k < tamanhoJsonRegistro);
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     setSituacaoCurso = () => {
         if (this.state.verifyRegistro == true) {
             return 'Inscrito'
@@ -249,7 +441,16 @@ export default class TabViewExample extends React.Component {
         }
     }
 
-    showAlert = async () => {
+    setSituacaoDesconto = () => {
+        if (this.state.verifyRegistro == true) {
+            return this.state.descontoBuscado.numeroCupom
+        }
+        else {
+            return 'Pegue'
+        }
+    }
+
+    showAlertCurso = async (id) => {
         try {
             const idUser = await AsyncStorage.getItem('idUsuario');
             console.warn(idUser)
@@ -296,14 +497,61 @@ export default class TabViewExample extends React.Component {
         }
     };
 
+    showAlertDesconto = async (id) => {
+        try {
+            const idUser = await AsyncStorage.getItem('idUsuario');
+            console.warn(idUser)
+            console.warn(id)
+
+            const respostaBuscar = await api(`/Registrodescontos/RegistroDescontos/IdUsuario/${idUser}`);
+
+            var tamanhoJsonRegistro = Object.keys(respostaBuscar.data).length;
+
+            let stringRegistros = JSON.stringify(respostaBuscar.data);
+            var objRegistros = JSON.parse(stringRegistros);
+
+            var k = 0;
+            do {
+                if (objRegistros != '') {
+                    var registroId = objRegistros[k]['idDesconto'];
+
+                    if (registroId == id) {
+                        // this.setState({ verifyRegistro: true })
+                        console.warn("Desconto já pego!")
+                        // this.setSituacao();
+                    }
+                }
+                else {
+                    console.warn("Está vazio!")
+                }
+                k++
+            } while (k < tamanhoJsonRegistro);
+
+            if (this.state.verifyRegistro != true) {
+                const resposta = await api.post('/Registrodescontos/Cadastrar', {
+                    idDesconto: id,
+                    idUsuario: idUser,
+                    idSituacaoAtividade: 1,
+                });
+
+                if (resposta.status == 201) {
+                    this.setState({ showAlert: true });
+                }
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    };
+
     hideAlert = () => {
         this.setState({
             showAlert: false
         });
     };
 
-    modalidade = (item) => {
-        if (item.modalidadeCurso == true) {
+    modalidade = (modalidade) => {
+        if (modalidade == true) {
             return 'Presencial'
         }
         else {
@@ -333,29 +581,48 @@ export default class TabViewExample extends React.Component {
 
     RedirecionarComentarioCurso = () => {
         this.setState({ modalVisivel: false })
-        // this.props.navigation.navigate('ComentarioDesconto')
+        this.props.navigation.navigate('ComentarioCurso')
     }
 
-    verifyCoracao = async () => {
+    RedirecionarComentarioDesconto = () => {
+        this.setState({ modalVisivel: false })
+        this.props.navigation.navigate('ComentarioDesconto')
+    }
+
+    verifyCoracaoCurso = async () => {
         const idUser = await AsyncStorage.getItem('idUsuario');
 
         const respostaFavoritos = await api('/FavoritosCursos/Favorito/' + idUser)
         var dadosVerifyFavoritos = respostaFavoritos.data
-        this.setState({ listaFavoritosCoracao: dadosVerifyFavoritos })
-        console.warn(this.state.listaFavoritosCoracao)
+        this.setState({ listaFavoritosCoracaoCurso: dadosVerifyFavoritos })
+        console.warn(this.state.listaFavoritosCoracaoCurso)
+    }
+
+    verifyCoracaoDesconto = async () => {
+        const idUser = await AsyncStorage.getItem('idUsuario');
+
+        const respostaFavoritos = await api('/FavoritosDescontos/Favorito/' + idUser)
+        var dadosVerifyFavoritos = respostaFavoritos.data
+        this.setState({ listaFavoritosCoracaoDesconto: dadosVerifyFavoritos })
+        console.warn(this.state.listaFavoritosCoracaoDesconto)
+    }
+
+    async _loadFontsAsync() {
+        await Font.loadAsync(customFonts);
+        this.setState({ fontsLoaded: true });
     }
 
     componentDidMount = () => {
+        this._loadFontsAsync();
         this.SaldoUsuario();
-        // await delay(3000);
         this.ListarCursoFavoritos();
         this.ListarDescontosFavoritos();
     }
 
-    componentWillUnmount = () => {
-        this.ListarCursoFavoritos();
-        this.ListarDescontosFavoritos();
-    }
+    // componentWillUnmount = () => {
+    //     this.ListarCursoFavoritos();
+    //     this.ListarDescontosFavoritos();
+    // }
 
     _handleIndexChange = (index) => this.setState({ index });
 
@@ -413,166 +680,166 @@ export default class TabViewExample extends React.Component {
 
     renderItem = ({ item }) => (
         <View style={styles.containerTab}>
-            <View style={styles.containerCurso}>
-                <Pressable onPress={() => this.setModalVisivelCurso(true, item.idCurso)}>
-                    <View style={styles.boxCurso}>
-                        <View style={styles.boxImgCurso}>
-                            <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idCursoNavigation.caminhoImagemCurso}` }} resizeMode='stretch' />
+            {/* <View style={styles.containerCurso}> */}
+            <Pressable onPress={() => this.setModalVisivelCurso(true, item.idCurso)}>
+                <View style={styles.boxCurso}>
+                    <View style={styles.boxImgCurso}>
+                        <Image style={styles.imgCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idCursoNavigation.caminhoImagemCurso}` }} resizeMode='cover' />
+                    </View>
+
+                    <View style={styles.boxTituloCurso}>
+                        <Text style={styles.textTituloCurso}>{item.idCursoNavigation.nomeCurso}</Text>
+                    </View>
+
+                    <View style={styles.boxAvaliacao}>
+                        <AirbnbRating
+                            count={5}
+                            //starImage={star}
+                            showRating={false}
+                            selectedColor={'#4B7294'}
+                            defaultRating={item.idCursoNavigation.mediaAvaliacaoCurso}
+                            isDisabled={true}
+                            size={20} />
+                    </View>
+
+                    <View style={styles.boxDadosCurso}>
+                        <View style={styles.boxDados}>
+                            <Image style={styles.imgDados} source={require('../../../assets/img-gp2/relogio.png')} />
+                            <Text style={styles.textDados}>{item.idCursoNavigation.cargaHoraria}</Text>
                         </View>
 
-                        <View style={styles.boxTituloCurso}>
-                            <Text style={styles.textTituloCurso}>{item.idCursoNavigation.nomeCurso}</Text>
-                        </View>
-
-                        <View style={styles.boxAvaliacao}>
-                            <AirbnbRating
-                                count={5}
-                                //starImage={star}
-                                showRating={false}
-                                selectedColor={'#4B7294'}
-                                defaultRating={item.idCursoNavigation.mediaAvaliacaoCurso}
-                                isDisabled={true}
-                                size={20} />
-                        </View>
-
-                        <View style={styles.boxDadosCurso}>
-                            <View style={styles.boxDados}>
-                                <Image style={styles.imgDados} source={require('../../../assets/img-gp2/relogio.png')} />
-                                <Text style={styles.textDados}>{item.idCursoNavigation.cargaHoraria}</Text>
-                            </View>
-
-                            <View style={styles.boxDados}>
-                                <Image style={styles.imgDados} source={require('../../../assets/img-gp2/local.png')} />
-                                <Text style={styles.textDados}>{this.modalidade(item.idCursoNavigation.modalidadeCurso)}</Text>
-                            </View>
-                        </View>
-
-                        <View style={styles.boxPrecoFavorito}>
-                            <View style={styles.boxPreco}>
-                                <FontAwesome5 name="coins" size={24} color="#FBB01E" />
-                                <Text style={styles.textDados}>{item.idCursoNavigation.valorCurso}</Text>
-                            </View>
-
-                            <View style={styles.boxFavorito}>
-                                <ExplodingHeart width={80} status={this.state.listaFavoritosCoracao.some(l => { if (l.idCurso == item.idCurso) { return true } return false })} onChange={() => this.Favoritar(true, item.idCurso)} />
-                            </View>
+                        <View style={styles.boxDados}>
+                            <Image style={styles.imgDados} source={require('../../../assets/img-gp2/local.png')} />
+                            <Text style={styles.textDados}>{this.modalidade(item.idCursoNavigation.modalidadeCurso)}</Text>
                         </View>
                     </View>
-                </Pressable>
 
-                <Modal
-                    animationType="fade"
-                    transparent={true}
-                    visible={this.state.modalVisivelCurso}
-                    key={item.idCursoFavorito == this.state.cursoBuscado.idCursoFavorito}
-                    onRequestClose={() => {
-                        this.setModalVisivelCurso(!this.state.modalVisivelCurso)
-                    }}
-                >
-                    <View style={styles.totalModal}>
-                        <Pressable onPress={() => this.setModalVisivelCurso(!this.state.modalVisivelCurso)} >
-                            <View style={styles.containerModal}>
-                                <ScrollView>
-                                    <View style={styles.boxTituloModal}>
-                                        <View style={styles.boxImgCurso}>
-                                            <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idCursoNavigation.caminhoImagemCurso}` }} resizeMode='stretch' />
-                                        </View>
-                                        <Text style={styles.textTituloModal}>{item.idCursoNavigation.nomeCurso}</Text>
+                    <View style={styles.boxPrecoFavorito}>
+                        <View style={styles.boxPreco}>
+                            <FontAwesome5 name="coins" size={24} color="#FBB01E" />
+                            <Text style={styles.textDados}>{item.idCursoNavigation.valorCurso}</Text>
+                        </View>
+
+                        <View style={styles.boxFavorito}>
+                            <ExplodingHeart width={80} status={this.state.listaFavoritosCoracaoCurso.some(l => { if (l.idCurso == item.idCurso) { return true } return false })} onChange={() => this.FavoritarCurso(true, item.idCursoNavigation.idCurso)} />
+                        </View>
+                    </View>
+                </View>
+            </Pressable>
+
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={this.state.modalVisivelCurso}
+                key={item.idCursoFavorito == this.state.cursoBuscado.idCursoFavorito}
+                onRequestClose={() => {
+                    this.setModalVisivelCurso(!this.state.modalVisivelCurso)
+                }}
+            >
+                <View style={styles.totalModal}>
+                    <Pressable onPress={() => this.setModalVisivelCurso(!this.state.modalVisivelCurso)} >
+                        <View style={styles.containerModal}>
+                            <ScrollView>
+                                <View style={styles.boxTituloModal}>
+                                    <View style={styles.boxImgCurso}>
+                                        <Image style={styles.imgModalCurso} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${this.state.cursoBuscado.caminhoImagemCurso}` }} resizeMode='cover' />
                                     </View>
+                                    <Text style={styles.textTituloModal}>{this.state.cursoBuscado.nomeCurso}</Text>
+                                </View>
 
-                                    <View style={styles.boxAvaliacaoPreco}>
-                                        <View style={styles.boxAvaliacaoModal}>
-                                            <AirbnbRating
-                                                count={5}
-                                                //starImage={star}
-                                                showRating={false}
-                                                selectedColor={'#4B7294'}
-                                                defaultRating={item.idCursoNavigation.mediaAvaliacaoCurso}
-                                                isDisabled={true}
-                                                size={20}
-                                            />
-                                        </View>
-                                        <View style={styles.boxPrecoModal}>
-                                            <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
-                                            <Text style={styles.textDados}>{item.idCursoNavigation.valorCurso}</Text>
-                                        </View>
-                                    </View>
-
-                                    <View style={styles.boxDadosModal}>
-                                        <Image source={require('../../../assets/img-gp2/relogio.png')} />
-                                        <Text style={styles.textDadosModal}>{item.idCursoNavigation.cargaHoraria}</Text>
-
-                                        <Image source={require('../../../assets/img-gp2/mapa.png')} />
-                                        {/* <Text style={styles.textDadosModal}>{item.idEmpresaNavigation.idLocalizacaoNavigation.idEstadoNavigation.nomeEstado}</Text> */}
-                                    </View>
-
-                                    <View style={styles.boxDadosModal}>
-                                        <Image source={require('../../../assets/img-gp2/local.png')} />
-                                        <Text style={styles.textDadosModal}>{this.modalidade(item.idCursoNavigation.modalidadeCurso)}</Text>
-
-                                        <Image source={require('../../../assets/img-gp2/dataFinal.png')} />
-                                        <Text style={styles.textDadosModal}>
-                                            {moment(item.dataFinalizacao).format('LL')}
-                                        </Text>
-                                    </View>
-
-                                    <View style={styles.boxDescricaoModal}>
-                                        <Text style={styles.descricaoModal}>Descrição:</Text>
-                                        <ReadMore
-                                            style={styles.boxVerMais}
-                                            numberOfLines={3}
-                                            renderTruncatedFooter={this._renderTruncatedFooter}
-                                            renderRevealedFooter={this._renderRevealedFooter}
-                                            onReady={this._handleTextReady}
-                                        >
-                                            <Text style={styles.textDescricaoModal}>{item.idCursoNavigation.descricaoCurso}</Text>
-                                        </ReadMore>
-
-                                        <View style={styles.boxEmpresa}>
-                                            <Text style={styles.tituloEmpresa}>Empresa: </Text>
-                                            {/* <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text> */}
-                                        </View>
-
-                                        <View style={styles.boxValorInscrever}>
-                                            <View style={styles.boxComentarioModal}>
-                                                <Pressable onPress={() => this.RedirecionarComentarioCurso()}>
-                                                    <Image source={require('../../../assets/img-gp2/comentario.png')} />
-                                                </Pressable>
-                                            </View>
-
-                                            <View style={styles.boxInscreverModal}>
-                                                <TouchableOpacity style={this.state.desabilitado ? styles.inscreverModalDisable : styles.inscreverModal} activeOpacity={this.state.desabilitado ? 1 : 0.1} disabled={this.state.desabilitado} onPress={() => { this.showAlert(this.state.cursoBuscado.idCurso) }} >
-                                                    <Text style={styles.textDetalhes}>{this.setSituacaoCurso()}</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
-
-                                        <AwesomeAlert
-                                            style={styles.bao}
-                                            show={this.state.showAlert}
-                                            showProgress={false}
-                                            title="Sucesso"
-                                            message="Você foi inscrito no curso!"
-                                            closeOnTouchOutside={true}
-                                            closeOnHardwareBackPress={false}
-                                            showCancelButton={true}
-                                            cancelText="Okay"
-                                            cancelButtonColor="#C20004"
-                                            cancelButtonStyle={this.alertView = StyleSheet.create({
-                                                width: 150,
-                                                paddingLeft: 62
-                                            })}
-                                            onCancelPressed={() => {
-                                                this.hideAlert();
-                                            }}
+                                <View style={styles.boxAvaliacaoPreco}>
+                                    <View style={styles.boxAvaliacaoModal}>
+                                        <AirbnbRating
+                                            count={5}
+                                            //starImage={star}
+                                            showRating={false}
+                                            selectedColor={'#4B7294'}
+                                            defaultRating={this.state.cursoBuscado.mediaAvaliacaoCurso}
+                                            isDisabled={true}
+                                            size={20}
                                         />
                                     </View>
-                                </ScrollView>
-                            </View>
-                        </Pressable>
-                    </View>
-                </Modal>
-            </View>
+                                    <View style={styles.boxPrecoModal}>
+                                        <FontAwesome5 name="coins" size={24} color="#FBB01E" />
+                                        <Text style={styles.textDados}>{this.state.cursoBuscado.valorCurso}</Text>
+                                    </View>
+                                </View>
+
+                                <View style={styles.boxDadosModal}>
+                                    <Image source={require('../../../assets/img-gp2/relogio.png')} />
+                                    <Text style={styles.textDadosModal}>{this.state.cursoBuscado.cargaHoraria}</Text>
+
+                                    <Image source={require('../../../assets/img-gp2/mapa.png')} />
+                                    <Text style={styles.textDadosModal}>{this.state.empresaBuscadaCurso}</Text>
+                                </View>
+
+                                <View style={styles.boxDadosModal}>
+                                    <Image source={require('../../../assets/img-gp2/local.png')} />
+                                    <Text style={styles.textDadosModal}>{this.modalidade(this.state.cursoBuscado.modalidadeCurso)}</Text>
+
+                                    <Image source={require('../../../assets/img-gp2/dataFinal.png')} />
+                                    <Text style={styles.textDadosModal}>
+                                        {moment(this.state.cursoBuscado.dataFinalizacao).format('LL')}
+                                    </Text>
+                                </View>
+
+                                <View style={styles.boxDescricaoModal}>
+                                    <Text style={styles.descricaoModal}>Descrição:</Text>
+                                    <ReadMore
+                                        style={styles.boxVerMais}
+                                        numberOfLines={3}
+                                        renderTruncatedFooter={this._renderTruncatedFooter}
+                                        renderRevealedFooter={this._renderRevealedFooter}
+                                        onReady={this._handleTextReady}
+                                    >
+                                        <Text style={styles.textDescricaoModal}>{this.state.cursoBuscado.descricaoCurso}</Text>
+                                    </ReadMore>
+
+                                    <View style={styles.boxEmpresa}>
+                                        {/* <Text style={styles.tituloEmpresa}>Empresa: </Text> */}
+                                        {/* <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text> */}
+                                    </View>
+
+                                    <View style={styles.boxValorInscrever}>
+                                        <View style={styles.boxComentarioModal}>
+                                            <Pressable onPress={() => this.RedirecionarComentarioCurso()}>
+                                                <Image source={require('../../../assets/img-gp2/comentario.png')} />
+                                            </Pressable>
+                                        </View>
+
+                                        <View style={styles.boxInscreverModal}>
+                                            <TouchableOpacity style={this.state.desabilitado ? styles.inscreverModalDisable : styles.inscreverModal} activeOpacity={this.state.desabilitado ? 1 : 0.1} disabled={this.state.desabilitado} onPress={() => { this.showAlertCurso(this.state.cursoBuscado.idCurso) }} >
+                                                <Text style={styles.textDetalhes}>{this.setSituacaoCurso()}</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+
+                                    <AwesomeAlert
+                                        style={styles.bao}
+                                        show={this.state.showAlert}
+                                        showProgress={false}
+                                        title="Sucesso"
+                                        message="Você foi inscrito no curso!"
+                                        closeOnTouchOutside={true}
+                                        closeOnHardwareBackPress={false}
+                                        showCancelButton={true}
+                                        cancelText="Okay"
+                                        cancelButtonColor="#C20004"
+                                        cancelButtonStyle={this.alertView = StyleSheet.create({
+                                            width: 150,
+                                            paddingLeft: 62
+                                        })}
+                                        onCancelPressed={() => {
+                                            this.hideAlert();
+                                        }}
+                                    />
+                                </View>
+                            </ScrollView>
+                        </View>
+                    </Pressable>
+                </View>
+            </Modal>
+            {/* </View> */}
         </View>
     );
 
@@ -589,147 +856,146 @@ export default class TabViewExample extends React.Component {
 
     renderItem2 = ({ item }) => (
         <View style={styles.containerTab}>
-            <View style={styles.containerCurso}>
-                <Pressable onPress={() => this.setModalVisivelDesconto(true, item.idDescontoNavigation.idDesconto)}>
-                    <View style={styles.boxCurso}>
-                        <View style={styles.boxImgCurso}>
-                            <Image style={styles.imgDesconto} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idDescontoNavigation.caminhoImagemDesconto}` }} resizeMode='stretch' />
+            {/* <View style={styles.containerCurso}> */}
+            <Pressable onPress={() => this.setModalVisivelDesconto(true, item.idDescontoNavigation.idDesconto)}>
+                <View style={styles.boxCurso}>
+                    <View style={styles.boxImgCurso}>
+                        <Image style={styles.imgDesconto} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idDescontoNavigation.caminhoImagemDesconto}` }} resizeMode='stretch' />
+                    </View>
+
+                    <View style={styles.boxTituloCurso}>
+                        <Text style={styles.textTituloCurso}>{item.idDescontoNavigation.nomeDesconto}</Text>
+                    </View>
+
+                    <View style={styles.boxAvaliacao}>
+                        <AirbnbRating
+                            count={5}
+                            //starImage={star}
+                            showRating={false}
+                            selectedColor={'#4B7294'}
+                            defaultRating={item.idDescontoNavigation.mediaAvaliacaoDesconto}
+                            isDisabled={true}
+                            size={20} />
+                    </View>
+
+                    <View style={styles.boxPrecoFavoritoDesconto}>
+                        <View style={styles.boxPreco}>
+                            <FontAwesome5 name="coins" size={24} color="#FBB01E" />
+                            <Text style={styles.textDados}>{item.idDescontoNavigation.valorDesconto}</Text>
                         </View>
 
-                        <View style={styles.boxTituloCurso}>
-                            <Text style={styles.textTituloCurso}>{item.idDescontoNavigation.nomeDesconto}</Text>
-                        </View>
-
-                        <View style={styles.boxAvaliacao}>
-                            <AirbnbRating
-                                count={5}
-                                //starImage={star}
-                                showRating={false}
-                                selectedColor={'#C20004'}
-                                defaultRating={item.idDescontoNavigation.mediaAvaliacaoDesconto}
-                                isDisabled={true}
-                                size={20} />
-                        </View>
-
-                        <View style={styles.boxPrecoFavoritoDesconto}>
-                            <View style={styles.boxPreco}>
-                                <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
-                                <Text style={styles.textDados}>{item.valorDesconto}</Text>
-                            </View>
-
-                            <View style={styles.boxFavorito}>
-                                <ExplodingHeart width={80} status={this.state.isFavorite} onClick={() => this.setState(!isFavorite)} onChange={(ev) => console.log(ev)} />
-                            </View>
+                        <View style={styles.boxFavorito}>
+                            <ExplodingHeart width={80} status={this.state.listaFavoritosCoracaoDesconto.some(l => { if (l.idDesconto == item.idDesconto) { return true } return false })} onChange={() => this.FavoritarDesconto(true, item.idDescontoNavigation.idDesconto)} />
                         </View>
                     </View>
-                </Pressable>
+                </View>
+            </Pressable>
 
-                <Modal
-                    animationType="fade"
-                    transparent={true}
-                    visible={this.state.modalVisivelDesconto}
-                    key={item.idDescontoFavorito == this.state.descontoBuscado.idDescontoFavorito}
-                    onRequestClose={() => {
-                        this.setModalVisivelDesconto(!this.state.modalVisivelDesconto)
-                    }}
-                >
-                    <View style={styles.totalModal}>
-                        <Pressable onPress={() => this.setModalVisivelDesconto(!this.state.modalVisivelDesconto)} >
-                            <View style={styles.containerModal}>
-                                <ScrollView>
-                                    <View style={styles.boxTituloModal}>
-                                        <View style={styles.boxImgCurso}>
-                                            <Image style={styles.imgModalDesconto} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${item.idDescontoNavigation.caminhoImagemDesconto}` }} resizeMode="stretch" />
-                                        </View>
-                                        <Text style={styles.textTituloModal}>{item.idDescontoNavigation.nomeDesconto}</Text>
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={this.state.modalVisivelDesconto}
+                key={item.idDescontoFavorito == this.state.descontoBuscado.idDescontoFavorito}
+                onRequestClose={() => {
+                    this.setModalVisivelDesconto(!this.state.modalVisivelDesconto)
+                }}
+            >
+                <View style={styles.totalModal}>
+                    <Pressable onPress={() => this.setModalVisivelDesconto(!this.state.modalVisivelDesconto)} >
+                        <View style={styles.containerModal}>
+                            <ScrollView>
+                                <View style={styles.boxTituloModal}>
+                                    <View style={styles.boxImgCurso}>
+                                        <Image style={styles.imgModalDesconto} source={{ uri: `https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples-grp2/${this.state.descontoBuscado.caminhoImagemDesconto}` }} resizeMode='cover' />
                                     </View>
+                                    <Text style={styles.textTituloModal}>{item.idDescontoNavigation.nomeDesconto}</Text>
+                                </View>
 
-                                    <View style={styles.boxAvaliacaoPreco}>
-                                        <View style={styles.boxAvaliacaoModal}>
-                                            <AirbnbRating
-                                                count={5}
-                                                //starImage={star}
-                                                showRating={false}
-                                                selectedColor={'#C20004'}
-                                                defaultRating={item.idDescontoNavigation.mediaAvaliacaoDesconto}
-                                                isDisabled={true}
-                                                size={20}
-                                            />
-                                        </View>
-                                        <View style={styles.boxPrecoModal}>
-                                            <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
-                                            <Text style={styles.textDados}>{item.idDescontoNavigation.valorDesconto}</Text>
-                                        </View>
-                                    </View>
-
-                                    <View style={styles.boxDadosModal}>
-                                        <Image source={require('../../../assets/img-gp2/relogio.png')} />
-                                        <Text style={styles.textDadosModal}>{item.idDescontoNavigation.cargaHoraria}</Text>
-
-                                        <Image source={require('../../../assets/img-gp2/dataFinal.png')} />
-                                        <Text style={styles.textDadosModal}>
-                                            {moment(item.validadeDesconto).format('LL')}
-                                        </Text>
-
-                                    </View>
-
-                                    <View style={styles.boxDescricaoModal}>
-                                        <Text style={styles.descricaoModal}>Descrição:</Text>
-                                        <ReadMore
-                                            style={styles.boxVerMais}
-                                            numberOfLines={3}
-                                            renderTruncatedFooter={this._renderTruncatedFooter}
-                                            renderRevealedFooter={this._renderRevealedFooter}
-                                            onReady={this._handleTextReady}
-                                        >
-                                            <Text style={styles.textDescricaoModal}>{item.idDescontoNavigation.descricaoCurso}</Text>
-                                        </ReadMore>
-
-                                        <View style={styles.boxEmpresa}>
-                                            <Text style={styles.tituloEmpresa}>Empresa: </Text>
-                                            {/* <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text> */}
-                                        </View>
-
-                                        <View style={styles.boxValorInscrever}>
-                                            <View style={styles.boxComentarioModal}>
-                                                <Pressable onPress={() => this.RedirecionarComentarioDesconto()}>
-                                                    <Image source={require('../../../assets/img-gp2/comentario.png')} />
-                                                </Pressable>
-                                            </View>
-
-                                            <View style={styles.boxInscreverModal}>
-                                                <Pressable style={styles.inscreverModal} onPress={() => { this.showAlert() }}  >
-                                                    <Text style={styles.textDetalhes}>Inscreva-se</Text>
-                                                </Pressable>
-                                            </View>
-                                        </View>
-
-                                        <AwesomeAlert
-                                            style={styles.bao}
-                                            show={this.state.showAlert}
-                                            showProgress={false}
-                                            title="Sucesso"
-                                            message="Você foi inscrito no curso!"
-                                            closeOnTouchOutside={true}
-                                            closeOnHardwareBackPress={false}
-                                            showCancelButton={true}
-                                            cancelText="Okay"
-                                            cancelButtonColor="#C20004"
-                                            cancelButtonStyle={this.alertView = StyleSheet.create({
-                                                width: 150,
-                                                paddingLeft: 62
-                                            })}
-                                            onCancelPressed={() => {
-                                                this.hideAlert();
-                                            }}
+                                <View style={styles.boxAvaliacaoPreco}>
+                                    <View style={styles.boxAvaliacaoModal}>
+                                        <AirbnbRating
+                                            count={5}
+                                            //starImage={star}
+                                            showRating={false}
+                                            selectedColor={'#C20004'}
+                                            defaultRating={this.state.descontoBuscado.mediaAvaliacaoDesconto}
+                                            isDisabled={true}
+                                            size={20}
                                         />
                                     </View>
-                                </ScrollView>
-                            </View>
-                        </Pressable>
-                    </View>
-                </Modal>
-            </View>
+                                    <View style={styles.boxPrecoModal}>
+                                        <Image style={styles.imgCoin} source={require('../../../assets/img-gp2/cash.png')} />
+                                        <Text style={styles.textDados}>{item.idDescontoNavigation.valorDesconto}</Text>
+                                    </View>
+                                </View>
+
+                                <View style={styles.boxDadosModal}>
+                                    <Image source={require('../../../assets/img-gp2/dataFinal.png')} />
+                                    <Text style={styles.textDadosModal}>
+                                        {moment(item.validadeDesconto).format('LL')}
+                                    </Text>
+
+                                    <Image source={require('../../../assets/img-gp2/mapa.png')} />
+                                    <Text style={styles.textDadosModal}>{this.state.empresaBuscadaDesconto}</Text>
+                                </View>
+
+                                <View style={styles.boxDescricaoModal}>
+                                    <Text style={styles.descricaoModal}>Descrição:</Text>
+                                    <ReadMore
+                                        style={styles.boxVerMais}
+                                        numberOfLines={3}
+                                        renderTruncatedFooter={this._renderTruncatedFooter}
+                                        renderRevealedFooter={this._renderRevealedFooter}
+                                        onReady={this._handleTextReady}
+                                    >
+                                        <Text style={styles.textDescricaoModal}>{this.state.descontoBuscado.descricaoCurso}</Text>
+                                    </ReadMore>
+
+                                    <View style={styles.boxEmpresa}>
+                                        {/* <Text style={styles.tituloEmpresa}>Empresa: </Text> */}
+                                        {/* <Text style={styles.textEmpresa}>{item.idEmpresaNavigation.nomeEmpresa}</Text> */}
+                                    </View>
+
+                                    <View style={styles.boxValorInscrever}>
+                                        <View style={styles.boxComentarioModal}>
+                                            <Pressable onPress={() => this.RedirecionarComentarioDesconto()}>
+                                                <Image source={require('../../../assets/img-gp2/comentario.png')} />
+                                            </Pressable>
+                                        </View>
+
+                                        <View style={styles.boxInscreverModal}>
+                                            <Pressable style={this.state.desabilitado ? styles.inscreverModalDisable : styles.inscreverModal} activeOpacity={this.state.desabilitado ? 1 : 0.1} disabled={this.state.desabilitado} onPress={() => { this.showAlertDesconto(this.state.descontoBuscado.idDesconto) }}  >
+                                                <Text style={styles.textDetalhes}>{this.setSituacaoDesconto()}</Text>
+                                            </Pressable>
+                                        </View>
+                                    </View>
+
+                                    <AwesomeAlert
+                                        style={styles.bao}
+                                        show={this.state.showAlert}
+                                        showProgress={false}
+                                        title="Sucesso"
+                                        message="Você pegou o desconto!"
+                                        closeOnTouchOutside={true}
+                                        closeOnHardwareBackPress={false}
+                                        showCancelButton={true}
+                                        cancelText="Okay"
+                                        cancelButtonColor="#C20004"
+                                        cancelButtonStyle={this.alertView = StyleSheet.create({
+                                            width: 150,
+                                            paddingLeft: 62
+                                        })}
+                                        onCancelPressed={() => {
+                                            this.hideAlert();
+                                        }}
+                                    />
+                                </View>
+                            </ScrollView>
+                        </View>
+                    </Pressable>
+                </View>
+            </Modal>
+            {/* </View> */}
         </View>
     );
 
@@ -750,327 +1016,700 @@ export default class TabViewExample extends React.Component {
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    tabBar: {
-        flexDirection: 'row',
-        backgroundColor: '#B3B3B3',
-        // marginTop: 50,
-    },
-    tabItem: {
-        flex: 1,
-        alignItems: 'center',
-        padding: 16,
-        backgroundColor: '#F2F2F2',
-    },
-    containerTab: {
-        alignItems: 'center',
-        marginTop: 20
-    },
-    containerListagem: {
-        alignItems: 'center'
-    },
-    boxLogoHeader: {
-        marginTop: 50
-    },
-    boxTituloPrincipal: {
-        marginTop: 24,
-        marginBottom: 24
-    },
-    textTituloPrincipal: {
-        textTransform: 'uppercase',
-        fontFamily: 'Montserrat-Bold',
-        fontSize: 30
-    },
-    boxSaldoUsuario: {
-        width: 90,
-        height: 42,
-        borderWidth: 2,
-        borderColor: '#B3B3B3',
-        borderRadius: 15,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 24
-    },
-    // line: {
-    //     width: 30,
-    //     height: 1,
-    // },
-    containerCurso: {
-        marginBottom: 50,
-    },
-    boxCurso: {
-        width: 275,
-        height: 285,
-        borderWidth: 2,
-        borderColor: '#B3B3B3',
-        borderTopWidth: 0,
-        borderRadius: 10,
-    },
-    boxImgCurso: {
-        alignItems: 'center',
-    },
-    imgCurso: {
-        width: 275,
-        height: 83,
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8,
-    },
-    imgDesconto: {
-        width: 275,
-        height: 125,
-        borderTopLeftRadius: 4,
-        borderTopRightRadius: 4,
-    },
-    boxTituloCurso: {
-        marginLeft: 16
-    },
-    textTituloCurso: {
-        fontSize: 20,
-        fontFamily: 'Montserrat-Medium',
-        marginTop: 8,
-    },
-    boxAvaliacao: {
-        width: 150,
-        height: 32,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginLeft: 16,
-        marginTop: 4
-    },
-    boxDados: {
-        display: 'flex',
-        flexDirection: 'row',
-        marginTop: 8,
-        marginLeft: 16
-    },
-    imgDados: {
-        width: 19.6,
-        height: 19.8,
-        marginTop: 1
-    },
-    textDados: {
-        fontFamily: 'Quicksand-Regular',
-        marginLeft: 8,
-        marginBottom: 3
-    },
-    boxSelect: {
-        width: 200,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    boxTituloCursoSelect: {
-        alignItems: 'center',
-    },
-    line: {
-        width: 80,
-        height: 1,
-        backgroundColor: 'rgba(0,0,0,0.3)',
-        marginBottom: 24
-    },
-    textSelect: {
-        fontFamily: 'Montserrat-Medium',
-    },
-    boxPrecoFavorito: {
-        height: 40,
-        display: 'flex',
-        flexDirection: 'row',
-        marginTop: 16,
-        marginLeft: 16
-    },
-    boxPrecoFavoritoDesconto: {
-        height: 40,
-        display: 'flex',
-        flexDirection: 'row',
-        marginTop: 34,
-        marginLeft: 16
-    },
-    boxPreco: {
-        width: 90,
-        height: 42,
-        borderWidth: 2,
-        borderColor: '#B3B3B3',
-        borderRadius: 15,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    imgCoin: {
-        width: 22.1,
-        height: 22,
-    },
-    boxFavorito: {
-        width: 50,
-        height: 40,
-        //backgroundColor: 'black',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginLeft: 105,
-    },
-    modalAbrir: {
-        width: 100,
-        height: 40,
-        backgroundColor: '#CB334B',
-        borderRadius: 12,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    totalModal: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.3)',
-    },
-    containerModal: {
-        width: '83%',
-        height: '81%',
-        backgroundColor: '#F2F2F2',
-        borderWidth: 2,
-        borderTopWidth: 1,
-        borderColor: '#B3B3B3',
-        //borderStyle: 'dashed',
-        marginLeft: 33,
-        marginTop: 88,
-        borderRadius: 10,
-    },
-    boxTituloModal: {
-        //alignItems: 'center',
-    },
-    imgModalCurso: {
-        width: '100%',
-        height: 150,
-        borderTopLeftRadius: 4,
-        borderTopRightRadius: 4,
-    },
-    textTituloModal: {
-        fontFamily: 'Montserrat-Bold',
-        fontSize: 20,
-        color: '#000',
-        marginTop: 24,
-        marginLeft: 16
-    },
-    boxAvaliacaoPreco: {
-        display: 'flex',
-        alignItems: 'center',
-        flexDirection: 'row',
-    },
-    boxAvaliacaoModal: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 24,
-        marginLeft: 16,
-    },
-    boxPrecoModal: {
-        width: 90,
-        height: 48,
-        borderWidth: 2,
-        borderColor: '#B3B3B3',
-        borderRadius: 15,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 24,
-        marginRight: 40,
-        marginLeft: 64
-    },
-    boxDadosModal: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 16,
-        marginLeft: 24,
-    },
-    textDadosModal: {
-        width: 120,
-        fontFamily: 'Quicksand-Regular',
-        marginLeft: 16
-    },
-    boxDescricaoModal: {
-        width: 300,
-        marginLeft: 16,
-        marginTop: 24
-    },
-    descricaoModal: {
-        fontFamily: 'Montserrat-Medium',
-        fontSize: 16,
-        color: '#000',
-    },
-    boxVerMais: {
-        height: 150
-    },
-    textDescricaoModal: {
-        fontFamily: 'Quicksand-Regular',
-        width: 280,
-        height: '18%',
-        fontSize: 12,
-        color: '#000',
-        alignItems: 'center',
-        display: 'flex',
-        //textAlign: 'justify',
-        marginTop: 5,
-    },
-    boxEmpresa: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: '38%'
-    },
-    tituloEmpresa: {
-        fontFamily: 'Montserrat-Medium',
-        fontSize: 14,
-        color: '#000',
-    },
-    textEmpresa: {
-        fontFamily: 'Quicksand-Regular',
-        fontSize: 14,
-        color: '#000',
-        marginLeft: 10
-    },
-    boxValorInscrever: {
-        height: '10%',
-        display: 'flex',
-        alignItems: 'center',
-        flexDirection: 'row',
-        marginTop: '5%',
-    },
-    boxComentarioModal: {
-        marginTop: '8%',
-        alignItems: 'center'
-    },
-    boxInscreverModal: {
-        alignItems: 'center',
-        marginLeft: 80
-    },
-    inscreverModal: {
-        width: 150,
-        height: 48,
-        backgroundColor: '#1D438A',
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 32,
-        marginLeft: 8,
-    },
-    inscreverModalDisable: {
-        width: 150,
-        height: 48,
-        backgroundColor: '#1D438A',
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 32,
-        marginLeft: 8,
-        opacity: 0.5
-    },
-    textDetalhes: {
-        color: 'white',
-        fontFamily: 'Montserrat-Medium',
-    },
-    tituloAlert: {
-        color: 'green'
-    }
-});
+if (Dimensions.get('window').width > 700) {
+    var styles = StyleSheet.create({
+
+        //Cursos
+
+        container: {
+            flex: 1,
+        },
+        tabBar: {
+            flexDirection: 'row',
+            backgroundColor: '#B3B3B3',
+            marginTop: '30%'
+        },
+        tabItem: {
+            flex: 1,
+            alignItems: 'center',
+            padding: 16,
+            backgroundColor: '#F2F2F2',
+        },
+        containerTab: {
+            alignItems: 'center',
+            marginTop: 20
+        },
+        containerRefresh: {
+            alignItems: 'center'
+        },
+        verify: {
+            color: 'black'
+        },
+        containerListagem: {
+            flex: 1,
+            alignItems: 'center'
+        },
+        boxLogoHeader: {
+            marginTop: 50
+        },
+        boxTituloPrincipal: {
+            height: 50,
+            marginTop: 56,
+            marginBottom: 16,
+            // backgroundColor: 'pink'
+        },
+        textTituloPrincipal: {
+            textTransform: 'uppercase',
+            fontFamily: 'Montserrat-Bold',
+            fontSize: 30
+        },
+        boxInputSaldo: {
+            width: 275,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 24,
+            // backgroundColor: 'yellow'
+        },
+        boxSaldoUsuario: {
+            width: 90,
+            height: 42,
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        inputDistance: {
+            width: 100,
+            height: 42,
+            borderColor: '#B3B3B3',
+            borderWidth: 2,
+            borderRadius: 15,
+            display: 'flex',
+            alignItems: 'center',
+            paddingLeft: 28
+        },
+        flatlist: {
+            flex: 1,
+            width: '100%',
+            height: '100%'
+            // backgroundColor: 'blue'
+        },
+        // containerCurso: {
+        //     width: '100%',
+        //     height: 500,
+        //     // backgroundColor: 'blue',
+        //     // marginBottom: '1%',
+        //     marginBottom: 20
+        // },
+        boxCurso: {
+            width: 480,
+            // backgroundColor: 'pink',
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderTopWidth: 0,
+            borderRadius: 10,
+            // marginBottom: 20
+        },
+        boxImgCurso: {
+            alignItems: 'center',
+        },
+        imgCurso: {
+            width: '100%',
+            height: 100,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            // backgroundColor: 'red',
+        },
+        imgDesconto: {
+            width: '100%',
+            height: 175,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            // backgroundColor: 'red',
+        },
+        containerCard: {
+            // backgroundColor: 'green',
+            marginBottom: 24
+        },
+        boxTituloCurso: {
+            marginLeft: 16
+        },
+        textTituloCurso: {
+            fontSize: 20,
+            fontFamily: 'Montserrat-Medium',
+            marginTop: 8,
+        },
+        boxAvaliacao: {
+            width: 150,
+            height: 32,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginLeft: 16,
+            marginTop: 4
+        },
+        boxPrecoFavoritoDesconto: {
+            height: 40,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginTop: 16,
+            marginBottom: 10,
+            marginLeft: 16
+        },
+        boxDados: {
+            display: 'flex',
+            flexDirection: 'row',
+            marginTop: 8,
+            marginLeft: 16
+        },
+        imgDados: {
+            width: 19.7,
+            height: 19.8,
+            marginTop: 1
+        },
+        textDados: {
+            fontFamily: 'Quicksand-Regular',
+            marginLeft: 8,
+            marginBottom: 3
+        },
+        boxPrecoFavorito: {
+            height: 40,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginTop: 16,
+            marginLeft: 16,
+            marginBottom: 10
+        },
+        boxPreco: {
+            width: 90,
+            height: 42,
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            // backgroundColor: 'pink'
+        },
+        imgCoin: {
+            width: 22.1,
+            height: 22,
+        },
+        boxFavorito: {
+            width: '10%',
+            height: 40,
+            // backgroundColor: 'pink',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '5%'
+        },
+        textFavoritos: {
+            color: 'white'
+        },
+        // modalAbrir: {
+        //     width: 100,
+        //     height: 40,
+        //     backgroundColor: '#CB334B',
+        //     borderRadius: 12,
+        //     alignItems: 'center',
+        //     justifyContent: 'center'
+        // },
+        totalModal: {
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            alignItems: 'center',
+            justifyContent: 'center'
+        },
+        containerModal: {
+            width: 500,
+            height: '75%',
+            backgroundColor: '#F2F2F2',
+            borderWidth: 2,
+            borderTopWidth: 0,
+            borderColor: '#B3B3B3',
+            // backgroundColor: 'pink',
+            //borderStyle: 'dashed',
+            // marginLeft: 33,
+            // marginTop: 88,
+            borderRadius: 10,
+        },
+        boxTituloModal: {
+            //alignItems: 'center',
+        },
+        imgModalCurso: {
+            width: '101.5%',
+            height: 150,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+        },
+        textTituloModal: {
+            fontFamily: 'Montserrat-Bold',
+            fontSize: 20,
+            color: '#000',
+            marginTop: 24,
+            marginLeft: 16
+        },
+        boxAvaliacaoPreco: {
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'row',
+            // backgroundColor: 'pink',
+        },
+        boxAvaliacaoModal: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 8,
+            marginLeft: 16,
+        },
+        boxPrecoModal: {
+            width: 90,
+            height: 48,
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: '1%',
+            marginRight: 40,
+            marginLeft: '40%'
+        },
+        boxDadosModal: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: '4%',
+            marginLeft: 16,
+        },
+        textDadosModal: {
+            width: 120,
+            fontFamily: 'Quicksand-Regular',
+            marginLeft: 16
+        },
+        boxDescricaoModal: {
+            width: 300,
+            marginLeft: 16,
+            marginTop: 24
+        },
+        descricaoModal: {
+            fontFamily: 'Montserrat-Medium',
+            fontSize: 16,
+            color: '#000',
+        },
+        boxVerMais: {
+            height: 150
+        },
+        textDescricaoModal: {
+            fontFamily: 'Quicksand-Regular',
+            width: 280,
+            height: '18%',
+            fontSize: 12,
+            color: '#000',
+            alignItems: 'center',
+            display: 'flex',
+            //textAlign: 'justify',
+            marginTop: 5,
+        },
+        boxEmpresa: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: '25%'
+        },
+        tituloEmpresa: {
+            fontFamily: 'Montserrat-Medium',
+            fontSize: 14,
+            color: '#000',
+        },
+        textEmpresa: {
+            fontFamily: 'Quicksand-Regular',
+            fontSize: 14,
+            color: '#000',
+            marginLeft: 10
+        },
+        boxValorInscrever: {
+            height: 100,
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'row',
+            marginTop: '3%',
+            // backgroundColor: 'green'
+        },
+        boxComentarioModal: {
+            marginTop: '1%',
+            alignItems: 'center',
+            // backgroundColor: 'blue'
+        },
+        boxInscreverModal: {
+            height: 50,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginLeft: '85%',
+            // backgroundColor: 'pink'
+        },
+        inscreverModal: {
+            width: 150,
+            height: 48,
+            backgroundColor: '#4B7294',
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            // marginTop: 32,
+            marginLeft: 8,
+        },
+        inscreverModalDisable: {
+            width: 150,
+            height: 48,
+            backgroundColor: '#4B7294',
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            // marginTop: 32,
+            marginLeft: 8,
+            opacity: 0.5
+        },
+        textDetalhes: {
+            color: 'white',
+            fontFamily: 'Montserrat-Medium',
+        },
+        tituloAlert: {
+            color: 'green'
+        }
+    })
+}
+
+// CELULAR
+else {
+    var styles = StyleSheet.create({
+        container: {
+            flex: 1,
+        },
+        tabBar: {
+            flexDirection: 'row',
+            backgroundColor: '#B3B3B3',
+            // marginTop: 50,
+        },
+        tabItem: {
+            flex: 1,
+            alignItems: 'center',
+            padding: 16,
+            backgroundColor: '#F2F2F2',
+        },
+        containerTab: {
+            alignItems: 'center',
+            marginTop: 20
+        },
+        containerListagem: {
+            alignItems: 'center'
+        },
+        boxLogoHeader: {
+            marginTop: 50
+        },
+        boxTituloPrincipal: {
+            marginTop: 24,
+            marginBottom: 24
+        },
+        textTituloPrincipal: {
+            textTransform: 'uppercase',
+            fontFamily: 'Montserrat-Bold',
+            fontSize: 30
+        },
+        boxSaldoUsuario: {
+            width: 90,
+            height: 42,
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 24
+        },
+        // line: {
+        //     width: 30,
+        //     height: 1,
+        // },
+        containerCurso: {
+            marginBottom: 50,
+        },
+        boxCurso: {
+            width: 275,
+            height: 285,
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderTopWidth: 0,
+            borderRadius: 10,
+        },
+        boxImgCurso: {
+            alignItems: 'center',
+        },
+        imgCurso: {
+            width: 275,
+            height: 83,
+            borderTopLeftRadius: 8,
+            borderTopRightRadius: 8,
+        },
+        imgDesconto: {
+            width: '100%',
+            height: 175,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            // backgroundColor: 'red',
+        },
+        boxTituloCurso: {
+            marginLeft: 16
+        },
+        textTituloCurso: {
+            fontSize: 20,
+            fontFamily: 'Montserrat-Medium',
+            marginTop: 8,
+        },
+        boxAvaliacao: {
+            width: 150,
+            height: 32,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginLeft: 16,
+            marginTop: 4
+        },
+        boxDados: {
+            display: 'flex',
+            flexDirection: 'row',
+            marginTop: 8,
+            marginLeft: 16
+        },
+        imgDados: {
+            width: 19.6,
+            height: 19.8,
+            marginTop: 1
+        },
+        textDados: {
+            fontFamily: 'Quicksand-Regular',
+            marginLeft: 8,
+            marginBottom: 3
+        },
+        boxSelect: {
+            width: 200,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+        },
+        boxTituloCursoSelect: {
+            alignItems: 'center',
+        },
+        line: {
+            width: 80,
+            height: 1,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            marginBottom: 24
+        },
+        textSelect: {
+            fontFamily: 'Montserrat-Medium',
+        },
+        boxPrecoFavorito: {
+            height: 40,
+            display: 'flex',
+            flexDirection: 'row',
+            marginTop: 16,
+            marginLeft: 16
+        },
+        boxPrecoFavoritoDesconto: {
+            height: 40,
+            display: 'flex',
+            flexDirection: 'row',
+            marginTop: 34,
+            marginLeft: 16
+        },
+        boxPreco: {
+            width: 90,
+            height: 42,
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center'
+        },
+        imgCoin: {
+            width: 22.1,
+            height: 22,
+        },
+        boxFavorito: {
+            width: 50,
+            height: 40,
+            //backgroundColor: 'black',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginLeft: 105,
+        },
+        modalAbrir: {
+            width: 100,
+            height: 40,
+            backgroundColor: '#CB334B',
+            borderRadius: 12,
+            alignItems: 'center',
+            justifyContent: 'center'
+        },
+        totalModal: {
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+        },
+        containerModal: {
+            width: '83%',
+            height: '81%',
+            backgroundColor: '#F2F2F2',
+            borderWidth: 2,
+            borderTopWidth: 1,
+            borderColor: '#B3B3B3',
+            //borderStyle: 'dashed',
+            marginLeft: 33,
+            marginTop: 88,
+            borderRadius: 10,
+        },
+        boxTituloModal: {
+            //alignItems: 'center',
+        },
+        imgModalCurso: {
+            width: '100%',
+            height: 150,
+            borderTopLeftRadius: 4,
+            borderTopRightRadius: 4,
+        },
+        textTituloModal: {
+            fontFamily: 'Montserrat-Bold',
+            fontSize: 20,
+            color: '#000',
+            marginTop: 24,
+            marginLeft: 16
+        },
+        boxAvaliacaoPreco: {
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'row',
+        },
+        boxAvaliacaoModal: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 24,
+            marginLeft: 16,
+        },
+        boxPrecoModal: {
+            width: 90,
+            height: 48,
+            borderWidth: 2,
+            borderColor: '#B3B3B3',
+            borderRadius: 15,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 24,
+            marginRight: 40,
+            marginLeft: 64
+        },
+        boxDadosModal: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 16,
+            marginLeft: 24,
+        },
+        textDadosModal: {
+            width: 120,
+            fontFamily: 'Quicksand-Regular',
+            marginLeft: 16
+        },
+        boxDescricaoModal: {
+            width: 300,
+            marginLeft: 16,
+            marginTop: 24
+        },
+        descricaoModal: {
+            fontFamily: 'Montserrat-Medium',
+            fontSize: 16,
+            color: '#000',
+        },
+        boxVerMais: {
+            height: 150
+        },
+        textDescricaoModal: {
+            fontFamily: 'Quicksand-Regular',
+            width: 280,
+            height: '18%',
+            fontSize: 12,
+            color: '#000',
+            alignItems: 'center',
+            display: 'flex',
+            //textAlign: 'justify',
+            marginTop: 5,
+        },
+        boxEmpresa: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: '38%'
+        },
+        tituloEmpresa: {
+            fontFamily: 'Montserrat-Medium',
+            fontSize: 14,
+            color: '#000',
+        },
+        textEmpresa: {
+            fontFamily: 'Quicksand-Regular',
+            fontSize: 14,
+            color: '#000',
+            marginLeft: 10
+        },
+        boxValorInscrever: {
+            height: '10%',
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'row',
+            marginTop: '5%',
+        },
+        boxComentarioModal: {
+            marginTop: '8%',
+            alignItems: 'center'
+        },
+        boxInscreverModal: {
+            alignItems: 'center',
+            marginLeft: 80
+        },
+        inscreverModal: {
+            width: 150,
+            height: 48,
+            backgroundColor: '#1D438A',
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 32,
+            marginLeft: 8,
+        },
+        inscreverModalDisable: {
+            width: 150,
+            height: 48,
+            backgroundColor: '#1D438A',
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 32,
+            marginLeft: 8,
+            opacity: 0.5
+        },
+        textDetalhes: {
+            color: 'white',
+            fontFamily: 'Montserrat-Medium',
+        },
+        tituloAlert: {
+            color: 'green'
+        }
+    });
+}

@@ -10,7 +10,6 @@ import Redirecionar from "../redirecionamento/redirecionamento.js";
 import ListagemCurso from '../curso/listagemCurso.js';
 import ListagemDesconto from '../desconto/listagemDesconto.js';
 import Favoritos from '../favoritos/favoritosCurso.js';
-import FavoritosDesconto from '../favoritos/favoritosDesconto.js';
 import Perfil from '../perfil/perfil.js';
 // import MainFavoritos from '../main/MainFavoritos.js';
 import { Entypo, Feather } from "@expo/vector-icons";

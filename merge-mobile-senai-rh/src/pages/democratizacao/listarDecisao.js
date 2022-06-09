@@ -126,7 +126,6 @@ export default function ListarDecisao() {
                 {item.descricaoDecisao}"
               </Text>
               <Text style={styles.mensagem}>Clique e de seu feedback!</Text>
-
             </View>
           </View> */}
     </TouchableOpacity>
@@ -196,7 +195,7 @@ const styles = StyleSheet.create({
     //flex: 1,
     flexDirection: 'column',
     width: largura * .9,
-    //height: largura * .27,
+    //maxHeight: 400,
     borderRadius: 5,
     borderTopWidth: 25,
     borderWidth: 1,
@@ -207,9 +206,9 @@ const styles = StyleSheet.create({
     //backgroundColor: 'blue'
   },
   containerFlatList: {
-    flex: 1,
+    // flex: 1,
     width: largura * .9,
-    height: '100%',
+    // height: '100%',
     alignItems: 'center',
     //backgroundColor: 'orange',
   },
@@ -218,6 +217,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: "100%",
     height: 75,
+    marginLeft : 8,
+    marginTop : 8,
+    marginBottom : 6,
     //borderColor: '#451531',
     //borderWidth: 3,
     borderRadius: 5,
@@ -236,13 +238,13 @@ const styles = StyleSheet.create({
     //backgroundColor: 'red',
   },
   tituloDecisao: {
-    fontSize: 16,
-    color: 'black'
-    
+    fontSize: 12,
+    color: 'black',
+    marginTop: -5,
   },
   textoDecisao: {
-    fontSize: 18,
-    marginLeft: 20,
+    fontSize: 16,
+    marginLeft: 0,
     marginTop: 5,
     color: 'black',
     fontStyle: 'italic'

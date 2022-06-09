@@ -69,9 +69,19 @@ export default class AtividadesExtras extends Component {
         });
     };
 
+    showAlertSuce = () => {
+        this.setState({ showAlertSuce: true })
+    }
+
+    hideAlertSuce = () => {
+        this.setState({
+            showAlertSuce: false
+        });
+    };
+
     imagePickerCall = async () => {
         const result = await DocumentPicker.getDocumentAsync({
-            type: 'image/*',
+            type: '*/*',
             multiple: false,
             copyToCacheDirectory: true
         })
@@ -87,10 +97,9 @@ export default class AtividadesExtras extends Component {
         let base64Url = token.split('.')[1]; // token you get
         let base64 = base64Url.replace('-', '+').replace('_', '/');
         let decodedData = JSON.parse(Buffer.from(base64, 'base64').toString('binary'));
-        console.warn(item)
-        //console.warn(decodedData.jti)
+        console.warn(decodedData.jti)
 
-        
+        try {
             const data = new FormData();
 
             data.append('file', {
@@ -99,30 +108,31 @@ export default class AtividadesExtras extends Component {
                 name: arquivo.name
             })
 
-            console.warn(item)
-            
-            try {
-                
-                axios({
-                    method: 'post',
-                    url: 'http://192.168.3.110:5000/api/Atividades/FinalizarAtividade/' + item + '/' + decodedData.jti,
-                    data: data,
-                    headers: {
-                        "Content-Type": "multipart/form-data"
+
+            axios({
+                method: 'post',
+                url: 'http://apirhsenaigp1.azurewebsites.net/api/Atividades/FinalizarAtividade/' + item + '/' + decodedData.jti,
+                data: data,
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }
+            })
+                .then(resposta => {
+                    console.warn(resposta)
+
+                    if(resposta.status === 200){
+
+                        this.showAlertSuce();
+                        this.setState({imagemEntrega : null})
+                    }else{
+                        this.showAlert()
                     }
                 })
 
-                // api.post('http://apirhsenaigp1.azurewebsites.net/api/Atividades/FinalizarAtividade/12/2', , {
-                //     headers:{
-                //         'Content-Type': 'multipart/form-data'
-                //     }
-                // })
-
-            } catch (error) {
-                
-                console.warn(error)
-            }
-      
+        } catch (error) {
+            console.warn(error)
+            this.showAlert()
+        }
     }
 
 
@@ -265,8 +275,6 @@ export default class AtividadesExtras extends Component {
     //     }
     // }
 
-    
-
     render() {
         if (!customFonts) {
             return <AppLoading />;
@@ -386,6 +394,7 @@ export default class AtividadesExtras extends Component {
                             <Text style={styles.criadorModal}> Criador: {this.state.AtividadeBuscada.criador} </Text>
                             <TouchableOpacity style={styles.anexo} onPress={this.imagePickerCall}>
                                 <Text style={styles.txtanexo}> + Adicionar Anexo</Text>
+                                {this.state.imagemEntrega == null ? null : <AntDesign name="checkcircleo" size={17} color="green" />}
                             </TouchableOpacity>
                         </View>
                         <View style={styles.botoesModal}  >
@@ -408,13 +417,12 @@ export default class AtividadesExtras extends Component {
                     </View>
 
                 </View>
-
                 <AwesomeAlert
-                    show={this.state.showAlert}
+                    show={this.state.showAlertSuce}
                     showProgress={false}
                     title="Sucesso"
                     titleStyle={styles.tituloAlert}
-                    message="Sua Atividade foi Concluida!"
+                    message="Sua Atividade foi Enviada!"
                     closeOnTouchOutside={true}
                     closeOnHardwareBackPress={false}
                     showCancelButton={true}
@@ -449,7 +457,6 @@ export default class AtividadesExtras extends Component {
                         this.hideAlert();
                     }}
                 /> 
-
             </Modal>
         </View>
 
@@ -693,7 +700,7 @@ if (Dimensions.get('window').width > 700) {
         backgroundColor: '#F2F2F2',
         borderRadius: 10,
         // marginBottom: 20,
-        width: '78%',
+        width: '100%',
 
     },
 
@@ -1188,7 +1195,7 @@ else{   var styles = StyleSheet.create({
 
     tituloModalLogin:
     {
-        color: '#9A0AF',
+        // color: '#9A0AF',
         fontFamily: 'Montserrat-Medium',
         fontSize: 23,
         fontWeight: 'bold'
