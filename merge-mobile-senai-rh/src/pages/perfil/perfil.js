@@ -47,19 +47,19 @@ export default function Perfil() {
   const [senhaNova, setSenhaNovaUsuario] = useState("");
   const [senhaConfirmacao, setSenhaConfirmacaoUsuario] = useState("");
   const [openAlert, setOpenAlert] = useState(false)
- 
+
   async function realizarLogout() {
     await AsyncStorage.removeItem('userToken');
     navigation.navigate('Login')
-}
+  }
 
- const hideAlert = () => {
-  setOpenAlert(false)
-}
+  const hideAlert = () => {
+    setOpenAlert(false)
+  }
 
- const showAlert = () => {
-  setOpenAlert(true)
-}
+  const showAlert = () => {
+    setOpenAlert(true)
+  }
 
   // Fontes utilizada
   let [fontsLoaded] = useFonts({
@@ -233,7 +233,7 @@ export default function Perfil() {
     }
   }
 
- 
+
 
   async function MudarSenha() {
     try {
@@ -274,7 +274,7 @@ export default function Perfil() {
     return <AppLoading />;
   } else {
     return (
-      
+
       <KeyboardAvoidingView style={styles.container}>
         <Image
           style={styles.logoSenai}
@@ -292,10 +292,10 @@ export default function Perfil() {
                     source={
                       usuario.caminhoFotoPerfil == undefined
                         ? {
-                            uri:
-                              "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
-                              usuario.caminhoFotoPerfil,
-                          }
+                          uri:
+                            "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
+                            usuario.caminhoFotoPerfil,
+                        }
                         : require("../../../assets/img-gp3/Perfil.png")
                     }
                     resizeMod="cover"
@@ -362,25 +362,28 @@ export default function Perfil() {
               <View style={styles.fotoPerfilContainer}>
                 <Image
                   source={
-                    usuario.caminhoFotoPerfil == undefined
+                    usuario.caminhoFotoPerfil !== undefined
+                      &&
+                      usuario.caminhoFotoPerfil !== null
                       ? {
-                          uri:
-                            "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
-                            usuario.caminhoFotoPerfil,
-                        }
+                        uri:
+                          "https://armazenamentogrupo3.blob.core.windows.net/armazenamento-simples/" +
+                          usuario.caminhoFotoPerfil,
+                      }
                       : require("../../../assets/img-gp3/Perfil.png")
                   }
+                  style={styles.img_perfil}
                   resizeMod="cover"
                 />
               </View>
 
               <TouchableOpacity
-               onPress={realizarLogout}
+                onPress={realizarLogout}
                 style={styles.logout}
-             >
-               <Text> Sair </Text>
-               <MaterialIcons name="logout" size={24} color="#C20004" /> 
-               </TouchableOpacity>
+              >
+                <Text> Sair </Text>
+                <MaterialIcons name="logout" size={24} color="#C20004" />
+              </TouchableOpacity>
 
               <Text style={styles.textInfGeralPerfil}>Informação Geral</Text>
 
@@ -413,7 +416,7 @@ export default function Perfil() {
             </ScrollView>
           );
         })}
-         <AwesomeAlert
+        <AwesomeAlert
           show={openAlert}
           showProgress={false}
           title="Sucesso"
@@ -424,15 +427,15 @@ export default function Perfil() {
           closeOnHardwareBackPress={false}
           confirmButtonStyle={styles.confirmButton}
           showCancelButton={false}
-           showConfirmButton={true}
+          showConfirmButton={true}
           confirmText="Voltar"
           confirmButtonColor="#2CA347"
           onConfirmPressed={() => {
-          hideAlert();
-        }}
+            hideAlert();
+          }}
         />
       </KeyboardAvoidingView>
-      
+
     );
   }
 }
@@ -624,5 +627,10 @@ const styles = StyleSheet.create({
   textTrofeu: {
     color: "black",
     marginLeft: 10,
+  },
+  img_perfil: {
+    width: 90,
+    height: 90,
+    borderRadius: 5
   },
 });

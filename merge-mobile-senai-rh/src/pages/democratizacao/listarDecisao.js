@@ -33,7 +33,9 @@ import {
 import api from "../../services/apiGp3";
 
 import imgPadrao from '../../../assets/img-gp3/Perfil.png'
-
+import { ScrollView } from "react-native-gesture-handler";
+import moment from 'moment';
+import 'moment/locale/pt-br'
 
 const largura = Dimensions.get('window').width;
 
@@ -108,8 +110,8 @@ export default function ListarDecisao() {
           resizeMode="cover"
         />
         <View style={styles.containerTextos}>
-          <Text >{`${item.idUsuarioNavigation.nome} propôs: `}</Text>
-          <Text >{`${item.descricaoDecisao}`}</Text>
+          <Text style={styles.tituloDecisao} >{`Em ${moment(item.dataDecisao).locale('pt-BR').format('LLL')}, ${item.idUsuarioNavigation.nome} propôs: `}</Text>
+          <Text style={styles.textoDecisao} >{`${item.descricaoDecisao}`}</Text>
         </View>
       </View>
 
@@ -145,12 +147,15 @@ export default function ListarDecisao() {
           <Text style={styles.h1Bold}>Decisões</Text>
         </View>
 
-        <FlatList
-          contentContainerStyle={styles.containerFlatList}
-          data={listaDecisao}
-          keyExtractor={(item) => item.idDecisao}
-          renderItem={renderItem}
-        />
+        <ScrollView>
+          <FlatList
+            contentContainerStyle={styles.containerFlatList}
+            data={listaDecisao}
+            keyExtractor={(item) => item.idDecisao}
+            renderItem={renderItem}
+            scrollEnabled={true}
+          />
+        </ScrollView>
 
       </View>
     );
@@ -227,7 +232,20 @@ const styles = StyleSheet.create({
   },
   containerTextos: {
     flex: 1,
+    margin: 5
     //backgroundColor: 'red',
-  }
+  },
+  tituloDecisao: {
+    fontSize: 16,
+    color: 'black'
+    
+  },
+  textoDecisao: {
+    fontSize: 18,
+    marginLeft: 20,
+    marginTop: 5,
+    color: 'black',
+    fontStyle: 'italic'
+  },
 
 });
