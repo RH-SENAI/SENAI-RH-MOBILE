@@ -352,7 +352,7 @@ export default function CadastroFeedback({ route }) {
           showCancelButton={false}
           showConfirmButton={true}
           confirmText="Voltar"
-          confirmButtonColor="#451531"
+          confirmButtonColor="#2CA347"
           onConfirmPressed={() => {
             hideAlert();
           }}
